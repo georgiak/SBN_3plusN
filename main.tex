@@ -205,6 +205,10 @@ To leading order in the mass of the sterile neutrino over the pion, the fluxes
 for the $\nu_\text{s}$ will be a rescaling of the fluxes for the active
 neutrinos.  We take these fluxes as our input and scale them by $U_{\mu4}$.
 %
+\newtext{PB}{Can we add a figure of the fluxes? Perhaps some comment on how we
+are modelling them. This is all finished, right? (Unless we start doing
+something wild with the NuMI fluxes).}
+%
 \lorem\lorem 
 
 \subsection{Detector modelling and analysis cuts}
@@ -387,19 +391,33 @@ CC coherent $\pi^+$ $(\nu_e A \rightarrow e^- A \pi^+,$) & 9 (my estimate) \\
 \section{Sensitivities}
 
 In \reffig{fig:no_cuts_no_bkg} we show the sensitivity when cuts are omitted
-for backgroundless searches. The contours mark the regions where the detectors
-in question see more than $2.6$ events, following the procedure of
-\refref{mmm}. To investigate how backgrounds weaken these sensitivities, we
-have performed a rough estimate of the significance of the signal in various
-channels. We consider the quantity $S/\sqrt{\lambda B}$ and plot contours when
-the parameter is equal to $1$. At this point, the size of the new signal events
-from the heavy sterile decays are equal to the Poisson noise in the experiment
-under the approximation of no signal. The parameter $\lambda$ is used to scale
-the backgrounds, corresponding to a greater ability to suppresses these events.
-We show two regions, the most conservative line corresponds to $\lambda=1$ and
-no additional background suppression, whilst the more optimistic one
-corresponds to a further suppression by a factor of 1000.
+for backgroundless searches. This corresponds to the most optimistic case:
+there are no cuts (weight factors are set to $1$, not even taking into account
+physical limitations on the data set) implying perfect signal efficiency, and
+the channels are assumed backgroundless.
+%
+The analysis only considers the total number of events in each channel, and the
+contours mark the regions where the detectors in question see more than $2.6$
+events, following the procedure of \refref{mmm} designed for backgroundless
+searches for rare events. 
 
+To investigate how the presence of backgrounds weaken these sensitivities, we
+have performed a rough estimate of the significance of the signal in various
+channels. In \reffig{fig:no_cuts_scaled_bkg}, we consider the quantity
+$S/\sqrt{\lambda B}$ and plot contours when the parameter is equal to $1$. At
+this point, the size of the new signal events from the heavy sterile decays are
+equal to the Poisson noise in the experiment under the approximation of no
+signal. The parameter $\lambda$ is used to scale the backgrounds, corresponding
+to a greater ability to suppresses these events.  We show two regions, the most
+conservative line corresponds to $\lambda=1$ with no additional background
+suppression beyond our estimates, whilst the more optimistic one corresponds to
+a further suppression by a factor of 1000. Our estimates are given by the
+largest numbers in \reftab{tab:rates} for each channel, that is assuming no
+analysis-based reduction in rates. As before, we do not take into account the
+signal efficiency in these plots (weight factors are set to $1$) this makes the
+unrealistic assumptiont that whatever has been done to reduce the backgrounds
+leaves the signal event rates unchanged. However, it provides an understanding of 
+the severity of the impact of the backgrounds for these searches.
 
 \newtext{PB}{Be careful: the contours aren't really the same thing as the
 shaded region, as they are computing different statistical quantities. But to
@@ -412,7 +430,7 @@ Also, the ee flux isn't quite right for a reason I forget at the moment.}
 \center
 \includegraphics[width=1.0\textwidth,clip,trim=0 20 300 15]{figures/all_panels.pdf}
 
-\caption{\label{fig:no_cuts_no_bkg}The sensitivity contours based on the total number of events, without cuts and without backgrounds.}
+\caption{\label{fig:no_cuts_no_bkg}The sensitivity contours based on the total number of events, without cuts and without backgrounds. There is a small grey dotted line ovelapping the SBND curve denoting the bound on the sum of events over the three detectors.}
 
 \end{figure}
 
@@ -422,7 +440,7 @@ Also, the ee flux isn't quite right for a reason I forget at the moment.}
 \includegraphics[width=1.0\textwidth,clip,trim=0 20 300 15]{figures/muboone_all_panels.pdf}
 \includegraphics[width=1.0\textwidth,clip,trim=0 20 300 15]{figures/icarus_all_panels.pdf}
 
-\caption{\label{fig:no_cuts_no_bkg}The sensitivity contours based on the total
+\caption{\label{fig:no_cuts_scaled_bkg}The sensitivity contours based on the total
 number of events, without cuts but with varying degrees of background
 suppression. We overlay the 95\% exclusion regions for $U^2$ and $m_s$ from
 previous experimental work.}
@@ -430,10 +448,9 @@ previous experimental work.}
 \end{figure}
 
 
-
-
 \section{Conclusions}
 \lorem\lorem
+
 
 \newpage 
 
@@ -447,13 +464,13 @@ previous experimental work.}
 
 \item Plot for total sum of events over detectors.
 
-\item \sout{Add $\pi_0\nu$ decay to plot.}
+\item \sout{Add $\pi_0\nu$ decay to plot.} \newtext{PB}{These plots haven't been added here. Did you make them? (I see you've added the channels to the code. Thanks.)}
 
 \item Actually commpute a $95\%$ CL exlusion region for a fair comparison with bounds.
 
 \item \sout{Add $\nu_e$ flux to \emph{flux.c}.}
 
-\item Work out what has gone into the ``cut-less" plots. Recompute for reasonable cuts? Vary the backgrounds according the cuts and Mark's estimates?
+\item \sout{Work out what has gone into the ``cut-less" plots.}\newtext{PB}{``Cut-less'' plots have weight factors set to 1.} Recompute for reasonable cuts? Vary the backgrounds according the cuts and Mark's estimates?
 
 \item Play about with baseline distance?
 
