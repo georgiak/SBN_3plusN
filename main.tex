@@ -496,23 +496,54 @@ previous experimental work.}
 
 \begin{enumerate}
 
-\item \sout{Add mass scaling of backgrounds to $S/\sqrt{B}$ plot.} \newtext{MARK}{All currently taken care of in centralised file "bkg\_event\_rates\_"}
+\item \sout{Add mass scaling of backgrounds to $S/\sqrt{B}$ plot.}
+\newtext{MARK}{All currently taken care of in centralised file
+"bkg\_event\_rates\_"}
 
-\item \sout{Work out which mixing angles are active in each plot. And overlay $U_{e4}$ bounds on appropriate plot. Probably: recompute plots with this information.}
+\item \sout{Work out which mixing angles are active in each plot. And overlay
+$U_{e4}$ bounds on appropriate plot. Probably: recompute plots with this
+information.}
 
 \item \sout{Plot for total sum of events over detectors.}
 
-\item \sout{Add $\pi_0\nu$ decay to plot.} \newtext{PB}{These plots haven't been added here. Did you make them? (I see you've added the channels to the code. Thanks.)}
+\item \sout{Add $\pi_0\nu$ decay to plot.} \newtext{PB}{These plots haven't
+been added here. Did you make them? (I see you've added the channels to the
+code. Thanks.)}
 
-\item Actually commpute a $95\%$ CL exlusion region for a fair comparison with bounds.
+\item Actually commpute a $95\%$ CL exlusion region for a fair comparison with
+bounds. \newtext{PB}{See comment directly below. (This isn't a total
+solution... but I spent a while reading about how to do this properly and I
+think it's pretty defensible. Perhaps more so than what we would do with
+log-likelihood ratios...)}.
+
+\item The $S/\sqrt{B} =1$ criterion is (if it's defensible at all) really a
+$1\sigma$ significance measure. I think we should at least switch it to
+$S/\sqrt{B} =2$ which is $2\sigma\approx 95\%$ in the Gaussian limit.
+\newtext{PB}{I have changed this in the plotting scripts, and they are all
+ready to be run. However, I don't have the electron mixing bounds, so I can't
+make the plot. I've added the bounds that I have to the git; could you add the
+others?}
 
 \item \sout{Add $\nu_e$ flux to \emph{flux.c}.}
 
-\item \sout{Work out what has gone into the ``cut-less" plots.}\newtext{PB}{``Cut-less'' plots have weight factors set to 1.} Recompute for reasonable cuts? Vary the backgrounds according the cuts and Mark's estimates?
+\item \sout{Work out what has gone into the ``cut-less"
+plots.}\newtext{PB}{``Cut-less'' plots have weight factors set to 1.} Recompute
+for reasonable cuts? Vary the backgrounds according the cuts and Mark's
+estimates?
 
-\item Play about with baseline distance? \newtext{MARK}{What can we really say here, if we limit to "standard" mixing picture  then there isnt a huge ammount of results, (see figures/baseline\_effects.pdf), might look into increased decay rates?}
+\item Play about with baseline distance? \newtext{MARK}{What can we really say
+here, if we limit to "standard" mixing picture  then there isnt a huge ammount
+of results, (see figures/baseline\_effects.pdf), might look into increased
+decay rates?} \newtext{PB}{Yes, I'm starting to think that we should just add a
+section looking at generic decay widths in specific channels... we have to make
+some decisions about how $\Gamma$ scales with $U$. I mean, just assuming the
+minimal extension \emph{is} pretty conservative for theorists.}
 
 \item Turn on $U_{\tau 4}$,$U_{\mu 4}$ and $U_{e4}$ simultaneously
+
+\item \sout{Edit how the code deals with cuts and efficiency files. ``--no-cuts"
+shouldn't need a dummy file of 1's.} Maybe a flag ``--cuts-XXX`` where XXX is
+either a file name, or ``none'' for which all is handled internally.
 
 \end{enumerate}
 
