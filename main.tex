@@ -1,6 +1,6 @@
 %SAVEDAT= 1453457093
 \documentclass[11pt, a4paper]{article} 
-\usepackage{jheppub,multirow,relsize,soul}
+\usepackage{slashed,jheppub,multirow,relsize,soul}
 \usepackage[normalem]{ulem}
 
 
@@ -94,8 +94,66 @@ Generically, a gauge-singlet fermion will be unobservable by all
 non-gravitational means unless it mixes with the active neutrino sector. The
 presence of mixing introduces a range of possible observable signatures
 depending on the magnitude of the sterile mass and its mixing to the active
-sector. \newtext{PB}{Discussion of minimal sterile models and their decays. Explain
-Mark's nice plot in} \reffig{fig:branchingratios}.
+sector. 
+
+The most general renormalizable \lagrangian\ extending the SM to include a novel
+gauge-singlet fermion $N$ is given by
+%
+\begin{align}   \mathcal{L} = \mathcal{L}_\text{SM} +
+\overline{N}i\slashed{\partial}N+ \frac{\mu}{2} \overline{N^\text{c}}N  + \left( y_\alpha\overline{L}_\alpha\tilde{H} N +\text{h.c.}\right),\label{eq:minimallag} \end{align}
+%
+where $y_\alpha$ denote Yukawa couplings and $\mu$ a Majorana mass term for
+$N$. The extension to multiple new fermions involves promoting $y$ and $\mu$ to
+matrices with indices for the new states, but will offer no real
+phenomenological differenes in the current work.\footnote{The minimal single
+$N$ extension does not allow for the observed masses of the neutrinos, as the
+mass matrix is rank 1. We assume that an appropriate extension has been
+performed to statisfy neutrino oscillation data.} Much work has been done
+understanding the phenomenology of novel neutral states, which varies
+significantly over their large parameter spaces. An important signal for light
+sterile neutrinos are possible observable effects in oscillation experiments,
+which could alleviate short-baseline oscillation anomalies; although, no
+minimal solution seems to provide a particularly compelling improvement
+\cite{}. At larger masses, the neutral particles no longer participate in
+oscillation, but these models can generate new signatures at beam dump
+experiments \cite{}. At even higher masses, these particles could provide a
+natural way to suppress the size of active neutrino masses through the Type I
+or III see-saw mechanisms \cite{}. 
+
+Generally speaking, once the neutrinos are massive enough to no longer
+oscillate but remain light enough to be produced in terrestrial experiments,
+the best way to observe them is through their direct decay into SM particles.
+In the minimal \lagrangian\ in \refeq{eq:minimallag}, the only direct couplings
+to new sterile fermions are neutrino Higgs interactions. However, these
+couplings generate off-diagonal neutrino bilinears below the electroweak
+symmetry breaking scale, which leads to mixing between the $4+$ flavours of
+neutrinos. Such mixing then introduces production and decay mechanisms of many
+kinds for the state $N$ through mass insertion on an active neutrino fermion
+line. These decays have been studied extensively in the literature
+\cite{Atre} and depend only on the size of neutrino mixing to various
+flavours, parameterized by the elements of an extended $4\times4$ PMNS matrix,
+%
+\[ U_{e4}, \qquad U_{\mu 4} \qquad \text{and} \qquad U_{\tau 4},  \]
+%
+and the mass of the state $N$ itself. The branching ratios for these decays are
+shown in \reffig{fig:branchingratios} as a function of mass for two extremes of
+the flavour mixing pattern. On the left, we show the branching ratios if the
+new state only mixes with all flavours of active neutrino equally
+$U_{e4}=U_{\mu 4}=U_{\tau 4}$, and on the right, when the only mixing with with
+$\nu_e$ ($U_{\mu 4}=U_{\tau 4} = 0$). The main effect of the flavour structure
+is to forbid certain decays which require certain elements. For example, the
+decay of a sterile $N$ into a lepton and a charged pion,
+%
+\[ N \to l^\pm \pi^\mp,   \]
+%
+only proceeds if $U_{l4}\neq 0$. This, in turn, affects the possible production
+mechanisms for these particles. In a conventional neutrino beam, most neutrinos
+are derived from meson decay (or secondary $\mu^\pm$ decays). If $U_{e4}=U_{\mu
+4}=0$, such decays with a mass insertion for the sterile neutrino are
+impossible for pions or kaons. For this reason, we will mainly focus on mixing
+with the first two generations. This parameter space will be probed by working
+at higher energies, where the neutral fermions can be produced by decays of
+charmed mesons such as $D^\pm$, by the SHiPS experiment \cite{}.
  
 \begin{figure}[t]
 \includegraphics[width=0.49\textwidth]{figures/bounds1.pdf}  \includegraphics[width=0.49\textwidth]{figures/bounds2.pdf}
@@ -103,10 +161,11 @@ Mark's nice plot in} \reffig{fig:branchingratios}.
 \end{figure}
 
 We highlight three decays in our study, which have the largest branching ratios
-of all channels with charged decay products over the mass range $m_\text{s}
+of all channels with visible decay products over the mass range $m_\text{s}
 \lesssim 1$ GeV. This is based on the minimal sterile extension of the SM
 discussed above, but we stress that similar decays can occur in any number of
-non-minimal models.  For sterile neutrino masses less than the pion mass, the
+non-minimal models, where the relationship between decay rate, mass and mixing
+can be non-standard. For sterile neutrino masses less than the pion mass, the
 dominant visible decay will be into an electron-positron pair as an be seen
 from \reffig{fig:branchingratios}. We will base two analyses on this channel,
 differentiated by the number of tracks we expect to see. The first event sample
