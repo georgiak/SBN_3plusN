@@ -556,15 +556,17 @@ previous experimental work.}
 
 \begin{enumerate}
 
-\item \sout{Add mass scaling of backgrounds to $S/\sqrt{B}$ plot.}
-\newtext{MARK}{All currently taken care of in centralised file
-"bkg\_event\_rates\_"}
+%\item \sout{Add mass scaling of backgrounds to $S/\sqrt{B}$ plot.}
+%\newtext{MARK}{All currently taken care of in centralised file
+%"bkg\_event\_rates\_"}
 
-\item \sout{Work out which mixing angles are active in each plot. And overlay
-$U_{e4}$ bounds on appropriate plot. Probably: recompute plots with this
-information.}
+%\item \sout{Work out which mixing angles are active in each plot. And overlay
+%$U_{e4}$ bounds on appropriate plot. Probably: recompute plots with this
+%information.}
 
-\item \sout{Plot for total sum of events over detectors.} \newtext{PB}{It's pointless.}
+%\item \sout{Plot for total sum of events over detectors.} \newtext{PB}{It's pointless.}
+
+%\item \sout{Add $\nu_e$ flux to \emph{flux.c}.}
 
 \item Actually commpute a $95\%$ CL exlusion region for a fair comparison with
 bounds. \newtext{PB}{See comment directly below. (This isn't a total
@@ -579,8 +581,6 @@ $S/\sqrt{B} =2$ which is $2\sigma\approx 95\%$ in the Gaussian limit.
 ready to be run. However, I don't have the electron mixing bounds, so I can't
 make the plot. I've added the bounds that I have to the git; could you add the
 others?}
-
-\item \sout{Add $\nu_e$ flux to \emph{flux.c}.}
 
 \item \sout{Work out what has gone into the ``cut-less"
 plots.}\newtext{PB}{``Cut-less'' plots have weight factors set to 1.} Recompute
@@ -600,6 +600,23 @@ minimal extension \emph{is} pretty conservative for theorists.}
 \item \sout{Edit how the code deals with cuts and efficiency files. ``--no-cuts"
 shouldn't need a dummy file of 1's.} Maybe a flag ``--cuts-XXX`` where XXX is
 either a file name, or ``none'' for which all is handled internally.
+
+\item Write code for general $\Gamma$ for different final state particles.
+\newtext{PB}{Hey Mark, I'm having a got at this Thursday 28th 09.00. Contact me
+if there'll be any conflicts.}
+
+\item Write a section talking about the motivation for non-minimal extensions,
+specifically enhanced $\Gamma$. Discuss the breaking of the relationship
+between $\Gamma$, $U^2$ and $m_s$.  Make a reasonable suggestion for possible
+scaling behaviours of $\Gamma$ on $U^2$/$m_s$. Is it as boring as rewriting the
+minimal decay rate with $G_F$ replaced by a new constant that isn't suppressed
+by the $W$-mass? Or can you get different scaling behaviours from new physics?
+
+\item Based on the point above: decide how we can make plots for this. How do
+we compute the bounds (this should be easier than with our $Z^\prime$ model, as
+we don't have to think about invisible decays... just enlarged decays to
+visible. I guess everything strenghtens up to the point that PS191 sees nothing
+etc.)? How do we display the three dimensional data etc. Make these plots.
 
 \end{enumerate}
 
