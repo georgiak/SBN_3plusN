@@ -95,11 +95,13 @@ presence of mixing introduces a range of possible observable signatures
 depending on the magnitude of the sterile mass and its mixing to the active
 sector. 
 
-The most general renormalizable \lagrangian\ extending the SM to include a novel
-gauge-singlet fermion $N$ is given by
+The most general renormalizable \lagrangian\ extending the SM to include a
+single novel gauge-singlet fermion $N$ is given by
 %
 \begin{align}   \mathcal{L} = \mathcal{L}_\text{SM} +
-\overline{N}i\slashed{\partial}N+ \frac{\mu}{2} \overline{N^\text{c}}N  + \left( y_\alpha\overline{L}_\alpha\tilde{H} N +\text{h.c.}\right),\label{eq:minimallag} \end{align}
+\overline{N}i\slashed{\partial}N+ \frac{\mu}{2} \overline{N^\text{c}}N  +
+\left( y_\alpha\overline{L}_\alpha\tilde{H} N
++\text{h.c.}\right),\label{eq:minimallag} \end{align}
 %
 where $y_\alpha$ denote Yukawa couplings and $\mu$ a Majorana mass term for
 $N$. The extension to multiple new fermions involves promoting $y$ and $\mu$ to
@@ -517,7 +519,7 @@ Also, the ee flux isn't quite right for a reason I forget at the moment.}
 \includegraphics[width=1.0\textwidth,clip,trim=0 20 300 15]{figures/zerobg_um4_all_panels.pdf}
 \includegraphics[width=1.0\textwidth,clip,trim=0 20 300 15]{figures/zerobg_ue4_all_panels.pdf}
 
-\caption{\label{fig:no_cuts_no_bkg}The sensitivity contours based on the total number of events, without cuts and without backgrounds. In all panels, the mixing matrix elements not shown on the $y$-axis are zero. \newtext{PB}{The bounds on the electron channels are wrong. I don't have this data.}}
+\caption{\label{fig:no_cuts_no_bkg}The sensitivity contours based on the total number of events, without cuts and without backgrounds. In all panels, the mixing matrix elements not shown on the $y$-axis are zero.}
 
 \end{figure}
 
@@ -562,15 +564,17 @@ All previous work assumed the minimal extension of one extra sterile degree of f
 
 \begin{enumerate}
 
-\item \sout{Add mass scaling of backgrounds to $S/\sqrt{B}$ plot.}
-\newtext{MARK}{All currently taken care of in centralised file
-"bkg\_event\_rates\_"}
+%\item \sout{Add mass scaling of backgrounds to $S/\sqrt{B}$ plot.}
+%\newtext{MARK}{All currently taken care of in centralised file
+%"bkg\_event\_rates\_"}
 
-\item \sout{Work out which mixing angles are active in each plot. And overlay
-$U_{e4}$ bounds on appropriate plot. Probably: recompute plots with this
-information.}
+%\item \sout{Work out which mixing angles are active in each plot. And overlay
+%$U_{e4}$ bounds on appropriate plot. Probably: recompute plots with this
+%information.}
 
-\item \sout{Plot for total sum of events over detectors.} \newtext{PB}{It's pointless.}
+%\item \sout{Plot for total sum of events over detectors.} \newtext{PB}{It's pointless.}
+
+%\item \sout{Add $\nu_e$ flux to \emph{flux.c}.}
 
 \item Actually commpute a $95\%$ CL exlusion region for a fair comparison with
 bounds. \newtext{PB}{See comment directly below. (This isn't a total
@@ -578,34 +582,57 @@ solution... but I spent a while reading about how to do this properly and I
 think it's pretty defensible. Perhaps more so than what we would do with
 log-likelihood ratios...)}.
 
-\item The $S/\sqrt{B} =1$ criterion is (if it's defensible at all) really a
+\item \sout{The $S/\sqrt{B} =1$ criterion is (if it's defensible at all) really a
 $1\sigma$ significance measure. I think we should at least switch it to
-$S/\sqrt{B} =2$ which is $2\sigma\approx 95\%$ in the Gaussian limit.
-\newtext{PB}{I have changed this in the plotting scripts, and they are all
-ready to be run. However, I don't have the electron mixing bounds, so I can't
-make the plot. I've added the bounds that I have to the git; could you add the
-others?}
-
-\item \sout{Add $\nu_e$ flux to \emph{flux.c}.}
+$S/\sqrt{B} =2$ which is $2\sigma\approx 95\%$ in the Gaussian limit.}
+\newtext{PB}{I have done this and updated the plotting scripts.}
 
 \item \sout{Work out what has gone into the ``cut-less"
 plots.}\newtext{PB}{``Cut-less'' plots have weight factors set to 1.} Recompute
 for reasonable cuts? Vary the backgrounds according the cuts and Mark's
 estimates?
 
-\item Play about with baseline distance? \newtext{MARK}{What can we really say
-here, if we limit to "standard" mixing picture  then there isnt a huge ammount
-of results, (see figures/baseline\_effects.pdf), might look into increased
-decay rates?} \newtext{PB}{Yes, I'm starting to think that we should just add a
-section looking at generic decay widths in specific channels... we have to make
-some decisions about how $\Gamma$ scales with $U$. I mean, just assuming the
-minimal extension \emph{is} pretty conservative for theorists.}
+%\item \sout{Play about with baseline distance? \newtext{MARK}{What can we
+%really say here, if we limit to "standard" mixing picture  then there isnt a
+%huge ammount of results, (see figures/baseline\_effects.pdf), might look into
+%increased decay rates?} \newtext{PB}{Yes, I'm starting to think that we should
+%just add a section looking at generic decay widths in specific channels... we
+%have to make some decisions about how $\Gamma$ scales with $U$. I mean, just
+%assuming the minimal extension \emph{is} pretty conservative for theorists.}}
+%\newtext{PB}{I think we agreed to just do this.}
 
 \item Turn on $U_{\tau 4}$,$U_{\mu 4}$ and $U_{e4}$ simultaneously
 
-\item \sout{Edit how the code deals with cuts and efficiency files. ``--no-cuts"
-shouldn't need a dummy file of 1's.} Maybe a flag ``--cuts-XXX`` where XXX is
-either a file name, or ``none'' for which all is handled internally.
+\item \sout{Edit how the code deals with cuts and efficiency files.
+``--no-cuts" shouldn't need a dummy file of 1's. Maybe a flag ``--cuts-XXX``
+where XXX is either a file name, or ``none'' for which all is handled
+internally.} \newtext{PB}{Now there is a ``--cuts'' flag. ``--cuts=none'' or
+``-cuts none'' sets all weights to 1 internally. Or you can pass it a file name
+``--cuts=eff.dat'', which works as expected. Default is no cuts, but I've
+updated the scripts to have the right flags.}
+
+\item \sout{Write code for general $\Gamma$ for different final state
+particles.} \newtext{PB}{I've had a first pass at this. I didn't write new
+decay channels in the end, as I think we can just rescale things...  depending
+on how we choose to scale the $\Gamma$ with $U$ and $m$ (see below), we could
+change this later, but for now it seemed OK. Now there's a new command
+line argument which adds an extra Gamma to whichever channel you specify as well 
+as the total decay rate \emph{e.g.} \texttt{eventrate --mupi --extra-gamma 1e-18}
+adds a constant $1\times10^{-18}$ to the $\mu\pi$ channel and total rate (not
+double counting). When we write a function like \texttt{loop\_muon\_enhanced\_gamma()} we 
+can set this extra gamma to depend on $U$ or $m$ as we need.} 
+
+\item Write a section talking about the motivation for non-minimal extensions,
+specifically enhanced $\Gamma$. Discuss the breaking of the relationship
+between $\Gamma$, $U^2$ and $m_s$.  Make a reasonable suggestion for possible
+scaling behaviours of $\Gamma$ on $U^2$/$m_s$. Is it as boring as rewriting the
+minimal decay rate with $G_F$ replaced by a new constant that isn't suppressed
+by the $W$-mass? Or can you get different scaling behaviours from new physics?
+
+\item Based on the point above: decide how we can make plots for this. How do
+we compute the bounds? I guess, the bounds are \emph{really} bounds on
+$U^2\Gamma$? What's the best way to display the three dimensional data etc.
+Make the data. Make the plots.
 
 \item \sout{Cosmogenics? Ignorable? Write up if/so/why/how?} More depth needed.
 
