@@ -81,13 +81,12 @@ between the different beam lines and detector technologies.
 
 \marcom{PB}{This could also be bundled into the intro...} The Fermilab SBN
 programme \cite{Antonello:2015lea} will comprise of a number of detectors in
-the Booster Neutrino Beam (BNB): SBND (previously known as LAr1-ND) at 100m
-from the target, \muboone\ at 470m and ICARUS-T600 at 600m.
+the Booster Neutrino Beam (BNB): SBND (previously known as LAr1-ND) at 110m
+from the target, \muboone\ at 470m and ICARUS-T600 at 600m. All three detectors are filled with Liquid Argon (LAr) giving unpresedented reconstruction and particle identification capabilities allowing for significantly lower backgrounds that predecessor technologies. This level of detail means the  SBN programme provides an ideal scenario to study the decay in flight of sterile neutrinos, a job traditionaly left for low-mass detectors which had low beam releated backgrounds. 
 
 In addition to events arising from the BNB, the detectors of the SBN complex
 will also collect events associated with the NuMI beam, currently being used in
-the NO$\nu$A, MINER$\nu$A and MINOS+ experiments.
-
+the NO$\nu$A, MINER$\nu$A and MINOS+ experiments. This beam is off-axis with respect to the SBN detectors leading to significant kinematic differences.
 \section{Sterile neutrino decay}
 
 Generically, a gauge-singlet fermion will be unobservable by all
@@ -162,7 +161,11 @@ charmed mesons such as $D^\pm$, by the SHiPS experiment \cite{}.
 \caption{\label{fig:branchingratios}The branching ratios for sterile neutrino decays in the minimal 3 sterile SM extension. The left panel assumes equal mixing with all active flavours, whilst the right panel assumes a flavour hierarchical scheme where only the mixing with $\nu_e$ is important.}
 \end{figure}
 
+<<<<<<< HEAD
+We highlight four decays in our study, which have the largest branching ratios
+=======
 We highlight four decays in our study. These have the largest branching ratios
+>>>>>>> a2eb69e8c12f0149436b5bf0f791b438ec870594
 of all channels with visible decay products over the mass range $m_\text{s}
 \lesssim 1$ GeV. This is based on the minimal sterile extension of the SM
 discussed above, but we stress that similar decays can occur in any number of
@@ -238,6 +241,7 @@ probability
 \[ P_\text{D}\left(E\right) = e^{-\frac{\Gamma_\text{T}L}{\gamma\beta}}\left(
 1-
 e^{-\frac{\Gamma_\text{T}\lambda}{\gamma\beta}}\right)\frac{\Gamma_\text{c}}{\Gamma_\text{T}},
+\label{eq:prob}
 \]
 %
 where $\Gamma_\text{T}$ ($\Gamma_\text{c}$) denotes the rest-frame total decay
@@ -278,7 +282,7 @@ all effects which reduce the number of events in the sample: for example,
 analysis cuts or detector performance effects.
 %
 To compute these factors, we run a Monte Carlo simulation of the decays for a
-large number of sample eventsi with a given energy. Each sterile event is
+large number of sample events with a given energy. Each sterile event is
 associated with a decay of type $\text{c}$. We then apply experimental analysis
 cuts to the decays based on our assumptions about the detector's capabilities
 and backgrounds, to produce a spectrum representing the final event sample. The
@@ -293,21 +297,19 @@ section II.
 
 To leading order in the mass of the sterile neutrino over the pion, the fluxes
 for the $\nu_\text{s}$ will be a rescaling of the fluxes for the active
-neutrinos.  We take these fluxes as our input and scale them by $U_{\mu4}$, with an additional kinematic factor to take into account the helicity un-supression of $\pi^+ \rightarrow e^+\nu_s$ for massive $\nu_s \gg m_e$, such that for a sterile produced from the decay of a meson M
+neutrinos.  We take these fluxes as our input and scale them by the appripiate mixing $U_{\alpha 4}$, with an additional kinematic factor to take into account the helicity un-supression of $\pi^+ \rightarrow e^+\nu_s$ for massive $\nu_s \gg m_e$, such that for a sterile produced from the decay of a meson M
 \[
 	\phi_{\nu_s} \approx \phi_{\nu_\alpha} \vert U_{\alpha 4}\vert^2 \frac{\Gamma(M \rightarrow \nu_s \alpha)}{\Gamma(M\rightarrow \nu_\alpha \alpha)}.
 \]
-This kinematic effect for the pion and kaon, the only mesons produced in large numbers in the BNB beam, is shown below in figure \ref{fig:flux_enhancement}
+This kinematic effect for the pion and kaon, the only mesons produced in large numbers in the BNB beam, is shown below in figure \ref{fig:flux_enhancement}. We only consider steriles below the kinematc threshold of the kaon, as although there is a small componant of heaveier mesons such as the D meson which could produce heavier states, they are produced in very small numbers due to the relatively low energy protons of the BNB beam. 
 
 \begin{figure}[t]
 \center
 \includegraphics[width=0.6\textwidth]{figures/BNB_flux_enhancement.pdf}
 
-\caption{\label{fig:flux_enhancement} Kinematic enhancements of the sterile flux, for the four production channels available for steriles in the BNB beam. There is little effect when mixing with muons alone, as the muon is heavy enough to remove the helicity supression that usually kills the $\pi\rightarrow e \nu$ channels. This factor of up to $10^5$ enhancement more than compensates for the smaller flux of $\nu_e$ inherent in the BNB beam.}
+\caption{\label{fig:flux_enhancement} Kinematic enhancements of the sterile flux, for the four production channels available for steriles in the BNB beam. There is little effect when mixing with muons alone, as the muon is heavy enough to remove the helicity supression that usually kills the $\pi\rightarrow e \nu$ channels. This factor of up to $10^5$ enhancement more than compensates for the significantly smaller flux of $\nu_e$ always inherent in the BNB beam.}
 
 \end{figure}
-
-
 
 
 
@@ -503,6 +505,11 @@ CC coherent $\pi^+$ $(\nu_e A \rightarrow e^- A \pi^+,$) & 9 (my estimate) \\
 \caption{\label{tab:rates}Some estimated statistics for various channels in microBooNE, as estimated using previous MiniBooNE and ArgoNeut data.}
 \end{table}
 
+Total flux uncertainties have little effect on the resultant sensitivities as shifts affects both signal and beam driven background equally. Cross-sectional uncertaintes, however, have the potential to modify all beam releated backgrounds while leaving the decay in flight signal unchanged and thus are an unavoidable source of uncertainty.
+
+Cosmogenic backgrounds are smaller in comparason to beam releated backgrounds. In the case of cosmic muons in Icarus approximately $2.5 \times 10^{6}$  total cosmic events are to be expected in the 211 second beam spill, and are reducted to approximately 5 events expected after utilising the spill structure, scintillation light patterns and cuts on $\frac{d E}{d x}$ \cite{Antonello:2015lea}. Similarly for cosmic backgrounds to electron (photon) like signals 170 (146), 136 (88) and 498 (154) are expected at SBND, MicroBooNE and Icarus respectiely, however, they are predominately in the low energy bins, $< 0.5$ GeV.
+
+
 \section{Sensitivities}
 
 In \reffig{fig:no_cuts_no_bkg} we show the sensitivity when cuts are omitted
@@ -570,12 +577,27 @@ previous experimental work.}
 \includegraphics[width=1.0\textwidth,clip,trim=0 20 300 15]{figures/icarus_all_panels_um4.pdf}
 
 \caption{\label{fig:no_cuts_scaled_bkg_um4_only}The sensitivity contours based on the total
-number of events, assuming only mixing with the muon neutrinor ( $\vert U_{e 4}\vert^2=\vert U_{\tau 4}\vert^2=0$), without cuts but with varying degrees of background
+number of events, assuming only mixing with the muon neutrino ( $\vert U_{e 4}\vert^2=\vert U_{\tau 4}\vert^2=0$), without cuts but with varying degrees of background
 suppression. We overlay the 95\% exclusion regions for $U^2$ and $m_s$ from
 previous experimental work.}
 
 \end{figure}
 
+
+\subsubsection{Beyond the Minimal Model}
+All previous work assumed the minimal extension of one extra sterile degree of freedom, with no additional physics such that the only decays allowed are standard model weak processes with an active mixing scaling. Beyond this there are many extensions worth considering, if the sterile sector is charged under a new gauge symmetry, e.g $U(1)'$, then the total decay rate can be significantly modified. Additional new particle content that couples stronly with the sterile states can also drasticly change the expected rate with respect to the minimal extension, as well as open up entirely new decay channels, such as the possible radiative decay $\nu_N \rightarrow \nu_\alpha \gamma$, which can also be probed at the SBN and provides a window to searches for large sterile magnetic moments. In order to facilitate the search for new physics we provide results in terms of a total scaling $\Gamma$, of each decay channel of interest. We retain the functional dependance on sterile mass as in the minimal, bounding $\Gamma \vert U_{\alpha 4}\vert^2$. \\
+
+If there was an enhancement of $\alpha$ in a single channel, $\Gamma_c$, such that the total decay width becomes $\Gamma_\text{tot} = \Gamma_\text{oth}+\Gamma_c (1+\vert U_{\mu 4}\vert^2 \alpha)$, then pervious experiments searching for heavy sterle decays would have had much more stringent bounds on $\vert U_{\mu 4} \vert^2$. We can estimate these enhanced bounds by comparing the probability to decay in a particular channel, with the probability associated with the published bounds, in particular we need to find the new value for the 90\% C.L bound, $\vert U_{\mu 4}\vert^2$, such that the probability to decay inside a detector of baseline L and length $\lambda$, with a total rate  $\Gamma_\text{tot} = \vert U_{\mu 4}\vert^2 \left(\Gamma_\text{oth}^\prime+\Gamma_c^\prime (1+\alpha)\right)$, is equal to the probability to decay inside the same detector with total rate $\tilde{\Gamma}_\text{tot} = \vert U_{\mu 4}^*\vert^2(m_S) \left(\Gamma_\text{oth}^\prime+\Gamma_c^\prime\right)$, where $\vert U_{\mu 4}^*\vert^2(m_S) $ indicates the published bound on that channel, for a sterile of mass $m_S$, and primed decay widths indicate the width with mixing removed to the front. Using the functional form of the probability in equation \ref{eq:prob}, and expanding to leading order in the assumed small parameter $\lambda/L$, there are two solutions to this corresponding to the two real branches of the Lambert-W function. The two solutions correspond physically to the cases where an increasing decay rate increases the number of observed events in a detector thus increasing the bound, $\mathcal{W}_0$, up until the decay rate becomes sufficiently large to ensure the majority of the events decay before reaching the detector, $\mathcal{W}_{-1}$. This places the 90\% C.L exclusion in a region 
+\[	-\frac{\vert U_{\mu 4}^* \vert^2}{ \kappa \Gamma_\text{tot}^{*}} \mathcal{W}_{-1} \left[-\frac{\kappa \Gamma_\text{tot}^{*}}{1+\alpha} \exp\left( -\kappa(\Gamma_c^*+\Gamma_\text{oth}^*) \right)     \right]	\geq \vert U_{\mu 4} \vert^2 \geq \frac{\vert U_{\mu 4}^* \vert^2}{1+\alpha}
+\]
+where $\kappa = \frac{L}{\gamma \beta}$ and we have expanded $\mathcal{W}_0$ to leading order in $\vert U_{\mu 4}^*\vert^2$ for clarity to see it scales as expected with enhancement $(1+\alpha)$ , no such convienant expansion exists for  $\mathcal{W}_{-1}$.  
+
+ 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.49\textwidth]{figures/ps191_enhanced.pdf} \caption{\label{fig:ps191_enhance}The shifting of bounded region (excluded at 90 \% C.L  between coloured line pairs) as the deacy rate to a specific channel ($\nu_N \rightarrow \nu_\mu e^+e^-$) is increased by an arbitrary scaling factor $\alpha$ at the PS191 facility,$\alpha = 0$ corresponds to the minimal model bounds. A baseline of 128m, and mean energy of $\left< E_\nu \right> \approx 1 GeV$ was assumed.
+, as well as the }
+\end{figure}
 
 \section{Conclusions}
 \lorem\lorem
@@ -624,7 +646,7 @@ estimates?
 %assuming the minimal extension \emph{is} pretty conservative for theorists.}}
 %\newtext{PB}{I think we agreed to just do this.}
 
-\item Turn on $U_{\tau 4}$,$U_{\mu 4}$ and $U_{e4}$ simultaneously
+\item Turn on $U_{\tau 4}$,$U_{\mu 4}$ and $U_{e4}$ simultaneously. Aslo look at ratios of channels and ratios of events to see if we can get any (broken) degeneracies that could actually be interesting
 
 \item \sout{Edit how the code deals with cuts and efficiency files.
 ``--no-cuts" shouldn't need a dummy file of 1's. Maybe a flag ``--cuts-XXX``
@@ -657,6 +679,11 @@ we compute the bounds? I guess, the bounds are \emph{really} bounds on
 $U^2\Gamma$? What's the best way to display the three dimensional data etc.
 Make the data. Make the plots.
 
+\item \sout{Cosmogenics? Ignorable? Write up if/so/why/how?} More depth needed.
+
+\item \sout{Can prob be used to fudge a bound scaling? i.e for PS191.} \newtext{MARK}{In the end I felt it easiest to just add PS191 as a new detector in the code. This was it is easy to call for probability shifts, and gives us a CHECK if we can reporduce the known bounds somewhat.
+	--using-ps191 with the CHAN\_FLAG of 4.
+This "Detector" has correct POT, dimensions, baseline ..etc.. although the associated flux is assuming the BNB beam (which is wrong, but probably not insanely wrong). I also wrote two new functions to call the upper and lower 90\% C.L bounds from an experiment, given the observed bound. ALthough currently bounds are done out of code in the plotting scripts, needs to be updated then. }
 \item \newtext{PB}{I have added the $(1+\alpha)$ scaling functionality. I only ran one test... but it seems to work. I'll try to test more tomorrow.} 
 
 \end{enumerate}
