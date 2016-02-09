@@ -1,0 +1,184 @@
+%SAVEDAT= 1453457093
+\documentclass[12pt, a4paper]{article} 
+\usepackage{slashed,multirow,relsize,soul}
+\usepackage[normalem]{ulem}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\usepackage{bm}
+
+\newcommand{\refeq}[1]{Eq.~(\ref{#1})}
+\newcommand{\refeqs}[2]{Eqs.~(\ref{#1})~and~(\ref{#2})}
+\newcommand{\refeqss}[3]{Eqs.~(\ref{#1}), (\ref{#2})~and~(\ref{#3})}
+\newcommand{\reffig}[1]{Fig.~\ref{#1}}
+\newcommand{\reffigs}[2]{Figs.~\ref{#1}~and~\ref{#2}}
+\newcommand{\refsec}[1]{Section~\ref{#1}}
+\newcommand{\refapp}[1]{Appendix~\ref{#1}}
+\newcommand{\reftab}[1]{Table~\ref{#1}}
+\newcommand{\refref}[1]{Ref.~\cite{#1}}
+\newcommand{\refrefs}[2]{Refs.~\cite{#1}~and~\cite{#2}}
+
+
+\newcommand{\lorem}{ \textcolor[rgb]{0.8,0.8,0.8}{Lorem ipsum dolor sit amet, consectetur
+adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
+id est laborum.}}
+
+\newcounter{CommentCount}
+\setcounter{CommentCount}{1}
+
+\newcommand{\marcom}[2]{\textsuperscript{\textcolor{#1}{\theCommentCount}}\marginpar{\textsuperscript{\textcolor{#1}{\theCommentCount}}\textcolor{#1}{{\small#1: #2}}}\stepcounter{CommentCount}}
+
+\newcommand{\newtext}[2]{\textcolor{#1}{\ul{#2}}}
+\definecolor{MARK}{rgb}{0.612, 0.153, 0.69}
+
+% Add your own colour down here... 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document} 
+
+
+\section{Introduction}
+This is just a work in progress document to document the steps and progress of the projects, as well as to ensure we are all working with the same picture (a Experimental-Theory dictionary if you will). I will try to keep it up to date with what I am working on, but anyone feel free to edit/add comments. Any comments or questions I have I will probably include inline in \newtext{MARK}{purple}. At times I may be pedantic, but I think its worth having a complete picture. I will chiefly be using the SBN proposal for any numbers needed, and if from another source I will cite appropriately. No citation, assume SBN proposal (I will give page number when necessary). 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Analysis Method and Flow Diagram}
+As the aim of the study is a full 3+N sensitivity study, we wish to compute a n-dimensional $\chi^2$ surface, where n refers to the oscillation angles and mass differences associated with a 3+N study. We will set all known three neutrino mixing parameters to zero as at the energies and baseline of interest, they will be a sub leading process. This $\chi^2$ is defined as 
+\[
+	\chi^2(\Delta m_{i 1}^2, \sin^2 2 \theta_{ij})=\sum_{k,l} \left[ N^\text{null}_k - N^\text{osc}_k(\Delta m_{i 1}^2, \sin^2 2 \theta_{ij}) \right] E_{kl}^{-1} \left[ N^\text{null}_l - N^\text{osc}_l(\Delta m_{i 1}^2, \sin^2 2 \theta_{ij}) \right]
+	\label{eq:chi}
+\]
+where each term is broken down as follows,
+\begin{itemize}
+	\item  $\bm{ \Delta m_{i1}^2:}$ The mass squared difference between the $i^{\text{th}}$ mass eigenstate and the $m_1$ eigenstate, $\equiv m_i^2-m_1^2$. We define $m_1$ eigenstate as the state with largest $\nu_e$ component and will thus be the lightest (2nd lightest) in the Normal (Inverted) mass ordering. In this study, as we are setting $m_1=m_2=m_3=0$ we have that $\Delta m_{i 1}^2 = m_i^2$. We will only be considering new sterile states with $\Delta m^2$ of at least $10^{-2} \text{eV}^2$ so this should be an excellent approximation.
+	\item $\sin^2 2 \theta_{ij}: $ Is the rotational angle between the $m_i$ and $m_j$ mass eigenstates. \newtext{MARK}{Which a parameterisation of 3+N are we taking? pros and cons, see appendix}.
+	\item $ N^{\text{null}}_k$: Is the number of events expected under the null hypothesis ($\theta_{ij}=0 \quad \forall \quad i,j$), in the $k^\text{th}$ bin of reconstructed neutrino energy. $k$ runs over all bins of all channels of all detectors. For three detectors,  (SBND,MicroBooNE,Icarus), and two channels (electron appearance (11 bins) and muon neutrino disappearance (19 bins) this gives a vector of length 90. This represents the known backgrounds in each bin.
+	\item {\bf Reconstructed Neutrino Energy:} The reconstructed neutrino energy is defined as the total sum of all visible lepton and hadronic energy. \newtext{MARK}{Is this true? What hadronic threshold?}.
+\item {\bf Bins:} The bin boundaries for electron neutrino appearance and muon neutrino disappearance, as used in the SBN proposal, are as follows,
+		\begin{align*}
+			B_{\nu_e} &=	(0.2,0.35,0.5,0.65,0.8,0.95,1.1,1.3,1.5,1.75,2,3),\\			
+			B_{\nu_\mu}&=	(0.2,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,\cdots \\
+	      & \qquad \qquad	\cdots		0.8,0.85,0.9,0.95,1.0,1.25,1.5,2,2.5)		
+		\end{align*}
+
+	\item  $ N^{\text{osc}}_k (\Delta m_{i1}^2, \sin^2 2 \theta_{ij})$: Is the number of events predicted to be observed in reconstructed neutrino energy bin k, for oscillation parameter values $(\Delta m_{i1}^2, \sin^2 2 \theta_{ij})$.	
+	\item $E_{ij}$: The covariance matrix, $E_{ij}$, contains the total correlated and uncorrelated uncertainties, both systematic and statistical, between each bin in each channel and detector, it is thus a $90\times90$ matrix in the simplest case. The matrix $E$ is broke down and calculated as 
+		\[
+			E = E^\text{stat} + \underbrace{E^\text{flux}+ E^\sigma+ E^\text{cosmic}+E^\text{dirt}+E^\text{detector}}_{E^\text{systematic}}
+		\]
+		This will be estimated from a MC simulations using GEANT4. 
+\end{itemize}
+
+The global minimum chi square is then found, $\chi^2_\text{min}$, and the sensitivity at varies confidence limits to the 3+N model parameter space is estimated by studying the shape and value of the $\chi^2$ surrounding this minimum, $\Delta \chi^2 = \chi^2 - \chi^2_\text{min}$ Traditionally, and in the SBN proposal $\Delta \chi^2$ is assumed to asymptotically follow a $\chi^2$ distribution and hence a $\Delta \chi^2 = 1.64$ corresponds to a one sided 90\% C.L.
+ This assumption requires that Wilks theorem has to hold. In our particular case it does not, we may well have very low numbers of events in some bins and although the Null hypothesis is nested (decouple with $\Delta m^2 \rightarrow 0$) in this case the mixing angles are badly behaved $\sin^2 2 \theta_{ij}$ become ill-defined and irrelevant and with infinite variance. I do not estimate this would be a huge issue, but we may want to check that the distribution is in fact chi-distributed. \\
+
+We also mentioned the possibility of a new metric for measuring the ``decrease in available parameter space'' as a fraction of that which is currently ruled out from SBL fits. This raises a few issues as to how well we can estimate the N dimensional volume from several Markov Chains, as well as reliably see how that shifts once we introduce the SBN limits.\\ 
+
+The purpose of my code is thus to take four key inputs, 
+\begin{enumerate}
+	\item NTuples containing the full background estimates for all bins (from Andy),
+	\item NTuples containing the signal fully oscillated ("fullosc") predictions (from Andy),
+	\item Full covariance matrix containing background and fullosc. (from ?, constructable with GENIE reweighting),
+	\item NTuples containing markov chains of 3+N Oscillation parameters and $\chi^2$ from SBL fits. (from Davio),
+\end{enumerate}
+and combine to produce a sensitivity at the SBN. For each new oscillation frequency the fullosc signal is weighted according to the expected amplitude from each of the Markov chain points. This forms our $N^\text{osc}$ to be compared with the $N^\text{null}$ from background NTuple. The  fullosc portion of the covariance matrix is then folded down to $\nu_e$ appearance and $\nu_\mu$ disappearance channels for each detector ($E$). This is then inputted into equation \ref{eq:chi} to construct the $\chi^2$ surface. \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Backgrounds and signal}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+A brief overview of the basic selection cuts as used in the 3+1 SBN proposal. Should be expected to be a good place to start when looking for best cuts in 3+N. In all analysis below, a vertex is deemed ``visible'' if the total charged hadronic activity is more than 50 MeV and originates from within the active volume. \newtext{MARK}{50 MeV as a nuclear threshold seems conservative, 21 MeV is often quoted as the threshold from ArgoNeut (Check track length of X MeV protons to resolution of all three detectors).}. Definitive cuts used are highlighted in bold, and our ability to emulate them is checked off the list of information we have access to in the NTuple in Appendix B.\\
+
+
+\subsection{$\nu_e$ CC Event Selection}
+{\bf Intrinsic $\nu_e$ CC scattering}
+The SBN proposal uses a conservative $\bm{E_e \geq 0.2}${\bf GeV} cut on electron like showers in their 3+1 analysis. This accepts events with approximately an 80\% identification efficiency. This number was calculated by hand scanning and therefore should be taken as a conservative estimate with a pinch of salt. This also corresponds to electrons from true oscillated $\nu_\mu \rightarrow \nu_e$ signal events. \\
+
+{\bf Mis-Identified Photons} \\
+Predominantly from beam related NC $\pi^0$ decays or radiative resonances emitting a single photon. Single photons whose total shower energy is above the threshold in signal acceptance, 200 MeV, can be mis-identified as an electron from a CC scattering event. The SBN proposal lays out three ways in which the contamination from photons is rejected. 
+\begin{itemize}
+	\item Any $\pi^0$ which has two observable photons that point back to the same general vertex, automatically rejects the event as being interpreted as a single electron-like event.
+	\item Any photon containing a visible vertex (see above) which converts more than {\bf 3 cm} from that vertex is rejected, as the possibility it is not related to the vertex (and thus not CC related) increases. 
+	\item Perhaps most importantly for LAr technology a rate of energy loss cut, $\frac{d E}{d x}$, is then applied whch has an estimated 94\% rejection rate of separating electrons from photons. Naively, in the first few centimeters of an electromagnetic shower a photon converting to and $e^+e^-$ pair looses approximately twice as much energy as a true single electron. This corresponds to a cut on the energy loss of a shower of ${\bm{\frac{d E}{d x} \leq 3.425 \text{\bf MeV/cm}}}$ in the first 2.5 cm.
+\end{itemize}
+
+{\bf Mis-Identified Muons}\\
+Muons, especially of low energy, can be mis-identified as an electron-like event. Given the large flux of $\nu_\mu$ and subsequent $\nu_\mu$ CC muon production, these must be well understood. Very energetic muons, and thus events with long tracks, are readily identified as muons and so any event containing a  minimum ionizing track of length $\bm{L \geq 1m}$ are immediately rejected. One expects this to keep approximately XX\% of the muon events.\\
+
+{\bf $\bm{\nu_e e^- \rightarrow \nu_e e^-}$} \\
+Although included in the SBN 3+1 analysis due to possibility of high energy forward ejected electrons, neutrino electron scattering is a very much sub-dominant effect. The cross-section is of order $\approx 10^{-42}(E_\nu/\text{GeV})\text{cm}^2$ roughly 4 orders smaller than CC interactions with the nucleus and so it is safe to ignore in our analysis.
+
+{\bf Non Beam Related Backgrounds}
+Cosmogenics. Todo.
+
+\subsection{$\nu_\mu$ CC Event Selection}
+The only beam driven background that is assumed for muons originating from $\nu_\mu$ driven CC scattering, is a mis-identified final state $\pi^\pm$. In order to reject these, a simple cut requiring that all muon candidates that do stop in the active volume, have tracks longer than {\bf{$\bm{L \geq}$ 0.5m}}. This results in an approximately 80\% efficiency. 
+
+
+\section{Beyond Basic Sensitivities}
+Once we have a basic 3+3 fit done, we can also switch the question around. Rather than assume the base SBN proposal vales for all parameters and see how well it constrains, we can ask the question by how much does X have to improve to get Y? Also, how does including anti-neutrino running improve the scenario, can we make a solid case for anti-neutrino running? (Look at Boris's papers on steriles obfuscating CP searches at DUNE, can an anti-neutrino/longer neutrino run improve the SBN enough to aid in DUNEs CP search?) Plenty of possible questions. 
+
+\section{Appendix A: NTuple variables}
+A list of all base information we currently have per neutrino interaction event, where $<N>$ represents a vector of length N.
+\begin{itemize}
+	\item True neutrino energy
+	\item True neutrino type (nue, numu, nuebar, numubar)
+	\item “cocktail” or “Fullosc” event
+	\item True neutrino baseline
+	\item Interaction type (CC, NC)
+	\item Interaction mode (QE, RES, COH, DIS)
+	\item Outgoing lepton energy
+	\item Outgoing lepton three-momentum
+	\item Number of Outgoing protons (Np)
+	\item Number of Outgoing pi+ (Npi+)
+	\item Number of Outgoing pi- (Npi-)
+	\item Number of Outgoing pi0 (Npi0)
+	\item Number of Outgoing other hadrons (ignore neutrons) (No)
+	\item Number of Outgoing other hadrons (include neutrons) (Non)
+	\item Number of Outgoing photons (with E$>$10 MeV) (Ng)
+	\item Outgoing p energy $<$Np$>$
+	\item Outgoing pi+ energy $<$Npi+$>$
+	\item Outgoing pi- energy $<$Npi-$>$
+	\item Outgoing pi0 energy $<$Npi0$>$
+	\item Outgoing other (ign. neutrons) energy $<$No$>$
+	\item Outgoing other (incl. neutrons) energy $<$Non$>$
+	\item Outgoing photon energy $<$Ng$>$
+	\item Outgoing photon three-momentumu $<$Ng$>$
+	\item Outgoing pi0 three-momentum $<$Npi0$>$
+	\item Outgoing other hadrons type $<$No$>$
+\end{itemize}
+Additional information needed to make the same cuts as the SBN proposal. Most of the additional cuts and analysis mentioned in the SBL are predominately reconstruction and detector related and thus, I believe, not directly outputtable from GENIE, (with the caveat we can probably calculate some) 
+\begin{itemize}
+	\item Lepton track length (estimable from outgoing lepton energy and three-momentum? no need for GEANT simulation?)
+	\item Conversion length of outgoing Photons (Again this isnt a GENIE parameter and would require GEANT or a rough estimate)
+	\item $dE/dx$ of electron like tracks
+\end{itemize}
+I assume we can essentially use the efficiencies quoted on these cuts rather than actually run our own detector simulation. 
+
+\section{Appendis B: Oscillation Probability Parameterisation}
+Although there is a standardized PMNS parameterisation for the 3$\nu$ paradigm, there is no such standard for 3+3 oscillations. If $R(\theta_{ij},\delta)$ represents a complex rotation between the $i^\text{th}$ and $j^\text{th}$ states with phase $\delta$, e.g
+\begin{equation*}
+	R(\theta_{13},\delta)  = 
+	\begin{pmatrix} 
+		\cos \theta_{13} & 0 & \sin \theta_{13} e^{-i \delta} \\
+		0 & 1 & 0 \\
+		-\sin \theta_{13} e^{i \delta} & 0 & \cos \theta_{13} \\
+	\end{pmatrix}
+\end{equation*}
+Then the standard $3\times3$ PMNS is written as $U_\text{PMNS}= R(\theta_{23},0).R(\theta_{13},\delta_{13}).R(\theta_{12},0)$. For the 3+1 neutrino model, however, there is 720 (not necessarily unique) permutations. When we restrict ourselves to permutations that require  $R(\theta_{23},0).R(\theta_{13},\delta_{13}).R(\theta_{12},0)$ to be in that order, ensuring we limit to the standard $3\time3$ matrix when we decouple the additional degrees of freedom, we are still left with 120 possible parameterisations (not including phases!). This problem grows factorially as we move to 3+3 neutrinos. However, as we are only dealing with electron appearance and muon disappearance, we can basically pick the simplest paramterisation so that these oscillation probabilities are neatest. Or, perhaps easier, stick to focusing on elements $\vert U_{\alpha i}\vert^2$.  
+\bibliographystyle{apsrev4-1}
+
+
+
+
+
+\end{document}
+
