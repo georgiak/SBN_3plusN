@@ -743,10 +743,8 @@ $1\sigma$ significance measure. I think we should at least switch it to
 $S/\sqrt{B} =2$ which is $2\sigma\approx 95\%$ in the Gaussian limit.}
 \newtext{PB}{I have done this and updated the plotting scripts.}
 
-\item \sout{Work out what has gone into the ``cut-less"
-plots.}\newtext{PB}{``Cut-less'' plots have weight factors set to 1.} Recompute
-for reasonable cuts? Vary the backgrounds according the cuts and Mark's
-estimates?
+\item Recompute sensitivities for reasonable cuts? Vary the backgrounds
+according the cuts and Mark's estimates?
 
 %\item \newtext{PB}{I have added the $(1+\alpha)$ scaling functionality. I only
 %ran one test... but it seems to work. I'll try to test more tomorrow.} 
@@ -765,31 +763,31 @@ at ratios of channels and ratios of events to see if we can get any (broken)
 degeneracies that could actually be interesting \emph{i.e} SNO style
 complementary measurements.
 
-\item \sout{Edit how the code deals with cuts and efficiency files.
-``--no-cuts" shouldn't need a dummy file of 1's. Maybe a flag ``--cuts-XXX``
-where XXX is either a file name, or ``none'' for which all is handled
-internally.} \newtext{PB}{Now there is a ``--cuts'' flag. ``--cuts=none'' or
-``-cuts none'' sets all weights to 1 internally. Or you can pass it a file name
-``--cuts=eff.dat'', which works as expected. Default is no cuts, but I've
-updated the scripts to have the right flags.}
+%\item \sout{Edit how the code deals with cuts and efficiency files.
+%``--no-cuts" shouldn't need a dummy file of 1's. Maybe a flag ``--cuts-XXX``
+%where XXX is either a file name, or ``none'' for which all is handled
+%internally.} \newtext{PB}{Now there is a ``--cuts'' flag. ``--cuts=none'' or
+%``-cuts none'' sets all weights to 1 internally. Or you can pass it a file name
+%``--cuts=eff.dat'', which works as expected. Default is no cuts, but I've
+%updated the scripts to have the right flags.}
 
-\item \sout{Write code for general $\Gamma$ for different final state
-particles.} \newtext{PB}{I've had a first pass at this. I didn't write new
-decay channels in the end, as I think we can just rescale things...  depending
-on how we choose to scale the $\Gamma$ with $U$ and $m$ (see below), we could
-change this later, but for now it seemed OK. Now there's a new command
-line argument which adds an extra Gamma to whichever channel you specify as well 
-as the total decay rate \emph{e.g.} \texttt{eventrate --mupi --extra-gamma 1e-18}
-adds a constant $1\times10^{-18}$ to the $\mu\pi$ channel and total rate (not
-double counting). When we write a function like \texttt{loop\_muon\_enhanced\_gamma()} we 
-can set this extra gamma to depend on $U$ or $m$ as we need.} 
+%\item \sout{Write code for general $\Gamma$ for different final state
+%particles.} \newtext{PB}{I've had a first pass at this. I didn't write new
+%decay channels in the end, as I think we can just rescale things...  depending
+%on how we choose to scale the $\Gamma$ with $U$ and $m$ (see below), we could
+%change this later, but for now it seemed OK. Now there's a new command
+%line argument which adds an extra Gamma to whichever channel you specify as well 
+%as the total decay rate \emph{e.g.} \texttt{eventrate --mupi --extra-gamma 1e-18}
+%adds a constant $1\times10^{-18}$ to the $\mu\pi$ channel and total rate (not
+%double counting). When we write a function like \texttt{loop\_muon\_enhanced\_gamma()} we 
+%can set this extra gamma to depend on $U$ or $m$ as we need.} 
 
 \item Write a section talking about the motivation for non-minimal extensions,
 specifically enhanced $\Gamma$. Discuss the breaking of the relationship
 between $\Gamma$, $U^2$ and $m_s$.  Make a reasonable suggestion for possible
 scaling behaviours of $\Gamma$ on $U^2$/$m_s$. Is it as boring as rewriting the
 minimal decay rate with $G_F$ replaced by a new constant that isn't suppressed
-by the $W$-mass? Or can you get different scaling behaviours from new physics?
+by the $W$-mass? Or can you get different scaling behaviours from new physics? \newtext{PB}{Let me know if you want to look at this today: 16 Feb.}
 
 \item Based on the point above: decide how we can make plots for this. How do
 we compute the bounds? I guess, the bounds are \emph{really} bounds on
@@ -821,9 +819,9 @@ channel correct?
 \item What can we do with enhanced decay(/production?) rates? Significant
 baseline dependence? Observable differences with SM signal (or does everything
 scale boringly)? How can we show this? I suspect that we cannot by introducing
-new physics argue that signals could exist in excluded parameter space. 
+new physics argue that signals could exist in excluded parameter space. \newtext{PB}{Let me know if you want to look at this today: 16 Feb.}
 
-\item Similar analysis for DUNE ND? Generic detector?
+\item Similar analysis for DUNE ND? Generic detector? \newtext{PB}{Let me know if you want to look at this today: 16 Feb.}
 
 \item If we go the GENIE route: make inflight's output LHE format.
 
