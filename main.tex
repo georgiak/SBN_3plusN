@@ -205,7 +205,7 @@ structure constant,
 \section{Simulation details}
 
 We have computed the fluxes and simulated event numbers for each beam and
-detector via a custom Monte Carlo program. The program allows efficiencies to
+detector via a custom Monte Carlo program. The program allows efficiency's to
 be taken into account due to experimental details of the detector and its
 capabilities in a fully correlated way between observables. 
 
@@ -235,7 +235,7 @@ e^{-\frac{\Gamma_\text{T}\lambda}{\gamma\beta}}\right)\frac{\Gamma_\text{c}}{\Ga
 where $\Gamma_\text{T}$ ($\Gamma_\text{c}$) denotes the rest-frame total decay
 width (decay width into channel $\text{c}$), $m$ the mass of the sterile
 neutrino, and $L$ ($\lambda$) the distance to (width of) the detector. The
-combination $\gamma\beta$ is the usual special relativisitic function of
+combination $\gamma\beta$ is the usual special relativistic function of
 velocities of the parent particle and provides the sole energy dependence of
 the expression
 %
@@ -409,19 +409,18 @@ cuts.} See \reffig{fig:ang_sep_E_total}.
  \hline \hline
 
 \end{tabular}
-\caption{\label{tab:Rates} A summary of the main sources of backgrounds for each channel studied, before cuts. }
+\caption{\label{tab:Rates} A summary of the main sources of backgrounds for each channel studied, before spectral and particle ID cuts are applied. }
 \end{table}
 
 
-For each channel studied in this analysis, we have implemented a model of the dominant backgrounds. The
-properties of these backgrounds will motivate our cuts. We will discuss the details of the modelling that we have performed in a channel-by-channel basis. The results of this rate only background analysis is summarized in Table (\ref{tab:Rates}) below. Here we focus on beam driven backgrounds, with the assumption that cosmogenic backgrounds are significantly less of an issue via timing and directional cuts. 
+For each channel studied in this analysis, we have implemented a model of the dominant processes contributing to the backgrounds. The properties of these backgrounds will motivate our cuts. We will discuss the details of the modelling that we have performed in a channel-by-channel basis. The number of expected background events before cuts is summarized in Table (\ref{tab:Rates}) above. Here we focus on beam driven backgrounds, with the assumption that cosmogenic backgrounds are significantly less of an issue via timing and directional cuts. 
 
 
 \subsubsection{$\nu_N \rightarrow \mu^\pm \pi^\mp$ }
 
-Pions produced inside \muboone\ will quickly decay into muons, which
+Pions produced inside the SBN LAr detectors will quickly decay into muons, which, if of low enough energy,
 subsequently decay into Michel electrons. We can expect this chain of decays to
-be well reconstructed in liquid argon, and the dominant backgrounds to the
+be well reconstructed in liquid argon if the pion and muon are contained, and the dominant backgrounds to the
 sterile decays we are interested in will be genuine $\pi$-lepton production
 associated with the neutrino beam. So-called CC1$\pi^+$ events are defined as
 the associated production of a charged pion from the standard CC process which
@@ -429,7 +428,7 @@ produces a lepton. This can happen by resonant production, where a nucleon is
 excited into an unstable state, for example into a $\Delta$, and the following
 decay produces a nucleon and a pion. Such decays are characterized by a
 a relatively isotropic spectrum due to the relatively mild boost of the resonant state
-\cite{Rein:1982pf}. There may be one or more protons or neutrons also emmited in these scattering events. 
+\cite{Rein:1982pf}. There may be one or more protons or neutrons also emitted in these scattering events. 
 
 Another contribution to the cross-section is from coherent
 scattering, where the neutrino scatters from the whole nucleus 
@@ -440,27 +439,27 @@ scattering, where the neutrino scatters from the whole nucleus
 These interactions tend to produce more forward decay products and will be another significant source of backgrounds. Cross-sections for these processes have been studied in MiniBooNE \cite{Wascko:2006tx} and \minerva\ \cite{Eberly:2014mra} and cross-sections appear to agree with Monte Carlo calculations based on the Rein-Sehgal model \cite{Rein:2006di, Rein:1982pf}. Such a low $Q^2$ process tends to favour daughter pions and muons that are forward going, kinematically very similar to decays in flight, as well as no observable nuclear activity. ArgoNeut analysis estimates the approximate number of events, for similar liquid argon technology to $\mu$BooNE \cite{Acciarri:2014eit}. For low energy neutrino beams, no events have been observed thus far, see SciBooNE \cite{Tanaka:2009ag} and high energy event rates are in accordance with what is expected, see NOMAD \cite{Kullenberg:2009pu}.
 
 \subsubsection{$\nu_N \rightarrow e^\pm \pi^\mp$ }
-If there is a non-zero $U_{e4}$ then the decay to electron and charged pion opens up when $m_\pi +m_e \leq m_N \leq m_K$. The expected numbers of $e \pi$ events in the SBN detectors is significantly smaller than that of the $\mu \pi$ channel, as the fraction of inherent $\nu_e$ in the BNB beam is of $\mathcal{O}(1\%)$ level. However, there will be additional backgrounds to the $e \pi$ channel from the dominant $\nu_\mu$ beam. CC $\nu_\mu$ events which contain an additional photon $(\mu+\gamma)$ could be mis-identified as an $(\pi e)$ decay provided the muon is of low energy and has a short track length. 
+If there is a non-zero $U_{e4}$ then the decay to electron and charged pion opens up when $m_\pi +m_e \leq m_N \leq m_K$. The expected numbers of $e \pi$ events in the SBN detectors is significantly smaller than that of the $\mu \pi$ channel, as the fraction of inherent $\nu_e$ in the BNB beam is of $\mathcal{O}(1\%)$ level. However, there will be additional backgrounds to the $e \pi$ channel from the dominant $\nu_\mu$ beam. CC $\nu_\mu$ events which contain an additional photon $(\mu+\gamma)$ could be mis-identified as an $(\pi e)$ decay provided the muon is of low energy and has a short track length.
 
 \subsubsection{$\nu_N \rightarrow \nu_\alpha e^+ e^-$ }
-A sufficiently boosted, and thus overlapping such that shower separation is not possible, $e^+e^-$ pair is indistinguishable from a converted photon in a LAr detector. The rate of energy loss of the $e^+e^-$, $dE\/dx$, would also match up with that of a pair-converted photon, meaning seperation is near impossible.  As such any process producing a lone stray photon is a possible source of backgrounds for this channel. The predominant source of this is the SBN detectors is the decay of a neutral pion in which a single photon is not resolved. This background, however, is relatively isotropic in distribution, in stark contrast to the very forward signal. We define all $e^+e^-$ pairs in which the angle of seperation between them $\leq 1^\circ$\cite{Spitz:2011wba}, as unresolvable and thus ``overlapping''. The majority of such overlapping events originate from low mass parent steriles, $\leq 50$ MeV.\\
+A sufficiently boosted, and thus overlapping such that shower separation is not possible, $e^+e^-$ pair is indistinguishable from a converted photon in a LAr detector. The rate of energy loss of the $e^+e^-$, $dE\/dx$, would also match up with that of a pair-converted photon, meaning separation is near impossible.  As such any process producing a lone stray photon is a possible source of backgrounds for this channel. The predominant source of this is the SBN detectors is the decay of a neutral pion in which a single photon is not resolved. This background, however, is relatively isotropic in distribution, in stark contrast to the very forward signal. We define all $e^+e^-$ pairs in which the angle of separation between them $\leq 1^\circ$\cite{Spitz:2011wba}, as unresolvable and thus ``overlapping''. The majority of such overlapping events originate from low mass parent steriles, $\leq 50$ MeV.\\
 	
 
-The opposite scenario also arises, in which both daughter electron have a well defined large separation and can cleanly be identified as two distinct electromagnetic showers. Here the majority background is CC $\nu_e$ interactions in which the electron is accompanied by a photon which is mis-identified as an electron, or a NC produced $\pi^0$ decay in which both of the underlying photons are mis-identified as electrons. As the majority of these events require mis-identification of one or more particles, combined with the requirement that there is little or no hadronic activity, means that the expected rates are significantly lower than that of the photon-like $e^+e^-$ sample.
+The opposite scenario also arises, in which both daughter electron have a well defined large separation and can cleanly be identified as two distinct single electron electromagnetic showers. Here the majority background is CC $\nu_e$ interactions in which the electron is accompanied by a photon which is mis-identified as an electron, or a NC produced $\pi^0$ decay in which both of the underlying photons are mis-identified as electrons. As there is little standard processes what produce high energy distinct $e^+e^-$ pairs, the backgrounds usually require mis-identification of one or more particles, combined with the requirement that there is little or no hadronic activity, means that the expected rates are significantly lower than that of the photon-like $e^+e^-$ sample.
 
 \subsubsection{$\nu_N \rightarrow \pi^0 \nu_\alpha$}
-Although a subdominant decay mode when steriles mix with electrons alone, when one considers non-zero $\vert U_{\mu4}\vert^2$ the branching ratio of $\nu_s \rightarrow \nu_\mu \pi^0$ becomes dominant for a mass window $\approx 140 \rightarrow 240$ MeV. Single neutral pions are produced in great numbers at the three SBN facilities, so the lack of any nuclear recoil is crucial in eliminating the majority of the incoherent neutral pion production background. The NC coherent pion production, however, does not contain any nuclear tracks and so will be an irreducible background for this channel.
+Although a sub-dominant decay mode when steriles mix with electrons alone, when one considers non-zero $\vert U_{\mu4}\vert^2$ the branching ratio of $\nu_s \rightarrow \nu_\mu \pi^0$ becomes dominant for a mass window $\approx 140 \rightarrow 240$ MeV. Single neutral pions are produced in great numbers at the three SBN facilities, so the lack of any nuclear recoil is crucial in eliminating the incoherent neutral pion production background. The NC coherent pion production, however, does not contain any nuclear tracks and so will be an irreducible background for this channel, up to spectral kinematics.
 
 \subsubsection{Non-Beam related backgrounds}
 Cosmogenic backgrounds are expected to be significantly smaller in comparison to beam related backgrounds. In the case of cosmic muons, Icarus expects to see approximately $2.5 \times 10^{6}$ cosmic events in the 211 second beam spill, and are reduced to approximately 5 events expected after utilizing the spill structure, scintillation light patterns and cuts on $\frac{d E}{d x}$ \cite{Antonello:2015lea}. Similarly for cosmic backgrounds to electron (photon) like signals 170 (146), 136 (88) and 498 (154) are expected at SBND, MicroBooNE and Icarus respectively, however, they are predominately in the low energy bins, $< 0.5$ GeV. Alongside this impressive cosmic rejection, our signal events are focused heavily along the beamline, hence we do not expect cosmics to be a major source of background to any channel are are not included in this analysis. Total flux uncertainties have little effect on the resultant sensitivities as shifts affects both signal and beam driven background equally. Cross-sectional uncertainties, however, have the potential to modify all beam related backgrounds while leaving the decay in flight signal unchanged and thus are an unavoidable source of uncertainty.
 
 
-As can be seen in Table \ref{tab:Rates}, he total numbers of background events expected in each channel can very large, up to $10^6$ $\mu+\pi$ evens in SBND. However, these numbers do not take any spectral or kinematic information into account. In order to provide a more accurate estimation we perform a full Monte-Carlo analysis of the expected backgrounds using the neurino event generator GENIE. This provides us with generator level information about the kinematics of the majority of the beam-driven backgrounds. Energy and angular smearing is then implemented to allow for approximate estimates of the effect of detector performance to the level necessary for this analysis, without the need for a full GEANT detector simiulation. Energies are smeared according to a gaussian distribution around their true MC energies, with a relative variance $\sigma_E/E = \xi/ \sqrt(E) $, where $\xi$ is a detector dependant resolution. For this study we take the energy resolution for EM showers, muons and protons to be 15\%, 6\% and a conservative 20\% respectively.
+As can be seen in Table \ref{tab:Rates}, he total numbers of background events expected in each channel can very large, up to $10^6$ $\mu+\pi$ evens in SBND. However, these numbers do not take any spectral or kinematic information into account. In order to provide a more accurate estimation we perform a full Monte-Carlo analysis of the expected backgrounds using the neutrino event generator GENIE. This provides us with generator level information about the kinematics of the majority of the beam-driven backgrounds. Energy and angular smearing is then implemented to allow for approximate estimates of the effect of detector performance to the level necessary for this analysis, without the need for a full GEANT detector simulation. Energies are smeared according to a Gaussian distribution around their true MC energies, with a relative variance $\sigma_E/E = \xi/ \sqrt(E) $, where $\xi$ is a detector dependant resolution. For this study we take the energy resolution for EM showers, muons and protons to be 15\%, 6\% and a conservative 20\% respectively.
 
-For the hadronic modes, $\nu_N \rightarrow e^\pm \pi^\mp$ and $\nu_N \rightarrow \mu^\pm \pi^\mp$, the majority of background rejection capability comes from four kinetic cuts. Exact efficiencies are given for a reference decaying 0.350 GeV sterile neutrino in MicroBooNE.
+For the hadronic modes, $\nu_N \rightarrow e^\pm \pi^\mp$ and $\nu_N \rightarrow \mu^\pm \pi^\mp$, the majority of background rejection capability comes from four kinetic cuts. Exact efficiency's are given for a reference decaying 0.350 GeV sterile neutrino in MicroBooNE.
 
 \begin{enumerate}
-	\item {\bf Hadronic Activity.} Of upmost importance to distinguishing signal and background is the identification of a scattering vertex. Any hadronic activity localised at the leptonic begining of the lepton track is a smoking gun signal for beam related scattering from deep-inelastic or quasi-elastic scattering. Therefore any event containing one or more reconstructed protons or additional hadrons is rejected outright. For counting this proton multiplicity we assume an detection threshold of 21 MeV on proton kinetic energy in liquid Argon, after smearing.
+	\item {\bf Hadronic Activity.} Of up most importance to distinguishing signal and background is the identification of a scattering vertex. Any hadronic activity localized at the leptonic beginning of the lepton track is a smoking gun signal for beam related scattering from deep-inelastic or quasi-elastic scattering. Therefore any event containing one or more reconstructed protons or additional hadrons is rejected outright. For counting this proton multiplicity we assume an detection threshold of 21 MeV on proton kinetic energy in liquid Argon, after smearing.
 	\item {\bf Forwardness Cut.} Both the lepton and pion produced from such heavy sterile decays tend to both be very forward in the lab frame. In contrast, a large fraction of scattering backgrounds are significantly more isotropic in their distribution. Therefore a cut on both lepton and pion emission angles to be within $20^\circ$ of the beamline is applied.
 	\item {\bf Invariant Mass Cut.} The invariant mass of the lepton pion pair, $M_{l^\pm \pi^\mp}^2=m_l^2+m_{p^\pm}^2+ 2(E_l E_\pi - |P_l||P_\pi|\cos\theta_\text{sep})$, will sum to that of the the parent sterile (within detector resolution), where as the background is expected form a dropping continuum spectra. We therefore cut on any events whose invariant mass is outside a 20 MeV window surrounding the parent sterile mass.
 	\item {\bf Pion Energy Cut.} Finally sterile decays in flight tends to favour the production of correlated high energy pions and leptons, with less asymmetry between their energies than CC scattering events which peak at low energy pions. We implement a low energy cut on the sum of pion and lepton of $E_{\pi^\mp}+E_{l^\pm} \geq 1$ GeV.
@@ -473,7 +472,7 @@ For the three body mode $\nu_N \rightarrow \nu_\alpha e^+ e^-$, as well as the N
 \begin{figure}[t]
 \center
 \includegraphics[width=0.7\textwidth]{figures/cuts.pdf}
-\caption{\label{fig:cuts} The effect on the background spectra and rate in MicroBooNE to the four main kinetic cuts used to distinguish beam driven scattering events from the decay of a heavy sterile. Also overlayed is the expected signal from the decay of a 350 MeV sterile to $\mu^\pm \pi^\mp$ normalised to 100 events.}
+\caption{\label{fig:cuts} The effect on the background spectra and rate in MicroBooNE to the four main kinetic cuts used to distinguish beam driven scattering events from the decay of a heavy sterile. Also overlayed is the expected signal from the decay of a 350 MeV sterile to $\mu^\pm \pi^\mp$ normalized to 100 events.}
 \end{figure}
 
 
@@ -552,7 +551,7 @@ Also, the ee flux isn't quite right for a reason I forget at the moment.}
 \includegraphics[width=1.0\textwidth,clip,trim=0 20 300 15]{figures/icarus_all_panels_ue4.pdf}
 
 \caption{\label{fig:no_cuts_scaled_bkg_ue4_only}The sensitivity contours based on the total
-	number of events, assuming only mixing with the electron neutrio ( $\vert U_{\mu 4}\vert^2=\vert U_{\tau 4}\vert^2=0$), without cuts but with varying degrees of background
+	number of events, assuming only mixing with the electron neutrino ( $\vert U_{\mu 4}\vert^2=\vert U_{\tau 4}\vert^2=0$), without cuts but with varying degrees of background
 suppression. We overlay the 95\% exclusion regions for $U^2$ and $m_s$ from
 previous experimental work.}
 
@@ -704,7 +703,7 @@ incorporating MeV scale sterile neutrinos \newtext{PB}{True?}.
 
 %\item \sout{Add $\nu_e$ flux to \emph{flux.c}.}
 
-\item Actually compute a $95\%$ CL exlusion region for a fair comparison with
+\item Actually compute a $95\%$ CL exclusion region for a fair comparison with
 bounds. \newtext{PB}{See comment directly below. (This isn't a total
 solution... but I spent a while reading about how to do this properly and I
 think it's pretty defensible. Perhaps more so than what we would do with
@@ -729,7 +728,7 @@ estimates?
 %assuming the minimal extension \emph{is} pretty conservative for theorists.}}
 %\newtext{PB}{I think we agreed to just do this.}
 
-\item Turn on $U_{\tau 4}$,$U_{\mu 4}$ and $U_{e4}$ simultaneously. Aslo look
+\item Turn on $U_{\tau 4}$,$U_{\mu 4}$ and $U_{e4}$ simultaneously. Also look
 at ratios of channels and ratios of events to see if we can get any (broken)
 degeneracies that could actually be interesting \emph{i.e} SNO style
 complementary measurements.
@@ -770,12 +769,12 @@ Make the data. Make the plots.
 \item \sout{Can prob be used to fudge a bound scaling? i.e for PS191.}
 \newtext{MARK}{In the end I felt it easiest to just add PS191 as a new detector
 in the code. This was it is easy to call for probability shifts, and gives us a
-CHECK if we can reporduce the known bounds somewhat.  --using-ps191 with the
+CHECK if we can reproduce the known bounds somewhat.  --using-ps191 with the
 CHAN\_FLAG of 4.  This "Detector" has correct POT, dimensions, baseline ..etc..
 although the associated flux is assuming the BNB beam (which is wrong, but
 probably not insanely wrong). I also wrote two new functions to call the upper
 and lower 90\% C.L bounds from an experiment, given the observed bound.
-ALthough currently bounds are done out of code in the plotting scripts, needs
+Although currently bounds are done out of code in the plotting scripts, needs
 to be updated then. }
 
 \item \newtext{PB}{I have added the $(1+\alpha)$ scaling functionality. I only
@@ -784,14 +783,26 @@ ran one test... but it seems to work. I'll try to test more tomorrow.}
 \item \sout{PS191 replicate the bounds.} \newtext{MARK}{Consistently a factor of $\approx 100$ off. What Ive checked. Fluxes seem good. We are using same $\Gamma_{\nu ee}$, up to I integral. POT is good. L, and $\lambda$ as well as other dimensions seem good. Hmm. Effect is really only in $\vert U_{\mu 4}\vert^2$ and not electron, checking meson-BR. Not meson-Br. FIXED! although still $\approx 50$ off. Lets say conservative.} 
 	We are still missing that factor of 50. Total decay rate is irrelavent, only channel is important. is channel correct?
 
+\item Generating the electron and electron-like signal, as well as simpley more stats \newtext{MARK}{working on this}
 
+\item Interesting ways to compare baseline for different signals and backgrounds. See figure \ref{fig:baseline_comp} below.
 
 	\end{enumerate}
+
+	
 \begin{figure}[t]
 \center
 \includegraphics[width=1.0\textwidth]{figures/zerobg_um4_ps191_test.pdf}
 \caption{The results of a PS191 run test, flux less certain.}
 \end{figure}
+
+	
+\begin{figure}[t]
+\center
+\includegraphics[width=0.7\textwidth]{figures/baseline_comp.pdf}
+\caption{\label{fig:baseline_comp} Assuming MicroBooNE sees 100 events excess, what would SBND and ICARUS see if the 100 events was truely a background event, an oscillating sterile of 0.1 $\text{eV}^2$, 1  $\text{eV}^2$ or 10 $\text{eV}^2$ or a decaying 100 MeV sterile n flight. }
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
