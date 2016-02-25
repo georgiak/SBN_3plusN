@@ -510,6 +510,8 @@ For the three body mode $\nu_N \rightarrow \nu_\alpha e^+ e^-$, as well as the N
 
 \section{Sensitivities}
 
+\subsection{Minimal extension}
+
 In \reffig{fig:no_cuts_no_bkg} we show the sensitivity when cuts are omitted
 for backgroundless searches. This corresponds to the most optimistic case:
 there are no cuts (weight factors are set to $1$, not even taking into account
@@ -582,22 +584,87 @@ previous experimental work.}
 \end{figure}
 
 
-\subsubsection{Beyond the Minimal Model}
+
+\subsection{Beyond the Minimal Model}
 
 All previous work assumed the minimal extension of one extra sterile degree of
 freedom, with no additional physics such that the only decays allowed are
-standard model weak processes with an active mixing scaling. Beyond this there
-are many extensions worth considering, if the sterile sector is charged under a
-new gauge symmetry, e.g $U(1)'$, then the total decay rate can be significantly
-modified. Additional new particle content that couples strongly with the sterile
-states can also drastically change the expected rate with respect to the minimal
-extension, as well as open up entirely new decay channels, such as the possible
-radioactive decay $\nu_N \rightarrow \nu_\alpha \gamma$, which can also be probed
-at the SBN and provides a window to searches for large sterile magnetic
-moments. In order to facilitate the search for new physics we provide results
-in terms of a total scaling $\Gamma$, of each decay channel of interest. We
-retain the functional dependence on sterile mass as in the minimal, bounding
-$\Gamma \vert U_{\alpha 4}\vert^2$. \\
+standard model weak processes with an active mixing scaling. 
+%
+In this model, all interactions of the mostly sterile mass state are produced
+by neutrino mass mixing. If the fermion bilinears are removed from the
+Lagrangian, the sterile decouples and all (non gravational) observable effects
+vanish. An important feature of this model is the all or nothing approach to
+decay rates: there is a single parameter, the mixing between the active states
+and the mostly-sterile mass state, which dictates the magnitude of all the
+decay rates. This is a great asset when trying to constrain the  minimal model,
+for example it allows us to place bounds on the observation of $N\to \pi^0 \nu$
+despite no experiment to-date reporting the results of such a search. 
+%
+While this model is minimal in it assumes no new fields or dynamics beyond the
+single particle added at observable scales and its renormalizable interactions,
+there is no theoretically appealing mechanism to explain a neutral fermion with
+a mass below the electroweak scale as well as the sizes of neutrino masses
+without the presence of heavier fields in the neutrino sector. The natural
+consequence of decoupling these heavy particles would be to generate
+non-renormalizable operators which allow for a richer phenomenology for the
+intermediate scale sterile than the terms in the minimal extension. Therefore it 
+seems relevant to consider models where the minimal interactions produced by 
+mass-mixing are supplemented by other operators leading to potentially 
+higher decay rates.
+
+In this scenario, the minimal couplings are always present. Therefore, without
+suspicious cancellations between the mixing-derived and higher-dimensional
+contributions to a decay, the non-observation of a signal in a given decay
+channel tells us that the event rate is less than or equal to the bound
+produced in the minimal model. The process may still be driven by new physics,
+and accordingly we would interpret the factor $U^2$ differently, but the total
+rate is bounded in a robust way. However, in the most general extension of the
+$\nu$SM we must allow for some decays to be enhanced to a greater extent than
+others. This could break the correlation between decay rates present in the
+minimal model, and in the case that we are using one channel \emph{e.g.} $N\to
+e^+e^-$ to bound another which has not been directly constrained \emph{e.g.}
+$N\to\nu\pi^0$, the bounds on the unobserved channel are potentially violated 
+and detectable signals could be present.
+
+For the reasons discussed so far, we believe it is relevant to place bounds on
+the possible decays of a neutral fermion in an extended scheme which allows for
+arbitrary decay rates to visible particles (within the bounds of perturbativity
+and other conventional model building constraints).
+%
+In this section we will consider the possibility of enlarged neutral current
+decay rates for the mostly-sterile fermion. In this scenario, the production of
+the novel fermion will be largely unaffected by the new physics: heavy states
+will be produced in the beam from meson decay via the flavour off-diagonal
+charged current interactions as usual. However, we allow for an arbitrary rate
+of decay for the three channels
+%
+\[  \Gamma_{\gamma\nu},\qquad \Gamma_{e^+e^-}\qquad \text{and} \qquad
+\Gamma_{\pi^0\nu}. \]
+%
+ When considering enlarged decay rates, we must be careful with existing bounds
+on the model, as an enlarged decay rate would affect all prior beam dump
+experiments in the same way until the point where baseline dependence becomes
+significant. 
+
+
+%In order to facilitate the search for new physics we provide results in terms
+%of a total scaling $\Gamma$, of each decay channel of interest. We retain the
+%functional dependance on sterile mass as in the minimal, bounding $\Gamma \vert
+%U_{\alpha 4}\vert^2$. \\
+
+%standard model weak processes with an active mixing scaling. Beyond this there
+%are many extensions worth considering, if the sterile sector is charged under a
+%new gauge symmetry, e.g $U(1)'$, then the total decay rate can be significantly
+%modified. Additional new particle content that couples strongly with the sterile
+%states can also drastically change the expected rate with respect to the minimal
+%extension, as well as open up entirely new decay channels, such as the possible
+%radioactive decay $\nu_N \rightarrow \nu_\alpha \gamma$, which can also be probed
+%at the SBN and provides a window to searches for large sterile magnetic
+%moments. In order to facilitate the search for new physics we provide results
+%in terms of a total scaling $\Gamma$, of each decay channel of interest. We
+%retain the functional dependence on sterile mass as in the minimal, bounding
+%$\Gamma \vert U_{\alpha 4}\vert^2$. \\
 
 If there was an enhancement of $\alpha$ in a single channel, $\Gamma_c$, such
 that the total decay width becomes $\Gamma_\text{tot} =
@@ -673,7 +740,6 @@ and detector. }
 %
 \end{figure}
 
-
 One of the conventional ways to explain an excess of events at a short baseline
 neutrino experiment is through sterile neutrino oscillations. The rates
 predicted at three different detectors depend crucially on the respective
@@ -689,8 +755,6 @@ the baseline dependence of the flux.  The four lines for each detector show the
 100\%, 75\%, 50\% and 25\% contours (where the further detector sees fewer
 events). Such decay rates are forbidden in the minimal extension of the SM
 incorporating MeV scale sterile neutrinos \newtext{PB}{True?}.  
-
-
 
 \section{Conclusions}
 \lorem\lorem
@@ -725,10 +789,11 @@ $1\sigma$ significance measure. I think we should at least switch it to
 $S/\sqrt{B} =2$ which is $2\sigma\approx 95\%$ in the Gaussian limit.}
 \newtext{PB}{I have done this and updated the plotting scripts.}
 
-\item \sout{Work out what has gone into the ``cut-less"
-plots.}\newtext{PB}{``Cut-less'' plots have weight factors set to 1.} Recompute
-for reasonable cuts? Vary the backgrounds according the cuts and Mark's
-estimates?
+\item Recompute sensitivities for reasonable cuts? Vary the backgrounds
+according the cuts and Mark's estimates?
+
+%\item \newtext{PB}{I have added the $(1+\alpha)$ scaling functionality. I only
+%ran one test... but it seems to work. I'll try to test more tomorrow.} 
 
 %\item \sout{Play about with baseline distance? \newtext{MARK}{What can we
 %really say here, if we limit to "standard" mixing picture  then there isnt a
@@ -744,31 +809,31 @@ at ratios of channels and ratios of events to see if we can get any (broken)
 degeneracies that could actually be interesting \emph{i.e} SNO style
 complementary measurements.
 
-\item \sout{Edit how the code deals with cuts and efficiency files.
-``--no-cuts" shouldn't need a dummy file of 1's. Maybe a flag ``--cuts-XXX``
-where XXX is either a file name, or ``none'' for which all is handled
-internally.} \newtext{PB}{Now there is a ``--cuts'' flag. ``--cuts=none'' or
-``-cuts none'' sets all weights to 1 internally. Or you can pass it a file name
-``--cuts=eff.dat'', which works as expected. Default is no cuts, but I've
-updated the scripts to have the right flags.}
+%\item \sout{Edit how the code deals with cuts and efficiency files.
+%``--no-cuts" shouldn't need a dummy file of 1's. Maybe a flag ``--cuts-XXX``
+%where XXX is either a file name, or ``none'' for which all is handled
+%internally.} \newtext{PB}{Now there is a ``--cuts'' flag. ``--cuts=none'' or
+%``-cuts none'' sets all weights to 1 internally. Or you can pass it a file name
+%``--cuts=eff.dat'', which works as expected. Default is no cuts, but I've
+%updated the scripts to have the right flags.}
 
-\item \sout{Write code for general $\Gamma$ for different final state
-particles.} \newtext{PB}{I've had a first pass at this. I didn't write new
-decay channels in the end, as I think we can just rescale things...  depending
-on how we choose to scale the $\Gamma$ with $U$ and $m$ (see below), we could
-change this later, but for now it seemed OK. Now there's a new command
-line argument which adds an extra Gamma to whichever channel you specify as well 
-as the total decay rate \emph{e.g.} \texttt{eventrate --mupi --extra-gamma 1e-18}
-adds a constant $1\times10^{-18}$ to the $\mu\pi$ channel and total rate (not
-double counting). When we write a function like \texttt{loop\_muon\_enhanced\_gamma()} we 
-can set this extra gamma to depend on $U$ or $m$ as we need.} 
+%\item \sout{Write code for general $\Gamma$ for different final state
+%particles.} \newtext{PB}{I've had a first pass at this. I didn't write new
+%decay channels in the end, as I think we can just rescale things...  depending
+%on how we choose to scale the $\Gamma$ with $U$ and $m$ (see below), we could
+%change this later, but for now it seemed OK. Now there's a new command
+%line argument which adds an extra Gamma to whichever channel you specify as well 
+%as the total decay rate \emph{e.g.} \texttt{eventrate --mupi --extra-gamma 1e-18}
+%adds a constant $1\times10^{-18}$ to the $\mu\pi$ channel and total rate (not
+%double counting). When we write a function like \texttt{loop\_muon\_enhanced\_gamma()} we 
+%can set this extra gamma to depend on $U$ or $m$ as we need.} 
 
 \item Write a section talking about the motivation for non-minimal extensions,
 specifically enhanced $\Gamma$. Discuss the breaking of the relationship
 between $\Gamma$, $U^2$ and $m_s$.  Make a reasonable suggestion for possible
 scaling behaviours of $\Gamma$ on $U^2$/$m_s$. Is it as boring as rewriting the
 minimal decay rate with $G_F$ replaced by a new constant that isn't suppressed
-by the $W$-mass? Or can you get different scaling behaviours from new physics?
+by the $W$-mass? Or can you get different scaling behaviours from new physics? \newtext{PB}{Let me know if you want to look at this today: 16 Feb.}
 
 \item Based on the point above: decide how we can make plots for this. How do
 we compute the bounds? I guess, the bounds are \emph{really} bounds on
