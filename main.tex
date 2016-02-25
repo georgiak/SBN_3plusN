@@ -495,6 +495,17 @@ For the three body mode $\nu_N \rightarrow \nu_\alpha e^+ e^-$, as well as the N
 \end{table}
 
 
+\section{Beam Timing}
+
+\begin{figure}[t]
+\center
+\includegraphics[width=\textwidth]{figures/timing.pdf}
+\caption{\label{fig:timing} Better write something here eventually}
+\end{figure}
+
+
+
+
 
 
 \section{Sensitivities}
@@ -787,9 +798,35 @@ ran one test... but it seems to work. I'll try to test more tomorrow.}
 
 \item Interesting ways to compare baseline for different signals and backgrounds. See figure \ref{fig:baseline_comp} below.
 
+
+
+
+
+\item Just a small note to (maybe?) clarify the situation involving the two body decay kinematics. I noticed that when the particle is massless I couldnt not get any sort of maximum or minimum in the lab frame angle. However, I wasn't sure that the two effects are exactly related (the rounded curve and the spikes to 0 angle) so I looked at the massive daughter case. So looking at $\pi^+ \rightarrow a+b$, with $m_a$ small but non-zero, and stared componants in the rest-frame of the pion.
+	\begin{align}
+		P_a &= (E_a, |p_a| \sin \theta, 0, |p_a| \cos\theta ) \\
+		    &=(\gamma E_a^*+ \beta_\pi \gamma |p_a^*| \cos \theta^*, -,-,\gamma \beta_\pi E_a^* + \gamma |p_a^*| \cos \theta^*)
+	\end{align}
+	so we can construct the lab frame angle, with $\beta_a = |p_a^*|/E_a^* \approx 1 - \epsilon$, 
+	\begin{align}
+		\cos \theta &= \frac{\beta_\pi+\beta_a \cos \theta^*}{1+\beta_\pi \beta_a \cos \theta^*} \\
+							       &= \frac{c^*+\beta_\pi}{1+c^* \beta_\pi}+\epsilon \frac{c^*(-1+\beta_\pi^2)}{(1+c^* \beta_\pi)^2} + \mathcal{O}(\epsilon^2)
+	\end{align}
+	Varying the the rest frame angle we see the maximum and minumum angles in the lab frame are given by $\theta^* = -1$ and $1$ 
+	\begin{align}
+		\cos \theta^{\text(max,min)} &=  \frac{\beta_\pi \pm \beta_a }{1 \pm \beta_\pi \beta_a} \\
+	\end{align}
+	Please see figure \ref{fig:boost} for the basic results. This gives a pretty good reason as to why there is a minimum angle. However, it does not help with the arms and angles when there is a large massive particle. 
+
 	\end{enumerate}
 
-	
+\begin{figure}[t]
+\center
+\includegraphics[width=1.0\textwidth]{figures/angles_boost.pdf}
+\caption{\label{fig:boost} Allowed angles in the decay $m_\pi \rightarrow a+b$ for $m_a 30$ MeV and $m_a=m_e$. In the limit of $m_a \rightarrow 0$ the entire $\beta_\pi - \theta_a$ plane is covered, which is pretty much what we were calculating today!   .}
+\end{figure}
+
+
 \begin{figure}[t]
 \center
 \includegraphics[width=1.0\textwidth]{figures/zerobg_um4_ps191_test.pdf}
