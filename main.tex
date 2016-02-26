@@ -74,11 +74,23 @@ between the different beam lines and detector technologies.
 \maketitle
 
 \section{Introduction}
-The Fermilab SBN program \cite{Antonello:2015lea} will comprise of a number of detectors in the Booster Neutrino Beam (BNB): SBND (previously known as LAr1-ND) at 110m from the target, \muboone\ at 470m and ICARUS-T600 at 600m. All three detectors are filled with Liquid Argon (LAr) giving unprecedented reconstruction and particle identification capabilities allowing for significantly lower backgrounds that predecessor technologies. The reconstruction and particle ID capability of LAr technology means the SBN program provides an ideal scenario to study the decay in flight of sterile neutrinos, a job which has traditionally been left for low-mass detectors which had corresponding low beam related backgrounds. 
+
+The Fermilab SBN program \cite{Antonello:2015lea} will comprise of a number of
+detectors in the Booster Neutrino Beam (BNB): SBND (previously known as
+LAr1-ND) at 110m from the target, \muboone\ at 470m and ICARUS-T600 at 600m.
+All three detectors are filled with Liquid Argon (LAr) giving unprecedented
+reconstruction and particle identification capabilities allowing for
+significantly lower backgrounds that predecessor technologies. The
+reconstruction and particle ID capability of LAr technology means the SBN
+program provides an ideal scenario to study the decay in flight of sterile
+neutrinos, a job which has traditionally been left for low-mass detectors which
+had corresponding low beam related backgrounds. 
 
 In addition to events arising from the BNB, the detectors of the SBN complex
 will also collect events associated with the NuMI beam, currently being used in
-the NO$\nu$A, MINER$\nu$A and MINOS+ experiments. This beam is off-axis with respect to the SBN detectors leading to significant kinematic differences.
+the NO$\nu$A, MINER$\nu$A and MINOS+ experiments. This beam is off-axis with
+respect to the SBN detectors leading to significant kinematic differences.
+
 \section{Sterile neutrino decay}
 
 Generically, a gauge-singlet fermion will be unobservable by all
@@ -149,8 +161,15 @@ at higher energies, where the neutral fermions can be produced by decays of
 charmed mesons such as $D^\pm$, by the SHiPS experiment \cite{}.
  
 \begin{figure}[t]
-\includegraphics[width=0.49\textwidth]{figures/bounds1.pdf}  \includegraphics[width=0.49\textwidth]{figures/bounds2.pdf}
-\caption{\label{fig:branchingratios}The branching ratios for sterile neutrino decays in the minimal 3 sterile SM extension. The left panel assumes equal mixing with all active flavours, whilst the right panel assumes a flavour hierarchical scheme where only the mixing with $\nu_e$ is important.}
+%
+\includegraphics[width=0.49\textwidth]{figures/bounds1.pdf}
+\includegraphics[width=0.49\textwidth]{figures/bounds2.pdf}
+%
+\caption{\label{fig:branchingratios}The branching ratios for sterile neutrino
+decays in the minimal 3 sterile SM extension. The left panel assumes equal
+mixing with all active flavours, whilst the right panel assumes a flavour
+hierarchical scheme where only the mixing with $\nu_e$ is important.}
+%
 \end{figure}
 
 We highlight four decays in our study, which have the largest branching ratios
@@ -865,26 +884,22 @@ ran one test... but it seems to work. I'll try to test more tomorrow.}
 
 \item Interesting ways to compare baseline for different signals and backgrounds. See figure \ref{fig:baseline_comp} below.
 
-
-
-
-
-\item Just a small note to (maybe?) clarify the situation involving the two body decay kinematics. I noticed that when the particle is massless I couldnt not get any sort of maximum or minimum in the lab frame angle. However, I wasn't sure that the two effects are exactly related (the rounded curve and the spikes to 0 angle) so I looked at the massive daughter case. So looking at $\pi^+ \rightarrow a+b$, with $m_a$ small but non-zero, and stared componants in the rest-frame of the pion.
-	\begin{align}
-		P_a &= (E_a, |p_a| \sin \theta, 0, |p_a| \cos\theta ) \\
-		    &=(\gamma E_a^*+ \beta_\pi \gamma |p_a^*| \cos \theta^*, -,-,\gamma \beta_\pi E_a^* + \gamma |p_a^*| \cos \theta^*)
-	\end{align}
-	so we can construct the lab frame angle, with $\beta_a = |p_a^*|/E_a^* \approx 1 - \epsilon$, 
-	\begin{align}
-		\cos \theta &= \frac{\beta_\pi+\beta_a \cos \theta^*}{1+\beta_\pi \beta_a \cos \theta^*} \\
-							       &= \frac{c^*+\beta_\pi}{1+c^* \beta_\pi}+\epsilon \frac{c^*(-1+\beta_\pi^2)}{(1+c^* \beta_\pi)^2} + \mathcal{O}(\epsilon^2)
-	\end{align}
-	Varying the the rest frame angle we see the maximum and minumum angles in the lab frame are given by $\theta^* = -1$ and $1$ 
-	\begin{align}
-		\cos \theta^{\text(max,min)} &=  \frac{\beta_\pi \pm \beta_a }{1 \pm \beta_\pi \beta_a} \\
-	\end{align}
-	Please see figure \ref{fig:boost} for the basic results. This gives a pretty good reason as to why there is a minimum angle. However, it does not help with the arms and angles when there is a large massive particle. 
-
+%\item Just a small note to (maybe?) clarify the situation involving the two body decay kinematics. I noticed that when the particle is massless I couldnt not get any sort of maximum or minimum in the lab frame angle. However, I wasn't sure that the two effects are exactly related (the rounded curve and the spikes to 0 angle) so I looked at the massive daughter case. So looking at $\pi^+ \rightarrow a+b$, with $m_a$ small but non-zero, and stared componants in the rest-frame of the pion.
+%	\begin{align}
+%		P_a &= (E_a, |p_a| \sin \theta, 0, |p_a| \cos\theta ) \\
+%		    &=(\gamma E_a^*+ \beta_\pi \gamma |p_a^*| \cos \theta^*, -,-,\gamma \beta_\pi E_a^* + \gamma |p_a^*| \cos \theta^*)
+%	\end{align}
+%	so we can construct the lab frame angle, with $\beta_a = |p_a^*|/E_a^* \approx 1 - \epsilon$, 
+%	\begin{align}
+%		\cos \theta &= \frac{\beta_\pi+\beta_a \cos \theta^*}{1+\beta_\pi \beta_a \cos \theta^*} \\
+%							       &= \frac{c^*+\beta_\pi}{1+c^* \beta_\pi}+\epsilon \frac{c^*(-1+\beta_\pi^2)}{(1+c^* \beta_\pi)^2} + \mathcal{O}(\epsilon^2)
+%	\end{align}
+%	Varying the the rest frame angle we see the maximum and minumum angles in the lab frame are given by $\theta^* = -1$ and $1$ 
+%	\begin{align}
+%		\cos \theta^{\text(max,min)} &=  \frac{\beta_\pi \pm \beta_a }{1 \pm \beta_\pi \beta_a} \\
+%	\end{align}
+%	Please see figure \ref{fig:boost} for the basic results. This gives a pretty good reason as to why there is a minimum angle. However, it does not help with the arms and angles when there is a large massive particle. 
+%
 	\end{enumerate}
 
 \begin{figure}[t]
