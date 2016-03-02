@@ -48,18 +48,18 @@ id est laborum.}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\title{MeV mass sterile neutrino decay at the Fermilab Short-Baseline Neutrino complex}
+\title{MeV sterile neutrino decay at the Fermilab Short-Baseline Neutrino complex}
 
-\author{One}
-\author{Two}
-\author{Three}
+\author{Peter Ballett,}
+\author{Silvia Pascoli}
+\author{and Mark Ross-Lonergan}
 
 \affiliation{Institute for Particle Physics Phenomenology, Department of
 Physics, Durham University, South Road, Durham DH1 3LE, United Kingdom}
 
-\emailAdd{one@durham.ac.uk}
-\emailAdd{two@durham.ac.uk}
-\emailAdd{three@durham.ac.uk}
+\emailAdd{peter.ballett@durham.ac.uk}
+\emailAdd{silvia.pascoli@durham.ac.uk}
+\emailAdd{mark.ross-lonergan@durham.ac.uk}
 
 \abstract{
 %
@@ -70,8 +70,8 @@ the SBN can be expected to place on the parameter spaces of these models,
 finding that we can in many cases extend the current bounds whilst, due to the
 strong particle identification capabilities of liquid-Argon technology, placing
 bounds on as yet unconstrained channels. A particular focus of our work is the
-interplay between the three detectors, and how this can be used to distinguish
-between models if excess is seen.}
+interplay between the three detectors, and how if an excess is seen, this can
+be used to distinguish between backgrounds and signals in competing models.}
 
 \begin{document} 
 
@@ -90,88 +90,92 @@ and see what can be learnt from the neutrino sector about the structure of BSM
 physics.
 
 Not all models, however, lend themselves to experimental searches. For example,
-the canonical Type-I see-saw suggests the existence of new particles with
-masses around $10^{15}$ GeV, well out of reach of modern experimental
-techniques. One observable feature of some models is the presence of novel
-fermionic singlets of the SM gauge group, which we shall refer to as sterile
-neutrinos. These will generically mix with the `active' neutrinos of the SM and
-could alter neutrino phenomenology at observable scales. 
+the canonical Type-I see-saw \cite{Minkowski:1977sc, GellMann:1980vs,
+Mohapatra:1979ia} suggests the existence of new particles with masses around
+$10^{12}$--$10^{15}$ GeV, well out of reach of modern experimental techniques. One
+observable feature of some models is the presence of novel fermionic singlets
+of the SM gauge group, which we shall refer to as sterile neutrinos. These will
+generically mix with the `active' neutrinos of the SM and could alter neutrino
+phenomenology at observable scales. 
 %
 A well known example of such an effect is the short-baseline disappearance
-signature of a sterile neutrino with a mass around the eV scale. Such a state
-would produce oscillatory effects over short distances and has been invoked to 
-solve the anomalies found at some short-baseline oscillation experiments. Explaining
-all anomalies in an economical fashion appears challenging in these models,
-but more data would be needed before a decision can be made as to their role
-in the neutrino sector.
+signature associated with a sterile neutrino with a mass around the eV scale. Such a state
+would produce oscillatory effects over short distances and has been invoked to
+solve the anomalies found at some short-baseline oscillation experiments.
+Explaining all anomalies in an economical fashion appears challenging in these
+models, but more data would be needed before a decision can be made as to their
+role in the neutrino sector.
 
 In this article, we study a complementary paradigm to the oscillatory sterile
 neutrino models where sterile neutrinos exist, are produced in neutrino beams,
 but have masses sufficiently large to prevent oscillatory effects with the
-active neutrinos through loss of coherence. Due to the presence of mixing
-effects, these particles are not expected to be stable in the most general
-theory, and their subsequent decays have been enumerated and searched for in 
-many previous experiments.
-
-In this paper, we consider the role of the Fermilab SBN programme
+active neutrinos through loss of coherence (see \eg\ \refref{Akhmedov:2009rb}).
+Due to the presence of mixing effects, these particles are not expected to be
+stable in the most general theory, and their subsequent decays have been
+enumerated \cite{Atre:2009rg} and searched for in many previous experiments.
+%
+We will focus on the role of the Fermilab SBN programme
 \cite{Antonello:2015lea} for the search for sterile neutrinos of this type.
 %
-The experimental facility comprises of three detectors 
-placed in the Booster Neutrino Beam (BNB): SBND (previously known as
-LAr1-ND) at 110m from the target, \muboone\ at 470m and Icarus-T600 at 600m.
-All three detectors are filled with Liquid Argon (LAr) giving unprecedented
-reconstruction and particle identification capabilities allowing for
-significantly lower backgrounds that predecessor technologies. The
-reconstruction and particle ID capability of LAr technology means the SBN
-program provides an ideal scenario to study the decay in flight of sterile
-neutrinos, a job which has traditionally been left for low-mass detectors which
-had corresponding low beam related backgrounds. 
-
-\newtext{PB}{In addition to events arising from the BNB, the detectors of the
-SBN complex will also collect events associated with the NuMI beam, currently
-being used in the NO$\nu$A, MINER$\nu$A and MINOS+ experiments. This beam is
-off-axis with respect to the SBN detectors leading to significant kinematic
-differences.}
-
+This experimental facility comprises of three separate detectors placed in the
+Booster Neutrino Beam (BNB) at different (short) baseline distances: SBND
+(previously known as LAr1-ND) at 110~m from the target, \muboone\ at 470~m and
+Icarus-T600 at 600~m.  All three detectors are filled with Liquid Argon (LAr)
+giving unprecedented reconstruction and particle identification capabilities
+allowing for significantly lower backgrounds than predecessor technologies. 
+%
+%\newtext{PB}{In addition to events arising from the BNB, the detectors of the
+%SBN complex will also collect events associated with the NuMI beam, currently
+%being used in the NO$\nu$A, MINER$\nu$A and MINOS+ experiments. This beam is
+%off-axis with respect to the SBN detectors leading to significant kinematic
+%differences.}
+%
 The SBN facility has a number of interesting features relevant to the 
 search for sterile neutrino decay:
 
 \begin{enumerate}
 
-\item Liquid Argon detectors have excellent particle reconstruction 
-capabilities. This allows for a very high level of background suppression 
-through some of the kinematic properties associated with a beam-based 
-decay in flight signal. We will show in \refsec{sec:bg} that these allow 
-the backgrounds to be greatly reduced, and we suggest a cut-based analysis 
-which allows the search to be assumed essentially backgroundless.
+\item The reconstruction and particle ID capabilities of LAr technology means
+the SBN program provides an ideal scenario to study the decay in flight of
+sterile neutrinos, a job which has traditionally been left for low-mass
+detectors with corresponding low beam-related backgrounds. 
+%
+We will discuss how a very high level of background suppression can be obtained
+through a simple cut-based analysis motivated by the kinematic properties
+of a beam-based decay-in-flight signal. 
 
-\item The presence of three detectors allows for contrasting behaviour between
-different models of any excess events. Beam independent backgrounds, beam-based
-backgrounds, signals from oscillatory steriles and sterile neutrino decay all
-have different scaling behaviours with detector baseline distance and total
-mass. Making three measurements using the same technology, at varying baselines
-and masses allows for a clear contrast between the explanations of any
-excess events.
+\item The presence of three detectors with distinct baselines allows for 
+contrasting behaviour between different models of any excess events. Beam 
+independent backgrounds, beam-based backgrounds, signals from oscillatory 
+steriles and sterile neutrino decay all have different scaling behaviours 
+with detector baseline distance and total mass. Making three measurements using 
+the same technology but with varying baselines and masses allows for a clear 
+contrast between the explanations of any excess of events.
 
 \item The three detectors also allow for timing-based effects between 
-the three detectors if the excess comes from a sterile neutrino decay model.
+the three detectors if the excess comes from a sterile neutrino decay 
+model. As we will discuss in \refsec{sec:timing}, this means that a decaying 
+sterile neutrino would have a very distinctive pattern of excess events at
+SBN, unobservable to a facility with a single detector.
 
-\item The excellent particle identification will allow for the investigation
-of channels for which there are no published searches. We discuss extended models
-of sterile decay where the minimal model correlations between decay channels do 
-not hold. This means that there are essentially no bounds on some models, 
-which could be significantly constrained for the first time at the SBN complex. 
+\item The excellent particle identification will allow for the investigation of
+channels for which there are no published searches, only infered bounds based
+on minimal theoretical models. We will discuss extended models of sterile decay
+where the minimal model correlations between decay channels do not hold. This
+means that there are no published bounds on some channels, and a decay rate in
+a traditionally excluded region could be observed at the SBN complex. In the
+absence of signal, the facility could of course place the first bounds on these
+signatures of new physics.
 
 \end{enumerate} 
 
 
 \section{Sterile neutrino decay}
 
-Generically, a gauge-singlet fermion will be unobservable by all
-non-gravitational means unless it mixes with the active neutrino sector. The
-presence of mixing introduces a range of possible observable signatures
-depending on the magnitude of the sterile mass and its mixing to the active
-sector. 
+A gauge-singlet fermion will generally be unobservable by all non-gravitational
+means unless it mixes with the active neutrino sector. The presence of mixing
+introduces a range of possible observable signatures depending on the magnitude
+of the sterile mass and its mixing to the active sector. 
 
 The most general renormalizable \lagrangian\ extending the SM to include a
 single novel gauge-singlet fermion $N$ is given by
@@ -193,35 +197,58 @@ significantly over their large parameter spaces. An important signal for light
 sterile neutrinos are possible observable effects in oscillation experiments,
 which could alleviate short-baseline oscillation anomalies; although, no
 minimal solution seems to provide a particularly compelling improvement
-\cite{}. At larger masses, the neutral particles no longer participate in
-oscillation, but these models can generate new signatures at beam dump
-experiments \cite{}. At even higher masses, these particles could provide a
-natural way to suppress the size of active neutrino masses through the Type I
-or III see-saw mechanisms \cite{}. 
+\cite{Kopp:2013vaa}. At larger masses, the neutral particles no longer
+participate in oscillation, but these models can generate new signatures at
+beam dump experiments \cite{}. At even higher masses, these particles could
+provide a natural way to suppress the size of active neutrino masses through
+the Type I or III see-saw mechanisms \cite{Minkowski:1977sc, GellMann:1980vs,
+Mohapatra:1979ia}. 
+%
+Generally speaking, if the sterile neutrinos are massive enough for their
+mass-splittings between the light neutrinos to be larger than the wavepacket
+uncertainty associated with the production mechanism, they no longer oscillate.
+For the BNB, we can estimate the mass at which this decoupling occurs as
+follows: the decay pipe for BNB is around $50$~m in length, which is
+considerably shorter than the decay lengths of the mesons in the beam.
+Therefore this length defines the wavepacket width at production. The figure of
+merit is the decoherence parameter \cite{Akhmedov:2009rb,Hernandez:2011rs}
+%
+\[  \xi = 2\pi \frac{\lambda_\text{d}}{\lambda_\nu}, \]
+%
+where $\lambda_\text{d} = 50$~m and $\lambda_\nu$ is the standard neutrino
+oscillation length $\lambda_\nu = \Delta m^2/4E_\nu$. For $\xi\gg1$ the wave
+packet is insufficiently broad to accomodate a coherence superposition of the
+heavy and light neutrino states. We estimate that this occurs at 
+%
+\[  \Delta m^2 \gtrsim 20~\text{eV}^2. \] 
+%
+In this article we study the region of MeV scale sterile masses. These are
+heavy enough to forbid oscillatory effects while light enough to be have
+significant production from the meson decays associated with a conventional
+neutrino beam. 
 
-Generally speaking, once the neutrinos are massive enough to no longer
-oscillate but remain light enough to be produced in terrestrial experiments,
-the best way to observe them is through their direct decay into SM particles.
-In the minimal \lagrangian\ in \refeq{eq:minimallag}, the only direct couplings
-to new sterile fermions are neutrino Higgs interactions. However, these
-couplings generate off-diagonal neutrino bilinears below the electroweak
-symmetry breaking scale, which leads to mixing between the $4+$ flavours of
-neutrinos. Such mixing then introduces production and decay mechanisms of many
-kinds for the state $N$ through mass insertion on an active neutrino fermion
-line. These decays have been studied extensively in the literature
-\cite{Atre} and depend only on the size of neutrino mixing to various
-flavours, parameterized by the elements of an extended $4\times4$ PMNS matrix,
+One of the cleanest ways to observe particles of this type is by their direct
+decay into SM particles. In the minimal \lagrangian\ in \refeq{eq:minimallag},
+the only direct couplings to new sterile fermions are neutrino Higgs
+interactions. However, these couplings generate off-diagonal neutrino bilinears
+below the electroweak symmetry breaking scale, which leads to mass mixing
+between the $4+$ flavours of neutrinos. This generates production and decay
+mechanisms of many kinds for the state $N$ through mass insertion on an active
+neutrino fermion line in a gauge mediated process. These decays have been
+studied extensively in the literature \cite{Atre:2009rg} and depend only on the
+size of neutrino mixing to various flavours, parameterized by the elements of
+an extended $4\times4$ PMNS matrix,
 %
 \[ U_{e4}, \qquad U_{\mu 4} \qquad \text{and} \qquad U_{\tau 4},  \]
 %
 and the mass of the state $N$ itself. The branching ratios for these decays are
 shown in \reffig{fig:branchingratios} as a function of mass for two extremes of
 the flavour mixing pattern. On the left, we show the branching ratios if the
-new state only mixes with all flavours of active neutrino equally
-$U_{e4}=U_{\mu 4}=U_{\tau 4}$, and on the right, when the only mixing with with
-$\nu_e$ ($U_{\mu 4}=U_{\tau 4} = 0$). The main effect of the flavour structure
-is to forbid certain decays which require certain elements. For example, the
-decay of a sterile $N$ into a lepton and a charged pion,
+new state mixes with all flavours of active neutrino equally $U_{e4}=U_{\mu
+4}=U_{\tau 4}$, and on the right, when the only mixing with with $\nu_e$
+($U_{\mu 4}=U_{\tau 4} = 0$). The main effect of the flavour structure is to
+forbid certain decays which require certain elements of the mixing matrix. For
+example, the decay of a sterile $N$ into a lepton and a charged pion,
 %
 \[ N \to l^\pm \pi^\mp,   \]
 %
@@ -246,37 +273,59 @@ hierarchical scheme where only the mixing with $\nu_e$ is important.}
 %
 \end{figure}
 
-We highlight four decays in our study, which have the largest branching ratios
+\subsection{Decays of interest}
+
+We focus on five decays in our study, which have the largest branching ratios
 of all channels with visible decay products over the mass range $m_\text{s}
 \lesssim 1$ GeV. This is based on the minimal sterile extension of the SM
-discussed above, but we stress that similar decays can occur in any number of
-non-minimal models, where the relationship between decay rate, mass and mixing
-can be non-standard. For sterile neutrino masses less than the pion mass, the
-dominant visible decay will be into an electron-positron pair as an be seen
-from \reffig{fig:branchingratios}. The decay rate for this channel is given by 
+discussed above, and the discussion in this chapter will assume this model.
+However, as discussed further in \refsec{sec:BMM}, we point out that similar
+decays can also occur in non-minimal models, where the relationship between
+decay rate, mass and mixing can be non-standard. 
+%
+For sterile neutrino masses less than the pion mass, the dominant visible decay
+will be into an electron-positron pair as can be seen from
+\reffig{fig:branchingratios}. This is true regardless of the flavour structure
+of the mixing matrix. The decay rate for this channel is given by 
 %
 \[ \Gamma\left(\nu_\text{s}\to \nu_i e^+e^-\right) =
 \frac{G_\text{F}^2m_\text{s}^5}{96\pi^3}I(m_\text{s}, U^2).  \]
 %
-where $I(m_s)$ is an integral. \newtext{PB}{We'll have to decide how to type these things in.}
+where $I(m_s)$ is an integral. \newtext{PB}{We'll have to decide how to type
+these things in.}
 %
-We will base two analyses on this channel, differentiated by the number of
-tracks we expect to see. The first event sample will attempt to measure events
-where two tracks are resolved, which is expected to have a small background but
-favours low-energy events. The second sample studies the converse, where only a
-single track can be seen, predominately due to a tightly collimated
-$e^+e^-$-pair. In this case we expect a larger background (from anything
-producing a single track), but as we will show, we get sizable event numbers in
-this channel due to the sterile neutrino's high energy, and a tight cut on the
-angular distribution can make it sensitive to sterile decays.
+Decays of this type would generally fall into two categories of events at a LAr
+detector, and accordingly we divide our analysis. The first event sample will
+attempt to measure events where two tracks are resolved and two
+electron-induced electromagnetic showers are observed.
+%
+The second sample consists of events for which the identification of two
+elecron-like showers is impossible. In this case, the signal would be identical
+to a single photon pair-conversion. We expect a larger background for this
+scenario, but as we will show, we get sizable event numbers in this channel due
+to the sterile neutrino's high energy, and a tight cut on the angular
+distribution can make it sensitive to sterile decays.
+
+Also possible at these low masses, the radiative decay
+$\nu_\text{s}\to\nu_i\gamma$ would generate an interesting single photon
+signal. In the minimal model the decay rate goes as
+%
+\[ \Gamma(\nu_\text{s}\to\nu_i\gamma) = ...    \]
+%
+this decay channel will be very small and the total decay rate can be estimated
+at around $\Gamma(\nu_\text{s}\to\nu_i\gamma)/(\text{GeV}) \approx 10^{-20}
+(m_\text{s}/\text{GeV})^5$, which could not be expected to be observable at
+SBN.  However, in a non-minimal model this decay rate could be enhanced. For
+example, such an enhancement has been proposed to resolve the MiniBooNE anomaly
+\cite{Gninenko:2009ks,Gninenko:2010pr}.  
 
 When the mass of the sterile neutrino is greater than the kinematic threshold
 for the production of a neutral pion, a new decay dominates
 $\nu_\text{s}\to\nu_i \pi^0$. The decay rate for this process is given by
 %
 \[ \Gamma\left(\nu_\text{s} \to \nu_i \pi^0\right) =
-\frac{G_\text{F}^2f_\pi^2m_\text{s}^3}{64\pi}\left[1-\left(\frac{m_\pi}{m_\text{s}}\right)^2\right].
-\]
+\frac{G_\text{F}^2f_\pi^2m_\text{s}^3}{64\pi} \left[1-\left(
+\frac{m_\pi}{m_\text{s}} \right)^2\right].  \]
 
 The next channel appears at the kinematic threshold for charged pion production
 with a charged lepton. If mixing between the heavy mass state and the electron
@@ -292,10 +341,13 @@ structure constant,
 \left|U_{l4}\right|^2\frac{2G_\text{F}^2f_\pi^2m_\text{s}^3}{16\pi}I(m_\text{s}).
 \]
 
-
 \lorem\lorem
 
-\section{Role of event timing}
+\subsection{Non-minimal models of sterile decay}
+
+\lorem\lorem\lorem\lorem
+
+\section{\label{sec:timing}Role of event timing}
 
 \begin{figure}[t]
 %
@@ -314,40 +366,47 @@ of 1 ns is assumed to smear the observed events.}
 %
 \end{figure}
 
-Neutrinos, travelling very close to the speed of light, reach the furthest
-detector of the SBN complex after around 2 $\mu$s; however, sterile neutrinos
-of MeV-scale masses can move considerably slower as their mass gets larger. For
-a very boosted sterile, this difference is small and no observable effects
-arise. When the sterile becomes less boosted, however, the timing structure of
-the BNB becomes very relevant for the analysis of backgrounds. The BNB consists
-of 81 Radio-Frequency buckets of approximately 2ns length, seperated by 19 ns,
-to form a 19.2$\mu$s spill with a frequency of 3Hz. All events inside this
-window, alongside all events in the surrounding bins according to assumed
-resolution, are assumed to be beam-correlated. Events falling outside these
-bins, would not be counted as part of the beam-related event sample. As can be
-seen in \ref{fig:timing} below, for sterile masses around $25$ MeV, most decay
-events will end up in the beam timing window and must be analysed as a signal
-on top of the beam-related backgrounds in the standard analysis. However, as
-the sterile neutrino mass incresaes, the baseline distance starts to become
-relevant. At $m_{\text{s}}=350$ MeV, we see that many events still fall in the
-in beam timing window for SBND; however, \muboone\ and Icarus see significant
-deviation from this with clear peaks in the inter-RF-bucket spacing where one
-would not expect to see any beam-correlated backgrounds. Assuming the
-backgrounds can be brought under control in these different timing windows,
-this signature would be a striking one: a beam-related excess at SBND with none
-at \muboone\ or Icarus, but an excess at both in their non-beam related data.
+One of the interesting features of the SBN complex is the interplay of the
+three detectors, operating similar technology but situated at different
+baseline distances.
+%
+Light neutrinos reach the furthest detector of the SBN complex after around 2
+$\mu$s; however, sterile neutrinos of MeV-scale masses can move considerably
+slower as their mass gets larger. For a very boosted sterile, this difference
+is small and no observable effects arise. When the sterile becomes less
+boosted, however, the timing structure of the BNB becomes relevant.
 
-This means that our discussion of backgrounds must be divided in two cases: for
-low mass steriles or SBND, we must consider the beam-related backgrounds and
-see how these can be suppressed to enhance the significance of the signal
-events.  For larger masses at the two furthest detectors, we must instead
-consider how to isolate our signal events from the non-beam related background,
-made predominately from cosmogenic events. In the section that follows we will
-discuss the details of our signal modelling and background estimation, and
-return to the sensitivities to new physics in \refsec{sec:sensitivity}.
+In the conventional physics programme of the SBN, timing plays an important
+role in the analysis of backgrounds, tight timing windows are placed around the
+beam spill to limit constant rate backgrounds such as cosmogenic events. The
+BNB consists of 81 Radio-Frequency buckets of approximately 2ns length,
+seperated by 19 ns, to form a 19.2$\mu$s spill with a frequency of 3Hz
+\cite{Antonello:2015ea}.  All events inside this window, alongside all events
+in the surrounding bins according to assumed resolution, are assumed to be
+beam-correlated.  As can be seen in \ref{fig:timing} below, for sterile masses
+around $25$ MeV, most decay events will end up in the beam timing window and
+must be analysed as a signal on top of the beam-related backgrounds in the
+standard analysis. However, as the sterile neutrino mass incresaes, the
+baseline distance starts to become relevant. At $m_{\text{s}}=350$ MeV, we see
+that many events still fall in the in beam timing window for SBND; however,
+\muboone\ and Icarus see significant deviation from this with clear peaks in
+the inter-RF-bucket spacing where one would not expect to see any
+beam-correlated backgrounds. Events falling outside these bins, would not be
+counted as part of the beam-related event sample. Assuming the backgrounds can
+be brought under control in these different timing windows, this signature
+would be a striking one: a beam-related excess at SBND with none at \muboone\
+or Icarus, but an excess at both sites in their non-beam related data.
 
-
-
+The implication of the timing effects, is that our discussion of backgrounds
+must be divided in two cases: for low mass steriles or any mass at SBND, we
+must consider the beam-related backgrounds and see how these can be suppressed
+to enhance the significance of the signal events. For larger masses at the two
+furthest detectors, we must instead consider how to isolate our signal events
+from the non-beam related background, made predominately from cosmogenic
+events. In the section that follows we will discuss the details of our signal
+modelling and background estimation, and compute the sensitivities to new
+physics in \refsec{sec:sensitivity} including a discussion of the 
+use of timing and baseline distance in \refsec{sec:baselineinterplay}. 
 
 \section{Simulation details}
 
@@ -714,7 +773,25 @@ For the three body mode $\nu_N \rightarrow \nu_\alpha e^+ e^-$, as well as the N
 \end{table}
 
 
-\section{Sensitivities\label{sec:sensitivity}}
+\section{Sensitivities from total rate analysis\label{sec:sensitivity}}
+
+The Fermilab SBN complex will be able to bound new physics models which lead to
+sterile neutrino decay in the same manner as previous beam dump experiments: by
+searching for anomalously high rates of specific decays. Searches of this kind
+are usually done as total rate analyses, and the factor limiting the
+performance  of the experiment is the total number of protons on target (POT).
+In this section we consider the bounds that SBN can place on new physics
+running in this mode, that is we assume that all events, regardless of their
+timing information are collected into the same event sample. For SBND this is a
+realistic model of the experiments operation: all of the heavy states
+considered in this paper will generate decays in the normal event sample
+associated with the neutrino beam. For \muboone\ and Icarus, the problem of
+timing becomes relevant.  For low mass steriles, again the analysis of this
+section reflects all of the information these experiments have to hand;
+however, at higher masses the timing information of these events will be
+significant. We will analyse this new information in
+\refsec{sec:timing_physics},but for now we focus on what can be learnt without
+timing information.
 
 \subsection{Minimal extension}
 
@@ -791,7 +868,7 @@ previous experimental work.}
 
 
 
-\subsection{Beyond the Minimal Model}
+\subsection{\label{sec:BMM}Beyond the Minimal Model}
 
 All previous work assumed the minimal extension of one extra sterile degree of
 freedom, with no additional physics such that the only decays allowed are
@@ -922,12 +999,24 @@ model bounds. A baseline of 128m, and mean energy of $\left< E_\nu \right>
 %
 \end{figure}
 
-\section{Baseline dependence at the SBN complex}
+\section{\label{sec:baselineinterplay}Baseline dependence at the SBN complex}
 
 The combination of three detectors, all operating with the same technology in
 the same neutrino beam allows for distinctive signatures of new physics. By
-studying the dependence of the signal on baseline, we could hope to further
-constrain the model underlying explanations of any observed excess. 
+studying the dependence of the signal on baseline and detector mass, we could
+hope to further constrain the model underlying explanations of any observed
+excess.  
+
+In this section we will discuss two ways to constrain new physics if an excess
+of events is observed. First, we focus on the ways that event numbers scale
+between the detectors and in which scenarios we could identify the origins of
+an excess of events. Secondly, we discuss the role of timing on model selection.
+Timing delays between excesses would be strong evidence for heavy particles 
+propagating between source and detector, and we explore how the study of timing
+effects could be used to bound the mass of the particle in a model independent 
+fashion.
+
+\subsection{Scaling behaviour of event rates}
 
 \begin{figure}[t]
 %
@@ -946,26 +1035,81 @@ and detector. }
 %
 \end{figure}
 
-One of the conventional ways to explain an excess of events at a short baseline
-neutrino experiment is through sterile neutrino oscillations. The rates
-predicted at three different detectors depend crucially on the respective
-distances from source to detector. In the scenarios discussed in this paper, we
-also see baseline dependence coming from \refeq{eq:prob}, albeit in a very
-different form. For most of the parameter space, we would predict no
-significant baseline dependence on the event rates at the three detectors, once
-the $1/L^2$ dependence of the flux is removed; however, there for large decay
-rates we see a baseline dependent effect. This is shown in
-\reffig{fig:baselineratios}, where the event numbers for $e^-e^-$ decay are
-shown as ratios between the three detectors. These have been scaled to remove
-the baseline dependence of the flux.  The four lines for each detector show the
-100\%, 75\%, 50\% and 25\% contours (where the further detector sees fewer
-events). Such decay rates are forbidden in the minimal extension of the SM
-incorporating MeV scale sterile neutrinos \newtext{PB}{True?}.  
+An excess of events at a detector often has multiple competing explanations.
+However, in most physical scenarios the scaling behaviour of the predicted
+number of events will differ. For example, any source of excess events which is
+induced by the neutrino beam should inherit a $L^{-2}$ dependence on baseline
+distance from the dispersion of the neutrino flux. Between three detectors,
+this would generate a distinctive relative enhancement of the signal at SBND
+and relative suppression of the signal at ICARUS compared to a fixed nominal
+excess at \muboone. This is in contrast to, for example, an excess of
+misidentified cosmogenic events which would have no baseline dependence.
 
-\section{Conclusions}
+New physics may cause a signficant dependence on baseline. One of the much
+discussed ways to explain an excess of events at a short baseline neutrino
+experiment is through sterile neutrino oscillations. The rates predicted at
+three different detectors depend crucially on the respective distances from
+source to detector according to the oscillation prbobability. In the scenarios
+discussed in this paper, we also see baseline dependence coming from
+\refeq{eq:prob}, albeit in a very different form. For most of the parameter
+space, we would predict no significant baseline dependence on the event rates
+at the three detectors, once the $1/L^2$ dependence of the flux is removed;
+however, for large decay rates we see a baseline dependent effect. This is
+shown in \reffig{fig:baselineratios}, where the event numbers for $e^-e^-$
+decay are shown as ratios between the three detectors. These have been scaled
+to remove the baseline dependence of the flux.  The four lines for each
+detector show the 100\%, 75\%, 50\% and 25\% contours (where the further
+detector sees fewer events). Such decay rates are forbidden in the minimal
+extension of the SM incorporating MeV scale sterile neutrinos
+\newtext{PB}{True?}. In a non-minimal model, it remains possible that decays
+with decay lengths of the order $100$~m could exist, leading to a very 
+significant depletion of events at the further detectors.
+
+We show in \reffig{fig:baselineratios} a plot highlighting the contrasting
+behaviour between these alternative explanations for an excess seen at the SBN
+complex. In these plots we assume a fixed $100$ events at \muboone\ and observe
+the distribution of events at the other sites for different models of new
+physics.
+
+\subsection{\label{sec:timing_physics}Timing for model discrimination}
+
 \lorem\lorem
 
-\newpage 
+\section{Conclusions}
+
+The Fermilab Short-Baseline Neutrino complex will further our knowledge of
+neutrino beams at short-baseline and neutrino interactions. In this paper, we
+have studied its capabilities to constrain decaying sterile neutrinos with
+masses around the MeV scale. To make a fair assessment of the potential to
+constrain these models, we have performed a cut-based analysis of the dominant
+backgrounds and signals and shown that high levels of background suppression
+can be expected, resulting in close to backgroundless searches. We have
+identified the importance of timing on both the appearence of new signals and
+the analysis of backgrounds to these signals. Using these background estimates,
+we have performed a sensitivity analysis to the parameters of the minimal
+extension of the SM with a novel sterile neutrino. We have also motivated
+searches for non-minimal models, which in particular could lead to observable
+decays over a wide range of parameter space which is conventionally excluded by
+theoretical assumptions on the decay rates themselves. We argue that these
+decay rates are actually \emph{unconstrained} in published work, and show that
+the SBN could place the first bounds on these processes. We have then discussed
+the role of the unique design of the SBN complex: the three detectors allow for
+complicated interplay of effects, including scaling of event rates with
+baseline or mass, and timing effects which allow for a thorough investigation
+of an excess were it to be discovered. 
+
+
+\acknowledgments
+
+We would like to thank Andrezj Szelc for his input to various elements of this
+work, and also to Jonathan Asaadi for helpful discussions at the start of this
+project.
+
+This work has been supported by the European Research Council under ERC Grant
+“NuMass” (FP7-IDEAS-ERC ERC-CG 617143) and by the European Union FP7
+ITN-INVISIBLES (Marie Curie Actions, PITN-GA-2011-289442).
+
+\appendix
 
 \section{To do list}
 
@@ -1028,11 +1172,11 @@ the simulation details section; write conclusions etc.
 
 	\end{enumerate}
 
-\begin{figure}[t]
-\center
-\includegraphics[width=1.0\textwidth]{figures/angles_boost.pdf}
-\caption{\label{fig:boost} Allowed angles in the decay $m_\pi \rightarrow a+b$ for $m_a 30$ MeV and $m_a=m_e$. In the limit of $m_a \rightarrow 0$ the entire $\beta_\pi - \theta_a$ plane is covered, which is pretty much what we were calculating today!   .}
-\end{figure}
+%\begin{figure}[t]
+%\center
+%\includegraphics[width=1.0\textwidth]{figures/angles_boost.pdf}
+%\caption{\label{fig:boost} Allowed angles in the decay $m_\pi \rightarrow a+b$ for $m_a 30$ MeV and $m_a=m_e$. In the limit of $m_a \rightarrow 0$ the entire $\beta_\pi - \theta_a$ plane is covered, which is pretty much what we were calculating today!   .}
+%\end{figure}
 
 
 \begin{figure}[t]
