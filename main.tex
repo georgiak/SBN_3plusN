@@ -113,8 +113,8 @@ but have masses sufficiently large to prevent oscillatory effects with the
 active neutrinos through loss of coherence (see \eg\ \refref{Akhmedov:2009rb}).
 Due to the presence of mixing effects, these particles are not expected to be
 stable in the most general theory, and their subsequent decays have been
-enumerated \cite{Atre:2009rg} and searched for in many previous experiments.
-%
+enumerated \cite{Atre:2009rg} and searched for in many previous experiments, in particular PS-191 \cite{Bernardi:1985ny},  which ran in 1983-1985 and produced the strongest decay in flight bounds on $U_{e4}$ and $U_{\mu 4}$ for sterile's in the 1-500 MeV mass range.%
+
 We will focus on the role of the Fermilab SBN programme
 \cite{Antonello:2015lea} for the search for sterile neutrinos of this type.
 %
@@ -166,10 +166,26 @@ where the minimal model correlations between decay channels do not hold. This
 means that there are no published bounds on some channels, and a decay rate in
 a traditionally excluded region could be observed at the SBN complex. In the
 absence of signal, the facility could of course place the first bounds on these
-signatures of new physics.
+signatures of new physics.\\
 
 \end{enumerate} 
 
+One can estimate the sensitivity of the three SBN detectors by a simple exposure calculation. PS-191 was located 128m downstream of the target and $2.3^\circ$ (40 mrads) off axis and obtained $0.86 \times 10^{19}$ POT over the course of its run-time. With a total volume of $6\times3\times12 = 216 \text{m}^3$ we estimate the ratio of events expected at the three SBN detectors by comparing POT $\times$ Vol $\times$ $R^{-2}$. See Table (\ref{tab:exposure}) for the results of such an exposure comparason.\\
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{| l || l | l | l | l |}
+	\hline
+	& PS-191 & SBND & $\mu$BooNE & ICARUS \\ \hline \hline
+	POT	& $0.86 \times 10^{19}$	& $6.6 \times 10^{20}$	&	$13.2 \times 10^{20}$     &  $6.6 \times 10^{20}$ \\ \hline
+	Volume	& $216\text{m}^3$	&	$80\text{m}^3$	&	$62\text{m}^3$	     &   $340\text{m}^3$	\\ \hline
+	$\text{Baseline}^{-2}$	& $(128 	\text{m} )^{-2}$	&$(110 \text{m} )^{-2}$	&	$(470 \text{m} )^{-2}$			     & $(600 \text{m} )^{-2}$	  \\ \hline
+Ratio/PS-191 & - 	& 38.5 	& 3.3	& 5.5\\ \hline
+\end{tabular}
+\caption{\label{tab:exposure} Rough exposure based calculation to estimate ball-park sensitivity of the SBN detectors to heavy decay in flight. SBND has significantly more expected events, predominately due to proximity to beam target.  }
+\end{table}
+
+In addition, the energies of resultant heavy steriles produced in the 8 GeV BNB beam is, on average, lower than those produced by the 19.2 GeV PS beam used in PS-191. This will further increase the number of expected decays observed as the probability of the sterile to subsequently decay scales as $1/E_\nu$. Thus we expect that the SBN facilities would expect to see more events than PS-191 if all other things remained identical. However, as mentioned above PS-191 was purposidly buily to search for deacys in flight and as such was of low total mass ($\approx 20 $ ton) in order to minimize neutrino scatterig induced background. The SBN detectors were designed for the polar opposite, to study neutrino cross-section related processes, which is reflected in their masses (112, 66.6 and 476 tons respectively). As such to definitively show that SBN has sensitivity to such decays in flight, we must show that the background rejection capability of LAr is sufficiently well understood.
 
 \section{Sterile neutrino decay}
 
@@ -260,14 +276,14 @@ are derived from meson decay (or secondary $\mu^\pm$ decays). If $U_{e4}=U_{\mu
 impossible for pions or kaons. For this reason, we will mainly focus on mixing
 with the first two generations. This parameter space will be probed by working
 at higher energies, where the neutral fermions can be produced by decays of
-charmed mesons such as $D^\pm$, by the SHiPS experiment \cite{}.
+charmed mesons such as $D^\pm$, by the SHiPS experiment \cite{Alekhin:2015byh}.
  
 \begin{figure}[t]
 %
 	\centering
 \includegraphics[width=0.8\textwidth]{figures/bounds1.pdf}\\
 \includegraphics[width=0.49\textwidth]{figures/bounds2.pdf}
-\includegraphics[width=0.49\textwidth]{figures/bounds3.pdf}
+\includegraphics[width=0.49\textwidth]{figures/bounds4.pdf}
 %
 \caption{\label{fig:branchingratios}The branching ratios for sterile neutrino
 decays in the minimal 3 sterile SM extension, with masses between 1 MeV and 1 GeV. The top panel assumes equal
@@ -277,6 +293,7 @@ hierarchical scheme where only the mixing with $\nu_e$ ($\nu_\mu$) is important.
 \end{figure}
 
 \subsection{Decays of interest}
+
 
 We focus on five decays in our study, which have the largest branching ratios
 of all channels with visible decay products over the mass range $m_\text{s}
@@ -292,10 +309,14 @@ will be into an electron-positron pair as can be seen from
 of the mixing matrix. The decay rate for this channel is given by 
 %
 \[ \Gamma\left(\nu_\text{s}\to \nu_i e^+e^-\right) =
-\frac{G_\text{F}^2m_\text{s}^5}{96\pi^3}I(m_\text{s}, U^2).  \]
+\frac{G_\text{F}^2m_\text{s}^5}{96\pi^3}I_1\left(0,\frac{m_e}{m_\text{s}},\frac{ m_e}{m_\text{s}}\right).  \]
 %
-where $I(m_s)$ is an integral. \newtext{PB}{We'll have to decide how to type
-these things in.}
+where 
+\begin{align}
+	I_1(x,y,z) & =12 \int_{(x+y)^2}^{(1-z)^2} \frac{ds}{s}(s-x^2-y^2)(1+z^2-s)\sqrt{\lambda(s,x^2,y^2)}\sqrt{\lambda(1,s,z^2)},\\
+\lambda(a,b,c) &= a^2+b^2+c^2 - 2ab-2bc-2ca.
+\end{align}
+
 %
 Decays of this type would generally fall into two categories of events at a LAr
 detector, and accordingly we divide our analysis. The first event sample will
@@ -311,9 +332,9 @@ distribution can make it sensitive to sterile decays.
 
 Also possible at these low masses, the radiative decay
 $\nu_\text{s}\to\nu_i\gamma$ would generate an interesting single photon
-signal. In the minimal model the decay rate goes as
+signal \cite{PhysRevD.25.766}. In the minimal model the decay rate goes as
 %
-\[ \Gamma(\nu_\text{s}\to\nu_i\gamma) = ...    \]
+\[ \Gamma(\nu_\text{s}\to\nu_i\gamma) = \frac{G_\text{F}^2m_\text{s}^5 |U_{\alpha 4}|^2}{192 \pi^3} \left( \frac{27 \alpha}{32 \pi} \right), \]
 %
 this decay channel will be very small and the total decay rate can be estimated
 at around $\Gamma(\nu_\text{s}\to\nu_i\gamma)/(\text{GeV}) \approx 10^{-20}
@@ -333,7 +354,7 @@ $\nu_\text{s}\to\nu_i \pi^0$. The decay rate for this process is given by
 The next channel appears at the kinematic threshold for charged pion production
 with a charged lepton. If mixing between the heavy mass state and the electron
 neutrino is present, this decay occurs almost immediately after the $\nu\pi^0$
-channel opens. However, if this mixing is negligible, there is a the size of
+channel opens. However, if this mixing is negligible, there is a gap the size of
 the muon mass before the $\mu^\pm\pi^\mp$ channel opens. As can be seen from
 \reffig{fig:branchingratios}, these decays dominate the visible decays when
 they are allowed. These decays have a similar scaling behaviour of the decay
@@ -341,16 +362,21 @@ rate to the $\nu\pi^0$ channel with an equivalent dependence on the pion
 structure constant,
 %
 \[ \Gamma\left(\nu_\text{s} \to l^\pm\pi^\mp\right) =
-\left|U_{l4}\right|^2\frac{2G_\text{F}^2f_\pi^2m_\text{s}^3}{16\pi}I(m_\text{s}).
+	\left|U_{l4}\right|^2\frac{G_\text{F}^2f_\pi^2 |V_{ud}|^2  m_\text{s}^3}{16\pi}I\left(\frac{m_l^2}{m_\pi^2} , \frac{m_\text{s}^2}{m_\pi^2}\right) ,
+\]
+with 
+\[
+	I(x,y) = \left[ \left( 1+x+y\right) \left(1+x\right) -4 x\right] \lambda^\frac{1}{2}\left(1,x,y\right)
 \]
 
-\lorem\lorem
+As can be seen from Figure (\ref{fig:branchingratios}) there are several additional decays possible $\nu_s \rightarrow \nu_\alpha \mu^+ \mu^-$ and $\nu_s \rightarrow \nu_\alpha e^+ \mu^-$, however, in the kinematic region allowed under the assumption the steriles were produced in pion and kaon decays these channels have sub dominant branching ratios and are not included in this analysis.
 
 \subsection{Non-minimal models of sterile decay}
 
 \lorem\lorem\lorem\lorem
 
 \section{\label{sec:timing}Role of event timing}
+
 
 \begin{figure}[t]
 %
@@ -515,7 +541,9 @@ The neutrino fluxes at all three SBN detectors are extrapolated from published M
 
 \end{figure}
 
-As a consistency check of the above methodology we reproduce the published bounds of the CERN based PS-191 experiment, which ran in 1983-1985 and produced the strongest decay in flight bounds on $U_{e4}$ and $U_{\mu 4}$ for this sterile mass range. The detector geometry was $6\text{m} \times 3\text{m} \times 12 \text{m}$ and was located 128m downstream of the Beryllium target using 19.2 GeV protons from the PS proton beam. Fluxes of all neutrinos produced from pion sources at PS-191 were obtined from \cite{ps191THesis}. No accurate kaon sources could be obtained and as such only low mass bounds are reproduced here. It must be noted that PS-191 ignored all neutral current contribtions to $\nu_N \rightarrow \nu_\alpha e^+ e^-$ and assumed the steriles were Dirac particles, and as such the bounds are not directly relatable to the minimal model discussed above.
+\subsection{Reproducing PS-191}
+As a consistency check of the above methodology we reproduce the published bounds of the CERN based PS-191 experiment. The detector geometry is assumed to be $6\text{m} \times 3\text{m} \times 12 \text{m}$ and was located 128m downstream of the Beryllium target using 19.2 GeV protons from the PS proton beam. 
+Fluxes of all neutrinos produced from pion sources at PS-191 were obtined from \cite{ps191THesis}. No accurate kaon sources could be obtained and as such only low mass bounds are reproduced here. It must be noted that PS-191 ignored all neutral current contribtions to $\nu_N \rightarrow \nu_\alpha e^+ e^-$ and assumed the steriles were Dirac particles, and as such the bounds are not directly relatable to the minimal model discussed above.
 
 
 \begin{figure}
@@ -732,7 +760,7 @@ To summerise, we collect the total numbers of beam-induced background events exp
 													 & w/ Cuts &56 & 5 & 8 \\ \hline
 \multirow{2}{*}{$ \nu_\alpha \pi^0$} & NC: $\nu_\mu  \rightarrow \nu_\mu \pi^0 + \text{``nucleons''} $ &  127,217 & 10,813 & 18,172\\
 													 & w/ Cuts &297 & 25 & 46 \\ \hline
- \multirow{2}{*}{$ e^+e^- \text{ (Distinguishable)} $} & CC: $\nu_e  \rightarrow e \gamma + \text{``nucleons''} $ &  143 & 12 & 20\\
+ \multirow{2}{*}{$ e^+e^- \text{ (Seperate)} $} & CC: $\nu_e  \rightarrow e \gamma + \text{``nucleons''} $ &  143 & 12 & 20\\
 													 & w/ Cuts &5 & 0.4 & 0.6 \\ \hline
   \multirow{2}{*}{$ e^+ e^- \text{ (Photon-like)}$} & NC: $\nu_\mu  \rightarrow \nu_\mu \gamma $ &  42,580 & 3,620 & 6,082\\
 													 & w/ Cuts &76 & 6 & 11 \\ 
@@ -771,21 +799,6 @@ As can be seen in Table \ref{tab:Rates}, he total numbers of background events e
 \end{figure}
 
 
-
-
-\section{BNB Beam Timing}
-The above beam related backgrounds are relavent for lower mass steriles, $m_s \leq 50$ MeV and for highly boosted heavy steriles at SBND. Once the sterile becomes less boosted, however, the timing structure of the BNB becomes very relevant for which backgrounds dominate. The Booster neutrino beam consists of 81 Radio-Frequency(RF) buckets of approximately 2ns length, seperated by 19 ns, to form a 19.2$\mu$s spill with a frequency of 3Hz. All events inside this window, alongside all events in the surrounding bins according to an assumed 1ns resolution, are possibly beam-correlated. As can be seen in \ref{fig:timing} below, this is mainly true for light sterile neutrinos at all three SBN detectors, as well as a resonable approximation of heavy neutrino timings at SBND, however, $\mu$BooNE and ICARUS see significant deviation from this with clear peaks in the inter-RF-bucket spacing where one would not expect to see any beam-correlated backgrounds. \\
-
-Outside of the RF bucket timing window, where beam-driven backgrounds are relavant, one must have a very strong grasp of cosmogenics backgrounds. However, due to the high energy and very forwardness of the decay events, alongside the fact that one can observe the cosmogenic background in beam-off mode, gives us {\bf {\emph{faith}}} that one can get veyr close to backgroundless (Ya need to show this..). 
-
-The use of timing signals is significantly enhanced by the fact SBN has three detectors at varying baselines. If one observes an excess of events in SBND that appears consistant with a heavy sterile decaying in flight, this must correlate with a scaled number of events with an appropiate out-of bucket phase in both $\mu$BooNE and ICARUS. If this is not observed, one can rule out the decay in flight scenario.
-
-
-\begin{figure}[t]
-\center
-\includegraphics[width=\textwidth]{figures/timing.pdf}
-\caption{\label{fig:timing} Shown above is the timing delay of sterile neutrino decays in nano-seconds for both a 25 MeV (top) and 350 MeV (bottom) sterile neutrino at the SBND, $\mu$BooNE and ICARUS detectors (110,470 and 600m respectively). The 2 ns beam bucket window is shown highlighted in red from 0 to 2 ns, followed by an additional 19 ns gap. The timings are calculated as a difference relative to the time of flight of a active neutrino, assuming the decay occured in a uniform sample accross the 50m BNB decay pipe. A timing resolution of 1ns for all three SBN detectors is assumed to smear the observed events.}
-\end{figure}
 
 
 
@@ -1196,11 +1209,11 @@ the simulation details section; write conclusions etc.
 
 
 	
-\begin{figure}[t]
-\center
-\includegraphics[width=0.7\textwidth]{figures/baseline_comp.pdf}
-\caption{\label{fig:baseline_comp} Assuming \muboone\ sees 100 events excess, what would SBND and Icarus see if the 100 events was truely a background event, an oscillating sterile of 0.1 $\text{eV}^2$, 1  $\text{eV}^2$ or 10 $\text{eV}^2$ or a decaying 100 MeV sterile n flight. }
-\end{figure}
+%\begin{figure}[t]
+%\center
+%\includegraphics[width=0.7\textwidth]{figures/baseline_comp.pdf}
+%\caption{\label{fig:baseline_comp} Assuming \muboone\ sees 100 events excess, what would SBND and Icarus see if the 100 events was truely a background event, an oscillating sterile of 0.1 $\text{eV}^2$, 1  $\text{eV}^2$ or 10 $\text{eV}^2$ or a decaying 100 MeV sterile n flight. }
+%\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
