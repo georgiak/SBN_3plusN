@@ -5,10 +5,11 @@
 #include <vector>
 #include "TMatrixT.h"
 #include <iostream>
-
+#include "model.h"
 
 
 void fake_fill(TMatrixT <double>&  M);
+void stats_fill(TMatrixT <double>&  M, std::vector<double> diag);
 
 std::vector<double >  calc_signal_events(struct neutrinoModel &nuModel);
 

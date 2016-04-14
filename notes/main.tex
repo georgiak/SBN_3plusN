@@ -6,6 +6,10 @@
 \usepackage{amsmath}
 \usepackage{fullpage}
 \usepackage{bm}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
 
 \newcommand{\refeq}[1]{Eq.~(\ref{#1})}
 \newcommand{\refeqs}[2]{Eqs.~(\ref{#1})~and~(\ref{#2})}
@@ -174,6 +178,79 @@ Although there is a standardized PMNS parameterisation for the 3$\nu$ paradigm, 
 	\end{pmatrix}
 \end{equation*}
 Then the standard $3\times3$ PMNS is written as $U_\text{PMNS}= R(\theta_{23},0).R(\theta_{13},\delta_{13}).R(\theta_{12},0)$. For the 3+1 neutrino model, however, there is 720 (not necessarily unique) permutations. When we restrict ourselves to permutations that require  $R(\theta_{23},0).R(\theta_{13},\delta_{13}).R(\theta_{12},0)$ to be in that order, ensuring we limit to the standard $3\time3$ matrix when we decouple the additional degrees of freedom, we are still left with 120 possible parameterisations (not including phases!). This problem grows factorially as we move to 3+3 neutrinos. However, as we are only dealing with electron appearance and muon disappearance, we can basically pick the simplest paramterisation so that these oscillation probabilities are neatest. Or, perhaps easier, stick to focusing on elements $\vert U_{\alpha i}\vert^2$.  
+
+
+
+\newpage
+
+
+\section{Tuesday 23rd, Meeting}
+
+
+
+\begin{figure}[!htb]
+\centering
+    \begin{subfigure}[b]{0.3\textwidth}
+	  \includegraphics[width=\linewidth]{../pdfs/reco_stack_sbn.pdf}
+  \end{subfigure}  
+	 \begin{subfigure}[b]{0.3\textwidth}
+	 ~ 
+  \includegraphics[width=\linewidth]{../pdfs/reco_stack_uBooNE.pdf}
+	  \end{subfigure}  
+	~
+	  \begin{subfigure}[b]{0.3\textwidth}
+   
+		  \includegraphics[width=\linewidth]{../pdfs/reco_stack_ICARUS.pdf}
+	   \end{subfigure}  
+	  ~\\
+	  \begin{subfigure}[b]{0.95\textwidth}
+\includegraphics[width=1.0\textwidth]{target.png}
+\end{subfigure}
+    \end{figure}
+
+
+\begin{table}[t]
+\centering
+\begin{tabular}{ l | l | l | l}
+	Channel & SBND & MicroBooNE & Icarus \\
+\hline\hline
+\multirow{1}{*}{Intrinsic CC $\nu_e$} & 15,464  $\sim$ 15,831 & 782 $\sim$  828   & 1,523 $\sim$ 1,498 \\
+\multirow{1}{*}{CC $\nu_\mu$ mis-id}  & 478 $\sim$ 484  & 26 $\sim$ 35 & 52 $\sim$ 51\\
+\multirow{1}{*}{NC single-$\gamma$}&  1,589 $\sim$ 1,443 & 100 $\sim$ 87  & 196 $\sim$ 156\\
+ \hline \hline
+\end{tabular}
+\caption{\label{tab:Rates_post_cuts} A summary of the expected background rates for each channel studied, post cuts, alongside the same values from the SBN proposal (after $\sim$). }
+\end{table}
+
+
+
+
+What is included?
+\begin{itemize}
+	\item Smearing the energies of all protons, pion + other charged, electrons, photons and muons by a gaussian of width 5\%,5\%,15\%,15\% and 6\% respectively.
+	\item Cut on 20 MeV for proton observation.
+	\item All other cuts as applied as refred to SBN proposal, $E_\text{EM}> 200$ MeV ..etc..
+	\item Fiducial Volume cuts for all 3 detectors
+	\item Total reconstructed energy is defined as the total leptonic (or photon if mis-ided), and hadronic energy AFTER smearing of all particle energies.
+	\item Assumed 6.6e20 POT for SBND and ICARUS, and 13.2e20 POT for $\mu$BooNE.
+	\item Photons from $\pi^0$ decays given a random conversion distance distributed according to an exponential distribtuion over the radiation length in argon, $\approx 14cm$ with mild energy dependance.
+	\item Muons given a track length according to the assumption they continously slow down,
+		\[
+			L(E_\mu) (cm) = \frac{1}{\rho}\int^{E_\mu}_{m_\mu} \left\langle\frac{d E^\prime}{dx} \right\rangle^{-1} dE^\prime
+		\]
+		where $\frac{d E^\prime}{dx}$ is given by the standard Bethe-Bloch equation, and $\rho$ is the density of argon, $=1.3954 g \text{cm}^{-1}$
+
+
+\end{itemize}
+What isn't yet included? and Checks
+\begin{itemize}
+	\item Why is there no $\nu_\mu$ events in lowest bin?, numbers arent that bad, but shifted in energy. Perhaps smeared wrong, todo.
+	\item Why is there a small amount too much NC $\gamma$ events, $\approx 20\%$?
+\end{itemize}
+
+
+
+
 \bibliographystyle{apsrev4-1}
 
 

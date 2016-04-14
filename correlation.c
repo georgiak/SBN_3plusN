@@ -1,7 +1,6 @@
 #include "correlation.h"
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
-
 #include <ctime>
 #define N_m_bins 19
 #define N_e_bins 11
@@ -37,12 +36,37 @@ gsl_rng_free(r);
  return ;
 }
 
+
+
+
+void stats_fill(TMatrixT <double> &M, std::vector<double> diag){
+	int matrix_size = M.GetNrows();
+
+	if(matrix_size != diag.size()){std::cout<<"#ERROR: stats_fill, matrix not equal to diagonal"<<std::endl;}
+	if(M.GetNrows()!=M.GetNcols()){std::cout<<"#ERROR: not a square matrix!"<<std::endl;}
+
+
+	M.Zero();
+	
+
+	for(int i=0; i<matrix_size; i++)
+	{
+		M(i,i) = diag[i];	
+
+	}
+
+
+
+ return ;
+}
+
 void contract_signal(TMatrixT <double> & M, TMatrixT <double> & Mc){
 
 	// take the lower N_e_bins x N_m_bins matrix as a start
 	//
-	Mc=M.GetSub(N_dets*N_e_bins,M.GetRowUpb(),N_dets*N_e_bins,M.GetColUpb());	
 
+	Mc=M.GetSub(N_dets*N_e_bins,M.GetRowUpb(),N_dets*N_e_bins,M.GetColUpb());	
+//	Mc=M.GetSub(M.GetRowLwb(),N_dets*N_e_bins,M.GetColLwb(),N_dets*N_e_bins);	
 	//Add top left down
 	for(int i=0; i < N_dets*N_e_bins;i++){
 		for(int j=0; j < N_dets*N_e_bins;j++){
@@ -90,3 +114,4 @@ for(int i=0; i<N_e_bins;i++){
 
 return ans;
 }
+
