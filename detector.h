@@ -50,6 +50,7 @@ class SBN_detector {
 	SBN_detector (double h, double w, double l, double fh, double fw, double fl,double base);
 	SBN_detector (int identifier, bool ismue = false);
 
+	double osc_length(TRandom * rangen);
 
 	bool is_active(double * pos);
 	bool is_fiducial(double * pos);

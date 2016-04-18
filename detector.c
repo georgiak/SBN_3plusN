@@ -395,3 +395,12 @@ double SBN_detector::track_length_escape(double * in, double *out){
 }
 
 
+double SBN_detector::osc_length(TRandom * rangen){
+
+	return baseline - rangen->Uniform(50.0);
+
+
+}
+
+
+

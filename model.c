@@ -552,8 +552,8 @@ int SBN_spectrum::fill_dis(SBN_detector * detector )
 				double endpos[3] = {0,0,0};
 				get_endpoint(vertex_pos,Lmu, pl, endpos);
 
-				//double prob =Pmm(detector->baseline+(vertex_pos[2]/1000.0),El_smear,DMSQ,S2TH);
-				double prob = workingModel.oscProb(2,2,El_smear,0.001*(detector->baseline+(vertex_pos[2]/1000.0)));
+				//double prob =Pmm(detector->osc_length(rangen)+(vertex_pos[2]/1000.0),El_smear,DMSQ,S2TH);
+				double prob = workingModel.oscProb(2,2,El_smear,0.001*(detector->osc_length(rangen)+(vertex_pos[2]/1000.0)));
 				
 				Ncontained1++;
 				if(detector->is_fully_contained(vertex_pos, endpos)){
@@ -857,7 +857,7 @@ int SBN_spectrum::fill_app(SBN_detector * detector )
 		if((PDGnu==12||PDGnu==-12) && CC==1 )//&& Nph==0 && Npi0dph==0)
 		{
 		El_smear = smear_energy(El_true, EMsmear, rangen);
-		double prob = workingModel.oscProb(2,1,El_smear,0.001*(detector->baseline+(vertex_pos[2]/1000.0)));
+		double prob = workingModel.oscProb(2,1,El_smear,0.001*(detector->osc_length(rangen)+(vertex_pos[2]/1000.0)));
 			
 	//	H_nonosc->Fill(El_smear+Ehad, weight*Eff_em);	
 		H_osc_1.Fill(El_smear+Ehad, weight*Eff_em*prob);
@@ -1110,7 +1110,7 @@ int SBN_spectrum::fill_intrin(SBN_detector * detector )
 			{
 
 
-		double prob = workingModel.oscProb(1,1,El_smear,0.001*(detector->baseline+(vertex_pos[2]/1000.0)));
+		double prob = workingModel.oscProb(1,1,El_smear,0.001*(detector->osc_length(rangen)+(vertex_pos[2]/1000.0)));
 
 				THcc_El.Fill(El_smear, weight*Eff_em);
 				THcc_El_true.Fill(El_true, weight*Eff_em);
@@ -1698,10 +1698,10 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 				double endpos[3] = {0,0,0};
 				get_endpoint(vertex_pos,Lmu, pl, endpos);
 
-				//double prob =Pmm(detector->baseline+(vertex_pos[2]/1000.0),El_smear,DMSQ,S2TH);
+				//double prob =Pmm(detector->osc_length(rangen)+(vertex_pos[2]/1000.0),El_smear,DMSQ,S2TH);
 				
-				double prob = workingModel.oscProbSin(El_smear,0.001*(detector->baseline+(vertex_pos[2]/1000.0)));
-				double probsq = workingModel.oscProbSinSq(El_smear,0.001*(detector->baseline+(vertex_pos[2]/1000.0)));
+				double prob = workingModel.oscProbSin(El_smear,0.001*(detector->osc_length(rangen)+(vertex_pos[2]/1000.0)));
+				double probsq = workingModel.oscProbSinSq(El_smear,0.001*(detector->osc_length(rangen)+(vertex_pos[2]/1000.0)));
 				Ncontained1++;
 				if(detector->is_fully_contained(vertex_pos, endpos)){
 						observable_L = Lmu;
@@ -1774,7 +1774,7 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 		}//End NC pi + loop
 	} //end event loop
 	char namei[200];
-	sprintf(namei, "bkg_data/%s_%.2f.root",detector->name,workingModel.dm41Sq);
+	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,workingModel.dm41Sq);
 
 	TFile f(namei,"UPDATE");
 
@@ -2013,8 +2013,8 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 		{
 		El_smear = smear_energy(El_true, EMsmear, rangen);
 			
-		double prob = workingModel.oscProbSin(El_smear,0.001*(detector->baseline+(vertex_pos[2]/1000.0)));
-		double probsq = workingModel.oscProbSinSq(El_smear,0.001*(detector->baseline+(vertex_pos[2]/1000.0)));
+		double prob = workingModel.oscProbSin(El_smear,0.001*(detector->osc_length(rangen)+(vertex_pos[2]/1000.0)));
+		double probsq = workingModel.oscProbSinSq(El_smear,0.001*(detector->osc_length(rangen)+(vertex_pos[2]/1000.0)));
 	//	H_nonosc->Fill(El_smear+Ehad, weight*Eff_em);	
 
 		H_osc_1_sin.Fill(El_smear+Ehad, weight*Eff_em*prob);
@@ -2032,7 +2032,7 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 
 
 	char namei[200];
-	sprintf(namei, "bkg_data/%s_%.2f.root",detector->name,workingModel.dm41Sq);
+	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,workingModel.dm41Sq);
 
 	TFile f(namei,"UPDATE");
 	H_osc_1_sin.Write();
@@ -2275,8 +2275,8 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 			{
 
 
-			double prob = workingModel.oscProbSin(El_smear,0.001*(detector->baseline+(vertex_pos[2]/1000.0)));
-			double probsq = workingModel.oscProbSinSq(El_smear,0.001*(detector->baseline+(vertex_pos[2]/1000.0)));
+			double prob = workingModel.oscProbSin(El_smear,0.001*(detector->osc_length(rangen)+(vertex_pos[2]/1000.0)));
+			double probsq = workingModel.oscProbSinSq(El_smear,0.001*(detector->osc_length(rangen)+(vertex_pos[2]/1000.0)));
 
 				THcc_El.Fill(El_smear, weight*Eff_em);
 				THcc_El_true.Fill(El_true, weight*Eff_em);
@@ -2630,7 +2630,7 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 
 
 	char namei[200];
-	sprintf(namei, "bkg_data/%s_%.2f.root",detector->name,workingModel.dm41Sq);
+	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,workingModel.dm41Sq);
 
 	TFile f(namei,"UPDATE");
 

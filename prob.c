@@ -62,7 +62,7 @@ void neutrinoModel::difference(){
 double neutrinoModel::oscProbSin(double Ev, double L)
 {
 	
-	return sin(1.27*dm41Sq*L/Ev);
+	return sin(2*1.27*dm41Sq*L/Ev);
 
 }
 
