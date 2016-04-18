@@ -50,6 +50,7 @@ bool fit_flag = false;
 bool verbose_flag = false;
 bool test_flag=false;
 bool bkg_flag= false;
+bool sample_flag = true;
 
 
 double dm41 = -1.0;
@@ -94,6 +95,7 @@ while(iarg != -1)
 			verbose_flag = true;
 			break;
 		case 'd':
+			sample_flag = true;
 			dm41 = strtof(optarg,NULL); 
 			break;
 		case '?':
@@ -103,7 +105,7 @@ while(iarg != -1)
 			std::cout<<"\t-T\t--test\t\trun SBN test code"<<std::endl;
 			std::cout<<"\t-B\t--bkg\t\trun bkg generating test code"<<std::endl;
 			std::cout<<"\t-h\t--help\t\tDisplays this help message"<<std::endl;
-			std::cout<<"\t-d\t\t\tRequired Argument. run a 3+1 with dm41."<<std::endl;
+			std::cout<<"\t-d\t\t\tRequired Argument. Creates a sin and sin^2 frequency ntuples for a dmsq."<<std::endl;
 			std::cout<<"\t-v\t\t\tVerbose run, mostly debugging"<<std::endl;	
 			return 0;
 	}
@@ -124,6 +126,10 @@ if(fit_flag){
 	TRandom *rangen    = new TRandom();
 
 	// Calculate the expected background. Will read this in once trusted. see bkg_flag code below for how this works.
+for(double ue4 =0.01; ue4 < 1; ue4=ue4+0.05)
+{
+
+
 	neutrinoModel nullModel;
 	SBN_spectrum bkgspectrum(nullModel);
 	bkgspectrum.oscillate();
@@ -134,8 +140,10 @@ if(fit_flag){
 	/*Create a 3+1 spectrum object
 	 */
 	double m4 = 2.0; //in eV
-	double ue4 = 0.01;
-	double um4 = 0.02;
+//	double ue4 = 0.01;
+	double um4 = 0.1;
+
+
 
 	neutrinoModel sterilemodel(m4, ue4, um4);
 	SBN_spectrum SBN3p1(sterilemodel);
@@ -222,9 +230,8 @@ if(fit_flag){
 	}
 
 	std::cout<<" m4: "<<sterilemodel.mNu[0]<<" Ue4:  "<<sterilemodel.Ue[0] <<" Um4: "<<sterilemodel.Um[0]<<" chi2: "<<chi2<<std::endl;
-
+}//end for loop
 }// end fit flag
-
 
 
 if(bkg_flag){
@@ -301,6 +308,27 @@ if(bkg_flag){
 
 
 }// end bkg_flag
+
+if(sample_flag)
+{
+
+
+
+	neutrinoModel sModel(sqrt(dm41),1.0,1.0);
+	sModel.dm41Sq = dm41;
+
+
+	SBN_spectrum samplespectrum(sModel);
+
+
+	samplespectrum.oscillate_sample();
+
+
+
+
+
+}
+
 
 
 if(test_flag){

@@ -32,6 +32,8 @@ struct neutrinoModel{
 	double oscProb_dis(int a, double  Ev, double L);
 	double oscProb_app(int a,int b, double  Ev, double L);
 
+	double oscProbSin(double Ev, double L);
+	double oscProbSinSq(double Ev, double L);
 };
 
 

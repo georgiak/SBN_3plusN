@@ -88,11 +88,18 @@ class SBN_spectrum {
 	int fill_dis(SBN_detector *);
 	int fill_intrin(SBN_detector *);
 
+
+	int fill_app_sample(SBN_detector *);
+	int fill_dis_sample(SBN_detector *);
+	int fill_intrin_sample(SBN_detector *);
+
 	std::vector<double > add_SBN_spectrum(SBN_spectrum other);
 
 	int test_build();
 	//ToDo
 	void oscillate();
+	void oscillate_sample();
+	
 	void fill_hists();
         void fill_vectors();	
 	void vec_print();
