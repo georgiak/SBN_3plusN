@@ -59,8 +59,8 @@ int globInit(){
 
     using namespace std;
 
-	jobOptLoc = "../inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
-	dataLoc = "../data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
+	jobOptLoc = ""; ///Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
+	dataLoc = ""; ///Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
 
     // read jobOption file and fill variables
     jobOpt();
@@ -138,7 +138,7 @@ int globChisq(int ind){
 	RanGen.SetSeed(0);
 
 	//We're gonna set a random step size and temp size for now - that way we can play with it and see what works best, yeah?
-	step = RanGen.Rndm() * .3;
+	step = RanGen.Rndm() * .8;
 	temp = RanGen.Rndm() * 20.;
 
     // Initialize the parameters we'll be using
@@ -350,7 +350,7 @@ int globChisq(int ind){
             chi2 = chisqTotal.chi2;
             dof = ndf;  m4 = nuModel.mNu[0];    m5 = nuModel.mNu[1];    m6 = nuModel.mNu[2];    ue4 = nuModel.Ue[0];    ue5 = nuModel.Ue[1];    ue6 = nuModel.Ue[2];
             um4 = nuModel.Um[0];    um5 = nuModel.Um[1];    um6 = nuModel.Um[2]; phi45 = nuModel.phi[0];    phi46 = nuModel.phi[1]; phi56 = nuModel.phi[2];
-            chi2Nt->Fill(chi2, step, temp, m4, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45, phi46, phi56); //do this for every model
+            chi2Nt->Fill(chi2, step, temp, m4, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45, phi46, phi56);
 
 			// For testing
 			//break;

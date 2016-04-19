@@ -359,7 +359,7 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
                 ETru[iEvt] = pack.FOsc_EnuTrue[iEvt];
                 LTru[iEvt] = pack.FOsc_LnuTrue[iEvt];
 
-               // No-osc signal prediction
+               	// No-osc signal prediction
                 _prediction[iB] += pack.FOsc_weight[iEvt];
 
                 for(int iContribution = 0; iContribution < 6; iContribution++){
@@ -699,6 +699,150 @@ chisqStruct getChi2Nomad(neutrinoModel model, nomadPackage pack){
 
     return result;
 }
+
+chisqStruct getChi2CCFR(neutrinoModel model, ccfrPackage pack){
+
+    chisqStruct result;
+    result.zero();
+    oscContribution oscCont;
+
+    const int maxEnergyBins = 18;
+
+    ROOT::Math::Interpolator dif(dm2VecMaxDim);
+    double sinSqDeltaVec[dm2VecMaxDim];
+    double nFront[maxEnergyBins], nBack[maxEnergyBins];
+    double nFront_noOsc[maxEnergyBins], nBack_noOsc[maxEnergyBins];
+    double sinSq, ratio_theor[maxEnergyBins];
+	// Get the oscillation contributions - we've got a disappearance case here, looks like
+	oscCont = getOscContributionsNumuDis(model);
+
+    // Front Detector
+    for(int iC = 0; iC < maxEnergyBins; iC++){
+        for(int k = 0; k < dm2VecMaxDim; k++){
+            sinSqDeltaVec[k] = pack.sinSqDeltaGrid_front[k][iC];
+        }
+        dif.SetData(dm2VecMaxDim,dm2Vec,sinSqDeltaVec);
+
+		nFront[iC] = pack.noOscGrid[iC][0];
+
+        for(int iContribution = 0; iContribution < 6; iContribution++){
+			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
+			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
+            nFront[iC] += oscCont.aMuMu[iContribution] * sinSq;
+        }
+        nFront[iC] *= pack.m_front;
+        nFront_noOsc[iC] = pack.m_front * pack.noOscGrid[iC][0];
+    }
+
+    // Back Detector
+    for(int iC = 0; iC < maxEnergyBins; iC++){
+        for(int k = 0; k < dm2VecMaxDim; k++){
+            sinSqDeltaVec[k] = pack.sinSqDeltaGrid_back[k][iC];
+        }
+        dif.SetData(dm2VecMaxDim,dm2Vec,sinSqDeltaVec);
+
+        nBack[iC] = pack.noOscGrid[iC][1];
+
+        for(int iContribution = 0; iContribution < 6; iContribution++){
+			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
+			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
+            nBack[iC] += oscCont.aMuMu[iContribution] * sinSq;
+        }
+        nBack[iC] *= pack.m_back;
+        nBack_noOsc[iC] = pack.m_back * pack.noOscGrid[iC][1];
+    }
+
+    // Get the predicted ratio
+    for(int iC = 0; iC < maxEnergyBins; iC++){
+        ratio_theor[iC] = (nBack[iC]/nFront[iC])/(nBack_noOsc[iC]/nFront_noOsc[iC]);
+		//std::cout << "ratio theor: " << ratio_theor[iC] << std::endl;
+    }
+
+    // Calculate the chisq
+    for(int iC = 0; iC < maxEnergyBins; iC++){
+        for(int jC = 0; jC < maxEnergyBins; jC++){
+            result.chi2 += (pack.observed[iC] - ratio_theor[iC])*pack.sigmaRatio[iC][jC]*(pack.observed[jC] - ratio_theor[jC]);
+		}
+    }
+
+    return result;
+}
+
+chisqStruct getChi2CDHS(neutrinoModel model, cdhsPackage pack){
+
+    chisqStruct result;
+    result.zero();
+    oscContribution oscCont;
+
+    const int maxEnergyBins = 15;
+
+    ROOT::Math::Interpolator dif(dm2VecMaxDim);
+    double sinSqDeltaVec[dm2VecMaxDim];
+    double nFront[maxEnergyBins], nBack[maxEnergyBins];
+    double nFront_noOsc[maxEnergyBins], nBack_noOsc[maxEnergyBins];
+    double sinSq, ratio_theor[maxEnergyBins];
+	double cdhsDm2Vec[601];
+
+	// Get the oscillation contributions - we've got a disappearance case here
+	oscCont = getOscContributionsNumuDis(model);
+
+    // Front Detector
+    for(int iC = 0; iC < maxEnergyBins; iC++){
+        for(int k = 0; k < 601; k++){
+			cdhsDm2Vec[k] = pack.dm2Vec[k];
+            sinSqDeltaVec[k] = pack.sinSqDeltaGrid_front[k][iC];
+        }
+        dif.SetData(601,cdhsDm2Vec,sinSqDeltaVec);
+
+        nFront[iC] = pack.noOscGrid[iC][0];
+
+        for(int iContribution = 0; iContribution < 6; iContribution++){
+			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
+			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
+            nFront[iC] += oscCont.aMuMu[iContribution] * sinSq;
+        }
+        nFront[iC] *= pack.m_front[iC];
+        nFront_noOsc[iC] = pack.m_front[iC] * pack.noOscGrid[iC][0];
+    }
+
+    // Back Detector
+    for(int iC = 0; iC < maxEnergyBins; iC++){
+        for(int k = 0; k < 601; k++){
+            sinSqDeltaVec[k] = pack.sinSqDeltaGrid_back[k][iC];
+        }
+        dif.SetData(601,cdhsDm2Vec,sinSqDeltaVec);
+
+        nBack[iC] = pack.noOscGrid[iC][1];
+
+        for(int iContribution = 0; iContribution < 6; iContribution++){
+			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
+			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
+            nBack[iC] += oscCont.aMuMu[iContribution] * sinSq;
+        }
+        nBack[iC] *= pack.m_back[iC];
+        nBack_noOsc[iC] = pack.m_back[iC] * pack.noOscGrid[iC][1];
+    }
+
+    // Get the predicted ratio
+    for(int iC = 0; iC < maxEnergyBins; iC++){
+        //std::cout << nBack[iC]/nFront[iC] << " " << nBack_noOsc[iC]/nFront_noOsc[iC] << std::endl;
+        ratio_theor[iC] = (nBack[iC]/nFront[iC])/(nBack_noOsc[iC]/nFront_noOsc[iC]);
+    }
+
+    // Calculate the chisq
+    for(int iC = 0; iC < maxEnergyBins; iC++){
+        for(int jC = 0; jC < maxEnergyBins; jC++){
+            //std::cout << "observed: " << pack.observed[iC] << " ratio_theor: " << ratio_theor[iC] << " sigmaratio: " << pack.sigmaRatio[iC][jC] << std::endl;
+            result.chi2 += (pack.observed[iC] - ratio_theor[iC])*pack.sigmaRatio[iC][jC]*(pack.observed[jC] - ratio_theor[jC]);
+        }
+    }
+
+    return result;
+}
+
+
+// These guys below all use minuit, so they're trouble
+
 // Chooz, also more or less working
 void fcnChooz(int &npar, double *gin, double &fval, double  *xval, int iflag){
 
@@ -776,6 +920,7 @@ chisqStruct getChi2Chooz(neutrinoModel model, choozPackage pack){
 
 	return result;
 }
+
 // lsnd_karmen_xsec thing
 double getSinSqTerm(double dm2, double E1, double E2, double l1, double l2){
 
@@ -936,146 +1081,6 @@ chisqStruct getChi2Xsec(neutrinoModel model, xsecPackage pack){
 	result.chi2 = chisq;
 
 	return result;
-}
-
-chisqStruct getChi2CCFR(neutrinoModel model, ccfrPackage pack){
-
-    chisqStruct result;
-    result.zero();
-    oscContribution oscCont;
-
-    const int maxEnergyBins = 18;
-
-    ROOT::Math::Interpolator dif(dm2VecMaxDim);
-    double sinSqDeltaVec[dm2VecMaxDim];
-    double nFront[maxEnergyBins], nBack[maxEnergyBins];
-    double nFront_noOsc[maxEnergyBins], nBack_noOsc[maxEnergyBins];
-    double sinSq, ratio_theor[maxEnergyBins];
-	// Get the oscillation contributions - we've got a disappearance case here, looks like
-	oscCont = getOscContributionsNumuDis(model);
-
-    // Front Detector
-    for(int iC = 0; iC < maxEnergyBins; iC++){
-        for(int k = 0; k < dm2VecMaxDim; k++){
-            sinSqDeltaVec[k] = pack.sinSqDeltaGrid_front[k][iC];
-        }
-        dif.SetData(dm2VecMaxDim,dm2Vec,sinSqDeltaVec);
-
-		nFront[iC] = pack.noOscGrid[iC][0];
-
-        for(int iContribution = 0; iContribution < 6; iContribution++){
-			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
-            nFront[iC] += oscCont.aMuMu[iContribution] * sinSq;
-        }
-        nFront[iC] *= pack.m_front;
-        nFront_noOsc[iC] = pack.m_front * pack.noOscGrid[iC][0];
-    }
-
-    // Back Detector
-    for(int iC = 0; iC < maxEnergyBins; iC++){
-        for(int k = 0; k < dm2VecMaxDim; k++){
-            sinSqDeltaVec[k] = pack.sinSqDeltaGrid_back[k][iC];
-        }
-        dif.SetData(dm2VecMaxDim,dm2Vec,sinSqDeltaVec);
-
-        nBack[iC] = pack.noOscGrid[iC][1];
-
-        for(int iContribution = 0; iContribution < 6; iContribution++){
-			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
-            nBack[iC] += oscCont.aMuMu[iContribution] * sinSq;
-        }
-        nBack[iC] *= pack.m_back;
-        nBack_noOsc[iC] = pack.m_back * pack.noOscGrid[iC][1];
-    }
-
-    // Get the predicted ratio
-    for(int iC = 0; iC < maxEnergyBins; iC++){
-        ratio_theor[iC] = (nBack[iC]/nFront[iC])/(nBack_noOsc[iC]/nFront_noOsc[iC]);
-		//std::cout << "ratio theor: " << ratio_theor[iC] << std::endl;
-    }
-
-    // Calculate the chisq
-    for(int iC = 0; iC < maxEnergyBins; iC++){
-        for(int jC = 0; jC < maxEnergyBins; jC++){
-            result.chi2 += (pack.observed[iC] - ratio_theor[iC])*pack.sigmaRatio[iC][jC]*(pack.observed[jC] - ratio_theor[jC]);
-		}
-    }
-
-    return result;
-}
-
-chisqStruct getChi2CDHS(neutrinoModel model, cdhsPackage pack){
-
-    chisqStruct result;
-    result.zero();
-    oscContribution oscCont;
-
-    const int maxEnergyBins = 15;
-
-    ROOT::Math::Interpolator dif(dm2VecMaxDim);
-    double sinSqDeltaVec[dm2VecMaxDim];
-    double nFront[maxEnergyBins], nBack[maxEnergyBins];
-    double nFront_noOsc[maxEnergyBins], nBack_noOsc[maxEnergyBins];
-    double sinSq, ratio_theor[maxEnergyBins];
-	double cdhsDm2Vec[601];
-
-	// Get the oscillation contributions - we've got a disappearance case here
-	oscCont = getOscContributionsNumuDis(model);
-
-    // Front Detector
-    for(int iC = 0; iC < maxEnergyBins; iC++){
-        for(int k = 0; k < 601; k++){
-			cdhsDm2Vec[k] = pack.dm2Vec[k];
-            sinSqDeltaVec[k] = pack.sinSqDeltaGrid_front[k][iC];
-        }
-        dif.SetData(601,cdhsDm2Vec,sinSqDeltaVec);
-
-        nFront[iC] = pack.noOscGrid[iC][0];
-
-        for(int iContribution = 0; iContribution < 6; iContribution++){
-			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
-            nFront[iC] += oscCont.aMuMu[iContribution] * sinSq;
-        }
-        nFront[iC] *= pack.m_front[iC];
-        nFront_noOsc[iC] = pack.m_front[iC] * pack.noOscGrid[iC][0];
-    }
-
-    // Back Detector
-    for(int iC = 0; iC < maxEnergyBins; iC++){
-        for(int k = 0; k < 601; k++){
-            sinSqDeltaVec[k] = pack.sinSqDeltaGrid_back[k][iC];
-        }
-        dif.SetData(601,cdhsDm2Vec,sinSqDeltaVec);
-
-        nBack[iC] = pack.noOscGrid[iC][1];
-
-        for(int iContribution = 0; iContribution < 6; iContribution++){
-			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
-            nBack[iC] += oscCont.aMuMu[iContribution] * sinSq;
-        }
-        nBack[iC] *= pack.m_back[iC];
-        nBack_noOsc[iC] = pack.m_back[iC] * pack.noOscGrid[iC][1];
-    }
-
-    // Get the predicted ratio
-    for(int iC = 0; iC < maxEnergyBins; iC++){
-        //std::cout << nBack[iC]/nFront[iC] << " " << nBack_noOsc[iC]/nFront_noOsc[iC] << std::endl;
-        ratio_theor[iC] = (nBack[iC]/nFront[iC])/(nBack_noOsc[iC]/nFront_noOsc[iC]);
-    }
-
-    // Calculate the chisq
-    for(int iC = 0; iC < maxEnergyBins; iC++){
-        for(int jC = 0; jC < maxEnergyBins; jC++){
-            //std::cout << "observed: " << pack.observed[iC] << " ratio_theor: " << ratio_theor[iC] << " sigmaratio: " << pack.sigmaRatio[iC][jC] << std::endl;
-            result.chi2 += (pack.observed[iC] - ratio_theor[iC])*pack.sigmaRatio[iC][jC]*(pack.observed[jC] - ratio_theor[jC]);
-        }
-    }
-
-    return result;
 }
 
 // Bugey, finally working more or less

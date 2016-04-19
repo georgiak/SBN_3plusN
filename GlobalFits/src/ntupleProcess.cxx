@@ -19,7 +19,7 @@ std::string procOptLoc;
 
 int ntProcess(){
 
-	procOptLoc = "../inputs/";
+	procOptLoc = "/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/";
 	procOpt();
 
 	// Create tchain by linking all root ntuples
