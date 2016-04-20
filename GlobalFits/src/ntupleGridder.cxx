@@ -258,7 +258,6 @@ float getPtLog(int y, float min, float max){
 	return pow((y + TMath::Log10(min)) * (TMath::Log10(max/min)/(nGridPoints+1)),20);
 }
 
-bool procOpt(){
     // Here, we're going to read out the procOpt.txt file and assign those parameters.
 
 

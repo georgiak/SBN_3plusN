@@ -308,7 +308,6 @@ sinSqPackage lsndInit(){
 
             double a[] = {energyMin[iL],20,30. - 3.5};
             double b[] = {energyMax[iL],60,30. + 3.5};
-
             ROOT::Math::IntegratorMultiDim ig;
             ig.SetFunction(LSNDSinSq);
             pack.sinSqDeltaGrid[k][iL] = ig.Integral(a,b);// / (energyMax[iL] - energyMin[iL]);
