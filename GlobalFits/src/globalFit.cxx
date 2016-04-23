@@ -7,7 +7,6 @@ Notes:
 
 ------------------------------------------// */
 
-#include <TROOT.h>
 #include "globalFit.h"
 
 // Initializations
@@ -53,7 +52,6 @@ minosPackage minosPack; minosncPackage minosncPack; booneDisPackage mbNuDisPack,
 bugeyPackage bugeyPack; choozPackage choozPack; xsecPackage xsecPack;
 
 bool debug = true;
-std::string target = "detectors/mbdis/";
 
 int globInit(){
 
@@ -107,13 +105,11 @@ int globInit(){
 	if(debug && XSECProcess) std::cout << "XSEC initialized." << std::endl;
 
     getNDF();
-    myMinInit();
+	if(XSECProcess || BugeyProcess || CHOOZProcess)	myMinInit();
+
 	std::cout << "DOF: " << ndf << std::endl;
 
     std::cout << "Alright! Detector stuff successfully initialized!" << std::endl;
-
-	// Initialize goodnesses of fit for detectors
-	gof = 0;
 
 	return 1;
 }
@@ -159,10 +155,9 @@ int globChisq(int ind){
         chi2Log = 0;    chi2LogOld = 0;
         nuModelOld = initializeMarkovParams();
     }
-
+	
     // CHI2 CALCULATIONS
     std::cout << "Start generating neutrino mass and mixing models..." << std::endl;
-
 
     // If we're doing a Markov Scan, here we are!
     if(scanType == 2){
@@ -172,7 +167,7 @@ int globChisq(int ind){
 
             bool rejectCut; // calculated chisq fails cut
             do{
-                rejectCut = false;
+                rejectCut = true;
                 if(iMCGen == 1)
 					nuModel = initializeMarkovParams();
 				else
@@ -185,146 +180,151 @@ int globChisq(int ind){
 				//nuModel.Ue[1] = .11;	nuModel.Um[1] = .17; 	nuModel.mNu[1] = sqrt(17); 	nuModel.phi[0] = 1.6*TMath::Pi();
 				//nuModel.Ue[2] = .11;	nuModel.Um[2] = .14;	nuModel.mNu[2] = sqrt(22);	nuModel.phi[1] = .28*TMath::Pi(); nuModel.phi[2] = 1.4*TMath::Pi();
 
+				//nuModel.zero();
+				//nuModel.Ue[0] = .12; 	nuModel.Um[0] = .013;	nuModel.mNu[0] = sqrt(.92);
+				//nuModel.Ue[1] = .16;	nuModel.Um[1] = .019; 	nuModel.mNu[1] = sqrt(7.2); 	nuModel.phi[0] = 1.6*TMath::Pi();
+				//nuModel.Ue[2] = .069;	nuModel.Um[2] = .15;	nuModel.mNu[2] = sqrt(18);	nuModel.phi[1] = .28*TMath::Pi(); nuModel.phi[2] = 1.4*TMath::Pi();
+
                 // Now, let's actually start calculating the chisq
                 if(ATMOSPHERICProcess == 1){
                     chisqDetector = getChi2Atm(nuModel, atmPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "ATM: " << chisqDetector.chi2 << std::endl;
                 }
-                if(MBProcess == 1 && !rejectCut){
+                if(MBProcess == 1){
                     chisqDetector = getChi2Boone(nuModel, mbNuPack, false);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
 					chisqTotal.chi2 += chisqDetector.chi2;
                     chisqTotal.chi2_det += chisqDetector.chi2_det;
 					if(debug) std::cout << "MB: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(MBProcessNubar == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(MBProcessNubar == 1){
                     chisqDetector = getChi2Boone(nuModel, mbNubarPack, true);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
                     chisqTotal.chi2_det += chisqDetector.chi2_det;
 					if(debug) std::cout << "MBNubar: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(LSNDProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(LSNDProcess == 1){
                     chisqDetector = getLogLikelihood(nuModel, 5, lsndPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "LSND: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(KARMENProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(KARMENProcess == 1){
                     chisqDetector = getLogLikelihood(nuModel, 9, karmenPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "Karmen: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(GALLIUMProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(GALLIUMProcess == 1){
                     chisqDetector = getChi2Gallium(nuModel, galPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "Gal: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(NUMIProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(NUMIProcess == 1){
                     chisqDetector = getChi2Numi(nuModel, numiPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "Numi: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(NOMADProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(NOMADProcess == 1){
                     chisqDetector = getChi2Nomad(nuModel, nomadPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "Nomad: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(MINOSProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(MINOSProcess == 1){
                     chisqDetector = getChi2Minos(nuModel, minosPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "Minos: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(MINOSNCProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(MINOSNCProcess == 1){
                     // All of this has just been calculated elsewhere, so it's nice and quick.
                     double theta24_minosnc = asin(nuModel.Um[0]);
                     chisqDetector.chi2 = pow(theta24_minosnc - minosncPack.theta24_bestfit,2) / pow(minosncPack.sd_theta24,2);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "Minosnc: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(MBDISProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(MBDISProcess == 1){
                     chisqDetector = getChi2MBDis(nuModel, mbNuDisPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "MBDis: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(MBDISProcessNubar == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(MBDISProcessNubar == 1){
                     chisqDetector = getChi2MBDis(nuModel, mbNubarDisPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "MBDisNubar: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(CCFRProcess == 1 && !rejectCut){
+                if(CCFRProcess == 1){
                     chisqDetector = getChi2CCFR(nuModel, ccfrPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "CCFR: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-                if(CDHSProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+                if(CDHSProcess == 1){
                     chisqDetector = getChi2CDHS(nuModel, cdhsPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "CDHS: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-				if(BugeyProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+				if(BugeyProcess == 1){
                     chisqDetector = getChi2Bugey(nuModel, bugeyPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "Bugey: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-				if(CHOOZProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+				if(CHOOZProcess == 1){
                     chisqDetector = getChi2Chooz(nuModel, choozPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "Chooz: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
-				if(XSECProcess == 1 && !rejectCut){
+				if(chisqTotal.chi2 > chi2Cut) continue;
+				if(XSECProcess == 1){
                     chisqDetector = getChi2Xsec(nuModel, xsecPack);
-                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) rejectCut = true;
+                    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 
                     chisqTotal.chi2 += chisqDetector.chi2;
 					if(debug) std::cout << "Xsec: " << chisqDetector.chi2 << std::endl;
                 }
-				if(chisqTotal.chi2 > chi2Cut) rejectCut = true;
+				if(chisqTotal.chi2 > chi2Cut) continue;
+				rejectCut = false;
             }while(rejectCut);
 
             std::cout << "chisqtotal: " << chisqTotal.chi2 << std::endl;
@@ -869,7 +869,6 @@ void makeMBPlot(){
 		legS->AddEntry(hist_pred_31,"3+1 Pred","f");
 		legS->AddEntry(hist_pred_32,"3+2 Pred","f");
 		legS->AddEntry(hist_pred_33,"3+3 Pred","f");
-
 
 		hist_obs->Draw("p");
 		hist_pred_31->Draw("h same");

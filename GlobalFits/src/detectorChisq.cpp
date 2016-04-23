@@ -322,7 +322,6 @@ chisqStruct getChi2Numi(neutrinoModel model, numiPackage pack){
 chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
     const int nBins = 16;
-    const long int nEvts = pack.nFOscEvts;
 
     // Initialize the result!
     chisqStruct result;
@@ -332,10 +331,9 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
     double minEBins[nBins], maxEBins[nBins];
     double dtIntegral = 0.;     double MCIntegral = 0.;
-    double * ETru = new double[nEvts];
-    double * LTru = new double[nEvts];
+	double ETru, LTru;
+	double FOsc_EnuQE, FOsc_EnuTrue, FOsc_LnuTrue, FOsc_weight;
 
-    model.difference();
     _signal.resize(nBins);
     _prediction.resize(nBins);
 
@@ -349,25 +347,36 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
     covMatrix.Zero();
 
 	oscCont = getOscContributionsNumuDis(model);
-    for(int iEvt = 0; iEvt < nEvts; iEvt++){
+
+	ifstream file;
+	file.open(pack.foscData.c_str());
+	int dummy;
+    for(long int iEvt = 0; iEvt < pack.nFOscEvts; iEvt++){
+		file >> dummy;
+        file >> FOsc_EnuQE;
+        file >> FOsc_EnuTrue;   // true energy of neutrino
+        file >> FOsc_LnuTrue;   // distance from production and detection points
+        file >> FOsc_weight;    // event weight
+
         for(int iB = 0; iB < nBins; iB++){
             minEBins[iB] = pack.EnuQE[iB];
             maxEBins[iB] = pack.EnuQE[iB+1];
 
-            if(pack.FOsc_EnuQE[iEvt] > minEBins[iB] && pack.FOsc_EnuQE[iEvt] < maxEBins[iB]){
+            if(FOsc_EnuQE > minEBins[iB] && FOsc_EnuQE < maxEBins[iB]){
                 // Get predicted signal by multiplying the osc prob by the weight of each event!
-                ETru[iEvt] = pack.FOsc_EnuTrue[iEvt];
-                LTru[iEvt] = pack.FOsc_LnuTrue[iEvt];
+                ETru = FOsc_EnuTrue;
+                LTru = FOsc_LnuTrue;
 
                	// No-osc signal prediction
-                _prediction[iB] += pack.FOsc_weight[iEvt];
+                _prediction[iB] += FOsc_weight;
 
                 for(int iContribution = 0; iContribution < 6; iContribution++){
-                    _signal[iB] += pack.FOsc_weight[iEvt]*oscCont.aMuMu[iContribution]*pow(sin(1.267*oscCont.dm2[iContribution]*LTru[iEvt] / ETru[iEvt]),2);
+                    _signal[iB] += FOsc_weight*oscCont.aMuMu[iContribution]*pow(sin(1.267*oscCont.dm2[iContribution]*LTru / ETru),2);
                 }
             }
         }
     }
+	file.close();
 
     // Normalize signal prediction to data
     for(int iB = 0; iB < nBins; iB++){

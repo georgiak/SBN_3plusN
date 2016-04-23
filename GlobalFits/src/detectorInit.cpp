@@ -282,9 +282,8 @@ sinSqPackage lsndInit(){
     double rGammaCutEfficiency = .39;
 
     // First, the norm!
-	// What is the norm exactly?
-	//   Good question, Davio! It- well, I don't know. But it seeeeems to be the full number of events assuming full
-	// nue->numu transmutation.
+
+
     integralFuncsLSND funcLSND;
     for(int iL = 0; iL < nBins; iL++){
         ROOT::Math::Functor LSNDNorm(&funcLSND, &integralFuncsLSND::normFunc,3);
@@ -315,6 +314,7 @@ sinSqPackage lsndInit(){
             pack.sinSqDeltaGrid2[k][iL] = ig.Integral(a,b);// / (energyMax[iL] - energyMin[iL]);
 		}
     }
+	std::cout << "finally done with that!" << std::endl;
 
     ndf += nBins;
     return pack;
@@ -483,16 +483,14 @@ booneDisPackage mbNuDisInit(){
     booneDisPackage pack;
 
     const int nBins = 16;
-    const long int nFOscEvts= 1267007;
+    const int nFOscEvts= 1267007;
 	pack.nFOscEvts = nFOscEvts;
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
-    pack.FOsc_EnuQE = new double[nFOscEvts];
-    pack.FOsc_EnuTrue = new double[nFOscEvts];
-    pack.FOsc_LnuTrue = new double[nFOscEvts];
-    pack.FOsc_weight = new double[nFOscEvts];
+
+	pack.foscData = dataLoc+"numudisap_ntuple.txt";
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
@@ -511,17 +509,6 @@ booneDisPackage mbNuDisInit(){
             file >> pack.full_fractCovMatrix[i][j];
     file.close();
 
-    file.open(dataLoc+"numudisap_ntuple.txt");
-    int dummy;
-    for(int i = 0; i < nFOscEvts; i++){
-        file >> dummy;
-        file >> pack.FOsc_EnuQE[i];
-        file >> pack.FOsc_EnuTrue[i];   // true energy of neutrino
-        file >> pack.FOsc_LnuTrue[i];   // distance from production and detection points
-        file >> pack.FOsc_weight[i];    // event weight
-    }
-    file.close();
-
     ndf += nBins;
     return pack;
 }
@@ -535,10 +522,8 @@ booneDisPackage mbNubarDisInit(){
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
-    pack.FOsc_EnuQE = new double[nFOscEvts];
-    pack.FOsc_EnuTrue = new double[nFOscEvts];
-    pack.FOsc_LnuTrue = new double[nFOscEvts];
-    pack.FOsc_weight = new double[nFOscEvts];
+
+    pack.foscData = dataLoc+"numubardisap_ntuple.txt";
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
@@ -555,17 +540,6 @@ booneDisPackage mbNubarDisInit(){
     for(int i = 0; i < nBins; i++)
         for(int j = 0; j < nBins; j++)
             file >> pack.full_fractCovMatrix[i][j];
-    file.close();
-
-    file.open(dataLoc+"numubardisap_ntuple.txt");
-    int dummy;
-    for(int i = 0; i < nFOscEvts; i++){
-        file >> dummy;
-        file >> pack.FOsc_EnuQE[i];
-        file >> pack.FOsc_EnuTrue[i];   // true energy of neutrino
-        file >> pack.FOsc_LnuTrue[i];   // distance from production and detection points
-        file >> pack.FOsc_weight[i];    // event weight
-    }
     file.close();
 
     ndf += nBins;

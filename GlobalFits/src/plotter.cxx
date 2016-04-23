@@ -39,8 +39,8 @@ int globFit_plotter(){
 		c1->SetLogx();
 
 		h->SetTitle("3+3 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{51}");
-		h->GetXaxis()->SetRange(.01,100);
-		h->GetYaxis()->SetRange(.01,100);
+		//h->GetXaxis()->SetRange(.01,100.);
+		//h->GetYaxis()->SetRange(.01,100.);
 		h->Draw();
         c1->Update();
         chi2_99->SetMarkerStyle(20);
@@ -50,8 +50,8 @@ int globFit_plotter(){
         c1->Print((output + "/" + dataset + "_dm251xdm241.png").c_str());
 
 		h->SetTitle("3+3 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{61}");
-		h->GetXaxis()->SetRange(.01,100);
-		h->GetYaxis()->SetRange(.01,100);
+		//h->GetXaxis()->SetRange(.01,100.);
+		//h->GetYaxis()->SetRange(.01,100.);
 		h->Draw();
         c1->Update();
 		chi2_99->SetMarkerStyle(20);
@@ -66,8 +66,8 @@ int globFit_plotter(){
 		c1->SetLogx();
 
 		h->SetTitle("3+2 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{51}");
-		h->GetXaxis()->SetRange(.01,100);
-		h->GetYaxis()->SetRange(.01,100);
+		//h->GetXaxis()->SetRange(.01,100.);
+		//h->GetYaxis()->SetRange(.01,100.);
 		h->Draw();
         c1->Update();
 		chi2_99->SetMarkerStyle(20);
