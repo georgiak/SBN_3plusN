@@ -23,6 +23,7 @@
 \def\ie{\emph{i.e.}}
 \def\aka{\emph{a.k.a.}}
 \def\muboone{MicroBooNE}
+\def\icarus{Icarus}
 \def\minerva{MINER$\nu$A}
 
 %%%%%%% A few editorial macros. %%%%%%%
@@ -123,7 +124,7 @@ for the search for sterile neutrinos of this type.
 This experimental facility comprises of three separate detectors placed in the
 Booster Neutrino Beam (BNB) at different (short) baseline distances: SBND
 (previously known as LAr1-ND) at 110~m from the target, \muboone\ at 470~m and
-Icarus-T600 at 600~m.  All three detectors are filled with Liquid Argon (LAr)
+\icarus-T600 at 600~m.  All three detectors are filled with Liquid Argon (LAr)
 giving unprecedented reconstruction and particle identification capabilities
 allowing for significantly lower backgrounds than predecessor technologies. 
 %
@@ -507,7 +508,7 @@ significant.
 %
 \caption{\label{fig:timing} Shown above is the timing delay of sterile neutrino
 decays in nano-seconds for both a 25 MeV (top) and 350 MeV (bottom) sterile
-neutrino at the SBND and and Icarus detectors (110 and 600m
+neutrino at the SBND and and \icarus\ detectors (110 and 600m
 respectively). The 2 ns beam bucket window is shown highlighted in red from 0
 to 2 ns, followed by an additional 19 ns gap. The timings are calculated as a
 difference to the time of flight of a active neutrino, assuming the decay
@@ -539,13 +540,13 @@ must be analysed as a signal on top of the beam-related backgrounds in the
 standard analysis. However, as the sterile neutrino mass incresaes, the
 baseline distance starts to become relevant. At $m_{\text{s}}=350$ MeV, we see
 that many events still fall in the in beam timing window for SBND; however,
-\muboone\ and Icarus see significant deviation from this with clear peaks in
+\muboone\ and \icarus\ see significant deviation from this with clear peaks in
 the inter-RF-bucket spacing where one would not expect to see any
 beam-correlated backgrounds. Events falling outside these bins, would not be
 counted as part of the beam-related event sample. Assuming the backgrounds can
 be brought under control in these different timing windows, this signature
 would be a striking one: a beam-related excess at SBND with none at \muboone\
-or Icarus, but an excess at both sites in their non-beam related data.
+or \icarus, but an excess at both sites in their non-beam related data.
 
 The implication of the timing effects, is that our discussion of backgrounds
 must be divided in two cases: for low mass steriles or any mass at SBND, we
@@ -749,7 +750,7 @@ running in this mode, that is we assume that all events, regardless of their
 timing information are collected into the same event sample. For SBND this is a
 realistic model of the experiments operation: all of the heavy states
 considered in this paper will generate decays in the normal event sample
-associated with the neutrino beam. For \muboone\ and Icarus, the problem of
+associated with the neutrino beam. For \muboone\ and \icarus, the problem of
 timing becomes relevant.  For low mass steriles, again the analysis of this
 section reflects all of the information these experiments have to hand;
 however, at higher masses the timing information of these events will be
@@ -993,7 +994,7 @@ To summerise, we collect the total numbers of beam-induced background events exp
 
 
 \subsection{Non-Beam related backgrounds}
-Cosmogenic backgrounds are expected to be significantly smaller in comparison to beam related backgrounds. In the case of cosmic muons, Icarus expects to see approximately $2.5 \times 10^{6}$ cosmic events in the 211 second beam spill,
+Cosmogenic backgrounds are expected to be significantly smaller in comparison to beam related backgrounds. In the case of cosmic muons, \icarus\ expects to see approximately $2.5 \times 10^{6}$ cosmic events in the 211 second beam spill,
 and are reduced to approximately 5 events expected after utilizing the spill
 structure, scintillation light patterns and cuts on $\frac{d E}{d x}$
 \cite{Antonello:2015lea}.  Alongside this impressive cosmic rejection, our signal
@@ -1009,49 +1010,59 @@ are an unavoidable source of uncertainty.
 
 
 \section{\label{sec:baselineinterplay}Baseline dependence at the SBN complex}
-The combination of three detectors, all operating with the same technology in
-the same neutrino beam allows for distinctive signatures of new physics. By
-studying the dependence of the signal on baseline and detector mass, we could
-hope to further constrain the model underlying explanations of any observed
-excess.  
 
-In this section we will discuss two ways to constrain new physics if an excess
-of events is observed. First, we focus on the ways that event numbers scale
-between the detectors and in which scenarios we could identify the origins of
-an excess of events. Secondly, we discuss the role of timing on model selection.
-Timing delays between excesses would be strong evidence for heavy particles 
-propagating between source and detector, and we explore how the study of timing
-effects could be used to bound the mass of the particle in a model independent 
-fashion.
+Given the existing anomalies in short baseline neutrino experiments, including
+MiniBooNE which operated in the Booster beamline, the possibility of seeing an
+anomalous signature at the SBN complex should not be ignored. There are
+competing theoretical explanations for existing excesses: oscillatory sterile
+neutrinos \cite{Everyone...}, neutrino decay \cite{PascoliSchwetz}, neutrino
+production and decay inside the detector \cite{Gninenko/Meloni}. Distinguishing
+between competing hypotheses would then be an important part of the
+experimental analysis. 
+
+The combination of the three SBN detectors, all operating with the same
+technology in the same neutrino beam, allows for distinctive signatures of new
+physics. In this section, we assess the potential for SBN to investigate an
+excess of events seen at one or all of the detectors. 
+%
+%We focus in particular on two features of the design: the three detectors
+%situtated at different baseline distances from the source and the timing
+%information that can be associated with each event. 
+%
+%In this section we will discuss two ways to constrain new physics if an excess
+%of events is observed. 
+%
+First, we focus on the ways that event numbers scale between the detectors and
+to what extent this information could be used to identify the origins of an
+excess of events. Secondly, we discuss the role of event timing information can
+have on model selection.  Timing delays between excesses would be strong
+evidence for heavy particles propagating between source and detector, and we
+explore how the study of timing effects could be used to bound the mass of the
+particle in a model independent fashion.
+
+We consider three possible explanations for an anomalous excess of particles:
+
+\begin{itemize}
+%
+\item Decaying heavy particles in the beam (\emph{e.g.} MeV sterile decay in flight).
+%
+\item Beam-induced process inside the detector (\emph{e.g} heavy sterile production and decay in situ).
+%
+\item Oscillating sterile neutrinos
+%
+\item Non-beam related process (\emph{e.g.} cosmogenics)
+%
+\end{itemize}
 
 \subsection{Scaling behaviour of event rates}
-%
-%\begin{figure}[t]
-%%
-%\centering
-%%
-%\includegraphics[width=0.49\textwidth,clip,trim=0 20 35 10]{figures/baselineratios_ee_um4.pdf} 
-%%
-%\caption{\label{fig:baselineratios} The ratio of event numbers for the $e^+e^-$
-%decay channel between the three detectors as a function of mass and mixing in
-%the minimal extension to the SM.  All the regions towards the lower-left
-%predict a ratio of $1$ between the observed excesses, and the contours show the
-%lines for excess-ratios of less than 1, 0.75, 0.5 and 0.25. The ratios have been scaled
-%to account for the dependence of the flux on baseline, and the difference comes
-%purely from the attenuation of the beam due to decays in transit between source
-%and detector. }
-%%
-%\end{figure}
 
-An excess of events at a detector often has multiple competing explanations.
-However, in most physical scenarios the scaling behaviour of the predicted
-number of events will differ. For example, any source of excess events which is
-induced by the neutrino beam should inherit a $L^{-2}$ dependence on baseline
-distance from the dispersion of the neutrino flux. Between three detectors,
-this would generate a distinctive relative enhancement of the signal at SBND
-and relative suppression of the signal at ICARUS compared to a fixed nominal
-excess at \muboone. This is in contrast to, for example, an excess of
-misidentified cosmogenic events which would have no baseline dependence.
+Any source of excess events which is induced by the neutrino beam should
+inherit a $L^{-2}$ dependence on baseline distance from the dispersion of the
+neutrino flux. Between three detectors, this would generate a distinctive
+relative enhancement of the signal at SBND and relative suppression of the
+signal at \icarus\ compared to a fixed nominal excess at \muboone. This is in
+contrast to, for example, an excess of misidentified cosmogenic events which
+would have no baseline dependence.
 
 New physics may cause a signficant dependence on baseline. One of the much
 discussed ways to explain an excess of events at a short baseline neutrino
@@ -1060,7 +1071,7 @@ three different detectors depend crucially on the respective distances from
 source to detector according to the oscillation prbobability. In the scenarios
 discussed in this paper, we also see baseline dependence coming from
 \refeq{eq:prob}, albeit in a very different form. For most of the parameter
-space, we would predict no significant baseline dependence on the event rates
+space, we predict no significant baseline dependence on the event rates
 at the three detectors, once the $1/L^2$ dependence of the flux is removed;
 however, for large decay rates we see a baseline dependent effect. This is
 shown in \reffig{fig:baselineratios}, where the event numbers for $e^-e^-$
@@ -1086,7 +1097,7 @@ situated at distinct baselines. One opportunity that this suggests is the
 observation of time delayed signals between the sites. As particles with finite
 rest mass, the heavy neutral leptons will propagate at subluminal speeds and
 for larger masses can produce observable timing delays. If an excess of events
-is observed with a clear timing delay between SBND and Icarus, this would be
+is observed with a clear timing delay between SBND and \icarus, this would be
 very difficult to explain using an oscillatory sterile, neutrino induced
 beam-correlated signal or other non-beam background and would be a clear
 indication of a heavy propagating degree of freedom. 
