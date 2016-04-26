@@ -80,14 +80,15 @@ int globFit_plotter(){
 	if(steriles == 1){
 		c1->SetLogy();
 
-		h->SetTitle("3+1 #Chi^{2};sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}")
-		h->GetXaxis()->SetRange(.01,100.);
-		h->GetYaxis()->SetRange(.01,100.);
+		h->SetTitle("3+1 #Chi^{2};sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
+		//h->GetXaxis()->SetRange(.01,100.);
+		//h->GetYaxis()->SetRange(.01,100.);
 		h->Draw();
         c1->Update();
-        in_chain->SetMarkerStyle(20);
-        in_chain->SetMarkerColor(kBlue);    	in_chain->Draw("m4*m4:4*ue4*ue4*um4*um4",cutS1.c_str(),"same");
-        in_chain->SetMarkerColor(kMagenta);    	in_chain->Draw("m4*m4:4*ue4*ue4*um4*um4",cutS2.c_str(),"same");
+		chi2_99->SetMarkerStyle(20);
+		chi2_90->SetMarkerStyle(20);
+        chi2_99->SetMarkerColor(kBlue);    	chi2_99->Draw("m4*m4:4*ue4*ue4*um4*um4","","same");
+        chi2_90->SetMarkerColor(kMagenta);    	chi2_90->Draw("m4*m4:4*ue4*ue4*um4*um4","","same");
         c1->Print((output + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
 	}
 
