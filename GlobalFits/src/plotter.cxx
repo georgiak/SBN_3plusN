@@ -3,8 +3,8 @@
 #include "TCut.h"
 
 int steriles = 3;
-std::string dataset = "app";
-std::string myRoot = "nt_33_app.root";
+std::string dataset = "all";
+std::string myRoot = "nt_31_all.root";
 std::string location = "ntuples";
 std::string output = "plots";
 
@@ -77,22 +77,20 @@ int globFit_plotter(){
         c1->Print((output + "/" + dataset + "_3plus2_dm251xdm241.png").c_str());
 	}
 
-	/*
 	if(steriles == 1){
 		c1->SetLogy();
 
-
-		h->SetTitle("3+2 #Chi^{2};#Delta m^{2}_{41};sin^{2}(2#Theta_{e#mu})")
-		h->GetXaxis()->SetRange(.01,100);
-		h->GetYaxis()->SetRange(.01,100);
+		h->SetTitle("3+1 #Chi^{2};sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}")
+		h->GetXaxis()->SetRange(.01,100.);
+		h->GetYaxis()->SetRange(.01,100.);
 		h->Draw();
         c1->Update();
         in_chain->SetMarkerStyle(20);
-        in_chain->SetMarkerColor(kBlue);    	in_chain->Draw(":m4*m4",cutS1.c_str(),"same");
-        in_chain->SetMarkerColor(kMagenta);    	in_chain->Draw("m5*m5:m4*m4",cutS2.c_str(),"same");
-        c1->Print(output + "/" + dataset + "_3plus2_dm251xdm241.png");
+        in_chain->SetMarkerColor(kBlue);    	in_chain->Draw("m4*m4:4*ue4*ue4*um4*um4",cutS1.c_str(),"same");
+        in_chain->SetMarkerColor(kMagenta);    	in_chain->Draw("m4*m4:4*ue4*ue4*um4*um4",cutS2.c_str(),"same");
+        c1->Print(output + "/" + dataset + "_3plus1_dm241xsinsq2t.png");
 	}
-	*/
+
 
     return 0;
 }
