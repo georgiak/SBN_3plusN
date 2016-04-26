@@ -2,7 +2,7 @@
 #include "globalFit.h"
 #include "TCut.h"
 
-int steriles = 3;
+int steriles = 1;
 std::string dataset = "all";
 std::string myRoot = "nt_31_all.root";
 std::string location = "ntuples";
@@ -88,7 +88,7 @@ int globFit_plotter(){
         in_chain->SetMarkerStyle(20);
         in_chain->SetMarkerColor(kBlue);    	in_chain->Draw("m4*m4:4*ue4*ue4*um4*um4",cutS1.c_str(),"same");
         in_chain->SetMarkerColor(kMagenta);    	in_chain->Draw("m4*m4:4*ue4*ue4*um4*um4",cutS2.c_str(),"same");
-        c1->Print(output + "/" + dataset + "_3plus1_dm241xsinsq2t.png");
+        c1->Print((output + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
 	}
 
 
