@@ -1009,32 +1009,25 @@ are an unavoidable source of uncertainty.
 
 
 
-\section{\label{sec:baselineinterplay}Baseline dependence at the SBN complex}
+\section{\label{sec:baselineinterplay}Model comparison at the SBN complex}
 
+%1. intro
 Given the existing anomalies in short baseline neutrino experiments, including
 MiniBooNE which operated in the Booster beamline, the possibility of seeing an
 anomalous signature at the SBN complex should not be ignored. There are
 competing theoretical explanations for existing excesses: oscillatory sterile
-neutrinos \cite{Everyone...}, neutrino decay \cite{PascoliSchwetz}, neutrino
-production and decay inside the detector \cite{Gninenko/Meloni}. Distinguishing
-between competing hypotheses would then be an important part of the
-experimental analysis. 
+neutrinos \cite{Everyone...}, neutrino decay \cite{Pascoli, Schwetz}, neutrino
+production and decay inside the detector \cite{Gninenko, Meloni, Us?}. Taking 
+this as motivation, we consider here the differentiating characteristics of some 
+different models of new physics in the neutrino sector. 
 
+%2. features of SBN which are interesting
 The combination of the three SBN detectors, all operating with the same
 technology in the same neutrino beam, allows for distinctive signatures of new
 physics. In this section, we assess the potential for SBN to investigate an
 excess of events seen at one or all of the detectors. 
 %
-%We focus in particular on two features of the design: the three detectors
-%situtated at different baseline distances from the source and the timing
-%information that can be associated with each event. 
-%
-%In this section we will discuss two ways to constrain new physics if an excess
-%of events is observed. 
-%
-First, we focus on the ways that event numbers scale between the detectors and
-to what extent this information could be used to identify the origins of an
-excess of events. Secondly, we discuss the role of event timing information can
+Secondly, we discuss the role of event timing information can
 have on model selection.  Timing delays between excesses would be strong
 evidence for heavy particles propagating between source and detector, and we
 explore how the study of timing effects could be used to bound the mass of the
@@ -1042,53 +1035,92 @@ particle in a model independent fashion.
 
 We consider three possible explanations for an anomalous excess of particles:
 
-\begin{itemize}
-%
-\item Decaying heavy particles in the beam (\emph{e.g.} MeV sterile decay in flight).
-%
-\item Beam-induced process inside the detector (\emph{e.g} heavy sterile production and decay in situ).
-%
-\item Oscillating sterile neutrinos
-%
-\item Non-beam related process (\emph{e.g.} cosmogenics)
-%
-\end{itemize}
+%3. models to be distinguished between
+\subsection{Comparison between sterile neutrino oscillations and decays in flight}
 
-\subsection{Scaling behaviour of event rates}
+The oscillatory sterile explanation of low-energy anomalies in neutrino data is
+theoretically appealing if not entirely phenomenologically satisfactory. Either
+way, the SBN complex will be able to place important constraints on these
+models. With the purposes of our present study in mind, there is little chance
+that an oscillatory sterile could be confused by a MeV scale decaying sterile.
+The signal for an oscillatory sterile would be a single electron, arising from
+a charged-current quasi-elastic processes. There are no channels available to a
+decaying sterile neutrino which could produce such a signal without an
+additional (charged) particle. 
 
-Any source of excess events which is induced by the neutrino beam should
-inherit a $L^{-2}$ dependence on baseline distance from the dispersion of the
-neutrino flux. Between three detectors, this would generate a distinctive
-relative enhancement of the signal at SBND and relative suppression of the
-signal at \icarus\ compared to a fixed nominal excess at \muboone. This is in
-contrast to, for example, an excess of misidentified cosmogenic events which
-would have no baseline dependence.
+\newtext{PB}{Would it be worth writing anything here about electron(s)/photon
+discrimination?}
 
-New physics may cause a signficant dependence on baseline. One of the much
-discussed ways to explain an excess of events at a short baseline neutrino
-experiment is through sterile neutrino oscillations. The rates predicted at
-three different detectors depend crucially on the respective distances from
-source to detector according to the oscillation prbobability. In the scenarios
-discussed in this paper, we also see baseline dependence coming from
-\refeq{eq:prob}, albeit in a very different form. For most of the parameter
-space, we predict no significant baseline dependence on the event rates
-at the three detectors, once the $1/L^2$ dependence of the flux is removed;
-however, for large decay rates we see a baseline dependent effect. This is
-shown in \reffig{fig:baselineratios}, where the event numbers for $e^-e^-$
-decay are shown as ratios between the three detectors. These have been scaled
-to remove the baseline dependence of the flux.  The four lines for each
-detector show the 100\%, 75\%, 50\% and 25\% contours (where the further
-detector sees fewer events). Such decay rates are forbidden in the minimal
-extension of the SM incorporating MeV scale sterile neutrinos
-\newtext{PB}{True?}. In a non-minimal model, it remains possible that decays
-with decay lengths of the order $100$~m could exist, leading to a very 
-significant depletion of events at the further detectors.
+There is also a strong difference in the baseline dependence which may be
+visible at SBN. \newtext{PB}{It feels a bit pointless to fill this section
+out.}
 
-We show in \reffig{fig:baselineratios} a plot highlighting the contrasting
-behaviour between these alternative explanations for an excess seen at the SBN
-complex. In these plots we assume a fixed $100$ events at \muboone\ and observe
-the distribution of events at the other sites for different models of new
-physics.
+\subsection{Differences between decays in flight and production/decay in situ}
+
+The model of Gninenko \cite{Gninenko:2009ks,Gninenko:2010pr} which seeks to
+explain the MiniBooNE excess through the production and decay of a new sterile
+fermion inside the detector, has received significant attention in the
+literature. This model general requires quite a large non-minimal transition
+magnetic moment to ensure sufficient decays. 
+
+Our model of decaying sterile neutrinos in flight is formally similar to the
+Gninenko model, albeit with a more general set of observable final states. The
+main difference lies in the region of parameter space for which a signal would
+be generated for any beam dump experiment. With the high decay rates of
+Gninenko, no significant sterile component would exist in the beam by the time
+the particles reached SBND. Vice versa, the minimal sterile model simply does
+not have a high enough decay rate to see any decays after particle productions
+inside the detector via mixing-matrix element mediated neutral current
+scattering. However, without a knowledge of the true parameter space, these two
+models could be confused. The main way to distinguish them would be through
+their spectrum of events. Although both models produce visible particles
+through sterile neutrino decay in flight, the additional neutral current
+cross-section required by the Gninenko-type sterile suppresses the lowest
+energy events. As can be seen in \reffig{fig:XXX}, we see a marked difference
+between these signals at SBND. If we factor in the cut-based analysis that was
+performed in the preceeding section, we see that the model in this paper does
+lose a significant number of events from the lowest bins. To separate these
+events cleanly, the analysis should be optimised to keep as many of these
+lowest energy events as possible. 
+
+\newtext{PB}{A relevant point here would be the use of timing.}
+
+%
+%\subsection{Scaling behaviour of event rates}
+%
+%Any source of excess events which is induced by the neutrino beam should
+%inherit a $L^{-2}$ dependence on baseline distance from the dispersion of the
+%neutrino flux. Between three detectors, this would generate a distinctive
+%relative enhancement of the signal at SBND and relative suppression of the
+%signal at \icarus\ compared to a fixed nominal excess at \muboone. This is in
+%contrast to, for example, an excess of misidentified cosmogenic events which
+%would have no baseline dependence.
+%
+%New physics may cause a signficant dependence on baseline. One of the much
+%discussed ways to explain an excess of events at a short baseline neutrino
+%experiment is through sterile neutrino oscillations. The rates predicted at
+%three different detectors depend crucially on the respective distances from
+%source to detector according to the oscillation prbobability. In the scenarios
+%discussed in this paper, we also see baseline dependence coming from
+%\refeq{eq:prob}, albeit in a very different form. For most of the parameter
+%space, we predict no significant baseline dependence on the event rates
+%at the three detectors, once the $1/L^2$ dependence of the flux is removed;
+%however, for large decay rates we see a baseline dependent effect. This is
+%shown in \reffig{fig:baselineratios}, where the event numbers for $e^-e^-$
+%decay are shown as ratios between the three detectors. These have been scaled
+%to remove the baseline dependence of the flux.  The four lines for each
+%detector show the 100\%, 75\%, 50\% and 25\% contours (where the further
+%detector sees fewer events). Such decay rates are forbidden in the minimal
+%extension of the SM incorporating MeV scale sterile neutrinos
+%\newtext{PB}{True?}. In a non-minimal model, it remains possible that decays
+%with decay lengths of the order $100$~m could exist, leading to a very 
+%significant depletion of events at the further detectors.
+%
+%We show in \reffig{fig:baselineratios} a plot highlighting the contrasting
+%behaviour between these alternative explanations for an excess seen at the SBN
+%complex. In these plots we assume a fixed $100$ events at \muboone\ and observe
+%the distribution of events at the other sites for different models of new
+%physics.
 
 \subsection{\label{sec:timing_physics}Timing for model discrimination}
 
