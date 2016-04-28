@@ -2,9 +2,9 @@
 #include "globalFit.h"
 #include "TCut.h"
 
-int steriles = 1;
+int steriles = 3;
 std::string dataset = "all";
-std::string myRoot = "nt_31_all.root";
+std::string myRoot = "nt_33_all.root";
 std::string location = "ntuples";
 std::string output = "plots";
 
@@ -39,23 +39,23 @@ int globFit_plotter(){
 		c1->SetLogx();
 
 		h->SetTitle("3+3 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{51}");
-		//h->GetXaxis()->SetRange(.01,100.);
-		//h->GetYaxis()->SetRange(.01,100.);
+		h->GetXaxis()->SetLimits(.01,100.);
+		h->GetYaxis()->SetLimits(.01,100.);
 		h->Draw();
         c1->Update();
-        chi2_99->SetMarkerStyle(20);
-		chi2_90->SetMarkerStyle(20);
+        chi2_99->SetMarkerStyle(7);
+		chi2_90->SetMarkerStyle(7);
         chi2_99->SetMarkerColor(kBlue);    		chi2_99->Draw("m5*m5:m4*m4","","same");
 		chi2_90->SetMarkerColor(kMagenta);    	chi2_90->Draw("m5*m5:m4*m4","","same");
         c1->Print((output + "/" + dataset + "_dm251xdm241.png").c_str());
 
 		h->SetTitle("3+3 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{61}");
-		//h->GetXaxis()->SetRange(.01,100.);
-		//h->GetYaxis()->SetRange(.01,100.);
+		h->GetXaxis()->SetLimits(.01,100.);
+		h->GetYaxis()->SetLimits(.01,100.);
 		h->Draw();
         c1->Update();
-		chi2_99->SetMarkerStyle(20);
-		chi2_90->SetMarkerStyle(20);
+		chi2_99->SetMarkerStyle(7);
+		chi2_90->SetMarkerStyle(7);
         chi2_99->SetMarkerColor(kBlue);    		chi2_99->Draw("(m6*m6):(m4*m4)","","same");
 		chi2_90->SetMarkerColor(kMagenta);    	chi2_90->Draw("(m6*m6):(m4*m4)","","same");
         c1->Print(("plots/" + dataset + "_dm261xdm241.png").c_str());
@@ -66,12 +66,12 @@ int globFit_plotter(){
 		c1->SetLogx();
 
 		h->SetTitle("3+2 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{51}");
-		//h->GetXaxis()->SetRange(.01,100.);
-		//h->GetYaxis()->SetRange(.01,100.);
+		h->GetXaxis()->SetLimits(.01,100.);
+		h->GetYaxis()->SetLimits(.01,100.);
 		h->Draw();
         c1->Update();
-		chi2_99->SetMarkerStyle(20);
-		chi2_90->SetMarkerStyle(20);
+		chi2_99->SetMarkerStyle(7);
+		chi2_90->SetMarkerStyle(7);
         chi2_99->SetMarkerColor(kBlue);    		chi2_99->Draw("m5*m5:m4*m4","","same");
 		chi2_90->SetMarkerColor(kMagenta);    	chi2_90->Draw("m5*m5:m4*m4","","same");
         c1->Print((output + "/" + dataset + "_3plus2_dm251xdm241.png").c_str());
@@ -79,14 +79,15 @@ int globFit_plotter(){
 
 	if(steriles == 1){
 		c1->SetLogy();
+		c1->SetLogx();
 
 		h->SetTitle("3+1 #Chi^{2};sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
-		//h->GetXaxis()->SetRange(.01,100.);
-		//h->GetYaxis()->SetRange(.01,100.);
+		h->GetXaxis()->SetLimits(.0001,1);
+		h->GetYaxis()->SetLimits(.01,100.);
 		h->Draw();
-        c1->Update();
-		chi2_99->SetMarkerStyle(20);
-		chi2_90->SetMarkerStyle(20);
+        //c1->Update();
+		chi2_99->SetMarkerStyle(7);
+		chi2_90->SetMarkerStyle(7);
         chi2_99->SetMarkerColor(kBlue);    	chi2_99->Draw("m4*m4:4*ue4*ue4*um4*um4","","same");
         chi2_90->SetMarkerColor(kMagenta);    	chi2_90->Draw("m4*m4:4*ue4*ue4*um4*um4","","same");
         c1->Print((output + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
