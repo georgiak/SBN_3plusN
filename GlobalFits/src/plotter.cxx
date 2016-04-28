@@ -1,17 +1,20 @@
 #include "TLegend.h"
 #include "globalFit.h"
 #include "TCut.h"
+bool procOpt();
 
-int steriles = 3;
-std::string dataset = "all";
-std::string myRoot = "nt_33_all.root";
-std::string location = "ntuples";
 std::string output = "plots";
+int steriles, nRuns;
+std::string dataset, location, output;
+std::string procOptLoc;
 
 int globFit_plotter(){
 
+	procOptLoc = "/lar1nd/app/users/dcianci/SBN_3plusN/GlobalFits/inputs/";
+    procOpt();
+
     std::cout << "Loading ntuple files..." << std::endl;
-	std::string infile = location + "/" + myRoot;
+	std::string infile = Form(output + "/nt_3%i_" + dataset + ".root",steriles);
 	TString inputFile = infile;
 	TFile *f = new TFile(inputFile);
 	TNtuple *chi2_99 = (TNtuple*)(f->Get("chi2_99"));
@@ -98,6 +101,48 @@ int globFit_plotter(){
 
     return 0;
 }
+
+bool procOpt(){
+    // Here, we're going to read out the procOpt.txt file and assign those parameters.
+
+    // Fill up paraVal vector
+    std::string line;
+    ifstream file;
+    file.open(procOptLoc+"processOptions.txt");
+
+	std::string key;
+	std::string value;
+
+	std::getline(file,line);
+	std::istringstream is_line1(line);
+	std::getline(is_line1,key,'=');
+	std::getline(is_line1,value);
+	steriles = atoi(value.c_str());
+
+	std::getline(file,line);
+	std::istringstream is_line2(line);
+	std::getline(is_line2,key,'=');
+	std::getline(is_line2,value);
+	nRuns = atoi(value.c_str());
+
+	std::getline(file,line);
+	std::istringstream is_line3(line);
+	std::getline(is_line3,key,'=');
+	std::getline(is_line3,dataset);
+
+	std::getline(file,line);
+	std::istringstream is_line4(line);
+	std::getline(is_line4,key,'=');
+	std::getline(is_line4,location);
+
+	std::getline(file,line);
+	std::istringstream is_line5(line);
+	std::getline(is_line5,key,'=');
+	std::getline(is_line5,output);
+
+    return true;
+}
+
 
 
 #ifndef __CINT__
