@@ -3,7 +3,7 @@
 #include "TCut.h"
 bool procOpt();
 
-std::string output = "plots";
+std::string plotOutput = "plots";
 int steriles, nRuns;
 std::string dataset, location, output;
 std::string procOptLoc;
@@ -14,7 +14,7 @@ int globFit_plotter(){
     procOpt();
 
     std::cout << "Loading ntuple files..." << std::endl;
-	std::string infile = Form(output + "/nt_3%i_" + dataset + ".root",steriles);
+	std::string infile = output + Form("/nt_3%i_",steriles) + dataset + ".root";
 	TString inputFile = infile;
 	TFile *f = new TFile(inputFile);
 	TNtuple *chi2_99 = (TNtuple*)(f->Get("chi2_99"));
@@ -62,7 +62,7 @@ int globFit_plotter(){
 		chi2_99->Draw("m5*m5:m4*m4","","same");
 		chi2_90->Draw("m5*m5:m4*m4","","same");
 		leg->Draw();
-        c1->Print((output + "/" + dataset + "_dm251xdm241.png").c_str());
+        c1->Print((plotOutput + "/" + dataset + "_dm251xdm241.png").c_str());
 
 		h->SetTitle("3+3 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{61}");
 		h->GetXaxis()->SetLimits(.01,100.);
@@ -84,7 +84,7 @@ int globFit_plotter(){
 		chi2_99->Draw("m5*m5:m4*m4","","same");
 		chi2_90->Draw("m5*m5:m4*m4","","same");
 		leg->Draw();
-        c1->Print((output + "/" + dataset + "_3plus2_dm251xdm241.png").c_str());
+        c1->Print((plotOutput + "/" + dataset + "_3plus2_dm251xdm241.png").c_str());
 	}
 
 	if(steriles == 1){
@@ -96,7 +96,7 @@ int globFit_plotter(){
         chi2_99->Draw("m4*m4:4*ue4*ue4*um4*um4","","same");
         chi2_90->Draw("m4*m4:4*ue4*ue4*um4*um4","","same");
 		leg->Draw();
-        c1->Print((output + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
+        c1->Print((plotOutput + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
 	}
 
     return 0;
