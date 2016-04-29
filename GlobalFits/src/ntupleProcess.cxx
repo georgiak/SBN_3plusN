@@ -13,6 +13,7 @@ then outputs two final ntuples that contain all points within the 90 and 99% CL
 bool procOpt();
 
 float chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56;
+float m4_min,ue4_min,um4_min,m5_min,ue5_min,um5_min,m6_min,ue6_min,um6_min,phi45_min,phi46_min,phi56_min;
 int steriles, nRuns;
 std::string dataset, location, output;
 std::string procOptLoc;
@@ -29,7 +30,12 @@ int ntProcess(){
 
 	for(int i = 0; i < nRuns; i++){
         std::string jid = Form("%i",i);
-        std::string infile = "/lar1nd/data/users/dcianci/" + location + "/globFit_" + jid + ".root";
+        std::string infile = "/pnfs/lar1nd/scratch/users/dcianci/" + location + "/globFit_" + jid + ".root";
+        //std::cout << "Output File: " << infile << std::endl;
+        TString inputFile = infile;
+        in_chain->Add(inputFile);
+
+        std::string infile = "/pnfs/lar1nd/scratch/users/dcianci/output_4-27/" + location + "/globFit_" + jid + ".root";
         //std::cout << "Output File: " << infile << std::endl;
         TString inputFile = infile;
         in_chain->Add(inputFile);
@@ -54,9 +60,35 @@ int ntProcess(){
     // Find chi2Min
     for(int i = 0; i < in_chain->GetEntries(); i++){
         in_chain->GetEntry(i);
-        chi2min = TMath::Min(chi2min,chi2);
+		if(chi2 < chi2min){
+			chi2min = chi2;
+        	m4_min = m4;
+			ue4_min = ue4;
+			um4_min = um4;
+			m5_min = m5;
+			ue5_min = ue5;
+			um5_min = um5;
+			m6_min = m6;
+			ue6_min = ue6;
+			um6_min = um6;
+			phi45_min = phi45;
+			phi46_min = phi46;
+			phi56_min = phi56;
+		}
     }
     std::cout << chi2min << std::endl;
+	std::cout << "m4_min: " << m4_min << std::endl;
+	std::cout << "ue4_min: " << ue4_min << std::endl;
+	std::cout << "um4_min: " << um4_min << std::endl;
+	std::cout << "m5_min: " << m5_min << std::endl;
+	std::cout << "ue5_min: " << ue5_min << std::endl;
+	std::cout << "um5_min: " << um5_min << std::endl;
+	std::cout << "m6_min: " << m6_min << std::endl;
+	std::cout << "ue6_min: " << ue6_min << std::endl;
+	std::cout << "um6_min: " << um6_min << std::endl;
+	std::cout << "phi45_min: " << phi45_min << std::endl;
+	std::cout << "phi46_min: " << phi46_min << std::endl;
+	std::cout << "phi56_min: " << phi56_min << std::endl;
 
 	// Make new file to fill with confidence level ntuples
 	std::string jid = Form("/nt_3%i_",steriles);
