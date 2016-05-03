@@ -23,6 +23,7 @@
 \def\ie{\emph{i.e.}}
 \def\aka{\emph{a.k.a.}}
 \def\muboone{MicroBooNE}
+\def\icarus{Icarus}
 \def\minerva{MINER$\nu$A}
 
 %%%%%%% A few editorial macros. %%%%%%%
@@ -498,7 +499,7 @@ significant.
 %
 \caption{\label{fig:timing} Shown above is the timing delay of sterile neutrino
 decays in nano-seconds for both a 25 MeV (top) and 350 MeV (bottom) sterile
-neutrino at the SBND and and Icarus detectors (110 and 600m
+neutrino at the SBND and and \icarus\ detectors (110 and 600m
 respectively). The 2 ns beam bucket window is shown highlighted in red from 0
 to 2 ns, followed by an additional 19 ns gap. The timings are calculated as a
 difference to the time of flight of a active neutrino, assuming the decay
@@ -530,12 +531,12 @@ must be analysed as a signal on top of the beam-related backgrounds in the
 standard analysis. However, as the sterile neutrino mass increases, the
 baseline distance starts to become relevant. At $m_{\text{s}}=350$ MeV, we see
 that many events still fall in the in beam timing window for SBND; however,
- Icarus see significant deviation from this with clear peaks in
+ICARUS sees significant deviation from this with clear peaks in
 the inter-RF-bucket spacing where one would not expect to see any
 beam-correlated backgrounds. Events falling outside these bins, would not be
 counted as part of the beam-related event sample. Assuming the backgrounds can
 be brought under control in these different timing windows, this signature
-would be a striking one: a beam-related excess at SBND with none at Icarus, but an excess at both sites in their non-beam related data. \muboone is omitted from this analysis as the achievable timing resolution is worse, $\approx 10$ns
+would be a striking one: a beam-related excess at SBND with none at ICARUS, but an excess at both sites in their non-beam related data. \muboone is omitted from this analysis as the achievable timing resolution is worse, $\approx 10$ns
 
 The implication of the timing effects, is that our discussion of backgrounds
 must be divided in two cases: for low mass steriles or any mass at SBND, we
@@ -708,6 +709,7 @@ above, and must be scaled appropiately.
 
 \section{Sensitivities\label{sec:sensitivity}}
 In this section we present the results of a sensitivity analysis for the three dectors at the SBN facility. Although the largest sensitivity comes from SBN, \muboone is already collecting data and thus will be able to report on possible signals significantly earlier that SBN and ICARUS. \reffig{fig:band_sbn} shows the sensitivity achievable at the the SBN detector in the four channels studied. The dashed lines show the results of a backgroundless search, corresponding to the theoretical best achievable sensitivity at the facility, assuming perfect signal efficiency. The results of a simple cut based background analysis is also included as the solid colored line. This analysis is not optimsed, however, and serves primarily to show the potential impact of backgrounds. We estimate the true achievable sensitivity in each channel would lie somewhere between these two curves (the solid shaded region). The analysis only considers the total number of events in each channel, with the 90\% C.L defined as $2.44$ events, following the procedure of \refref{Feldman:1997qc} designed for backgroundless searches for rare events.  \\
+
 
 As can be seen SBN potentially sees significantly more events, and thus improves the bounds in all channels and on all mixing elements. \muboone and ICARUS are slightly better than the corresponding PS191 bounds for low mass steriles (due to the lower energy neutrino spectrum) and approximately equal at higher masses. The previously unbounded $\nu_N \rightarrow \nu_\alpha \pi^0$ could be bounded at a level similar to PS191 $e^+ e^-$ channel. 
 
@@ -907,7 +909,7 @@ $ e^+ e^- \text{ or } \gamma \text{ (Photon-like)}$ &  42,580 & 3,620 & 6,082\\
 
 
 \subsection{Non-Beam related backgrounds}
-Cosmogenic backgrounds are expected to be significantly smaller in comparison to beam related backgrounds. In the case of cosmic muons, Icarus expects to see approximately $2.5 \times 10^{6}$ cosmic events in the 211 second beam spill,
+Cosmogenic backgrounds are expected to be significantly smaller in comparison to beam related backgrounds. In the case of cosmic muons, \icarus\ expects to see approximately $2.5 \times 10^{6}$ cosmic events in the 211 second beam spill,
 and are reduced to approximately 5 events expected after utilizing the spill
 structure, scintillation light patterns and cuts on $\frac{d E}{d x}$
 \cite{Antonello:2015lea}.  Alongside this impressive cosmic rejection, our signal
@@ -915,14 +917,128 @@ events are focused heavily along the beamline, hence we do not expect cosmics
 to be a major source of background to any channel are are not included in this
 analysis. 
 
-\section{\label{sec:timing_physics}Timing for model discrimination}
+
+\section{\label{sec:baselineinterplay}Model comparison at the SBN complex}
+
+%1. intro
+Given the existing anomalies in short baseline neutrino experiments, including
+MiniBooNE which operated in the Booster beamline, the possibility of seeing an
+anomalous signature at the SBN complex should not be ignored. There are
+competing theoretical explanations for existing excesses: oscillatory sterile
+neutrinos \cite{Everyone...}, neutrino decay \cite{Pascoli, Schwetz}, neutrino
+production and decay inside the detector \cite{Gninenko, Meloni, Us?}. Taking 
+this as motivation, we consider here the differentiating characteristics of some 
+different models of new physics in the neutrino sector. 
+
+%2. features of SBN which are interesting
+The combination of the three SBN detectors, all operating with the same
+technology in the same neutrino beam, allows for distinctive signatures of new
+physics. In this section, we assess the potential for SBN to investigate an
+excess of events seen at one or all of the detectors. 
+%
+Secondly, we discuss the role of event timing information can
+have on model selection.  Timing delays between excesses would be strong
+evidence for heavy particles propagating between source and detector, and we
+explore how the study of timing effects could be used to bound the mass of the
+particle in a model independent fashion.
+
+We consider three possible explanations for an anomalous excess of particles:
+
+%3. models to be distinguished between
+\subsection{Comparison between sterile neutrino oscillations and decays in flight}
+
+The oscillatory sterile explanation of low-energy anomalies in neutrino data is
+theoretically appealing if not entirely phenomenologically satisfactory. Either
+way, the SBN complex will be able to place important constraints on these
+models. With the purposes of our present study in mind, there is little chance
+that an oscillatory sterile could be confused by a MeV scale decaying sterile.
+The signal for an oscillatory sterile would be a single electron, arising from
+a charged-current quasi-elastic processes. There are no channels available to a
+decaying sterile neutrino which could produce such a signal without an
+additional (charged) particle. 
+
+\newtext{PB}{Would it be worth writing anything here about electron(s)/photon
+discrimination?}
+
+There is also a strong difference in the baseline dependence which may be
+visible at SBN. \newtext{PB}{It feels a bit pointless to fill this section
+out.}
+
+\subsection{Differences between decays in flight and production/decay in situ}
+
+The model of Gninenko \cite{Gninenko:2009ks,Gninenko:2010pr} which seeks to
+explain the MiniBooNE excess through the production and decay of a new sterile
+fermion inside the detector, has received significant attention in the
+literature. This model general requires quite a large non-minimal transition
+magnetic moment to ensure sufficient decays. 
+
+Our model of decaying sterile neutrinos in flight is formally similar to the
+Gninenko model, albeit with a more general set of observable final states. The
+main difference lies in the region of parameter space for which a signal would
+be generated for any beam dump experiment. With the high decay rates of
+Gninenko, no significant sterile component would exist in the beam by the time
+the particles reached SBND. Vice versa, the minimal sterile model simply does
+not have a high enough decay rate to see any decays after particle productions
+inside the detector via mixing-matrix element mediated neutral current
+scattering. However, without a knowledge of the true parameter space, these two
+models could be confused. The main way to distinguish them would be through
+their spectrum of events. Although both models produce visible particles
+through sterile neutrino decay in flight, the additional neutral current
+cross-section required by the Gninenko-type sterile suppresses the lowest
+energy events. As can be seen in \reffig{fig:XXX}, we see a marked difference
+between these signals at SBND. If we factor in the cut-based analysis that was
+performed in the preceeding section, we see that the model in this paper does
+lose a significant number of events from the lowest bins. To separate these
+events cleanly, the analysis should be optimised to keep as many of these
+lowest energy events as possible. 
+
+\newtext{PB}{A relevant point here would be the use of timing.}
+
+%
+%\subsection{Scaling behaviour of event rates}
+%
+%Any source of excess events which is induced by the neutrino beam should
+%inherit a $L^{-2}$ dependence on baseline distance from the dispersion of the
+%neutrino flux. Between three detectors, this would generate a distinctive
+%relative enhancement of the signal at SBND and relative suppression of the
+%signal at \icarus\ compared to a fixed nominal excess at \muboone. This is in
+%contrast to, for example, an excess of misidentified cosmogenic events which
+%would have no baseline dependence.
+%
+%New physics may cause a signficant dependence on baseline. One of the much
+%discussed ways to explain an excess of events at a short baseline neutrino
+%experiment is through sterile neutrino oscillations. The rates predicted at
+%three different detectors depend crucially on the respective distances from
+%source to detector according to the oscillation prbobability. In the scenarios
+%discussed in this paper, we also see baseline dependence coming from
+%\refeq{eq:prob}, albeit in a very different form. For most of the parameter
+%space, we predict no significant baseline dependence on the event rates
+%at the three detectors, once the $1/L^2$ dependence of the flux is removed;
+%however, for large decay rates we see a baseline dependent effect. This is
+%shown in \reffig{fig:baselineratios}, where the event numbers for $e^-e^-$
+%decay are shown as ratios between the three detectors. These have been scaled
+%to remove the baseline dependence of the flux.  The four lines for each
+%detector show the 100\%, 75\%, 50\% and 25\% contours (where the further
+%detector sees fewer events). Such decay rates are forbidden in the minimal
+%extension of the SM incorporating MeV scale sterile neutrinos
+%\newtext{PB}{True?}. In a non-minimal model, it remains possible that decays
+%with decay lengths of the order $100$~m could exist, leading to a very 
+%significant depletion of events at the further detectors.
+%
+%We show in \reffig{fig:baselineratios} a plot highlighting the contrasting
+%behaviour between these alternative explanations for an excess seen at the SBN
+%complex. In these plots we assume a fixed $100$ events at \muboone\ and observe
+%the distribution of events at the other sites for different models of new
+%physics.
+
+\subsection{\label{sec:timing_physics}Timing for model discrimination}
 
 A unique feature of the SBN complex is its combination of three detectors
 situated at distinct baselines. One opportunity that this suggests is the
 observation of time delayed signals between the sites. As particles with finite
 rest mass, the heavy neutral leptons will propagate at subluminal speeds and
 for larger masses can produce observable timing delays. If an excess of events
-is observed with a clear timing delay between SBND and Icarus, this would be
+is observed with a clear timing delay between SBND and \icarus, this would be
 very difficult to explain using an oscillatory sterile, neutrino induced
 beam-correlated signal or other non-beam background and would be a clear
 indication of a heavy propagating degree of freedom. 
