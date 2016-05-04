@@ -24,13 +24,13 @@ int globFit_plotter(){
 
 	// Setup histo
     TH2F *h = new TH2F("h","3+3 #Chi^2;U_{e 4};U_{#mu 4}",1000,0.01,100.,1000,.01,100.);
-    h->GetXaxis()->SetTitleOffset(.8);
+    h->GetXaxis()->SetTitleOffset(1.1);
     h->GetYaxis()->SetTitleOffset(.8);
     h->GetXaxis()->SetTitleFont(62);
     h->GetYaxis()->SetTitleFont(62);
     h->GetYaxis()->CenterTitle();
     h->GetXaxis()->CenterTitle();
-    h->GetXaxis()->SetTitleSize(0.05);
+    h->GetXaxis()->SetTitleSize(0.04);
     h->GetXaxis()->SetLabelSize(0.04);
     h->GetXaxis()->SetLabelOffset(0.001);
     h->GetYaxis()->SetTitleSize(0.05);
@@ -41,6 +41,8 @@ int globFit_plotter(){
 	c1->SetLogx();
 	chi2_99->SetMarkerStyle(7);
 	chi2_90->SetMarkerStyle(7);
+	chi2_99->SetFillColor(kBlue);
+        chi2_90->SetFillColor(kMagenta);
 	chi2_99->SetMarkerColor(kBlue);
 	chi2_90->SetMarkerColor(kMagenta);
 
@@ -54,9 +56,9 @@ int globFit_plotter(){
 	leg->AddEntry(chi2_90,"90%% CL","f");
 
 	if(steriles == 3){
-		h->SetTitle("3+3 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{51}");
-		h->GetXaxis()->SetLimits(.01,100.);
-		h->GetYaxis()->SetLimits(.01,100.);
+		h->SetTitle("#chi^{2} for 3+3 Sterile Fits;#Delta m^{2}_{41};#Delta m^{2}_{51}");
+		h->GetXaxis()->SetLimits(.1,100.);
+		h->GetYaxis()->SetLimits(.1,100.);
 		h->Draw();
 
 		chi2_99->Draw("m5*m5:m4*m4","","same");
@@ -64,9 +66,9 @@ int globFit_plotter(){
 		leg->Draw();
         c1->Print((plotOutput + "/" + dataset + "_dm251xdm241.png").c_str());
 
-		h->SetTitle("3+3 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{61}");
-		h->GetXaxis()->SetLimits(.01,100.);
-		h->GetYaxis()->SetLimits(.01,100.);
+		h->SetTitle("#chi^{2} for 3+3 Sterile Fits;#Delta m^{2}_{41};#Delta m^{2}_{61}");
+		h->GetXaxis()->SetLimits(.1,100.);
+		h->GetYaxis()->SetLimits(.1,100.);
 		h->Draw();
 
 		chi2_99->Draw("(m6*m6):(m4*m4)","","same");
@@ -76,9 +78,9 @@ int globFit_plotter(){
 	}
 
 	if(steriles == 2){
-		h->SetTitle("3+2 #Chi^{2};#Delta m^{2}_{41};#Delta m^{2}_{51}");
-		h->GetXaxis()->SetLimits(.01,100.);
-		h->GetYaxis()->SetLimits(.01,100.);
+		h->SetTitle("#chi^{2} for 3+2 Sterile Fits;#Delta m^{2}_{41};#Delta m^{2}_{51}");
+		h->GetXaxis()->SetLimits(.1,100.);
+		h->GetYaxis()->SetLimits(.1,100.);
 		h->Draw();
 
 		chi2_99->Draw("m5*m5:m4*m4","","same");
@@ -88,13 +90,13 @@ int globFit_plotter(){
 	}
 
 	if(steriles == 1){
-		h->SetTitle("3+1 #Chi^{2};sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
-		h->GetXaxis()->SetLimits(.0001,1);
-		h->GetYaxis()->SetLimits(.01,100.);
+		h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
+		h->GetXaxis()->SetLimits(.0001,.1);
+		h->GetYaxis()->SetLimits(.1,100.);
 		h->Draw();
 
-        chi2_99->Draw("m4*m4:4*ue4*ue4*um4*um4","","same");
-        chi2_90->Draw("m4*m4:4*ue4*ue4*um4*um4","","same");
+        chi2_99->Draw("m4*m4:4*um4*um4*um4*um4","","same");
+        chi2_90->Draw("m4*m4:4*um4*um4*um4*um4","","same");
 		leg->Draw();
         c1->Print((plotOutput + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
 	}

@@ -20,7 +20,7 @@ std::string procOptLoc;
 
 int ntProcess(){
 
-	procOptLoc = "/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/";
+	procOptLoc = "/lar1nd/app/users/dcianci/SBN_3plusN/GlobalFits/inputs/";
 	procOpt();
 
 	// Create tchain by linking all root ntuples
@@ -31,12 +31,7 @@ int ntProcess(){
 	for(int i = 0; i < nRuns; i++){
         std::string jid = Form("%i",i);
         std::string infile = "/pnfs/lar1nd/scratch/users/dcianci/" + location + "/globFit_" + jid + ".root";
-        //std::cout << "Output File: " << infile << std::endl;
-        TString inputFile = infile;
-        in_chain->Add(inputFile);
-
-        std::string infile = "/pnfs/lar1nd/scratch/users/dcianci/output_4-27/" + location + "/globFit_" + jid + ".root";
-        //std::cout << "Output File: " << infile << std::endl;
+        //std::cout << "Output File 1: " << infile << std::endl;
         TString inputFile = infile;
         in_chain->Add(inputFile);
     }
