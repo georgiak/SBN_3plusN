@@ -103,10 +103,11 @@ int ntProcess(){
 		return 0;
 	}
 
-	if(raster == 0){
-		chi2_99 = new TNtuple("chi2_99","chi2_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
-		chi2_90 = new TNtuple("chi2_90","chi2_90","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
+	chi2_99 = new TNtuple("chi2_99","chi2_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
+	chi2_90 = new TNtuple("chi2_90","chi2_90","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
+	chi2_95 = new TNtuple("chi2_95","chi2_95","chi2:dm2:sin22th");
 
+	if(raster == 0){
 		for(int i = 0; i < in_chain->GetEntries(); i++){
         	in_chain->GetEntry(i);
 
@@ -122,9 +123,7 @@ int ntProcess(){
 		// 90% (2dof) 		4.605
 		// 99% (2dof)		9.201
 	}
-	if(raster == 0){
-		chi2_95 = new TNtuple("chi2_95","chi2_95","chi2:dm2:sin22th");
-
+	if(raster == 1){
 		// Fill up a histogram so everything's in proper order
 		std::cout << "Filling rastergram histo" << std::endl;
 		TH2F * rastergram = new TH2F("rg","rg",100,.01,100.,100,0,1.);
@@ -153,6 +152,9 @@ int ntProcess(){
 				}
 			}
 		}
+
+
+
 		// 95% (1dof)		3.84
 	}
 
