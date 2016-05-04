@@ -3,3 +3,5 @@ nRuns=500
 dataset=app
 location=output_app_33
 output=ntuples
+type(0-app,1-numudis,2-nuedis)=0
+raster=1

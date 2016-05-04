@@ -255,7 +255,7 @@ float getPtLin(int y, float min, float max){
 	return y * (max - min)/(nGridPoints+1);
 }
 float getPtLog(int y, float min, float max){
-	return pow((y + TMath::Log10(min)) * (TMath::Log10(max/min)/(nGridPoints+1)),20);
+	return pow((y + TMath::Log10(min)) * (TMath::Log10(max/min)/(nGridPoints+1)),10);
 }
 
 

@@ -63,7 +63,7 @@ int globInit(){
     // read jobOption file and fill variables
     jobOpt();
     dm2Max[0] = 100.;   dm2Max[1] = 100.;    dm2Max[2] = 100.;
-    dm2Min[0] = .1;     dm2Min[1] = .01;    dm2Min[2] = .01;
+    dm2Min[0] = .01;     dm2Min[1] = .01;    dm2Min[2] = .01;
 
     // INITIALIZATIONS
 	std::cout << "Start initializations!" << std::endl;
@@ -155,7 +155,7 @@ int globChisq(int ind){
         chi2Log = 0;    chi2LogOld = 0;
         nuModelOld = initializeMarkovParams();
     }
-	
+
     // CHI2 CALCULATIONS
     std::cout << "Start generating neutrino mass and mixing models..." << std::endl;
 

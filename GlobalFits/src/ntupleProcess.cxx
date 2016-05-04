@@ -14,14 +14,21 @@ bool procOpt();
 
 float chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56;
 float m4_min,ue4_min,um4_min,m5_min,ue5_min,um5_min,m6_min,ue6_min,um6_min,phi45_min,phi46_min,phi56_min;
-int steriles, nRuns;
+int steriles, nRuns, type, raster;
 std::string dataset, location, output;
 std::string procOptLoc;
+
+TNtuple * chi2_99, * chi2_90, * chi2_95;
+int rasterPoints;
+float dmmin, dmmax;
 
 int ntProcess(){
 
 	procOptLoc = "/lar1nd/app/users/dcianci/SBN_3plusN/GlobalFits/inputs/";
 	procOpt();
+
+	rasterPoints = 100;
+	dmmin = 0.1;	dmmax = 100.;
 
 	// Create tchain by linking all root ntuples
     std::cout << "Loading ntuple files..." << std::endl;
@@ -95,28 +102,65 @@ int ntProcess(){
 		std::cout << "Error: couldn't create output file." << std::endl;
 		return 0;
 	}
-	TNtuple *chi2_99 = new TNtuple("chi2_99","chi2_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
-	TNtuple *chi2_90 = new TNtuple("chi2_90","chi2_90","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
 
-	for(int i = 0; i < in_chain->GetEntries(); i++){
-        in_chain->GetEntry(i);
+	if(raster == 0){
+		chi2_99 = new TNtuple("chi2_99","chi2_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
+		chi2_90 = new TNtuple("chi2_90","chi2_90","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
 
-		if(chi2 - chi2min < 9.201)
-			chi2_99->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
-		if(chi2 - chi2min < 4.605)
-			chi2_90->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
-    }
+		for(int i = 0; i < in_chain->GetEntries(); i++){
+        	in_chain->GetEntry(i);
 
-	std::cout << "90CL has " << chi2_90->GetEntries() << " entries" << std::endl;
-	std::cout << "99CL has " << chi2_99->GetEntries() << " entries" << std::endl;
+			if(chi2 - chi2min < 9.201)
+				chi2_99->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
+				if(chi2 - chi2min < 4.605)
+				chi2_90->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
+    	}
+
+		std::cout << "90CL has " << chi2_90->GetEntries() << " entries" << std::endl;
+		std::cout << "99CL has " << chi2_99->GetEntries() << " entries" << std::endl;
+
+		// 90% (2dof) 		4.605
+		// 99% (2dof)		9.201
+	}
+	if(raster == 0){
+		chi2_95 = new TNtuple("chi2_95","chi2_95","chi2:dm2:sin22th");
+
+		// Fill up a histogram so everything's in proper order
+		std::cout << "Filling rastergram histo" << std::endl;
+		TH2F * rastergram = new TH2F("rg","rg",100,.01,100.,100,0,1.);
+		for(int i = 0; i < in_chain->GetEntries(); i++){
+        	in_chain->GetEntry(i);
+			float mstep = TMath::Log10(dmmax/dmmin)/(rasterPoints);
+			float ustep = TMath::Log10(1/.0001)/(rasterPoints);
+			float dm = ceil(pow(m4,2)/mstep) - TMath::Log10(dmmin);
+			float sins;
+			if(type == 0) sins = ceil(4*pow(ue4,2)*pow(um4,2)/ustep) - TMath::Log10(.0001);
+			if(type == 1) sins = ceil(4*pow(um4,2)*(1 - pow(um4,2))/ustep) - TMath::Log10(.0001);
+			if(type == 2) sins = ceil(4*pow(ue4,2)*(1 - pow(ue4,2))/ustep) - TMath::Log10(.0001);
+
+			rastergram->SetBinContent(dm,sins,chi2);
+		}
+
+		// Now, perform the scan
+		for(int dm = 1; dm <= rasterPoints; dm++){
+			for(int sins = 1; sins <= rasterPoints; sins++){
+				float chisq = rastergram->GetBinContent(dm,sins);
+				if(chisq - chi2min < 3.84 && chisq >= chi2min){
+					float _dm2 = pow((dm + TMath::Log10(dmmin)) * (TMath::Log10(dmmax/dmmin)/rasterPoints),10);
+					float _sin22th = pow((sins + TMath::Log10(.0001)) * (TMath::Log10(1/.0001)/rasterPoints),10);
+					chi2_95->Fill(chisq,_dm2,_sin22th);
+					break;
+				}
+			}
+		}
+		// 95% (1dof)		3.84
+	}
 
 	// Save Ntuple to file
 	chi2_99->Write();
 	chi2_90->Write();
+	chi2_95->Write();
 	f->Close();
-
-	// 90% 		4.605
-	// 99%		9.201
 
     return 0;
 }
@@ -158,6 +202,18 @@ bool procOpt(){
 	std::istringstream is_line5(line);
 	std::getline(is_line5,key,'=');
 	std::getline(is_line5,output);
+
+	std::getline(file,line);
+	std::istringstream is_line6(line);
+	std::getline(is_line6,key,'=');
+	std::getline(is_line6,value);
+	type = atoi(value.c_str());
+
+	std::getline(file,line);
+	std::istringstream is_line7(line);
+	std::getline(is_line7,key,'=');
+	std::getline(is_line7,value);
+	raster = atoi(value.c_str());
 
     return true;
 }

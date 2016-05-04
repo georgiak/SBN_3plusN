@@ -4,7 +4,7 @@
 bool procOpt();
 
 std::string plotOutput = "plots";
-int steriles, nRuns;
+int steriles, nRuns, type, raster;
 std::string dataset, location, output;
 std::string procOptLoc;
 
@@ -19,6 +19,7 @@ int globFit_plotter(){
 	TFile *f = new TFile(inputFile);
 	TNtuple *chi2_99 = (TNtuple*)(f->Get("chi2_99"));
 	TNtuple *chi2_90 = (TNtuple*)(f->Get("chi2_90"));
+	TNtuple *chi2_95 = (TNtuple*)(f->Get("chi2_95"));
 
     TCanvas *c1 = new TCanvas("c1");
 
@@ -42,9 +43,11 @@ int globFit_plotter(){
 	chi2_99->SetMarkerStyle(7);
 	chi2_90->SetMarkerStyle(7);
 	chi2_99->SetFillColor(kBlue);
-        chi2_90->SetFillColor(kMagenta);
+    chi2_90->SetFillColor(kMagenta);
 	chi2_99->SetMarkerColor(kBlue);
 	chi2_90->SetMarkerColor(kMagenta);
+	chi2_95->SetMarkerStyle(7);
+	chi2_95->SetMarkerColor(kRed+3);
 
 	TLegend *leg = new TLegend(0.7,0.7,0.95,0.9);
 	leg->SetFillStyle(0);
@@ -57,8 +60,8 @@ int globFit_plotter(){
 
 	if(steriles == 3){
 		h->SetTitle("#chi^{2} for 3+3 Sterile Fits;#Delta m^{2}_{41};#Delta m^{2}_{51}");
-		h->GetXaxis()->SetLimits(.1,100.);
-		h->GetYaxis()->SetLimits(.1,100.);
+		h->GetXaxis()->SetLimits(.01,100.);
+		h->GetYaxis()->SetLimits(.01,100.);
 		h->Draw();
 
 		chi2_99->Draw("m5*m5:m4*m4","","same");
@@ -67,8 +70,8 @@ int globFit_plotter(){
         c1->Print((plotOutput + "/" + dataset + "_dm251xdm241.png").c_str());
 
 		h->SetTitle("#chi^{2} for 3+3 Sterile Fits;#Delta m^{2}_{41};#Delta m^{2}_{61}");
-		h->GetXaxis()->SetLimits(.1,100.);
-		h->GetYaxis()->SetLimits(.1,100.);
+		h->GetXaxis()->SetLimits(.01,100.);
+		h->GetYaxis()->SetLimits(.01,100.);
 		h->Draw();
 
 		chi2_99->Draw("(m6*m6):(m4*m4)","","same");
@@ -79,8 +82,8 @@ int globFit_plotter(){
 
 	if(steriles == 2){
 		h->SetTitle("#chi^{2} for 3+2 Sterile Fits;#Delta m^{2}_{41};#Delta m^{2}_{51}");
-		h->GetXaxis()->SetLimits(.1,100.);
-		h->GetYaxis()->SetLimits(.1,100.);
+		h->GetXaxis()->SetLimits(.01,100.);
+		h->GetYaxis()->SetLimits(.01,100.);
 		h->Draw();
 
 		chi2_99->Draw("m5*m5:m4*m4","","same");
@@ -90,15 +93,40 @@ int globFit_plotter(){
 	}
 
 	if(steriles == 1){
-		h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
-		h->GetXaxis()->SetLimits(.0001,.1);
-		h->GetYaxis()->SetLimits(.1,100.);
-		h->Draw();
+		if(raster == 0){
+			if(type==0)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
+			if(type==1)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{#mu#mu});#Delta m^{2}_{41}");
+			if(type==2)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{ee});#Delta m^{2}_{41}");
+			h->GetXaxis()->SetLimits(.0001,.1);
+			h->GetYaxis()->SetLimits(.01,100.);
+			h->Draw();
 
-        chi2_99->Draw("m4*m4:4*um4*um4*um4*um4","","same");
-        chi2_90->Draw("m4*m4:4*um4*um4*um4*um4","","same");
-		leg->Draw();
-        c1->Print((plotOutput + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
+			if(type==0){
+        		chi2_99->Draw("m4*m4:4*um4*um4*um4*um4","","same");
+        		chi2_90->Draw("m4*m4:4*um4*um4*um4*um4","","same");
+			}
+			else if(type == 1){
+				chi2_99->Draw("m4*m4:4*um4*um4*(1-um4*um4)","","same");
+        		chi2_90->Draw("m4*m4:4*um4*um4*(1-um4*um4)","","same");
+			}
+			else if(type == 2){
+				chi2_99->Draw("m4*m4:4*ue4*ue4*(1-ue4*ue4)","","same");
+        		chi2_90->Draw("m4*m4:4*ue4*ue4*(1-ue4*ue4)","","same");
+			}
+			leg->Draw();
+        	c1->Print((plotOutput + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
+		}
+		if(raster == 1){
+			if(type==0)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
+			if(type==1)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{#mu#mu});#Delta m^{2}_{41}");
+			if(type==2)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{ee});#Delta m^{2}_{41}");
+			h->GetXaxis()->SetLimits(.0001,.1);
+			h->GetYaxis()->SetLimits(.01,100.);
+			h->Draw();
+
+			chi2_95->Draw("dm2:sin22th","","same");
+			c1->Print((plotOutput + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
+		}
 	}
 
     return 0;
@@ -142,10 +170,20 @@ bool procOpt(){
 	std::getline(is_line5,key,'=');
 	std::getline(is_line5,output);
 
+	std::getline(file,line);
+	std::istringstream is_line6(line);
+	std::getline(is_line6,key,'=');
+	std::getline(is_line6,value);
+	type = atoi(value.c_str());
+
+	std::getline(file,line);
+	std::istringstream is_line7(line);
+	std::getline(is_line7,key,'=');
+	std::getline(is_line7,value);
+	raster = atoi(value.c_str());
+
     return true;
 }
-
-
 
 #ifndef __CINT__
 int main()
