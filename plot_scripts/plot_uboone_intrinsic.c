@@ -36,12 +36,11 @@ void plot_uboone_intrinsic(){
 	TH1D * Residual_photon = new TH1D("Residual_photon","",11,e_bins);
 	TH1D * Residual_muon = new TH1D("Residual_muon","",11,e_bins);
 	
-	TFile *f = new TFile("../bkg_data/uBooNE_intrin.root"); 
+	TFile *f = new TFile("../bkg_data/uBooNE_bkg.root"); 
  
-	TH1D * H1nue_reco_intrinsic = (TH1D*)f->Get("detector_intrinsic_app");
-	TH1D * H1nue_reco_muon= (TH1D*)f->Get("detector_muon_app");
-	TH1D * H1nue_reco_photon = (TH1D*)f->Get("detector_photon_app");
-
+	TH1D * H1nue_reco_intrinsic = (TH1D*)f->Get("nue_intrin_sin");
+	TH1D * H1nue_reco_muon= (TH1D*)f->Get("nue_muon_sin");
+	TH1D * H1nue_reco_photon = (TH1D*)f->Get("nue_photon_sin");
 	gStyle->SetOptStat(0);
 
 	double Nintrin = H1nue_reco_intrinsic->GetSumOfWeights();
@@ -61,10 +60,6 @@ void plot_uboone_intrinsic(){
 		ti = H1nue_reco_intrinsic->GetBinContent(k+1);
 		tm = H1nue_reco_muon->GetBinContent(k+1);
 		tp = H1nue_reco_photon->GetBinContent(k+1);
-
-		Nintrin += ti;
-		Nmuon += tm;
-		Nphoton += tp;
 
 	    /*     ti2 =100*(ti-UBOONE_proposal_intrinsic[k]*ebinw[k])/(338.0+396+94);
 		 tp2 =100*(tp-UBOONE_proposal_photon[k]*ebinw[k])/(81+5.0);

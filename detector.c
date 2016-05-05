@@ -201,8 +201,6 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 
 			}
 
-
-		
 		
 			f_volume = f_height*f_length*f_width;	
 
@@ -217,7 +215,7 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			name = "SBND";
 			fname ="rootfiles/ntuple.SBND.root";	
 			foscname ="rootfiles/ntuple.SBND_fullosc.root";	
-			potmodifier = 0.5;
+			potmodifier = 1.0;
 			identifier = DET_SBND;
 			break;
 		case(DET_UBOONE):
@@ -254,7 +252,7 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			name = "uBooNE";
 			fname ="rootfiles/ntuple.uBooNE.root";	
 			foscname ="rootfiles/ntuple.uBooNE_fullosc.root";	
-			potmodifier = 1.0;
+			potmodifier = 2.0;
 			identifier = DET_UBOONE;
 			break;
 		case(DET_ICARUS):
@@ -293,7 +291,7 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			name = "ICARUS";
 			fname ="rootfiles/ntuple.ICARUS.root";	
 			foscname ="rootfiles/ntuple.ICARUS_fullosc.root";	
-			potmodifier = 0.5;
+			potmodifier = 1.0;
 			identifier = DET_ICARUS;
 			break;
 		

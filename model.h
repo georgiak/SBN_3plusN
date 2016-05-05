@@ -27,7 +27,7 @@
 #define EMsmear  0.15
 #define MUsmear  0.06
 
-#define p_thresh  0.020
+#define p_thresh  0.021
 #define pip_thresh  0.00
 #define pim_thresh  0.00
 #define vertex_thresh  0.05
@@ -58,13 +58,38 @@ class SBN_spectrum {
 	std::vector<double >	uboone_e ;
 	std::vector<double > 	sbnd_e ;
 	std::vector<double >    icarus_e ;
+
 	std::vector<double >  	sbnd_m ;
   	std::vector<double >  	uboone_m ;
 	std::vector<double >  	icarus_m  ;
+
+	std::vector<double >  	sbnd_m_pion ;
+  	std::vector<double >  	uboone_m_pion ;
+	std::vector<double >  	icarus_m_pion  ;
+
 	std::vector<double >	uboone_f ;
 	std::vector<double > 	sbnd_f ;
 	std::vector<double >    icarus_f ;
 
+	std::vector<double > sbnd_e_pho;
+	std::vector<double > uboone_e_pho;
+	std::vector<double > icarus_e_pho;
+
+	std::vector<double > sbnd_e_mu;
+	std::vector<double > uboone_e_mu;
+	std::vector<double > icarus_e_mu;
+
+	std::vector<double > sbnd_e_dirt;
+	std::vector<double > uboone_e_dirt;
+	std::vector<double > icarus_e_dirt;
+
+	std::vector<double > sbnd_e_cosmo;
+	std::vector<double > uboone_e_cosmo;
+	std::vector<double > icarus_e_cosmo;
+
+	std::vector<double > sbnd_f_bar;
+	std::vector<double > uboone_f_bar;
+	std::vector<double > icarus_f_bar;
 
 	//Redundant histograms here really.
 	TH1D * THuboone_e,* THuboone_m, * THsbnd_e, * THsbnd_m,* THicarus_e,* THicarus_m;
@@ -80,29 +105,33 @@ class SBN_spectrum {
 	
 	void update_model(struct neutrinoModel nuModel);
 	
+	std::vector<double > get_vector();
+	
 
-	int fill_app(SBN_detector *);
-/*	int fill_sbnd_app(double, double);
-	int fill_uboone_app(double, double);
-	int fill_icarus_app(double, double); DEPRICIATED Functions, now just take pointer to SBN_detector struct*/
+	int fill_app(SBN_detector *);		//Somewhat depriciated functions
 	int fill_dis(SBN_detector *);
 	int fill_intrin(SBN_detector *);
 
 
-	int fill_app_sample(SBN_detector *);
+	int fill_app_sample(SBN_detector *); 	//these are really the ones that are used 
 	int fill_dis_sample(SBN_detector *);
 	int fill_intrin_sample(SBN_detector *);
 
 	std::vector<double > add_SBN_spectrum(SBN_spectrum other);
 
-	int test_build();
-	//ToDo
 	void oscillate();
 	void oscillate_sample();
 	
 	void fill_hists();
         void fill_vectors();	
 	void vec_print();
+
+	int load_freq(SBN_detector *, int);
+	int load_freq_3p3(SBN_detector *);
+ 	int load_bkg(SBN_detector *); 
+
+
+	double prob_3p3(double dm, SBN_detector *, int which_dm);
 
 
 };
