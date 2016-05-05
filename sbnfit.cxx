@@ -143,7 +143,10 @@ while(iarg != -1)
 			std::cout<<"\t-u\t--um4\t\tSet 3p1 Um4 value"<<std::endl;
 			std::cout<<"\t-e\t--ue4\t\tSet 3p1 Ue4 value"<<std::endl;
 			std::cout<<"\t-T\t--test\t\trun SBN test code"<<std::endl;
-			std::cout<<"\t-S\t--sensitivity\t\trun a full sensitivity fit. Required argument, number of steriles"<<std::endl;
+			std::cout<<"\t-S\t--sensitivity\t\trun a full sensitivity fit. Required argument, number of steriles. Run with -a -d"<<std::endl;
+		
+			std::cout<<"\t-d\t--app\t\tRun app only sensitivity"<<std::endl;
+			std::cout<<"\t-a\t--dis\t\tRun dis only sensitivity"<<std::endl;
 			std::cout<<"\t-B\t--bkg\t\trun bkg generating test code"<<std::endl;
 			std::cout<<"\t-h\t--help\t\tDisplays this help message"<<std::endl;
 			std::cout<<"\t-d\t\t\tRequired Argument. Creates a sin and sin^2 frequency ntuples for a dmsq."<<std::endl;
