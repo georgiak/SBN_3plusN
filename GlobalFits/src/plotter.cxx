@@ -121,12 +121,13 @@ int globFit_plotter(){
 			if(type==0)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
 			if(type==1)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{#mu#mu});#Delta m^{2}_{41}");
 			if(type==2)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{ee});#Delta m^{2}_{41}");
-			h->GetXaxis()->SetLimits(.0001,.1);
+			if(type==0)	h->GetXaxis()->SetLimits(.0001,.1);
+			if(type>0)	h->GetXaxis()->SetLimits(.0003,1.);
 			h->GetYaxis()->SetLimits(.01,100.);
 			h->Draw();
 
 			chi2_95->Draw("dm2:sin22th","","same");
-			c1->Print((plotOutput + "/" + dataset + "_3plus1_dm241xsinsq2t.png").c_str());
+			c1->Print((plotOutput + "/" + dataset + "_3plus1_dm241xsinsq2t_raster.png").c_str());
 		}
 	}
 

@@ -738,6 +738,7 @@ chisqStruct getChi2CCFR(neutrinoModel model, ccfrPackage pack){
 			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
 			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
             nFront[iC] += oscCont.aMuMu[iContribution] * sinSq;
+			std::cout << sinSq << " " << nFront[iC] << std::endl;
         }
         nFront[iC] *= pack.m_front;
         nFront_noOsc[iC] = pack.m_front * pack.noOscGrid[iC][0];

@@ -483,8 +483,7 @@ booneDisPackage mbNuDisInit(){
     booneDisPackage pack;
 
     const int nBins = 16;
-    const int nFOscEvts= 1267007;
-	pack.nFOscEvts = nFOscEvts;
+	pack.nFOscEvts = 1267007;
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
@@ -516,8 +515,7 @@ booneDisPackage mbNubarDisInit(){
     booneDisPackage pack;
 
     const int nBins = 16;
-    const long int nFOscEvts = 686529;
-	pack.nFOscEvts = nFOscEvts;
+	pack.nFOscEvts = 686529;
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];

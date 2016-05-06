@@ -144,9 +144,20 @@ int ntProcess(){
 		// Now, perform the scan
 		if(raster == 1){
 			for(int dm = 1; dm <= rasterPoints; dm++){
-				for(int sins = 1; sins <= rasterPoints; sins++){
+				float chi2minRaster = 3000.;
+				int sinsStartRaster = 0;
+
+				// Find minimum point for this particular dm2
+				for(int sins = 1; sins <= rasterPoints;sins++){
+					if(rastergram->GetBinContent(dm,sins) < chi2minRaster){
+						chi2minRaster = rastergram->GetBinContent(dm,sins);
+						sinsStartRaster = sins;
+					}
+				}
+
+				for(int sins = sinsStartRaster; sins <= rasterPoints; sins++){
 					float chisq = rastergram->GetBinContent(dm,sins);
-					if(chisq - chi2min > 3.4){
+					if(chisq - chi2minRaster > 3.84){
 						std::cout << dm << " " << sins << " " << chisq << std::endl;
 						float _dm2 = pow(10,(dm/float(rasterPoints)*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
 						float _sin22th = pow(10,(sins/float(rasterPoints)*4 + TMath::Log10(.0001)));
@@ -156,22 +167,6 @@ int ntProcess(){
 				}
 			}
 		}
-
-		if(raster == 2){
-			for(int dm = 1; dm < rasterPoints; dm++){
-				for(int sins = rasterPoints; sins > 0; sins--){
-					float chisq = rastergram->GetBinContent(dm,sins);
-					if(chisq - chi2min > 3.4){				
-						std::cout << dm << " " << sins << " " << chisq << std::endl;
-						float _dm2 = pow(10,(dm/float(rasterPoints)*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
-						float _sin22th = pow(10,(sins/float(rasterPoints)*4 + TMath::Log10(.0001)));
-                                                chi2_95->Fill(chisq,_dm2,_sin22th);
-                                                break;
-					}
-				}
-			}
-		}
-
 		// 95% (1dof)		3.84
 	}
 	// Save Ntuple to file
