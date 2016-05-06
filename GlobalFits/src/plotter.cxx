@@ -35,7 +35,7 @@ int globFit_plotter(){
 		chi2_90 = (TNtuple*)(f->Get("chi2_90_pr"));
 	}
 
-    TCanvas *c1 = new TCanvas("c1");
+	TCanvas *c1 = new TCanvas("c1");
 
 	// Setup histo
     TH2F *h = new TH2F("h","3+3 #Chi^2;U_{e 4};U_{#mu 4}",1000,0.01,100.,1000,.01,100.);
@@ -119,8 +119,8 @@ int globFit_plotter(){
 			h->Draw();
 
 			if(type==0){
-        		chi2_99->Draw("m4*m4:4*um4*um4*um4*um4","","same");
-        		chi2_90->Draw("m4*m4:4*um4*um4*um4*um4","","same");
+        		chi2_99->Draw("m4**2:4*um4**2*ue4**2","","same");
+        		chi2_90->Draw("m4**2:4*um4**2*ue4**2","","same");
 			}
 			else if(type == 1){
 				chi2_99->Draw("m4*m4:4*um4*um4*(1-um4*um4)","","same");
