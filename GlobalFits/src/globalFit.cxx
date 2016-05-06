@@ -28,7 +28,7 @@ float ran[13];
 int iMCGen;             // Index for MC model
 double dm2Min[3], dm2Max[3];
 double dm2Minimum, dm2Maximum;
-float UMin = 0.01;
+float UMin = 0;
 
 bool reject1, reject2, reject3, reject4, reject;
 double chi2Min, chi2LogMin;
@@ -57,13 +57,14 @@ int globInit(){
 
     using namespace std;
 
-	jobOptLoc = "/pnfs/lar1nd/scratch/users/dcianci/fits/"; ///Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
-	dataLoc = "/pnfs/lar1nd/scratch/users/dcianci/fits/data"; ///Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
+	jobOptLoc = ""; ///Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
+	dataLoc = ""; ///Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
 
     // read jobOption file and fill variables
     jobOpt();
     dm2Max[0] = 100.;   dm2Max[1] = 100.;    dm2Max[2] = 100.;
     dm2Min[0] = .01;     dm2Min[1] = .01;    dm2Min[2] = .01;
+	UMax = .5;
 
     // INITIALIZATIONS
 	std::cout << "Start initializations!" << std::endl;
