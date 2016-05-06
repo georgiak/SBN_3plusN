@@ -149,8 +149,9 @@ int ntProcess(){
 
 				// Find minimum point for this particular dm2
 				for(int sins = 1; sins <= rasterPoints;sins++){
-					if(rastergram->GetBinContent(dm,sins) < chi2minRaster){
-						chi2minRaster = rastergram->GetBinContent(dm,sins);
+					float chisq = rastergram->GetBinContent(dm, sins);
+					if(chisq < chi2minRaster && chisq >= chi2min){
+						chi2minRaster = chisq;
 						sinsStartRaster = sins;
 					}
 				}
