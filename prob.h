@@ -18,10 +18,13 @@ struct neutrinoModel{
 	std::vector< std::vector < std::complex<double> > >  U; 
 	std::vector<std::vector<double>> dm;
 
+	int numsterile;
+
 	//constructors!! Should overload these immensely for  3+1, 3+2, 3+3 and NULL
 	neutrinoModel();
 	neutrinoModel(double * mn, double * ue, double *um, double *ph);
 	neutrinoModel(double m4, double ue4, double um4);
+
 
 
 	void zero();
@@ -34,6 +37,11 @@ struct neutrinoModel{
 
 	double oscProbSin(double Ev, double L);
 	double oscProbSinSq(double Ev, double L);
+
+
+	double oscAmp(int a, int b, int which_dm, int sqornot);
+	double oscAmp_dis(int a, int which_dm);
+	double oscAmp_app(int a, int b, int which_dm, int sqornot);
 };
 
 

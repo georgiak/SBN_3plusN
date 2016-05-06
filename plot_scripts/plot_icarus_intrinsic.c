@@ -36,11 +36,11 @@ void plot_icarus_intrinsic(){
 	TH1D * Residual_photon = new TH1D("Residual_photon","",11,e_bins);
 	TH1D * Residual_muon = new TH1D("Residual_muon","",11,e_bins);
 	
-	TFile *f = new TFile("../bkg_data/ICARUS_intrin.root"); 
+	TFile *f = new TFile("../bkg_data/ICARUS_bkg.root"); 
  
-	TH1D * H1nue_reco_intrinsic = (TH1D*)f->Get("detector_intrinsic_app");
-	TH1D * H1nue_reco_muon= (TH1D*)f->Get("detector_muon_app");
-	TH1D * H1nue_reco_photon = (TH1D*)f->Get("detector_photon_app");
+	TH1D * H1nue_reco_intrinsic = (TH1D*)f->Get("nue_intrin_sin");
+	TH1D * H1nue_reco_muon= (TH1D*)f->Get("nue_muon_sin");
+	TH1D * H1nue_reco_photon = (TH1D*)f->Get("nue_photon_sin");
 
 	gStyle->SetOptStat(0);
 
@@ -61,9 +61,7 @@ void plot_icarus_intrinsic(){
 		tm = H1nue_reco_muon->GetBinContent(k+1);
 		tp = H1nue_reco_photon->GetBinContent(k+1);
 
-		Nintrin += ti;
-		Nmuon += tm;
-		Nphoton += tp;
+	
 
 /*	         ti2 =100*(ti-ICARUS_proposal_intrinsic[k]*ebinw[k])/(607+706.0+180);
 		 tp2 =100*(tp-ICARUS_proposal_photon[k]*ebinw[k])/(149.0+9);
@@ -95,9 +93,9 @@ sprintf(namem, "CC #mu mis-id p: %.1f ",100*Nmuon/51.0);
 
 
 	std::cout<<"ICARUS analysis"<<std::endl;
-	std::cout<<"Nintrinsic: "<<Nintrin<<" proposal: 15831"<<std::endl;
-	std::cout<<"Nmuon: "<<Nmuon<<" proposal: 484"<<std::endl;
-	std::cout<<"Nphoton: "<<Nphoton<<" proposal: 1443"<<std::endl;
+	std::cout<<"Nintrinsic: "<<Nintrin<<" proposal: 1493"<<std::endl;
+	std::cout<<"Nmuon: "<<Nmuon<<" proposal: 51"<<std::endl;
+	std::cout<<"Nphoton: "<<Nphoton<<" proposal: 158"<<std::endl;
 
 
 

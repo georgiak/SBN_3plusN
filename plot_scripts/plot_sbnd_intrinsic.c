@@ -35,11 +35,11 @@ void plot_sbnd_intrinsic(){
 	TH1D * Residual_photon = new TH1D("Residual_photon","",11,e_bins);
 	TH1D * Residual_muon = new TH1D("Residual_muon","",11,e_bins);
 	
-	TFile *f = new TFile("../bkg_data/SBND_intrin.root"); 
- 
-	TH1D * H1nue_reco_intrinsic = (TH1D*)f->Get("detector_intrinsic_app");
-	TH1D * H1nue_reco_muon= (TH1D*)f->Get("detector_muon_app");
-	TH1D * H1nue_reco_photon = (TH1D*)f->Get("detector_photon_app");
+	TFile *f = new TFile("../bkg_data/SBND_bkg.root"); 
+
+	TH1D * H1nue_reco_intrinsic = (TH1D*)f->Get("nue_intrin_sin");
+	TH1D * H1nue_reco_muon= (TH1D*)f->Get("nue_muon_sin");
+	TH1D * H1nue_reco_photon = (TH1D*)f->Get("nue_photon_sin");
 
 	gStyle->SetOptStat(0);
 
@@ -60,10 +60,6 @@ void plot_sbnd_intrinsic(){
 		tm = H1nue_reco_muon->GetBinContent(k+1);
 		tp = H1nue_reco_photon->GetBinContent(k+1);
 
-	
-		Nintrin += ti;
-		Nmuon += tm;
-		Nphoton += tp;
 
 	         ti2 =100*(ti-SBND_proposal_intrinsic[k]*ebinw[k])/(SBND_proposal_intrinsic[k]*ebinw[k]);
 		 tp2 =100*(tp-SBND_proposal_photon[k]*ebinw[k])/(SBND_proposal_photon[k]*ebinw[k]);
