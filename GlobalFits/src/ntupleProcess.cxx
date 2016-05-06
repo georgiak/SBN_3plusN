@@ -145,7 +145,7 @@ int ntProcess(){
 		if(raster == 1){
 			for(int dm = 1; dm <= rasterPoints; dm++){
 				float chi2minRaster = 3000.;
-				int sinsStartRaster = 0;
+				int sinsStartRaster = 1;
 
 				// Find minimum point for this particular dm2
 				for(int sins = 1; sins <= rasterPoints;sins++){
@@ -157,8 +157,7 @@ int ntProcess(){
 
 				for(int sins = sinsStartRaster; sins <= rasterPoints; sins++){
 					float chisq = rastergram->GetBinContent(dm,sins);
-					if(chisq - chi2minRaster > 3.84){
-						std::cout << dm << " " << sins << " " << chisq << std::endl;
+					if(chisq > 3.84 + chi2minRaster){
 						float _dm2 = pow(10,(dm/float(rasterPoints)*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
 						float _sin22th = pow(10,(sins/float(rasterPoints)*4 + TMath::Log10(.0001)));
 						chi2_95->Fill(chisq,_dm2,_sin22th);
