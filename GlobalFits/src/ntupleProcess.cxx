@@ -27,8 +27,8 @@ int ntProcess(){
 	procOptLoc = "/lar1nd/app/users/dcianci/SBN_3plusN/GlobalFits/inputs/";
 	procOpt();
 
-	rasterPoints = 100;
-	dmmin = 0.1;	dmmax = 100.;
+	rasterPoints = 500;
+	dmmin = 0.01;	dmmax = 100.;
 
 	// Create tchain by linking all root ntuples
     std::cout << "Loading ntuple files..." << std::endl;
@@ -109,13 +109,13 @@ int ntProcess(){
 
 	if(raster == 0){
 		for(int i = 0; i < in_chain->GetEntries(); i++){
-        	in_chain->GetEntry(i);
+        		in_chain->GetEntry(i);
 
 			if(chi2 - chi2min < 9.201)
 				chi2_99->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
-				if(chi2 - chi2min < 4.605)
+			if(chi2 - chi2min < 4.605)
 				chi2_90->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
-    	}
+    		}
 
 		std::cout << "90CL has " << chi2_90->GetEntries() << " entries" << std::endl;
 		std::cout << "99CL has " << chi2_99->GetEntries() << " entries" << std::endl;
@@ -123,41 +123,57 @@ int ntProcess(){
 		// 90% (2dof) 		4.605
 		// 99% (2dof)		9.201
 	}
-	if(raster == 1){
+	if(raster > 0){
 		// Fill up a histogram so everything's in proper order
 		std::cout << "Filling rastergram histo" << std::endl;
-		TH2F * rastergram = new TH2F("rg","rg",100,.01,100.,100,0,1.);
+		TH2F * rastergram = new TH2F("rg","rg",rasterPoints,.01,100.,rasterPoints,0,1.);
 		for(int i = 0; i < in_chain->GetEntries(); i++){
         	in_chain->GetEntry(i);
-			float mstep = TMath::Log10(dmmax/dmmin)/(rasterPoints);
-			float ustep = TMath::Log10(1/.0001)/(rasterPoints);
-			float dm = ceil(pow(m4,2)/mstep) - TMath::Log10(dmmin);
+			float mstep = TMath::Log10(dmmax/dmmin)/float(rasterPoints);
+			float ustep = TMath::Log10(1/.0001)/float(rasterPoints);
+			//float dm = ceil(pow(m4,2)/mstep) - TMath::Log10(dmmin);
+			float dm = ceil(TMath::Log10(pow(m4,2)/dmmin)/mstep);
 			float sins;
-			if(type == 0) sins = ceil(4*pow(ue4,2)*pow(um4,2)/ustep) - TMath::Log10(.0001);
-			if(type == 1) sins = ceil(4*pow(um4,2)*(1 - pow(um4,2))/ustep) - TMath::Log10(.0001);
-			if(type == 2) sins = ceil(4*pow(ue4,2)*(1 - pow(ue4,2))/ustep) - TMath::Log10(.0001);
+			if(type == 0) sins = ceil(TMath::Log10(4*pow(ue4,2)*pow(um4,2)/.0001)/ustep);
+			if(type == 1) sins = ceil(TMath::Log10(4*pow(um4,2)*(1 - pow(um4,2))/.0001)/ustep);
+			if(type == 2) sins = ceil(TMath::Log10(4*pow(ue4,2)*(1 - pow(ue4,2))/.0001)/ustep);
 
 			rastergram->SetBinContent(dm,sins,chi2);
 		}
 
 		// Now, perform the scan
-		for(int dm = 1; dm <= rasterPoints; dm++){
-			for(int sins = 1; sins <= rasterPoints; sins++){
-				float chisq = rastergram->GetBinContent(dm,sins);
-				if(chisq - chi2min < 3.84 && chisq >= chi2min){
-					float _dm2 = pow((dm + TMath::Log10(dmmin)) * (TMath::Log10(dmmax/dmmin)/rasterPoints),10);
-					float _sin22th = pow((sins + TMath::Log10(.0001)) * (TMath::Log10(1/.0001)/rasterPoints),10);
-					chi2_95->Fill(chisq,_dm2,_sin22th);
-					break;
+		if(raster == 1){
+			for(int dm = 1; dm <= rasterPoints; dm++){
+				for(int sins = 1; sins <= rasterPoints; sins++){
+					float chisq = rastergram->GetBinContent(dm,sins);
+					if(chisq - chi2min > 3.4){
+						std::cout << dm << " " << sins << " " << chisq << std::endl;
+						float _dm2 = pow(10,(dm/float(rasterPoints)*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
+						float _sin22th = pow(10,(sins/float(rasterPoints)*4 + TMath::Log10(.0001)));
+						chi2_95->Fill(chisq,_dm2,_sin22th);
+						break;
+					}
 				}
 			}
 		}
 
-
+		if(raster == 2){
+			for(int dm = 1; dm < rasterPoints; dm++){
+				for(int sins = rasterPoints; sins > 0; sins--){
+					float chisq = rastergram->GetBinContent(dm,sins);
+					if(chisq - chi2min > 3.4){				
+						std::cout << dm << " " << sins << " " << chisq << std::endl;
+						float _dm2 = pow(10,(dm/float(rasterPoints)*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
+						float _sin22th = pow(10,(sins/float(rasterPoints)*4 + TMath::Log10(.0001)));
+                                                chi2_95->Fill(chisq,_dm2,_sin22th);
+                                                break;
+					}
+				}
+			}
+		}
 
 		// 95% (1dof)		3.84
 	}
-
 	// Save Ntuple to file
 	chi2_99->Write();
 	chi2_90->Write();
