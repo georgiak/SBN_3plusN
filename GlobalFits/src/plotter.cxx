@@ -4,7 +4,7 @@
 bool procOpt();
 
 std::string plotOutput = "plots";
-int steriles, nRuns, type, raster;
+int steriles, nRuns, type, raster, discretized;
 std::string dataset, location, output;
 std::string procOptLoc;
 
@@ -14,7 +14,8 @@ int globFit_plotter(){
     procOpt();
 
     std::cout << "Loading ntuple files..." << std::endl;
-	std::string infile = output + Form("/nt_3%i_",steriles) + dataset + ".root";
+	if(discretized == 0)	std::string infile = output + Form("/nt_3%i_",steriles) + dataset + ".root";
+	if(discretized == 1)	std::string infile = output + Form("/nt_3%i_",steriles) + dataset + "_processed.root";
 	TString inputFile = infile;
 	TFile *f = new TFile(inputFile);
 	TNtuple *chi2_99 = (TNtuple*)(f->Get("chi2_99"));
@@ -98,7 +99,7 @@ int globFit_plotter(){
 			if(type==1)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{#mu#mu});#Delta m^{2}_{41}");
 			if(type==2)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{ee});#Delta m^{2}_{41}");
 			if(type==0)	h->GetXaxis()->SetLimits(.0001,.1);
-			if(type>0)	h->GetXaxis()->SetLimits(.0003,1.);
+			if(type>0)	h->GetXaxis()->SetLimits(.0001,1.);
 			h->GetYaxis()->SetLimits(.01,100.);
 			h->Draw();
 
@@ -122,7 +123,7 @@ int globFit_plotter(){
 			if(type==1)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{#mu#mu});#Delta m^{2}_{41}");
 			if(type==2)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{ee});#Delta m^{2}_{41}");
 			if(type==0)	h->GetXaxis()->SetLimits(.0001,.1);
-			if(type>0)	h->GetXaxis()->SetLimits(.0003,1.);
+			if(type>0)	h->GetXaxis()->SetLimits(.0001,1.);
 			h->GetYaxis()->SetLimits(.01,100.);
 			h->Draw();
 
@@ -183,6 +184,12 @@ bool procOpt(){
 	std::getline(is_line7,key,'=');
 	std::getline(is_line7,value);
 	raster = atoi(value.c_str());
+
+	std::getline(file,line);
+	std::istringstream is_line8(line);
+	std::getline(is_line8,key,'=');
+	std::getline(is_line8,value);
+	discretized = atoi(value.c_str());
 
     return true;
 }
