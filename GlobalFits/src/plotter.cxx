@@ -14,8 +14,9 @@ int globFit_plotter(){
     procOpt();
 
     std::cout << "Loading ntuple files..." << std::endl;
-	if(discretized == 0)	std::string infile = output + Form("/nt_3%i_",steriles) + dataset + ".root";
-	if(discretized == 1)	std::string infile = output + Form("/nt_3%i_",steriles) + dataset + "_processed.root";
+	std::string infile;
+	if(discretized == 0)	infile = output + Form("/nt_3%i_",steriles) + dataset + ".root";
+	if(discretized == 1)	infile = output + Form("/nt_3%i_",steriles) + dataset + "_processed.root";
 	TString inputFile = infile;
 	TFile *f = new TFile(inputFile);
 	TNtuple *chi2_99 = (TNtuple*)(f->Get("chi2_99"));
