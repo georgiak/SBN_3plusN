@@ -13,6 +13,8 @@ int globFit_plotter(){
 	procOptLoc = "/lar1nd/app/users/dcianci/SBN_3plusN/GlobalFits/inputs/";
     procOpt();
 
+	std::cout << "TYPE: " << type << std::endl;
+
     std::cout << "Loading ntuple files..." << std::endl;
 	std::string infile;
 	if(discretized == 0)	infile = output + Form("/nt_3%i_",steriles) + dataset + ".root";
@@ -32,7 +34,6 @@ int globFit_plotter(){
 		chi2_99 = (TNtuple*)(f->Get("chi2_99_pr"));
 		chi2_90 = (TNtuple*)(f->Get("chi2_90_pr"));
 	}
-
 
     TCanvas *c1 = new TCanvas("c1");
 
