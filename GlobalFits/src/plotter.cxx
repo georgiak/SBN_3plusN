@@ -23,12 +23,12 @@ int globFit_plotter(){
 	TNtuple *chi2_90;
 	TNtuple *chi2_95;
 
-	if(discretized = 0){
+	if(discretized == 0){
 		chi2_99 = (TNtuple*)(f->Get("chi2_99"));
 		chi2_90 = (TNtuple*)(f->Get("chi2_90"));
 		chi2_95 = (TNtuple*)(f->Get("chi2_95"));
 	}
-	if(discretized = 1){
+	if(discretized == 1){
 		chi2_99 = (TNtuple*)(f->Get("chi2_99_pr"));
 		chi2_90 = (TNtuple*)(f->Get("chi2_90_pr"));
 	}
@@ -59,8 +59,10 @@ int globFit_plotter(){
     chi2_90->SetFillColor(kMagenta);
 	chi2_99->SetMarkerColor(kBlue);
 	chi2_90->SetMarkerColor(kMagenta);
-	chi2_95->SetMarkerStyle(7);
-	chi2_95->SetMarkerColor(kRed+3);
+	if(discretized == 0 && raster == 1){
+		chi2_95->SetMarkerStyle(7);
+		chi2_95->SetMarkerColor(kRed+3);
+	}
 
 	TLegend *leg = new TLegend(0.7,0.7,0.95,0.9);
 	leg->SetFillStyle(0);

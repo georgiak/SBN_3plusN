@@ -60,8 +60,8 @@ int ntGridder(){
 		// Okay, this one's 'easy' using built-in root data structures.
 		// Fill up a histogram so everything's in proper order
 		std::cout << "Filling rastergram histo" << std::endl;
-		TH3D * rastergram_99 = new TH3D("rg","rg",gridPoints,.1,10.,gridPoints,0,.5,gridPoints,0,.5);
-		TH3D * rastergram_90 = new TH3D("rg","rg",gridPoints,.1,10.,gridPoints,0,.5,gridPoints,0,.5);
+		TH3D * rastergram_99 = new TH3D("rg99","rg",gridPoints,.1,10.,gridPoints,0,.5,gridPoints,0,.5);
+		TH3D * rastergram_90 = new TH3D("rg90","rg",gridPoints,.1,10.,gridPoints,0,.5,gridPoints,0,.5);
 
 		// We'll deal with 99% first, yeah?
 		chi2_99->SetBranchAddress("chi2",&chi2);
@@ -100,10 +100,13 @@ int ntGridder(){
 		for(int _m4 = 1; _m4 <= gridPoints; _m4++){
 			for(int _ue4 = 1; _ue4 <= gridPoints; _ue4++){
 				for(int _um4 = 1; _um4 <= gridPoints; _um4++){
+					float m4p = pow(10,(_m4/float(gridPoints)*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
+					float ue4p = _ue4/float(gridPoints)*(umax-umin);
+					float um4p = _um4/float(gridPoints)*(umax-umin);
 					if(rastergram_99->GetBinContent(_m4,_ue4,_um4) > 0)
-						chi2_99_pr->Fill(_m4,_ue4,_um4,0,0,0,0,0,0,0,0,0);
+						chi2_99_pr->Fill(m4p,ue4p,um4p,0,0,0,0,0,0,0,0,0);
 					if(rastergram_90->GetBinContent(_m4,_ue4,_um4) > 0)
-						chi2_90_pr->Fill(_m4,_ue4,_um4,0,0,0,0,0,0,0,0,0);
+						chi2_90_pr->Fill(m4p,ue4p,um4p,0,0,0,0,0,0,0,0,0);
 				}
 			}
 		}
