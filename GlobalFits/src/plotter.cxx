@@ -19,9 +19,20 @@ int globFit_plotter(){
 	if(discretized == 1)	infile = output + Form("/nt_3%i_",steriles) + dataset + "_processed.root";
 	TString inputFile = infile;
 	TFile *f = new TFile(inputFile);
-	TNtuple *chi2_99 = (TNtuple*)(f->Get("chi2_99"));
-	TNtuple *chi2_90 = (TNtuple*)(f->Get("chi2_90"));
-	TNtuple *chi2_95 = (TNtuple*)(f->Get("chi2_95"));
+	TNtuple *chi2_99;
+	TNtuple *chi2_90;
+	TNtuple *chi2_95;
+
+	if(discretized = 0){
+		chi2_99 = (TNtuple*)(f->Get("chi2_99"));
+		chi2_90 = (TNtuple*)(f->Get("chi2_90"));
+		chi2_95 = (TNtuple*)(f->Get("chi2_95"));
+	}
+	if(discretized = 1){
+		chi2_99 = (TNtuple*)(f->Get("chi2_99_pr"));
+		chi2_90 = (TNtuple*)(f->Get("chi2_90_pr"));
+	}
+
 
     TCanvas *c1 = new TCanvas("c1");
 
