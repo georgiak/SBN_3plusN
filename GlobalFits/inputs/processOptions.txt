@@ -6,3 +6,4 @@ output=ntuples
 type(0-app,1-numudis,2-nuedis)=0
 raster=0
 discretized=1
+diag=1

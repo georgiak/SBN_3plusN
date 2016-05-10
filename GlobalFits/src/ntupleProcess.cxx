@@ -14,7 +14,7 @@ bool procOpt();
 
 float chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56;
 float m4_min,ue4_min,um4_min,m5_min,ue5_min,um5_min,m6_min,ue6_min,um6_min,phi45_min,phi46_min,phi56_min;
-int steriles, nRuns, type, raster;
+int steriles, nRuns, type, raster, discretized, diag;
 std::string dataset, location, output;
 std::string procOptLoc;
 
@@ -115,7 +115,14 @@ int ntProcess(){
 				chi2_99->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
 			if(chi2 - chi2min < 4.605)
 				chi2_90->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
-    		}
+			float sins;
+			if(type == 0) sins = 4*pow(ue4,2)*pow(um4,2);
+			if(type == 1) sins = 4*pow(um4,2)*(1 - pow(um4,2));
+			if(type == 2) sins = 4*pow(ue4,2)*(1 - pow(ue4,2));
+			if(chi2 - chi2min < 5.99)
+				chi2_95->Fill(chi2,pow(m4,2),sins);
+    	}
+
 
 		std::cout << "90CL has " << chi2_90->GetEntries() << " entries" << std::endl;
 		std::cout << "99CL has " << chi2_99->GetEntries() << " entries" << std::endl;
@@ -161,6 +168,7 @@ int ntProcess(){
 					if(chisq > 3.84 + chi2minRaster){
 						float _dm2 = pow(10,(dm/float(rasterPoints)*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
 						float _sin22th = pow(10,(sins/float(rasterPoints)*4 + TMath::Log10(.0001)));
+
 						chi2_95->Fill(chisq,_dm2,_sin22th);
 						break;
 					}
@@ -227,6 +235,12 @@ bool procOpt(){
 	std::getline(is_line7,key,'=');
 	std::getline(is_line7,value);
 	raster = atoi(value.c_str());
+
+	std::getline(file,line);
+	std::istringstream is_line8(line);
+	std::getline(is_line8,key,'=');
+	std::getline(is_line8,value);
+	discretized = atoi(value.c_str());
 
     return true;
 }
