@@ -912,10 +912,8 @@ should be optimised to keep as many of these lowest energy events as possible.
 In addition to being able to reduce beam-related backgrounds by studying the
 inter-bucket windows, the timing of the observed events can also be used to
 discriminate between different models, as well as give an independant
-measurement of the sterile mass.  We can estimate the impact of this
-information on the model discrimination given an knowledge of the precision in
-timing measurements of the sterile neutrinos. Elementary special relativity
-tells us that for an arrival time delay (behind a luminal particle) over a
+measurement of the sterile mass that avoids the need for any normalisation. This is a very important tool, being valid in both the minimal model as described above but also in extensions in which the total rate has additional parameters allowing decoupling of the mass from the new degrees of freedom. 
+Elementary special relativity tells us that for an arrival time delay (behind a luminal particle) over a
 distance $L$ denoted by $\Delta T$, the mass of a sterile neutrino with an
 energy $E$ can be reconstructed as 
 %
@@ -929,20 +927,34 @@ effects as described above, and aditional smear the time of each event with a
 finite time resolution of $\sigma_T  \approx 1$ for SBND and ICARUS. As the
 absolute timing of the event is not known, only the relative timing since the
 last bucket, $\Delta T$, one can obtain up to 81 degenerate solutions for the
-sterile mass from any given event depending on the placement in the spill
+sterile mass from any given event depending on the placement in he spill
 structure. By only studying the initial few buckets one can elleviate the
 problem, however, it also reduces the signal statistics by $\mathcal{O}$(0.01)
-and so this edge effect information is ignored in this analysis.
+and so this edge effect information is ignored in this analysis. \\
 
-\newtext{MARK}{Working on this last plot for here, generated all the data just need 
-to get an answer.} 
+To estimate the sensitivity of the decaying sterile mass we have run a binned Maximum Liklihood analysis of the reconstructed sterile energy and $\Delta T$, assuming events are poission distributed. As we do not wish to consider normalisation we assume that the experiment, here ICARUS, observes 100 events consistant with $\nu_N\rightarrow e^- \pi^+$ decay in flight.We define our test statistic as \[
+	t_m = -2 \ln \left(\mathcal{L}\right) =  2 \sum_{i=1}^N \left[ \mu_i(m)-n_i +n_i \ln(\frac{n_i}{\mu_i(m)})  \right]
+\]
+where $\mu_i(m)$ is the expected number of events in bin $i$ if the sterile is of mass m, then the reconstructed mass defined as the mass which minimises $t_m$. As many bins contain low if any events, as well as the cyclic nature of $\Delta T$ we have elected to perform a Monte Carlo estimation of the distribution of $t_m$ simulating the entire experiment many thousand times in order to account for any non-gaussianity. The results of this study are shown in Fig (\ref{fig:tof_scatter}) below in the form of 1 and 2 $\sigma$ ranges of reconstructed sterile mass as a function of true simulated mass. Resolution of approx 40 MeV at 1$\sigma$ is achievable for the entire range of sterile mass allowed. The  $\nu_N\rightarrow \mu^- \pi^+$ channel is approximaly 10\% better due to the better energy resolution of muons in LAr. The remaining channels $\nu_N\rightarrow \nu_\alpha \pi^0$, $\nu_N\rightarrow \nu_\alpha e^+ e^-$ and $\nu_N\rightarrow \nu_\alpha \gamma$ have essentially no resolution via timing alone due to the inability to reconstruct the entire sterile energy.
 
-\begin{figure}[t] \center
-\includegraphics[width=0.6\textwidth]{figures/timing_scatterplots.pdf}
-\caption{\label{fig:tof_scatter} The distribution of events at ICARUS for a
+
+\begin{figure}[t]
+\center
+\begin{subfigure}[t]{0.5\textwidth}
+\includegraphics[width=\textwidth]{figures/timing_scatterplots.pdf}
+\end{subfigure}%
+~
+\begin{subfigure}[t]{0.475\textwidth}
+\includegraphics[width=\textwidth]{figures/brazil_timing.pdf}
+\end{subfigure}
+
+\caption{\label{fig:tof_scatter}Left: The distribution of events at ICARUS for a
 150, 250 and 350 MeV sterile decaying to $e \pi$ in energy and timing delay
 from last beam bucket. High energy events can be used to distinguish the
-decaying sterile masses.} \end{figure}
+decaying sterile masses. Right: Sensitivity to sterile mass from reconstructed sterile energy and time-of-flight alone. Resolution of approx 40 MeV at 1$\sigma$ is achievable for the entire range of sterile mass allowed if 100 events are observed.  }
+
+\end{figure}
+
 
 
 \section{Conclusions}
