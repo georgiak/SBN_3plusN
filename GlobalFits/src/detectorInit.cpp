@@ -806,7 +806,7 @@ cdhsPackage cdhsInit(){
 
     TMatrix sigmaRatio(nBins,nBins);
     TMatrix sigmaRatio_inv(nBins,nBins);
-    double sigmaSyst = 0.015;
+    double sigmaSyst = 0.025;
     for(int i = 0; i < nBins; i++){
         for(int j = 0; j < nBins; j++){
             if(i == j)  sigmaRatio_inv[i][j] = pow(sigmaRatio1[i],2) + pow(sigmaSyst,2);
@@ -884,89 +884,89 @@ cdhsPackage cdhsInit(){
     return pack;
 }
 bugeyPackage bugeyInit(){
-  bugeyPackage pack;
+  	bugeyPackage pack;
 
-  int maxEnergyBins = 25;
-  int nBaselines = 3;
+  	int maxEnergyBins = 25;
+  	int nBaselines = 3;
 
-  double deltaE[] = {.2, .2, .5};
-  double EMin = 1.; double EMax = 6.;
+  	double deltaE[] = {.2, .2, .5};
+  	double EMin = 1.; double EMax = 6.;
 
-  pack.sigmaBigA = 4.796e-2;
-  pack.sigmaB =2.e-2;
-  pack.sigmaSmallA =1.414e-2;
+  	pack.sigmaBigA = 4.796e-2;
+  	pack.sigmaB =2.e-2;
+  	pack.sigmaSmallA =1.414e-2;
 
-  pack.observed.resize(nBaselines, std::vector<double>(maxEnergyBins));
-  pack.sigmaRatio.resize(nBaselines, std::vector<double>(maxEnergyBins));
-  pack.energy.resize(nBaselines, std::vector<double>(maxEnergyBins));
-  pack.sinSqDeltaGrid.resize(dm2VecMaxDim, std::vector<std::vector<double>>(maxEnergyBins, std::vector<double>(nBaselines)));
+  	pack.observed.resize(nBaselines, std::vector<double>(maxEnergyBins));
+  	pack.sigmaRatio.resize(nBaselines, std::vector<double>(maxEnergyBins));
+  	pack.energy.resize(nBaselines, std::vector<double>(maxEnergyBins));
+  	pack.sinSqDeltaGrid.resize(dm2VecMaxDim, std::vector<std::vector<double>>(maxEnergyBins, std::vector<double>(nBaselines)));
 
-  double ratio_obs1[] = {1.0182,1.0017,0.9815,0.9875,0.9981,0.9849,0.9749,0.9743,0.9840,0.9910,1.0042,0.9966,0.9629,1.0144,
-      0.9971,0.9759,0.9889,0.9493,1.0056,0.8928,1.0160,0.9291,0.8585,1.0012,0.8981};
-  double ratio_obs2[] = {0.9589,1.0344,0.9899,1.0071,0.9990,1.0267,0.9830,1.0298,0.9889,0.9441,0.9827,1.0123,1.0069,0.9059,
-      0.9877,1.0281,1.0104,0.8905,1.0377,0.9940,1.0593,0.9457,0.9146,0.9941,0.9161};
-  double ratio_obs3[] = {0.1685,0.8189,1.2169,1.3342,0.7995,1.1623,1.2918,1.3251,1.2711,0.5812};
+  	double ratio_obs1[] = {1.0182,1.0017,0.9815,0.9875,0.9981,0.9849,0.9749,0.9743,0.9840,0.9910,1.0042,0.9966,0.9629,1.0144,
+      	0.9971,0.9759,0.9889,0.9493,1.0056,0.8928,1.0160,0.9291,0.8585,1.0012,0.8981};
+  	double ratio_obs2[] = {0.9589,1.0344,0.9899,1.0071,0.9990,1.0267,0.9830,1.0298,0.9889,0.9441,0.9827,1.0123,1.0069,0.9059,
+      	0.9877,1.0281,1.0104,0.8905,1.0377,0.9940,1.0593,0.9457,0.9146,0.9941,0.9161};
+  	double ratio_obs3[] = {0.1685,0.8189,1.2169,1.3342,0.7995,1.1623,1.2918,1.3251,1.2711,0.5812};
 
-  double sigmaRatio1[] = {0.01893,0.01610,0.01516,0.01472,0.01461,0.01463,0.01522,0.01595,0.01660,0.01906,0.02061,0.02064,
-      0.02071,0.02366,0.02498,0.02681,0.02914,0.03117,0.03657,0.03699,0.04789,0.05124,0.05401,0.07408,0.07716};
-  double sigmaRatio2[] = {0.06553,0.04876,0.03628,0.03182,0.03129,0.03140,0.03128,0.03082,0.02922,0.02847,0.03159,0.03412,
-      0.03705,0.03669,0.04426,0.04753,0.05371,0.05415,0.06137,0.07084,0.07786,0.08788,0.10928,0.13213,0.17449};
-  double sigmaRatio3[] = {0.54296,0.29210,0.20995,0.18166,0.23880,0.26919,0.34341,0.28928,0.79799,0.90417};
+  	double sigmaRatio1[] = {0.01893,0.01610,0.01516,0.01472,0.01461,0.01463,0.01522,0.01595,0.01660,0.01906,0.02061,0.02064,
+      	0.02071,0.02366,0.02498,0.02681,0.02914,0.03117,0.03657,0.03699,0.04789,0.05124,0.05401,0.07408,0.07716};
+  	double sigmaRatio2[] = {0.06553,0.04876,0.03628,0.03182,0.03129,0.03140,0.03128,0.03082,0.02922,0.02847,0.03159,0.03412,
+      	0.03705,0.03669,0.04426,0.04753,0.05371,0.05415,0.06137,0.07084,0.07786,0.08788,0.10928,0.13213,0.17449};
+  	double sigmaRatio3[] = {0.54296,0.29210,0.20995,0.18166,0.23880,0.26919,0.34341,0.28928,0.79799,0.90417};
 
-  double normReactorAno[] = {1.06237,1.06197,1.0627};
-  double nBins[] = {25, 25, 10};
+  	double normReactorAno[] = {1.06237,1.06197,1.0627};
+  	double nBins[] = {25, 25, 10};
 
-  double baselines[] = {15., 40., 95.};
+  	double baselines[] = {15., 40., 95.};
 
-  for(int j = 0; j < nBaselines; j++){
-    for(int i = 0; i < nBins[j]; i++){
-      pack.energy[j][i] = EMin + (double(i) + 0.5)/(nBins[j])*(EMax - EMin);
-      if(j==0){
-        pack.observed[j][i] = ratio_obs1[i];
-        pack.sigmaRatio[j][i] = sigmaRatio1[i];
-      }
-      if(j==1){
-        pack.observed[j][i] = ratio_obs2[i];
-        pack.sigmaRatio[j][i] = sigmaRatio2[i];
-      }
-      if(j==2){
-        pack.observed[j][i] = ratio_obs3[i];
-        pack.sigmaRatio[j][i] = sigmaRatio3[i];
-      }
-    }
-  }
+  	for(int j = 0; j < nBaselines; j++){
+    	for(int i = 0; i < nBins[j]; i++){
+      		pack.energy[j][i] = EMin + (double(i) + 0.5)/(nBins[j])*(EMax - EMin);
+      		if(j==0){
+        		pack.observed[j][i] = ratio_obs1[i];
+        		pack.sigmaRatio[j][i] = sigmaRatio1[i];
+      		}
+      		if(j==1){
+        		pack.observed[j][i] = ratio_obs2[i];
+        		pack.sigmaRatio[j][i] = sigmaRatio2[i];
+      		}
+      		if(j==2){
+        		pack.observed[j][i] = ratio_obs3[i];
+        		pack.sigmaRatio[j][i] = sigmaRatio3[i];
+      		}
+    	}
+  	}
 
-  // Now, for the more complicated stuff
-  double EnuMin = 1.8; double EnuMax = 10.;
+  	// Now, for the more complicated stuff
+  	double EnuMin = 1.8; double EnuMax = 10.;
 
-  integralFuncsBugey integralFuncs;
-  ROOT::Math::Functor1D wf(&integralFuncs, &integralFuncsBugey::sinSqFunction);
-  ROOT::Math::GSLIntegrator ig(ROOT::Math::IntegrationOneDim::kADAPTIVE);
-  ig.SetAbsTolerance(1*pow(10,-4));
-  ig.SetRelTolerance(1*pow(10,-4));
-  ig.SetFunction(wf);
+  	integralFuncsBugey integralFuncs;
+  	ROOT::Math::Functor1D wf(&integralFuncs, &integralFuncsBugey::sinSqFunction);
+  	ROOT::Math::GSLIntegrator ig(ROOT::Math::IntegrationOneDim::kADAPTIVE);
+  	ig.SetAbsTolerance(1*pow(10,-4));
+  	ig.SetRelTolerance(1*pow(10,-4));
+  	ig.SetFunction(wf);
 
-  for(int k = 0; k < dm2VecMaxDim; k++){
-    for(int j = 0; j < nBaselines; j++){
-      for(int i = 0; i < nBins[j]; i++){
+  	for(int k = 0; k < dm2VecMaxDim; k++){
+    	for(int j = 0; j < nBaselines; j++){
+      		for(int i = 0; i < nBins[j]; i++){
 
-        double Enu = pack.energy[j][i] + 1.8;
-        double n = 1.27 * dm2Vec[k] * baselines[j] / (Enu * TMath::Pi());
-        double eNuNext = 1.27 * dm2Vec[k] * baselines[j] / ((n + 0.5) * TMath::Pi());
+        		double Enu = pack.energy[j][i] + 1.8;
+        		int n = 1.27 * dm2Vec[k] * baselines[j] / (Enu * TMath::Pi());
+        		double eNuNext = 1.27 * dm2Vec[k] * baselines[j] / ((n + 0.5) * TMath::Pi());
 
-        if(abs(Enu - eNuNext) >= 0.123 * sqrt(Enu - 1.8)){
-          integralFuncs._energy = Enu;
-          integralFuncs._dm2 = dm2Vec[k];
-          integralFuncs._jB = j;
+        		if(abs(Enu - eNuNext) >= 0.123 * sqrt(Enu - 1.8)){
+          			integralFuncs._energy = Enu;
+          			integralFuncs._dm2 = dm2Vec[k];
+          			integralFuncs._jB = j;
 
-          pack.sinSqDeltaGrid[k][i][j] = ig.Integral(EnuMin,EnuMax);// / (EnuMax-EnuMin);
-        }
-        else
-          pack.sinSqDeltaGrid[k][i][j] = .5;
-      }
-    }
-  }
-  return pack;
+          			pack.sinSqDeltaGrid[k][i][j] = ig.Integral(EnuMin,EnuMax);// / (EnuMax-EnuMin);
+        		}
+        		else
+          			pack.sinSqDeltaGrid[k][i][j] = .5;
+      		}
+    	}
+  	}
+  	return pack;
 }
 choozPackage choozInit(){
 
