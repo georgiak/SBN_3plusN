@@ -258,6 +258,7 @@ sinSqPackage lsndInit(){
     const int nBins = 5;
     double EMin = 20.; double EMax = 60.;
 
+	pack.dm2Vec.resize(601);
     pack.sinSqDeltaGrid.resize(dm2VecMaxDim, std::vector<double>(nBins));
     pack.sinSqDeltaGrid2.resize(dm2VecMaxDim, std::vector<double>(nBins));
 
@@ -281,10 +282,8 @@ sinSqPackage lsndInit(){
     double fullConversionLSNDTotal = 33300.;
     double rGammaCutEfficiency = .39;
 
-    // First, the norm!
-
-
     integralFuncsLSND funcLSND;
+	/*
     for(int iL = 0; iL < nBins; iL++){
         ROOT::Math::Functor LSNDNorm(&funcLSND, &integralFuncsLSND::normFunc,3);
         double a[3] = {energyMin[iL],20,30. - 3.5};
@@ -295,8 +294,10 @@ sinSqPackage lsndInit(){
         sum += ig.Integral(a,b);
     }
     pack.norm = fullConversionLSNDTotal * rGammaCutEfficiency / sum;
+	*/
+	pack.norm = 57401.252; // Taken from old code since multiple integrals in root are tricky and time consuming
 
-    // Now, the sinSqDelta grids, why not?
+    /*
     for(int k = 0; k < dm2VecMaxDim; k++){
         for(int iL = 0; iL < nBins; iL++){
 
@@ -312,9 +313,24 @@ sinSqPackage lsndInit(){
             pack.sinSqDeltaGrid[k][iL] = ig.Integral(a,b);// / (energyMax[iL] - energyMin[iL]);
             ig.SetFunction(LSNDSinSq2);
             pack.sinSqDeltaGrid2[k][iL] = ig.Integral(a,b);// / (energyMax[iL] - energyMin[iL]);
+
+			if(k == 0) {
+				//std::cout << energyMin[iL] << " " << energyMax[iL] << std::endl;
+				std::cout << pack.sinSqDeltaGrid[k][iL] << " " << pack.sinSqDeltaGrid2[k][iL] << std::endl;
+			}
 		}
     }
-	std::cout << "finally done with that!" << std::endl;
+	*/
+	ifstream file;
+	file.open(dataLoc+"lsndsinsq.txt");
+	for(int k = 0; k < 601; k++){
+        for(int iL = 0; iL < nBins; iL++){
+			file >> pack.dm2Vec[k];
+			file >> pack.sinSqDeltaGrid[k][iL];
+			file >> pack.sinSqDeltaGrid2[k][iL];
+		}
+	}
+	file.close();
 
     ndf += nBins;
     return pack;

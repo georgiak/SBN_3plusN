@@ -592,20 +592,23 @@ chisqStruct getLogLikelihood(neutrinoModel model, int nBins, sinSqPackage pack){
     double sinSq, sinSq2;
     double sinSqDeltaVec[dm2VecMaxDim], sinSqDeltaVec2[dm2VecMaxDim];
     double lt1, lt2, lt3, pred;
+	double lsndDm2Vec[601];
 
      _signal.resize(nBins);
     for(int i = 0; i < nBins; i++) _signal[i] = 0.;
 
 	oscCont = getOscContributionsNueApp(model,true,true);
     for(int iL = 0; iL < nBins; iL ++){
-        for(int k = 0; k < dm2VecMaxDim; k ++){
+        for(int k = 0; k < 601; k ++){
             sinSqDeltaVec[k] = pack.sinSqDeltaGrid[k][iL];
             sinSqDeltaVec2[k] = pack.sinSqDeltaGrid2[k][iL];
+			if(pack.dm2Vec.size() == 0) lsndDm2Vec[k] = dm2Vec[k];
+			else lsndDm2Vec[k] = pack.dm2Vec[k];
         }
 
         for(int iContribution = 0; iContribution < 6; iContribution++){
             // Now, add the latest contribution to the predicted signal vector
-            dif.SetData(dm2VecMaxDim,dm2Vec,sinSqDeltaVec);
+            dif.SetData(dm2VecMaxDim,lsndDm2Vec,sinSqDeltaVec);
             if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
             else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
             dif.SetData(dm2VecMaxDim,dm2Vec,sinSqDeltaVec2);

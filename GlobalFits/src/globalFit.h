@@ -137,6 +137,7 @@ struct numiPackage{
 struct sinSqPackage{
     std::vector < std::vector <double> > sinSqDeltaGrid;
     std::vector < std::vector <double> > sinSqDeltaGrid2;
+	std::vector <double> dm2Vec;
     double * observed, * bkg, norm;
 };
 struct galPackage{
@@ -225,7 +226,7 @@ struct integralFuncsLSND{
         // Get the resolution through looking at a gaussian
         res = (1/sqrt(2*TMath::Pi())) * sigma * exp(-pow(x[0]-x[1],2)/(2*pow(sigma,2)));
         // Get the neutrino flux
-        if(xFrac < 1) flux = pow(xFrac,2) * (3-2*xFrac);
+		if(xFrac < 1) flux = pow(xFrac,2) * (3-2*xFrac);
         else flux = 0;
         // Get the neutrino cross section
         //xsec = (-0.42222*pow(10,-3)) + (0.64283*pow(10,-4))*Enu + (0.11675*pow(10,-4))*pow(Enu,2);
