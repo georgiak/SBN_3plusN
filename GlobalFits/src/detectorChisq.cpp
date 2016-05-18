@@ -610,12 +610,13 @@ chisqStruct getLogLikelihood(neutrinoModel model, int nBins, sinSqPackage pack){
             // Now, add the latest contribution to the predicted signal vector
             dif.SetData(dm2VecMaxDim,lsndDm2Vec,sinSqDeltaVec);
             if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-            else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
+            else    sinSq = dif.Eval(oscCont.dm2[iContribution]) * pack.norm;
             dif.SetData(dm2VecMaxDim,dm2Vec,sinSqDeltaVec2);
             if(oscCont.dm2[iContribution] == 0.)    sinSq2 = 0;
-            else    sinSq2 = dif.Eval(oscCont.dm2[iContribution]);
+            else    sinSq2 = dif.Eval(oscCont.dm2[iContribution]) * pack.norm;
 
 			_signal[iL] += oscCont.aMuE[iContribution] * sinSq + oscCont.aMuE_CPV[iContribution] * sinSq2;
+			std::cout << _signal[iL] << std::endl;
         }
     }
 
@@ -1133,6 +1134,7 @@ void fcnBugey(int &npar, double *gin, double &fval, double  *xval, int iflag){
 			if(ReactorAnomaly)
     			num = (bigA * smallA[j] + b * (myMin.bPack.energy[j][i] - Ei)) * prob * normReactorAno[j] - myMin.bPack.observed[j][i];
 			chisq += pow(num/myMin.bPack.sigmaRatio[j][i],2);
+
     	}
 
     	chisq += pow((smallA[j] - 1.)/myMin.bPack.sigmaSmallA,2);
