@@ -128,8 +128,6 @@ int ntGridder(){
 
 		// Now size them properly
 		s4Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		s5Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		phiVec_99.resize(100,vector<int>(0));
 
 		// Alright, let's begin! (just 99% for now)
 		chi2_99->SetBranchAddress("chi2",&chi2);
@@ -172,6 +170,8 @@ int ntGridder(){
 			if(s4Vec_99[i0][i1][i2].size() > 1){
 				// Fill next vector
 				i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
+				// re-resize s5vec
+				s5Vec_99.clear(); s5Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 				for(int i = 0; i < s4Vec_99[i0][i1][i2].size(); i++){
 					chi2_99->GetEntry(s4Vec_99[i0][i1][i2][i]);
 					int _m5 = floor(TMath::Log10(m5/dmmin)/mstep);
@@ -195,6 +195,7 @@ int ntGridder(){
 					// Deeper!
 					if(s5Vec_99[i3][i4][i5].size() > 1){
 						// Fill nexter vector
+						phiVec_99.resize(100,vector<int>(0));
 						for(int i = 0; i < s5Vec_99[i3][i4][i5].size(); i++){
 							chi2_99->GetEntry(s5Vec_99[i3][i4][i5][i]);
 							int _phi45 = floor(phi45/phistep);
@@ -216,8 +217,6 @@ int ntGridder(){
 
 		// Now, the same thing for 99%
 		s4Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		s5Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		phiVec_90.resize(100,vector<int>(0));
 
 		// Alright, let's begin! (just 99% for now)
 		chi2_90->SetBranchAddress("chi2",&chi2);
@@ -255,6 +254,7 @@ int ntGridder(){
 			if(s4Vec_90[i0][i1][i2].size() > 1){
 				// Fill next vector
 				i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
+				s5Vec_90.clear(); s5Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 				for(int i = 0; i < s4Vec_90[i0][i1][i2].size(); i++){
 					chi2_90->GetEntry(s4Vec_90[i0][i1][i2][i]);
 					int _m5 = floor(TMath::Log10(m5/dmmin)/mstep);
@@ -272,12 +272,13 @@ int ntGridder(){
 				for(int i3 = i3min; i3 < i3max; i3++) for(int i4 = i4min; i4 < i4max; i4++) for(int i5 = i5min; i5 < i5max; i5++){
 					//If we have only one entry with these coordinates, dot dot dot
 					if(s5Vec_90[i3][i4][i5].size() == 1){
-						chi2_90->GetEntry(s5Vec_99[i3][i4][i5][0]);
+						chi2_90->GetEntry(s5Vec_90[i3][i4][i5][0]);
 						fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,90);
 					}
 					// Deeper!
 					if(s5Vec_90[i3][i4][i5].size() > 1){
 						// Fill nexter vector
+						phiVec_90.resize(100,vector<int>(0));
 						for(int i = 0; i < s5Vec_90[i3][i4][i5].size(); i++){
 							chi2_90->GetEntry(s5Vec_90[i3][i4][i5][i]);
 							int _phi45 = floor(phi45/phistep);
@@ -286,6 +287,7 @@ int ntGridder(){
 						}
 
 						for(int j = 0; j < 100; j++){
+							std::cout << "FUCk3" << std::endl;
 							if(phiVec_90[j].size() != 0){
 								chi2_90->GetEntry(phiVec_90[j][0]);
 								fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,90);
@@ -365,6 +367,7 @@ int ntGridder(){
 			if(s4Vec_99[i0][i1][i2].size() > 1){
 				// Fill next vector
 				i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
+				s5Vec_99.clear(); s5Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 				for(int i = 0; i < s4Vec_99[i0][i1][i2].size(); i++){
 					chi2_99->GetEntry(s4Vec_99[i0][i1][i2][i]);
 					int _m5 = floor(TMath::Log10(m5/dmmin)/mstep);
@@ -389,6 +392,7 @@ int ntGridder(){
 					if(s5Vec_99[i3][i4][i5].size() > 1){
 						// Fill nexter vector
 						i6min = 100; i6max = 0; i7min = 100; i7max = 0; i8min = 100; i8max = 0;
+						s6Vec_99.clear(); s6Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 						for(int i = 0; i < s5Vec_99[i3][i4][i5].size(); i++){
 							chi2_99->GetEntry(s5Vec_99[i3][i4][i5][i]);
 							int _m6 = floor(TMath::Log10(m6/dmmin)/mstep);
@@ -411,6 +415,7 @@ int ntGridder(){
 							if(s6Vec_99[i6][i7][i8].size() > 1){
 								// Fill last vector
 								i9min = 100; i9max = 0; i10min = 100; i10max = 0; i11min = 100; i11max = 0;
+								phiVec_99.clear(); phiVec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 								for(int i = 0; i < s6Vec_99[i6][i7][i8].size(); i ++){
 									chi2_99->GetEntry(s6Vec_99[i6][i7][i8][i]);
 									int _phi45 = floor(phi45/phistep);
@@ -488,6 +493,7 @@ int ntGridder(){
 			if(s4Vec_90[i0][i1][i2].size() > 1){
 				// Fill next vector
 				i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
+				s5Vec_90.clear(); s4Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 				for(int i = 0; i < s4Vec_90[i0][i1][i2].size(); i++){
 					chi2_90->GetEntry(s4Vec_90[i0][i1][i2][i]);
 					int _m5 = floor(TMath::Log10(m5/dmmin)/mstep);
@@ -512,6 +518,7 @@ int ntGridder(){
 					if(s5Vec_90[i3][i4][i5].size() > 1){
 						// Fill nexter vector
 						i6min = 100; i6max = 0; i7min = 100; i7max = 0; i8min = 100; i8max = 0;
+						s6Vec_90.clear(); s6Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 						for(int i = 0; i < s5Vec_90[i3][i4][i5].size(); i++){
 							chi2_90->GetEntry(s5Vec_90[i3][i4][i5][i]);
 							int _m6 = floor(TMath::Log10(m6/dmmin)/mstep);
@@ -534,6 +541,7 @@ int ntGridder(){
 							if(s6Vec_90[i6][i7][i8].size() > 1){
 								// Fill last vector
 								i9min = 100; i9max = 0; i10min = 100; i10max = 0; i11min = 100; i11max = 0;
+								phiVec_90.clear(); phiVec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 								for(int i = 0; i < s6Vec_90[i6][i7][i8].size(); i ++){
 									chi2_90->GetEntry(s6Vec_90[i6][i7][i8][i]);
 									int _phi45 = floor(phi45/phistep);
