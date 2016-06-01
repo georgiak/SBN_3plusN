@@ -134,7 +134,9 @@ experiments.
 %
 Our focus will be on estimating the potential sensitivity of the Fermilab SBN
 programme \cite{Antonello:2015lea} for the search for sterile neutrinos of this
-type. 
+type. Given the existing anomalies in short baseline neutrino experiments, including
+MiniBooNE which operated in the Booster beamline, the possibility of seeing an
+anomalous signature at the SBN complex should not be ignored.
 %
 This experimental facility comprises of three separate detectors placed in the
 Booster Neutrino Beam (BNB) at different (short) baseline distances: SBND
@@ -449,8 +451,6 @@ channels have sub dominant branching ratios and are not included in this
 analysis.
 
 
-
-
 \subsection{Non-minimal models}
 
 An important feature of the minimal model that we have discussed so far is the
@@ -499,12 +499,6 @@ example a vertex allowing $\ster\to h \nu$ ($\ster_1\to h \ster_2$) or $\ster\to
 these operators. See also \refref{Duarte:2016miz} for a discussion of decay
 rates in the effective sterile neutrino extension up to dimension 6.
 
-\newtext{PB}{Some comment on Gninenko:} $\ster\to \nu \gamma$: However, in a
-non-minimal model this decay rate could be enhanced. For example, such an
-enhancement has been proposed to resolve the MiniBooNE anomaly
-\cite{Gninenko:2009ks,Gninenko:2010pr}. 
-
-
 Although effective models of sterile neutrino decay can describe the low-scale
 effects of high-scale physics, their predictions are invalid if unidentified
 light degrees of freedom exist in the model. For example, models with sterile
@@ -552,22 +546,55 @@ of the mostly-sterile fermion. In this scenario, the production of the sterile
 state will be largely unaffected by the new physics: heavy states will be
 produced in the beam from meson decay as usual. However, we allow for an
 increased rate of decay for the two channels $\Gamma_{\gamma\nu}$ and
-$\Gamma_{\pi^0\nu}$.
-%
-When considering these enlarged decay rates, we must be careful with existing
+$\Gamma_{\pi^0\nu}$. 
+
+
+An example of such an extension that has has received significant attention in the
+literature is the model of Gninenko \cite{Gninenko:2009ks,Gninenko:2010pr} which seeks to
+explain the MiniBooNE excess through the production and decay of a new sterile
+fermion inside the detector. This is achieved by introducing an extremely short-lived sterile neutrino, which is
+produced via a mixing-mediated neutral current interaction inside the detector,
+and which decays into a single photon on a very fast timescale. This enhancement to $\ster\to \nu \gamma$ is driven via a large transition magnetic moment and is in addition to all the decays one has soley due to the active-sterile mixing introduced. A large enough rate to explain MiniBooNE requires a very large mixing with muon neutrinos, $|U_{\mu 4}|^2 \approx 10^-3\rightarrow 10^{-2}$  for $m_N \approx 40-80$ MeV with an enhanced lifetime of $\tau_N \leq 10^{-9}$s.
+
+
+When considering any of these enlarged decay rates, we must be careful with existing
 bounds on the model, as an enlarged decay rate would affect all prior beam dump
 experiments in the same way until the point where baseline dependence becomes
-significant.
+significant. It is instructive now to explore how to scale the bounds presented here, or indeed any preexisting beam-dump experimental bounds, from the minimal model to an extended model that has a enhancement in one or more channels. To estimate this we assume the same production mechanism and rate (i.e via standard meson decay through sterile-active mixing $\propto |U_{\alpha}|^2$ only) along with the enhancement of a single channel by a factor $\alpha$, such that the total decay rate is given by $\Gamma_T = \Gamma_\text{other}+\Gamma_c (1+\alpha)$. Every beam-dump style experiment produces two bounds on $|U_{\alpha 4}|^2$ even though many only report one, an upper bound where decreasing decay rates produce too few decays to be statisticall significant and lower bound corresponding to the scenario where increasing decay rates have a vanish survival probability of reaching the detector. To estimate these values one compares the flux folded probabilities for an experiment of baseline(length) L($\lambda$) to decay in each scenario, which in the limit of small $\epsilon \equiv \lambda/L \ll 1$ approximates Lamberts equation with solutions, 
+\begin{align*}
+	|U_\text{extended}|^2 &\leq   \frac{-2 |U_\text{minimal}|^2}{\alpha \Gamma^\prime_c +\Gamma^\prime_T}  \mathcal{W}_{0,-1}\left[-\exp^{-\frac{\Gamma^\prime_T \kappa}{2}} \frac{(\Gamma^\prime_c \alpha + \Gamma^\prime_T)\kappa}{2\sqrt{1+\alpha}}              \right],
+\end{align*}
+where $\mathcal{W}_{(0,-1)}$ are the two real branches of the Lambert-W function corresponding to the two regimes of bounds in a decay in flight experiment respectively, and primed decay rates are in the minimal model with $\kappa \equiv L/\gamma \beta$. In the former case, $\mathcal{W}_0$ and $\Gamma_T L \ll 1$, the bound can be reduced to the more intuitive form
+\begin{align*}
+|U_\text{extended}|^2 &\leq \frac{|U_{\text{minimal}}|^2}{\sqrt{1+\alpha}}.
+\end{align*}
+These can be used to map the upper and lower bounds presented below to any enhanced sterile model.\\
+
+
 
 Long lived sterile neutrinos can also strongly impact the success of Big-Bang Nucleosynthes(BBN) by both speeding up the expansion of the universe with their extra energy, as well as potentially modifying the spectra of active neutrinos via their subsequent decays. If, however, the sterile has suffciently short lifetime  then their effect on BBN is mitigated as the bulk of thermally produced steriles have decayed long before $T^i_\text{BBN} \approx 10$ MeV \cite{Fields:2006ga}. The strength of these bounds have been estimated conservatively for a single sterile neutrino, $m_N < m_{\pi^0}$, as \cite{Dolgov:2000jw,Dolgov:2000pj}
 \begin{align*}
 	\tau_\text{N} &< 1.287 \left( \frac{m_N}{\text{MeV}}\right)^{-1.828}+0.04179 \text{  s    $\qquad$  for $U_{\mu 4}$ or $U_{\tau 4}$ mixing},\\
 	\tau_\text{N} &< 1699 \left( \frac{m_N}{\text{MeV}}\right)^{-2.652}+0.0544 \text{  s    $\qquad$  for $U_{e 4}$ mixing},
 \end{align*}
-at the 90\% C.L. Although the scenario for $m_N > m_{\pi^0}$ has not been studied in detail, an oft used bound is that $\tau_N > 0.1$s is excluded under current BBN measurements. In the minimal model this upper bound on the sterile lifetime can be directly mapped to a minimum bound on the active-sterile mixings $U_{\alpha 4}$'s. However, evena modest increase of decay rate, for example by additional interactions in the sterile sector leading to decays that are not mixing supressed, pushes the total sterile lifetime below 0.1s and removes the bounds completely. As such we argue that the bounds on each individual decay channel are still vital probes of the sterile sector.
+at the 90\% C.L. Although the scenario for $m_N > m_{\pi^0}$ has not been studied in detail, an oft used bound is that $\tau_N > 0.1$s is excluded under current BBN measurements. In the minimal model this upper bound on the sterile lifetime can be directly mapped to a minimum bound on the active-sterile mixings $U_{\alpha 4}$'s. However, even a modest increase of decay rate, for example by additional interactions in the sterile sector leading to decays that are not mixing supressed, pushes the total sterile lifetime below 0.1s and removes the bounds completely. As such we argue that the bounds on each individual decay channel are still vital probes of the sterile sector. \\
 
+\section{Signal Spectra}
 
-\newtext{MARK}{Going to add how to scale prexisting/our bounds for when you have an alpha enhancement.}
+\newtext{MARK}{This will just have an example spectra for each of the decays, for a mass or two. We have already introduced Gneninko as a example of extended model so can also show that in comparason}
+
+As mentioned before, models of decay-in-flight tend to produce spectra which
+are peaked at lower energies. This is due to the $1/E_\nu$ energy dependence from
+the decay width, as shown in 
+
+Although both models produce visible particles through sterile neutrino decay
+in flight, the additional neutral current cross-section required by the
+Gninenko-type sterile suppresses the lowest energy events. As can be seen in
+\reffig{fig:XXX}, we see a marked difference between these signals at SBND. If
+we factor in the cut-based analysis that was performed in the preceeding
+section, we see that the model in this paper does lose a significant number of
+events from the lowest bins. To separate these events cleanly, the analysis
+should be optimised to keep as many of these lowest energy events as possible. 
 
 \section{\label{sec:timing}Role of event timing}
 
@@ -615,7 +642,7 @@ in \reffig{fig:timing_line} below is the fraction of events that are expected
 to fall outside the  bucket window in both SBND and ICARUS, with detailed
 timing spectrums of a 25 and 350 MeV sterile shown in \ref{fig:timing}. For the purposes of this study we define the beam-correlated window to be a 4ns period, 1ns each side of the 2ns beam bucket.
 
-As can be seen a significant proportion of sterile events are distributed throughout the inter-bucket area  approximately XX\% (YY\%) for a light 25 MeV sterile at SBND (ICARUS) rising continuously to  XX\% (YY\%) for a heavier 350 MeV sterile at SBND (ICARUS). Events which fall into the beam-bucket timing window have to be analysed on top of all known beam-related backgrounds, where as the increasingly larger fraction which populate the inter-bucket window have extremely reduced beam-correlated backgrounds.  
+As can be seen a significant proportion of sterile events are distributed throughout the inter-bucket area. Events which fall into the beam-bucket timing window have to be analysed on top of all known beam-related backgrounds, where as the increasingly larger fraction which populate the inter-bucket window have extremely reduced beam-correlated backgrounds.  
 
 The implication of the timing effects is that our discussion of backgrounds is
 twofold: for low mass steriles, or any mass at \muboone\ due to timing
@@ -633,10 +660,9 @@ backgrounds. For larger masses at SBND and ICARUS, we instead reduce the number 
 fall into the inter-bucket region as a function of sterile mass for SBND and
 ICARUS, assuming a flux derived from $U_{e4}$ ($U_{\mu 4}$) mixing in solid
 (dashed) lines. Both SBND and ICARUS see a sizable fraction of total events
-outside the beam bucket windows when the sterile mass exceeds $\approx100$ MeV.
+outside the beam bucket windows when the sterile mass exceeds $\approx10$ MeV.
 The solid horizontal line corresponds to the percentage ($\approx 81$\%) if the
-events were uniformly distributed in time. (Running with more stats as we
-speak, but I do think its a good plot to have in some form or another)  }
+events were uniformly distributed in time.   }
 %
 \end{figure}
 
@@ -814,73 +840,7 @@ $U_{\mu 4}$ and $U_{e4}$ respectively. Below we have the same for the unbounded 
 
 \end{figure}
 
-\section{\label{sec:modelcomp}Model comparison at the SBN complex}
 
-%1. intro
-Given the existing anomalies in short baseline neutrino experiments, including
-MiniBooNE which operated in the Booster beamline, the possibility of seeing an
-anomalous signature at the SBN complex should not be ignored. There are
-competing theoretical explanations for existing excesses: oscillatory sterile
-neutrinos \cite{Everyone...}, neutrino decay \cite{Pascoli, Schwetz}, neutrino
-production and decay inside the detector \cite{Gninenko, Meloni, Us?}. Taking
-this as motivation, we consider here the important characteristics of the
-decay-in-flight model.
-
-In particular we contrast it to another model of excess events which may be
-relevant to SBN.
-%
-The model of Gninenko \cite{Gninenko:2009ks,Gninenko:2010pr} which seeks to
-explain the MiniBooNE excess through the production and decay of a new sterile
-fermion inside the detector, has received significant attention in the
-literature. This model introduces a short-lived sterile neutrino, which is
-produced via a mixing-mediated neutral current interaction inside the detector,
-and which decays into a single photon on a very fast timescale. This model
-would necessitate a non-miminal model to allow for a large transition magnetic
-moment to drive the decay. 
-
-Although relinquishing the connection to the MiniBooNE anomaly, we can
-generalize this model to produce a wider range of signals in the SBN facility.
-Sterile neutrinos are still assumed to be produced inside the detector by
-neutral current interactions between incoming active neutrinos and nuclei. The
-steriles then quickly decay into SM particles via enhanced non-minimal decay
-rates.
-%
-The model is very similar to the decay-in-flight model discussed in this paper,
-but occupies another extreme of the parameter space.
-
-
-%3. models to be distinguished between
-% \subsection{Comparison between sterile neutrino oscillations and decays in flight}
-% 
-% The oscillatory sterile explanation of low-energy anomalies in neutrino data is
-% theoretically appealing if not entirely phenomenologically convincing in its
-% simplest incarnations. Either way, the SBN complex will be able to place
-% important constraints on these models \cite{Antonello:2015lea}. With the
-% purposes of our present study in mind, there is little chance that an
-% oscillatory sterile could be confused by a MeV scale decaying sterile.  The
-% signal for an oscillatory sterile would be a single electron, arising from a
-% charged-current quasi-elastic processes.  There are no channels available to a
-% decaying sterile neutrino which could produce such a signal without an
-% additional (charged) particle. 
-% 
-% There is also a strong difference in the baseline dependence which may be
-% visible at SBN. \newtext{PB}{It feels a bit pointless to fill this section
-% out.}
-% 
-\subsection{Signal spectra}
-
-As mentioned before, models of decay-in-flight tend to produce spectra which
-are peaked at lower energies. This is due to the $1/E_\nu$ energy dependence from
-the decay width, as shown in 
-
-Although both models produce visible particles through sterile neutrino decay
-in flight, the additional neutral current cross-section required by the
-Gninenko-type sterile suppresses the lowest energy events. As can be seen in
-\reffig{fig:XXX}, we see a marked difference between these signals at SBND. If
-we factor in the cut-based analysis that was performed in the preceeding
-section, we see that the model in this paper does lose a significant number of
-events from the lowest bins. To separate these events cleanly, the analysis
-should be optimised to keep as many of these lowest energy events as possible. 
 
 \section{\label{sec:timing_physics}Timing for model independant mass measurements }
 
@@ -920,13 +880,13 @@ where $\mu_i(m)$ is the expected number of events in bin $i$ if the sterile is o
 \end{subfigure}%
 ~
 \begin{subfigure}[t]{0.475\textwidth}
-\includegraphics[width=\textwidth]{figures/brazil_timing.pdf}
+	\raisebox{0.25 \height}{\includegraphics[width=\textwidth]{figures/brazil_timing.pdf}}
 \end{subfigure}
 
-\caption{\label{fig:tof_scatter}Left: The distribution of events at ICARUS for a
-150, 250 and 350 MeV sterile decaying to $e \pi$ in energy and timing delay
+\caption{\label{fig:tof_scatter}Left: The flux of sterile neutrinos at ICARUS for a
+150, 250 and 350 MeV sterile decaying to $e \pi$ in terms of its energy and timing delay
 from last beam bucket. High energy events can be used to distinguish the
-decaying sterile masses. Right: Sensitivity to sterile mass from reconstructed sterile energy and time-of-flight alone. Resolution of approx 40 MeV at 1$\sigma$ is achievable for the entire range of sterile mass allowed if 100 events are observed.  }
+decaying sterile masses. Right: Sensitivity to sterile mass from reconstructed sterile energy and time-of-flight alone. Resolution of approx 40 MeV at 1$\sigma$ is achievable for the entire range of sterile mass allowed if 100 events are observed. }
 
 \end{figure}
 
