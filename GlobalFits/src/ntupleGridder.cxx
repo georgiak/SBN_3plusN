@@ -26,7 +26,7 @@ int fillProcessNT(float m4,float ue4,float um4,float m5,float ue5,float um5,floa
 
 int ntGridder(){
 
-	procOptLoc = "/lar1nd/app/users/dcianci/SBN_3plusN/GlobalFits/inputs/";
+	procOptLoc = "/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/";
 	procOpt();
 
 	gridPoints = 100;
@@ -113,23 +113,21 @@ int ntGridder(){
 			}
 		}
 	}
-/*
+
 	if(steriles == 2){
 		// Okay, so this one is theoretically the hardest because we don't want to just brute-force it. So how do we go about this?
 		// Cleverly is how! And just a bit at a time.
 
 		// Okay, so initialize our 4d vectors
-		std::vector <std::vector <std::vector <std::vector <int> > > > s4Vec;
-		std::vector <std::vector <std::vector <std::vector <int> > > > s5Vec;
-		std::vector <std::vector <int> > phiVec;
+		std::vector <std::vector <std::vector <std::vector <int> > > > s4Vec_99;
+		std::vector <std::vector <std::vector <std::vector <int> > > > s5Vec_99;
+		std::vector <std::vector <int> > phiVec_99;
 		std::vector <std::vector <std::vector <std::vector <int> > > > s4Vec_90;
 		std::vector <std::vector <std::vector <std::vector <int> > > > s5Vec_90;
 		std::vector <std::vector <int> > phiVec_90;
 
 		// Now size them properly
-		s4Vec.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		s5Vec.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		phiVec.resize(100,vector<int>(0));
+		s4Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 
 		// Alright, let's begin! (just 99% for now)
 		chi2_99->SetBranchAddress("chi2",&chi2);
@@ -158,20 +156,24 @@ int ntGridder(){
 			i1min = TMath::Min(i1min,_ue4);	i1max = TMath::Max(i1max,_ue4);
 			i2min = TMath::Min(i2min,_um4);	i2max = TMath::Max(i2max,_um4);
 			// Fill the appropriate spot on the grid with the entry number of our ntuple
-			s4Vec[_m4][_ue4][_um4].push_back(i);
+			s4Vec_99[_m4][_ue4][_um4].push_back(i);
 		}
 
 		// Now, let's scan it.
 		for(int i0 = i0min; i0 < i0max; i0++) for(int i1 = i1min; i1 < i1max; i1++) for(int i2 = i2min; i2 < i2max; i2++){
 			// If we have only one entry with these coordinates, fucking great! Store that away!
-			if(s4Vec[i0][i1][i2].size() == 1)
-				fillProcessNT(s4Vec[i0][i1][i2][0],99);
+			if(s4Vec_99[i0][i1][i2].size() == 1){
+				chi2_99->GetEntry(s4Vec_99[i0][i1][i2][0]);
+				fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,99);
+			}
 			// Otherwise, we go deeper
-			if(s4Vec[i0][i1][i2].size() > 1){
+			if(s4Vec_99[i0][i1][i2].size() > 1){
 				// Fill next vector
 				i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
-				for(int i = 0; i < s4Vec[i0][i1][i2].size(); i++){
-					chi2_99->GetEntry(s4Vec[i0][i1][i2][i]);
+				// re-resize s5vec
+				s5Vec_99.clear(); s5Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
+				for(int i = 0; i < s4Vec_99[i0][i1][i2].size(); i++){
+					chi2_99->GetEntry(s4Vec_99[i0][i1][i2][i]);
 					int _m5 = floor(TMath::Log10(m5/dmmin)/mstep);
 					int _ue5 = floor(ue5/ustep);
 					int _um5 = floor(um5/ustep);
@@ -180,27 +182,32 @@ int ntGridder(){
 					i4min = TMath::Min(i4min,_ue5);	i4max = TMath::Max(i4max,_ue5);
 					i5min = TMath::Min(i5min,_um5);	i5max = TMath::Max(i5max,_um5);
 					// Fill the appropriate spot on the grid with the entry number of our ntuple
-					s5Vec[_m5][_ue5][_um5].push_back(i);
+					s5Vec_99[_m5][_ue5][_um5].push_back(s4Vec_99[i0][i1][i2][i]);
 				}
 
 				// And scan it...
 				for(int i3 = i3min; i3 < i3max; i3++) for(int i4 = i4min; i4 < i4max; i4++) for(int i5 = i5min; i5 < i5max; i5++){
 					//If we have only one entry with these coordinates, dot dot dot
-					if(s5Vec[i3][i4][i5].size() == 1)
-						fillProcessNT(s5Vec[i3][i4][i5][0],99);
+					if(s5Vec_99[i3][i4][i5].size() == 1){
+						chi2_99->GetEntry(s5Vec_99[i3][i4][i5][0]);
+						fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,99);
+					}
 					// Deeper!
-					if(s5Vec[i3][i4][i5].size() > 1){
+					if(s5Vec_99[i3][i4][i5].size() > 1){
 						// Fill nexter vector
-						for(int i = 0; i < s5Vec[i3][i4][i5].size(); i++){
-							chi2_99->GetEntry(s5Vec[i3][i4][i5][i]);
+						phiVec_99.resize(100,vector<int>(0));
+						for(int i = 0; i < s5Vec_99[i3][i4][i5].size(); i++){
+							chi2_99->GetEntry(s5Vec_99[i3][i4][i5][i]);
 							int _phi45 = floor(phi45/phistep);
 
-							phiVec[_phi45].push_back(i);
+							phiVec_99[_phi45].push_back(i);
 						}
 
 						for(int j = 0; j < 100; j++){
-							if(phiVec.size() != 0)
-								fillProcessNT(phiVec[j][0],99);
+							if(phiVec_99[j].size() != 0){
+								chi2_99->GetEntry(phiVec_99[j][0]);
+								fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,99);
+							}
 						}
 					}
 				}
@@ -210,8 +217,6 @@ int ntGridder(){
 
 		// Now, the same thing for 99%
 		s4Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		s5Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		phiVec_90.resize(100,vector<int>(0));
 
 		// Alright, let's begin! (just 99% for now)
 		chi2_90->SetBranchAddress("chi2",&chi2);
@@ -241,12 +246,15 @@ int ntGridder(){
 		// Now, let's scan it.
 		for(int i0 = i0min; i0 < i0max; i0++) for(int i1 = i1min; i1 < i1max; i1++) for(int i2 = i2min; i2 < i2max; i2++){
 			// If we have only one entry with these coordinates, fucking great! Store that away!
-			if(s4Vec_90[i0][i1][i2].size() == 1)
-				fillProcessNT(s4Vec_90[i0][i1][i2][0],90);
+			if(s4Vec_90[i0][i1][i2].size() == 1){
+				chi2_90->GetEntry(s4Vec_90[i0][i1][i2][0]);
+				fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,90);
+			}
 			// Otherwise, we go deeper
 			if(s4Vec_90[i0][i1][i2].size() > 1){
 				// Fill next vector
 				i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
+				s5Vec_90.clear(); s5Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 				for(int i = 0; i < s4Vec_90[i0][i1][i2].size(); i++){
 					chi2_90->GetEntry(s4Vec_90[i0][i1][i2][i]);
 					int _m5 = floor(TMath::Log10(m5/dmmin)/mstep);
@@ -257,52 +265,58 @@ int ntGridder(){
 					i4min = TMath::Min(i4min,_ue5);	i4max = TMath::Max(i4max,_ue5);
 					i5min = TMath::Min(i5min,_um5);	i5max = TMath::Max(i5max,_um5);
 					// Fill the appropriate spot on the grid with the entry number of our ntuple
-					s5Vec_90[_m5][_ue5][_um5].push_back(i);
+					s5Vec_90[_m5][_ue5][_um5].push_back(s4Vec_90[i0][i1][i2][0]);
 				}
 
 				// And scan it...
 				for(int i3 = i3min; i3 < i3max; i3++) for(int i4 = i4min; i4 < i4max; i4++) for(int i5 = i5min; i5 < i5max; i5++){
 					//If we have only one entry with these coordinates, dot dot dot
-					if(s5Vec_90[i3][i4][i5].size() == 1)
-						fillProcessNT(s5Vec_90[i3][i4][i5][0],90);
+					if(s5Vec_90[i3][i4][i5].size() == 1){
+						chi2_90->GetEntry(s5Vec_90[i3][i4][i5][0]);
+						fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,90);
+					}
 					// Deeper!
 					if(s5Vec_90[i3][i4][i5].size() > 1){
 						// Fill nexter vector
-						for(int i = 0; i < s5Vec[i3][i4][i5].size(); i++){
+						phiVec_90.resize(100,vector<int>(0));
+						for(int i = 0; i < s5Vec_90[i3][i4][i5].size(); i++){
 							chi2_90->GetEntry(s5Vec_90[i3][i4][i5][i]);
 							int _phi45 = floor(phi45/phistep);
 
-							phiVec[_phi45].push_back(i);
+							phiVec_90[_phi45].push_back(s5Vec_99[i3][i4][i5][0]);
 						}
 
 						for(int j = 0; j < 100; j++){
-							if(phiVec.size() != 0)
-								fillProcessNT(phiVec[j][0],90);
+							std::cout << "FUCk3" << std::endl;
+							if(phiVec_90[j].size() != 0){
+								chi2_90->GetEntry(phiVec_90[j][0]);
+								fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,90);
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-*/
+
 	if(steriles == 3){
 		// Okay, so this one is theoretically the hardest because we don't want to just brute-force it. So how do we go about this?
 		// Cleverly is how! And just a bit at a time.
 
 		// Okay, so initialize our 4d vectors
-		std::vector <std::vector <std::vector <std::vector <int> > > > s4Vec;
-		std::vector <std::vector <std::vector <std::vector <int> > > > s5Vec;
-		std::vector <std::vector <std::vector <std::vector <int> > > > s6Vec;
-		std::vector <std::vector <std::vector <std::vector <int> > > > phiVec;
+		std::vector <std::vector <std::vector <std::vector <int> > > > s4Vec_99;
+		std::vector <std::vector <std::vector <std::vector <int> > > > s5Vec_99;
+		std::vector <std::vector <std::vector <std::vector <int> > > > s6Vec_99;
+		std::vector <std::vector <std::vector <std::vector <int> > > > phiVec_99;
 		std::vector <std::vector <std::vector <std::vector <int> > > > s4Vec_90;
 		std::vector <std::vector <std::vector <std::vector <int> > > > s5Vec_90;
 		std::vector <std::vector <std::vector <std::vector <int> > > > s6Vec_90;
 		std::vector <std::vector <std::vector <std::vector <int> > > > phiVec_90;
 		// Now size them properly
-		s4Vec.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		s5Vec.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		s6Vec.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
-		phiVec.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
+		s4Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
+		s5Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
+		s6Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
+		phiVec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 
 		// Alright, let's begin! (just 99% for now)
 		chi2_99->SetBranchAddress("chi2",&chi2);
@@ -339,22 +353,23 @@ int ntGridder(){
 			i1min = TMath::Min(i1min,_ue4);	i1max = TMath::Max(i1max,_ue4);
 			i2min = TMath::Min(i2min,_um4);	i2max = TMath::Max(i2max,_um4);
 			// Fill the appropriate spot on the grid with the entry number of our ntuple
-			s4Vec[_m4][_ue4][_um4].push_back(i);
+			s4Vec_99[_m4][_ue4][_um4].push_back(i);
 		}
 
 		// Now, let's scan it.
 		for(int i0 = i0min; i0 < i0max; i0++) for(int i1 = i1min; i1 < i1max; i1++) for(int i2 = i2min; i2 < i2max; i2++){
 			// If we have only one entry with these coordinates, fucking great! Store that away!
-			if(s4Vec[i0][i1][i2].size() == 1){
-				chi2_99->GetEntry(s4Vec[i0][i1][i2][0]);
+			if(s4Vec_99[i0][i1][i2].size() == 1){
+				chi2_99->GetEntry(s4Vec_99[i0][i1][i2][0]);
 				fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,99);
 			}
 			// Otherwise, we go deeper
-			if(s4Vec[i0][i1][i2].size() > 1){
+			if(s4Vec_99[i0][i1][i2].size() > 1){
 				// Fill next vector
 				i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
-				for(int i = 0; i < s4Vec[i0][i1][i2].size(); i++){
-					chi2_99->GetEntry(s4Vec[i0][i1][i2][i]);
+				s5Vec_99.clear(); s5Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
+				for(int i = 0; i < s4Vec_99[i0][i1][i2].size(); i++){
+					chi2_99->GetEntry(s4Vec_99[i0][i1][i2][i]);
 					int _m5 = floor(TMath::Log10(m5/dmmin)/mstep);
 					int _ue5 = floor(ue5/ustep);
 					int _um5 = floor(um5/ustep);
@@ -363,22 +378,23 @@ int ntGridder(){
 					i4min = TMath::Min(i4min,_ue5);	i4max = TMath::Max(i4max,_ue5);
 					i5min = TMath::Min(i5min,_um5);	i5max = TMath::Max(i5max,_um5);
 					// Fill the appropriate spot on the grid with the entry number of our ntuple
-					s5Vec[_m5][_ue5][_um5].push_back(i);
+					s5Vec_99[_m5][_ue5][_um5].push_back(s4Vec_99[i0][i1][i2][i]);
 				}
 
 				// And scan it...
 				for(int i3 = i3min; i3 < i3max; i3++) for(int i4 = i4min; i4 < i4max; i4++) for(int i5 = i5min; i5 < i5max; i5++){
 					//If we have only one entry with these coordinates, dot dot dot
-					if(s5Vec[i3][i4][i5].size() == 1){
-						chi2_99->GetEntry(s5Vec[i3][i4][i5][0]);
+					if(s5Vec_99[i3][i4][i5].size() == 1){
+						chi2_99->GetEntry(s5Vec_99[i3][i4][i5][0]);
 						fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,99);
 					}
 					// Deeper!
-					if(s5Vec[i3][i4][i5].size() > 1){
+					if(s5Vec_99[i3][i4][i5].size() > 1){
 						// Fill nexter vector
 						i6min = 100; i6max = 0; i7min = 100; i7max = 0; i8min = 100; i8max = 0;
-						for(int i = 0; i < s5Vec[i3][i4][i5].size(); i++){
-							chi2_99->GetEntry(s5Vec[i3][i4][i5][i]);
+						s6Vec_99.clear(); s6Vec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
+						for(int i = 0; i < s5Vec_99[i3][i4][i5].size(); i++){
+							chi2_99->GetEntry(s5Vec_99[i3][i4][i5][i]);
 							int _m6 = floor(TMath::Log10(m6/dmmin)/mstep);
 							int _ue6 = floor(ue6/ustep);
 							int _um6 = floor(um6/ustep);
@@ -386,21 +402,22 @@ int ntGridder(){
 							i6min = TMath::Min(i6min,_m6);	i6max = TMath::Max(i6max,_m6);
 							i7min = TMath::Min(i7min,_ue6);	i7max = TMath::Max(i7max,_ue6);
 							i8min = TMath::Min(i8min,_um6);	i8max = TMath::Max(i8max,_um6);
-							s6Vec[_m6][_ue6][_um6].push_back(i);
+							s6Vec_99[_m6][_ue6][_um6].push_back(s5Vec_99[i3][i4][i5][0]);
 						}
 
 						// Scan it.
 						for(int i6 = i6min; i6 <= i6max; i6++) for(int i7 = i7min; i7 <= i7max; i7++) for(int i8 = i8min; i8 <= i8max; i8++){
-							if(s6Vec[i6][i7][i8].size() == 1){
-								chi2_99->GetEntry(s6Vec[i6][i7][i8][0]);
+							if(s6Vec_99[i6][i7][i8].size() == 1){
+								chi2_99->GetEntry(s6Vec_99[i6][i7][i8][0]);
 								fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,99);
 							}
 							// Mas, mas
-							if(s6Vec[i6][i7][i8].size() > 1){
+							if(s6Vec_99[i6][i7][i8].size() > 1){
 								// Fill last vector
 								i9min = 100; i9max = 0; i10min = 100; i10max = 0; i11min = 100; i11max = 0;
-								for(int i = 0; i < s6Vec[i6][i7][i8].size(); i ++){
-									chi2_99->GetEntry(s6Vec[i6][i7][i8][i]);
+								phiVec_99.clear(); phiVec_99.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
+								for(int i = 0; i < s6Vec_99[i6][i7][i8].size(); i ++){
+									chi2_99->GetEntry(s6Vec_99[i6][i7][i8][i]);
 									int _phi45 = floor(phi45/phistep);
 									int _phi46 = floor(phi46/phistep);
 									int _phi56 = floor(phi56/phistep);
@@ -408,13 +425,13 @@ int ntGridder(){
 									i9min = TMath::Min(i9min,_phi45);	i9max = TMath::Max(i9max,_phi45);
 									i10min = TMath::Min(i10min,_phi46);	i10max = TMath::Max(i10max,_phi46);
 									i11min = TMath::Min(i11min,_phi56);	i11max = TMath::Max(i11max,_phi56);
-									phiVec[_phi45][_phi46][_phi56].push_back(i);
+									phiVec_99[_phi45][_phi46][_phi56].push_back(s6Vec_99[i6][i7][i8][i]);
 								}
 
 								// One last time
 								for(int i9 = i9min; i9 <= i9max; i9++) for(int i10 = i10min; i10 <= i10max; i10++) for(int i11 = i11min; i11 < i11max; i11++){
-									if(phiVec[i9][i10][i11].size() != 0){
-										chi2_99->GetEntry(phiVec[i9][i10][i11][0]);
+									if(phiVec_99[i9][i10][i11].size() != 0){
+										chi2_99->GetEntry(phiVec_99[i9][i10][i11][0]);
 										fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,99);
 									}
 									// WE DID IT! Now wasn't that a doozy
@@ -433,7 +450,6 @@ int ntGridder(){
 		s6Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 		phiVec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 
-		// Alright, let's begin! (just 99% for now)
 		chi2_90->SetBranchAddress("chi2",&chi2);
 		chi2_90->SetBranchAddress("m4",&m4);
 		chi2_90->SetBranchAddress("ue4",&ue4);
@@ -452,6 +468,7 @@ int ntGridder(){
 		i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
 		i6min = 100; i6max = 0; i7min = 100; i7max = 0; i8min = 100; i8max = 0;
 		i9min = 100; i9max = 0; i10min = 100; i10max = 0; i11min = 100; i11max = 0;
+
 		for(int i = 0; i < chi2_90->GetEntries(); i++){
 			chi2_90->GetEntry(i);
 			int _m4 = floor(TMath::Log10(m4/dmmin)/mstep);
@@ -468,14 +485,15 @@ int ntGridder(){
 		// Now, let's scan it.
 		for(int i0 = i0min; i0 < i0max; i0++) for(int i1 = i1min; i1 < i1max; i1++) for(int i2 = i2min; i2 < i2max; i2++){
 			// If we have only one entry with these coordinates, fucking great! Store that away!
-			if(s4Vec[i0][i1][i2].size() == 1){
-				chi2_90->GetEntry(s4Vec[i0][i1][i2][0]);
+			if(s4Vec_90[i0][i1][i2].size() == 1){
+				chi2_90->GetEntry(s4Vec_90[i0][i1][i2][0]);
 				fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,90);
 			}
 			// Otherwise, we go deeper
 			if(s4Vec_90[i0][i1][i2].size() > 1){
 				// Fill next vector
 				i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
+				s5Vec_90.clear(); s4Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 				for(int i = 0; i < s4Vec_90[i0][i1][i2].size(); i++){
 					chi2_90->GetEntry(s4Vec_90[i0][i1][i2][i]);
 					int _m5 = floor(TMath::Log10(m5/dmmin)/mstep);
@@ -486,20 +504,21 @@ int ntGridder(){
 					i4min = TMath::Min(i4min,_ue5);	i4max = TMath::Max(i4max,_ue5);
 					i5min = TMath::Min(i5min,_um5);	i5max = TMath::Max(i5max,_um5);
 					// Fill the appropriate spot on the grid with the entry number of our ntuple
-					s5Vec_90[_m5][_ue5][_um5].push_back(i);
+					s5Vec_90[_m5][_ue5][_um5].push_back(s4Vec_90[i0][i1][i2][i]);
 				}
 
 				// And scan it...
 				for(int i3 = i3min; i3 < i3max; i3++) for(int i4 = i4min; i4 < i4max; i4++) for(int i5 = i5min; i5 < i5max; i5++){
 					//If we have only one entry with these coordinates, dot dot dot
-					if(s5Vec[i3][i4][i5].size() == 1){
-						chi2_90->GetEntry(s5Vec[i3][i4][i5][0]);
+					if(s5Vec_90[i3][i4][i5].size() == 1){
+						chi2_90->GetEntry(s5Vec_90[i3][i4][i5][0]);
 						fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,90);
 					}
 					// Deeper!
 					if(s5Vec_90[i3][i4][i5].size() > 1){
 						// Fill nexter vector
 						i6min = 100; i6max = 0; i7min = 100; i7max = 0; i8min = 100; i8max = 0;
+						s6Vec_90.clear(); s6Vec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 						for(int i = 0; i < s5Vec_90[i3][i4][i5].size(); i++){
 							chi2_90->GetEntry(s5Vec_90[i3][i4][i5][i]);
 							int _m6 = floor(TMath::Log10(m6/dmmin)/mstep);
@@ -509,19 +528,20 @@ int ntGridder(){
 							i6min = TMath::Min(i6min,_m6);	i6max = TMath::Max(i6max,_m6);
 							i7min = TMath::Min(i7min,_ue6);	i7max = TMath::Max(i7max,_ue6);
 							i8min = TMath::Min(i8min,_um6);	i8max = TMath::Max(i8max,_um6);
-							s6Vec_90[_m6][_ue6][_um6].push_back(i);
+							s6Vec_90[_m6][_ue6][_um6].push_back(s5Vec_90[i3][i4][i5][i]);
 						}
 
 						// Scan it.
 						for(int i6 = i6min; i6 <= i6max; i6++) for(int i7 = i7min; i7 <= i7max; i7++) for(int i8 = i8min; i8 <= i8max; i8++){
-							if(s6Vec[i6][i7][i8].size() == 1){
-								chi2_90->GetEntry(s6Vec[i6][i7][i8][0]);
+							if(s6Vec_90[i6][i7][i8].size() == 1){
+								chi2_90->GetEntry(s6Vec_90[i6][i7][i8][0]);
 								fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,90);
 							}
 							// Mas, mas
 							if(s6Vec_90[i6][i7][i8].size() > 1){
 								// Fill last vector
 								i9min = 100; i9max = 0; i10min = 100; i10max = 0; i11min = 100; i11max = 0;
+								phiVec_90.clear(); phiVec_90.resize(100,vector<vector<vector<int> > >(100,vector<vector<int>>(100)));
 								for(int i = 0; i < s6Vec_90[i6][i7][i8].size(); i ++){
 									chi2_90->GetEntry(s6Vec_90[i6][i7][i8][i]);
 									int _phi45 = floor(phi45/phistep);
@@ -531,13 +551,13 @@ int ntGridder(){
 									i9min = TMath::Min(i9min,_phi45);	i9max = TMath::Max(i9max,_phi45);
 									i10min = TMath::Min(i10min,_phi46);	i10max = TMath::Max(i10max,_phi46);
 									i11min = TMath::Min(i11min,_phi56);	i11max = TMath::Max(i11max,_phi56);
-									phiVec_90[_phi45][_phi46][_phi56].push_back(i);
+									phiVec_90[_phi45][_phi46][_phi56].push_back(s6Vec_90[i6][i7][i8][i]);
 								}
 
 								// One last time
 								for(int i9 = i9min; i9 <= i9max; i9++) for(int i10 = i10min; i10 <= i10max; i10++) for(int i11 = i11min; i11 < i11max; i11++){
-									if(phiVec[i9][i10][i11].size() != 0){
-										chi2_90->GetEntry(phiVec[i9][i10][i11][0]);
+									if(phiVec_90[i9][i10][i11].size() != 0){
+										chi2_90->GetEntry(phiVec_90[i9][i10][i11][0]);
 										fillProcessNT(m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,90);
 									}
 									// WE DID IT! Now wasn't that a doozy
@@ -603,7 +623,7 @@ int fillProcessNT(float m4,float ue4,float um4,float m5,float ue5,float um5,floa
 		chi2_90_pr->Fill(m4p,ue4p,um4p,m5p,ue5p,um5p,m6p,ue6p,um6p,phi45p,phi46p,phi56p);
 		return 1;
 	}
-	if(CL == 91){
+	if(CL == 99){
 		chi2_99_pr->Fill(m4p,ue4p,um4p,m5p,ue5p,um5p,m6p,ue6p,um6p,phi45p,phi46p,phi56p);
 		return 1;
 	}

@@ -16,8 +16,7 @@ TMinuit *gMinuit;
 minPack myMin;
 
 void myMinInit(){
-	gMinuit = new TMinuit(2);
-	gMinuit->mninit(5,6,7);
+	gMinuit = new TMinuit(6);
 }
 
 chisqStruct getChi2Boone(neutrinoModel model, boonePackage pack, bool nubar){
@@ -593,30 +592,32 @@ chisqStruct getLogLikelihood(neutrinoModel model, int nBins, sinSqPackage pack){
     double sinSq, sinSq2;
     double sinSqDeltaVec[dm2VecMaxDim], sinSqDeltaVec2[dm2VecMaxDim];
     double lt1, lt2, lt3, pred;
+	double lsndDm2Vec[601];
 
      _signal.resize(nBins);
     for(int i = 0; i < nBins; i++) _signal[i] = 0.;
 
 	oscCont = getOscContributionsNueApp(model,true,true);
     for(int iL = 0; iL < nBins; iL ++){
-        for(int k = 0; k < dm2VecMaxDim; k ++){
+        for(int k = 0; k < 601; k ++){
             sinSqDeltaVec[k] = pack.sinSqDeltaGrid[k][iL];
             sinSqDeltaVec2[k] = pack.sinSqDeltaGrid2[k][iL];
+			if(pack.dm2Vec.size() == 0) lsndDm2Vec[k] = dm2Vec[k];
+			else lsndDm2Vec[k] = pack.dm2Vec[k];
         }
 
         for(int iContribution = 0; iContribution < 6; iContribution++){
             // Now, add the latest contribution to the predicted signal vector
-            dif.SetData(dm2VecMaxDim,dm2Vec,sinSqDeltaVec);
+            dif.SetData(dm2VecMaxDim,lsndDm2Vec,sinSqDeltaVec);
             if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-            else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
+            else    sinSq = dif.Eval(oscCont.dm2[iContribution]) * pack.norm;
             dif.SetData(dm2VecMaxDim,dm2Vec,sinSqDeltaVec2);
             if(oscCont.dm2[iContribution] == 0.)    sinSq2 = 0;
-            else    sinSq2 = dif.Eval(oscCont.dm2[iContribution]);
+            else    sinSq2 = dif.Eval(oscCont.dm2[iContribution]) * pack.norm;
 
 			_signal[iL] += oscCont.aMuE[iContribution] * sinSq + oscCont.aMuE_CPV[iContribution] * sinSq2;
+			std::cout << _signal[iL] << std::endl;
         }
-
-        _signal[iL] *= pack.norm;
     }
 
     // Now, using the signal vector, use the log-likelihood method to get the effective chisq
@@ -738,7 +739,6 @@ chisqStruct getChi2CCFR(neutrinoModel model, ccfrPackage pack){
 			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
 			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
             nFront[iC] += oscCont.aMuMu[iContribution] * sinSq;
-			std::cout << sinSq << " " << nFront[iC] << std::endl;
         }
         nFront[iC] *= pack.m_front;
         nFront_noOsc[iC] = pack.m_front * pack.noOscGrid[iC][0];
@@ -835,14 +835,12 @@ chisqStruct getChi2CDHS(neutrinoModel model, cdhsPackage pack){
 
     // Get the predicted ratio
     for(int iC = 0; iC < maxEnergyBins; iC++){
-        //std::cout << nBack[iC]/nFront[iC] << " " << nBack_noOsc[iC]/nFront_noOsc[iC] << std::endl;
         ratio_theor[iC] = (nBack[iC]/nFront[iC])/(nBack_noOsc[iC]/nFront_noOsc[iC]);
     }
 
     // Calculate the chisq
     for(int iC = 0; iC < maxEnergyBins; iC++){
         for(int jC = 0; jC < maxEnergyBins; jC++){
-            //std::cout << "observed: " << pack.observed[iC] << " ratio_theor: " << ratio_theor[iC] << " sigmaratio: " << pack.sigmaRatio[iC][jC] << std::endl;
             result.chi2 += (pack.observed[iC] - ratio_theor[iC])*pack.sigmaRatio[iC][jC]*(pack.observed[jC] - ratio_theor[jC]);
         }
     }
@@ -991,7 +989,7 @@ double osc_int(double E1, double E2, double l1, double l2){
 	}
 
 	double osc_int = 4 * ((1 - pow(myMin.model.Ue[0],2) - pow(myMin.model.Ue[1],2) - pow(myMin.model.Ue[2],2))
-			* (pow(myMin.model.Ue[0],2) * sin41sq + pow(myMin.model.Ue[1],2) * sin51sq + pow(myMin.model.Ue[2],2))
+			* (pow(myMin.model.Ue[0],2) * sin41sq + pow(myMin.model.Ue[1],2) * sin51sq + pow(myMin.model.Ue[2],2)*sin61sq)
 			+ pow(myMin.model.Ue[0],2) * pow(myMin.model.Ue[1],2) * sin54sq
 			+ pow(myMin.model.Ue[0],2) * pow(myMin.model.Ue[2],2) * sin64sq
 			+ pow(myMin.model.Ue[1],2) * pow(myMin.model.Ue[2],2) * sin65sq);
@@ -1004,8 +1002,8 @@ void fcnXsec(int &npar, double *gin, double &fval, double *xval, int iflag){
 
 	int nBins_lsnd = 5;
 	int nBins_karmen = 6;
-	double d_karmen = 17.7;	double l_karmen = 6.;
-	double d_lsnd = 30.;	double l_lsnd = 8.3;
+	double d_karmen = 16.2;	double l_karmen = 3.;
+	double d_lsnd = 25.475;	double l_lsnd = 8.75;
 
 	double k_lsnd  = xval[0];
 	double k_karmen = xval[1];
@@ -1014,7 +1012,7 @@ void fcnXsec(int &npar, double *gin, double &fval, double *xval, int iflag){
 	double chisq;
 	chisq = pow((k_lsnd - 1.)/myMin.xPack.lsnd_sys,2) + pow((k_karmen - 1.)/myMin.xPack.karmen_sys,2) + pow((k_correl - 1.)/myMin.xPack.correl_sys,2);
 
-	double delE, lLo, lHi, ELo, EHi, EAvg, ESigma, oscProb, xSec;
+	double delE, lLo, lHi, ELo, EHi, EAvg, oscProb, xSec;
 	// First, let's loop through karmen
 	for(int i = 0; i < nBins_karmen; i++){
 		if(i > 0)
@@ -1026,7 +1024,7 @@ void fcnXsec(int &npar, double *gin, double &fval, double *xval, int iflag){
 		ELo = myMin.xPack.karmen_Enu[i] - delE;
 		EHi = myMin.xPack.karmen_Enu[i] + delE;
 		EAvg = (EHi + ELo)/2.;
-		ESigma = max(.18, .115/sqrt(EAvg - 17.3));
+		myMin.xPack.ESigma = max(.08, .115/sqrt(EAvg - 17.3));
 		oscProb = osc_int(ELo,EHi,lLo,lHi);
 		xSec = (-2.5954e-4 * pow(EAvg,3) + 5.0028e-2 * pow(EAvg,2) - 1.5280 * EAvg + 12.876) * (1 - oscProb) * k_karmen * k_correl;
 		chisq += pow((myMin.xPack.karmen[i] - xSec)/myMin.xPack.karmen_error[i],2);
@@ -1038,12 +1036,12 @@ void fcnXsec(int &npar, double *gin, double &fval, double *xval, int iflag){
 			delE = (myMin.xPack.lsnd_Enu[i] - myMin.xPack.lsnd_Enu[i-1])/2.;
 		else
 			delE = (myMin.xPack.lsnd_Enu[i+1] - myMin.xPack.lsnd_Enu[i])/2.;
-		lLo = d_karmen;
-		lHi = d_karmen + l_karmen;
+		lLo = d_lsnd;
+		lHi = d_lsnd + l_lsnd;
 		ELo = myMin.xPack.lsnd_Enu[i] - delE;
 		EHi = myMin.xPack.lsnd_Enu[i] + delE;
 		EAvg = (EHi + ELo)/2.;
-		ESigma = max(.08, .48/sqrt(EAvg - 17.3));
+		myMin.xPack.ESigma = max(.08, .48/sqrt(EAvg - 17.3));
 		oscProb = osc_int(ELo,EHi,lLo,lHi);
 		xSec = (-2.5954e-4 * pow(EAvg,3) + 5.0028e-2 * pow(EAvg,2) - 1.5280 * EAvg + 12.876) * (1 - oscProb) * k_lsnd * k_correl;
 		chisq += pow((myMin.xPack.lsnd[i] - xSec)/myMin.xPack.lsnd_error[i],2);
@@ -1076,9 +1074,10 @@ chisqStruct getChi2Xsec(neutrinoModel model, xsecPackage pack){
 	gMinuit->mnexcm("SET STR",arglis,1,ierflag);
     // Now, clear parameters and set 'em anew
     gMinuit->mnexcm("CLE",arglis,1,ierflag);
-	gMinuit->mnparm(0,TString("k_lsnd"),1.,.01,0.5,1.5,ierflag);
-	gMinuit->mnparm(1,TString("k_karmen"),1.,.01,0.5,1.5,ierflag);
-	gMinuit->mnparm(2,TString("k_correl"),1.,.01,0.5,1.5,ierflag);
+	gMinuit->mnparm(0,TString("k_lsnd"),1.,.1,0.,0.,ierflag);
+	gMinuit->mnparm(1,TString("k_karmen"),1.,.1,0.,0.,ierflag);
+	gMinuit->mnparm(2,TString("k_correl"),1.,.1,0.,0.,ierflag);
+
 	// With these high dm2's, CHOOZ oscillations average out so we don't need to fit energy scale factor g
 	arglis[0] = 5.;
 	gMinuit->mnexcm("CALL", arglis,1,ierflag);
@@ -1111,7 +1110,7 @@ void fcnBugey(int &npar, double *gin, double &fval, double  *xval, int iflag){
   	double prob, chisq;
   	double Ei = 1.;
   	double sinSq[dm2VecMaxDim];
-  	ROOT::Math::Interpolator dif(dm2VecMaxDim);
+  	ROOT::Math::Interpolator dif(dm2VecMaxDim,ROOT::Math::Interpolation::kCSPLINE);
 	oscContribution oscCon = getOscContributionsNueDis(myMin.model);
 
   	chisq = 0.;
@@ -1125,21 +1124,23 @@ void fcnBugey(int &npar, double *gin, double &fval, double  *xval, int iflag){
 			prob = 1.;
       		dif.SetData(dm2VecMaxDim,dm2Vec,sinSq);
       		for(int iCon = 0; iCon < 6; iCon ++){
-				if(oscCon.dm2[iCon] != 0.)	prob += oscCon.aEE[iCon] * dif.Eval(oscCon.dm2[iCon]);
-      		}
+				if(oscCon.dm2[iCon] != 0.){
+					prob += oscCon.aEE[iCon] * dif.Eval(oscCon.dm2[iCon]);
+				}
+			}
 
       		// Now, calculate the chisq
       		double num = (bigA * smallA[j] + b * (myMin.bPack.energy[j][i] - Ei)) * prob - myMin.bPack.observed[j][i];
 			if(ReactorAnomaly)
     			num = (bigA * smallA[j] + b * (myMin.bPack.energy[j][i] - Ei)) * prob * normReactorAno[j] - myMin.bPack.observed[j][i];
 			chisq += pow(num/myMin.bPack.sigmaRatio[j][i],2);
+
     	}
 
     	chisq += pow((smallA[j] - 1.)/myMin.bPack.sigmaSmallA,2);
   	}
 
   	chisq += pow((bigA - 1.)/myMin.bPack.sigmaBigA,2) + pow(b/myMin.bPack.sigmaB,2);
-
   	fval = chisq;
 }
 chisqStruct getChi2Bugey(neutrinoModel model, bugeyPackage pack){
@@ -1157,7 +1158,6 @@ chisqStruct getChi2Bugey(neutrinoModel model, bugeyPackage pack){
   	arglis[0] = -1.;
   	gMinuit->SetFCN(fcnBugey);
   	gMinuit->mnexcm("SET PRI",arglis,1,ierflag);
-  	gMinuit->mnexcm("SET NOWARNING",arglis,0,ierflag);
   	// Okay, let's get this minuit garbage started
   	arglis[0] = 1.;
   	gMinuit->mnexcm("SET STR",arglis,1,ierflag);
@@ -1175,7 +1175,7 @@ chisqStruct getChi2Bugey(neutrinoModel model, bugeyPackage pack){
   	double disttomin, errdef;   int npari, nparx, istat;
 
   	arglis[0] = 10000.;
-  	arglis[1] = 100;
+  	arglis[1] = 100.;
   	gMinuit->mnexcm("MINI",arglis,2,ierflag);
   	gMinuit->mnstat(chisq,disttomin,errdef,npari,nparx,istat);
   	result.chi2 = chisq;
