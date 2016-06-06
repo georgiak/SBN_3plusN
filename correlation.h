@@ -7,7 +7,7 @@
 #include <iostream>
 #include "model.h"
 
-void sys_fill(TMatrixT <double> & M);
+void sys_fill(TMatrixT <double> & M, bool detsys);
 void fake_fill(TMatrixT <double>&  M);
 void stats_fill(TMatrixT <double>&  M, std::vector<double> diag);
 

@@ -64,26 +64,26 @@ void neutrinoModel::difference(){
 
 double neutrinoModel::oscProbSin(double Ev, double L)
 {
-	if(dm41Sq==0 && dm51Sq==0&&dm61Sq==0)
+	if(dm41Sq==0 && dm51Sq==0 && dm61Sq==0)
 	{ 
 		return 1.0;
 	} 
 	else 
 	{
-		return sin(2*1.27*dm41Sq*L/Ev);
+		return sin(2*1.26711*dm41Sq*L/Ev);
 	}
 
 }
 
 double neutrinoModel::oscProbSinSq(double Ev, double L)
 {
-	if(dm41Sq==0 && dm51Sq==0&&dm61Sq==0)
+	if(dm41Sq==0 && dm51Sq==0 &&dm61Sq==0)
 	{ 
 		return 1.0;
 	} 
 	else 
 	{
-		return pow(sin(1.27*dm41Sq*L/Ev),2.0);
+		return pow(sin(1.26711*dm41Sq*L/Ev),2.0);
 	}
 
 

@@ -17,6 +17,8 @@
 #define DET_ICARUS 2
 
 	double smear_energy(double En, double Percen, TRandom * rangen);
+	double massive_smear_energy(double En, double Percen, TRandom * rangen,double mass);
+	
 	double muon_track_length(double El);
 	double pion_track_length(double El);
 	double photon_conversion_length(double ep, TRandom * r);

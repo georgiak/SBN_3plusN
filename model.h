@@ -21,6 +21,8 @@
 * *******************************************/
 #define MPROTON  0.938
 #define MPION   0.13957
+#define MKAON   0.493
+#define MSIGMA  1.189
 
 #define psmear  0.05
 #define pismear  0.05
@@ -28,8 +30,8 @@
 #define MUsmear  0.06
 
 #define p_thresh  0.021
-#define pip_thresh  0.00
-#define pim_thresh  0.00
+#define pip_thresh  0.021
+#define pim_thresh  0.021
 #define vertex_thresh  0.05
 #define EM_thresh  0.200
 
@@ -47,12 +49,12 @@
 
 class SBN_spectrum {
 	struct neutrinoModel nullModel;
-	static const int N_m_bins = 20;
 	static const int N_e_bins = 11;
-	static constexpr double mu_bins[N_m_bins+1] = {0.2,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0,1.25,1.5,2,2.5,3};
+	static const int N_m_bins = 19;
+	static constexpr double mu_bins[N_m_bins+1]=   {0.2,0.3,0.4,0.45,0.5,0.55,0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1., 1.25, 1.5, 2., 2.5, 3.};
 	static constexpr double e_bins[N_e_bins+1]= {0.2,0.35,0.5,0.65,0.8,0.95,1.1,1.3,1.5,1.75,2,3};	 
 	static constexpr double ebinw[N_e_bins]   = {0.15,0.15,0.15,0.15,0.15,0.15,0.2,0.2,0.25,0.25,1.0};
-	static constexpr double mubinw[N_m_bins]  = {0.1,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.25,0.25,0.5,0.5,0.5};
+	static constexpr double mubinw[N_m_bins] = {0.1, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.25, 0.25, 0.5, 0.5, 0.5};
 
 	public:
 	std::vector<double >	uboone_e ;

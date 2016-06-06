@@ -3,6 +3,7 @@
 #include <gsl/gsl_randist.h>
 #include <ctime>
 #include <TFile.h>
+
 #define N_m_bins 19
 #define N_e_bins 11
 #define N_dets 3
@@ -96,14 +97,21 @@ return;
 }
 
 
-void sys_fill(TMatrixT <double> & Min)
+void sys_fill(TMatrixT <double> & Min, bool detsys)
 {
 	Min.Zero();
+	if(detsys){
 
-	TFile *fm= new TFile("rootfiles/covariance_matrices_351x351.root");
-	Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+		TFile *fm= new TFile("rootfiles/covariance_matrices_345x345.root");
+		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+		fm->Close();
+	} else {
+		TFile *fm= new TFile("rootfiles/covariance_matrices_nodetsys_345x345.root");
+		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+		fm->Close();
 
-	fm->Close();
+	}	
+
 return;
 }
 
@@ -114,12 +122,13 @@ void contract_signal2(TMatrixT <double> & M, TMatrixT <double> & Mc){
 	//
 
 	//these shouldnt be hardcoded
-	int bblock = 117; 
-	int eblock = 11;
-	int mblock = 20;
+	int eblock = N_e_bins;
+	int mblock = N_m_bins;
+	
 	int ebnum = 7;	
 	int mbnum = 2;
 
+	int bblock = eblock*ebnum+mblock*mbnum;//big block 
 	int cblock = eblock+mblock; //size of each contracted matrix
 
 

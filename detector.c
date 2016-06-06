@@ -14,6 +14,14 @@
 		return ans;
 	} 
 
+	double massive_smear_energy(double En, double Percen, TRandom * rangen, double mass){
+		double ans = 0;
+		while(ans <=mass){
+		ans = rangen->Gaus(En,Percen*En/sqrt(En));
+		}
+		return ans;
+	} 
+
 
 	double muon_track_length(double El){
 		double	ans = 0.0;
@@ -168,7 +176,7 @@ SBN_detector::SBN_detector(double h, double w, double l, double fh, double fw, d
 	dl = (l-fl)/2.0;
 	dw = (w-fw)/2.0;
 
-	fname ="rootfiles/ntuple.ICARUS.root";		
+	fname ="rootfiles/NUBAR_MODE/ntuple.ICARUS.root";		
 	potmodifier = 1.0;
 	identifier = DET_ICARUS;
 
@@ -187,18 +195,19 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 
 			if(ismu)
 			{
+				f_height = 370;
+				f_length = 405;
+				f_width =2*183.5 ;
 
-				f_height =350;
-				f_length = 420;
-				f_width = 2*173.5 ;
+
 
 			}
 			else
 			{
-				f_height = 370;
-				f_length = 405;
-				f_width =2*183 ;
 
+				f_height =350;
+				f_length = 420;
+				f_width = 2*173.5 ;
 			}
 
 		
@@ -213,8 +222,8 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			dw = (width-f_width)/2.0;
 
 			name = "SBND";
-			fname ="rootfiles/ntuple.SBND.root";	
-			foscname ="rootfiles/ntuple.SBND_fullosc.root";	
+			fname ="rootfiles/NUBAR_MODE/ntuple.SBND.root";	
+			foscname ="rootfiles/NUBAR_MODE/ntuple.SBND_fullosc.root";	
 			potmodifier = 1.0;
 			identifier = DET_SBND;
 			break;
@@ -250,8 +259,8 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			dw = (width-f_width)/2.0;
 
 			name = "uBooNE";
-			fname ="rootfiles/ntuple.uBooNE.root";	
-			foscname ="rootfiles/ntuple.uBooNE_fullosc.root";	
+			fname ="rootfiles/NUBAR_MODE/ntuple.uBooNE.root";	
+			foscname ="rootfiles/NUBAR_MODE/ntuple.uBooNE_fullosc.root";	
 			potmodifier = 2.0;
 			identifier = DET_UBOONE;
 			break;
@@ -289,8 +298,8 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			dw = (width-f_width)/2.0;
 
 			name = "ICARUS";
-			fname ="rootfiles/ntuple.ICARUS.root";	
-			foscname ="rootfiles/ntuple.ICARUS_fullosc.root";	
+			fname ="rootfiles/NUBAR_MODE/ntuple.ICARUS.root";	
+			foscname ="rootfiles/NUBAR_MODE/ntuple.ICARUS_fullosc.root";	
 			potmodifier = 1.0;
 			identifier = DET_ICARUS;
 			break;
@@ -348,7 +357,7 @@ bool SBN_detector::is_fully_contained(double *vertex,double * endpoint){
 
 
 double SBN_detector::track_length_escape(double * in, double *out){
-
+	// Returns in CM
 
 	if(is_active(out) || !is_active(in) )
 	{
