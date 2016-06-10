@@ -512,8 +512,10 @@ booneDisPackage mbNuDisInit(){
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
-
-	pack.foscData = dataLoc+"numudisap_ntuple.txt";
+	pack.FOsc_EnuQE = new double[pack.nFOscEvts];     // reconstructed neutrino energy
+    pack.FOsc_EnuTrue = new double[pack.nFOscEvts];   // true energy of neutrino
+    pack.FOsc_LnuTrue = new double[pack.nFOscEvts];   // distance from production and detection points
+    pack.FOsc_weight = new double[pack.nFOscEvts];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
@@ -532,6 +534,18 @@ booneDisPackage mbNuDisInit(){
             file >> pack.full_fractCovMatrix[i][j];
     file.close();
 
+	// Get nFullOscEvts for full numu->nue osc events after nue cuts
+	int dummy;
+    file.open(dataLoc+"numudisap_ntuple.txt");
+    for(int i = 0; i < pack.nFOscEvts; i++){
+		file >> dummy;
+        file >> pack.FOsc_EnuQE[i];     // reconstructed neutrino energy
+        file >> pack.FOsc_EnuTrue[i];   // true energy of neutrino
+        file >> pack.FOsc_LnuTrue[i];   // distance from production and detection points
+        file >> pack.FOsc_weight[i];    // event weight
+    }
+	file.close();
+
     ndf += nBins;
 	std::cout << "MBnu Dis bins: " << nBins << std::endl;
     return pack;
@@ -540,13 +554,15 @@ booneDisPackage mbNubarDisInit(){
     booneDisPackage pack;
 
     const int nBins = 16;
-	pack.nFOscEvts = 300000; // 686529
+	pack.nFOscEvts = 126700; // 686529
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
-
-    pack.foscData = dataLoc+"numubardisap_ntuple.txt";
+	pack.FOsc_EnuQE = new double[pack.nFOscEvts];     // reconstructed neutrino energy
+    pack.FOsc_EnuTrue = new double[pack.nFOscEvts];   // true energy of neutrino
+    pack.FOsc_LnuTrue = new double[pack.nFOscEvts];   // distance from production and detection points
+    pack.FOsc_weight = new double[pack.nFOscEvts];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
@@ -563,6 +579,18 @@ booneDisPackage mbNubarDisInit(){
     for(int i = 0; i < nBins; i++)
         for(int j = 0; j < nBins; j++)
             file >> pack.full_fractCovMatrix[i][j];
+    file.close();
+
+	// Get nFullOscEvts for full numu->nue osc events after nue cuts
+	int dummy;
+    file.open(dataLoc+"numubardisap_ntuple.txt");
+    for(int i = 0; i < pack.nFOscEvts; i++){
+		file >> dummy;
+        file >> pack.FOsc_EnuQE[i];     // reconstructed neutrino energy
+        file >> pack.FOsc_EnuTrue[i];   // true energy of neutrino
+        file >> pack.FOsc_LnuTrue[i];   // distance from production and detection points
+        file >> pack.FOsc_weight[i];    // event weight
+    }
     file.close();
 
     ndf += nBins;
