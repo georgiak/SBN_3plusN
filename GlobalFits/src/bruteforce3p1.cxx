@@ -51,7 +51,7 @@ boonePackage mbNuPack, mbNubarPack; atmPackage atmPack; numiPackage numiPack; si
 minosPackage minosPack; minosncPackage minosncPack; booneDisPackage mbNuDisPack, mbNubarDisPack; nomadPackage nomadPack; ccfrPackage ccfrPack;
 bugeyPackage bugeyPack; choozPackage choozPack; xsecPackage xsecPack;
 
-bool debug = false;
+bool debug = true;
 
 int globInit(){
 
@@ -222,8 +222,23 @@ int globChisq(int ind){
 
             chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "Minos: " << chisqDetector.chi2 << std::endl;
-
+		}
 		if(chisqTotal.chi2 > chi2Cut) continue;
+		if(CCFRProcess == 1){
+			chisqDetector = getChi2CCFR(nuModel, ccfrPack);
+			if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+
+			chisqTotal.chi2 += chisqDetector.chi2;
+			if(debug) std::cout << "CCFR: " << chisqDetector.chi2 << std::endl;
+		}
+		if(chisqTotal.chi2 > chi2Cut) continue;
+		if(CDHSProcess == 1){
+			chisqDetector = getChi2CDHS(nuModel, cdhsPack);
+			if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+
+			chisqTotal.chi2 += chisqDetector.chi2;
+			if(debug) std::cout << "CDHS: " << chisqDetector.chi2 << std::endl;
+		}
         if(MBDISProcess == 1){
             chisqDetector = getChi2MBDis(nuModel, mbNuDisPack);
             if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
@@ -239,21 +254,6 @@ int globChisq(int ind){
             chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "MBDisNubar: " << chisqDetector.chi2 << std::endl;
         }
-        if(CCFRProcess == 1){
-            chisqDetector = getChi2CCFR(nuModel, ccfrPack);
-            if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
-
-            chisqTotal.chi2 += chisqDetector.chi2;
-			if(debug) std::cout << "CCFR: " << chisqDetector.chi2 << std::endl;
-        }
-		if(chisqTotal.chi2 > chi2Cut) continue;
-        if(CDHSProcess == 1){
-            chisqDetector = getChi2CDHS(nuModel, cdhsPack);
-            if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
-
-            chisqTotal.chi2 += chisqDetector.chi2;
-			if(debug) std::cout << "CDHS: " << chisqDetector.chi2 << std::endl;
-        }
 		if(chisqTotal.chi2 > chi2Cut) continue;
 		if(BugeyProcess == 1){
             chisqDetector = getChi2Bugey(nuModel, bugeyPack);
@@ -261,14 +261,6 @@ int globChisq(int ind){
 
             chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "Bugey: " << chisqDetector.chi2 << std::endl;
-        }
-		if(chisqTotal.chi2 > chi2Cut) continue;
-		if(CHOOZProcess == 1){
-            chisqDetector = getChi2Chooz(nuModel, choozPack);
-            if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
-
-            chisqTotal.chi2 += chisqDetector.chi2;
-			if(debug) std::cout << "Chooz: " << chisqDetector.chi2 << std::endl;
         }
 		if(chisqTotal.chi2 > chi2Cut) continue;
 		if(XSECProcess == 1){
@@ -292,7 +284,6 @@ int globChisq(int ind){
         dof = ndf;  m4 = nuModel.mNu[0];    m5 = nuModel.mNu[1];    m6 = nuModel.mNu[2];    ue4 = nuModel.Ue[0];    ue5 = nuModel.Ue[1];    ue6 = nuModel.Ue[2];
         um4 = nuModel.Um[0];    um5 = nuModel.Um[1];    um6 = nuModel.Um[2]; phi45 = nuModel.phi[0];    phi46 = nuModel.phi[1]; phi56 = nuModel.phi[2];
         chi2Nt->Fill(chi2, step, temp, m4, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45, phi46, phi56);
-		}
     }
 
     // Save Ntuple to file
