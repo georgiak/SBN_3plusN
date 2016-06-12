@@ -347,11 +347,12 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
 	oscCont = getOscContributionsNumuDis(model);
 
+
 	ifstream file;
-	file.open(pack.foscData.c_str());
-	int dummy;
-    for(long int iEvt = 0; iEvt < pack.nFOscEvts; iEvt++){
-		file >> dummy;
+ 	file.open(pack.foscData.c_str());
+ 	int dummy;
+    for(int iEvt = 0; iEvt < pack.nFOscEvts; iEvt++){
+ 		file >> dummy;
         file >> FOsc_EnuQE;
         file >> FOsc_EnuTrue;   // true energy of neutrino
         file >> FOsc_LnuTrue;   // distance from production and detection points
@@ -379,7 +380,7 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
     // Normalize signal prediction to data
     for(int iB = 0; iB < nBins; iB++){
-        MCIntegral += _prediction[iB] + _signal[iB];
+        MCIntegral += (_prediction[iB] + _signal[iB]);
     }
     for(int iB = 0; iB < nBins; iB++){
         _prediction[iB] = (_prediction[iB] + _signal[iB]) * dtIntegral/MCIntegral;
@@ -616,7 +617,6 @@ chisqStruct getLogLikelihood(neutrinoModel model, int nBins, sinSqPackage pack){
             else    sinSq2 = dif.Eval(oscCont.dm2[iContribution]) * pack.norm;
 
 			_signal[iL] += oscCont.aMuE[iContribution] * sinSq + oscCont.aMuE_CPV[iContribution] * sinSq2;
-			std::cout << _signal[iL] << std::endl;
         }
     }
 

@@ -8,8 +8,8 @@ Jan 25th, 2016
 int noOfSteriles, CPConserving, scanType, gridPoints, jobID, nMCGen, rndInit, BugeyProcess, CCFRProcess, CDHSProcess, CHOOZProcess, KARMENProcess, LSNDProcess, NOMADProcess, MBProcess, MBProcessNubar, ATMOSPHERICProcess,
         NUMIProcess, MINOSProcess, MINOSNCProcess, GALLIUMProcess, ReactorAnomaly, XSECProcess, MBDISProcess, MBDISProcessNubar, nRuns;
 double chi2Cut, stepSize, temperature, UMax, UMaxSq;
-bool usingUe = 1;
-bool usingUm = 1;
+bool usingUe = true;
+bool usingUm = true;
 std::string dataLoc, jobOptLoc;
 
 // For Integral Evaluations,
@@ -23,20 +23,21 @@ void dm2VecInit(double dm2Min, double dm2Max){
 // Number of degrees of freedom
 int ndf = 0;
 void getNDF(){
+
+	std::cout << "Total bins: " << ndf << std::endl;
+
     ndf -= noOfSteriles;
     if(BugeyProcess + CHOOZProcess + KARMENProcess + LSNDProcess +
             NOMADProcess + MBProcess + MBProcessNubar + NUMIProcess +
-            GALLIUMProcess + XSECProcess == 0){
+            GALLIUMProcess + XSECProcess == 0)
         usingUe = false;
-        ndf -= noOfSteriles;
-    }
+	else	ndf -= noOfSteriles;
     if (CCFRProcess + CDHSProcess + KARMENProcess + LSNDProcess +
             NOMADProcess + MBProcess + MBProcessNubar + NUMIProcess +
             MINOSProcess+MINOSNCProcess+ATMOSPHERICProcess+
-            MBDISProcess + MBDISProcessNubar == 0){
+            MBDISProcess + MBDISProcessNubar == 0)
         usingUm = false;
-        ndf -= noOfSteriles;
-    }
+	else	ndf -= noOfSteriles;
     if (BugeyProcess + CHOOZProcess + CCFRProcess + CDHSProcess + GALLIUMProcess + MINOSProcess +
             MINOSNCProcess + MBDISProcess + MBDISProcessNubar == 0)
         ndf += noOfSteriles;
@@ -112,6 +113,7 @@ boonePackage mbNuInit(){
     file.close();
 
     ndf += nBins + nBins_mu - 1;
+	std::cout << "MBnu bins: " << nBins + nBins_mu - 1 << std::endl;
     return pack;
 }
 boonePackage mbNubarInit(){
@@ -180,6 +182,7 @@ boonePackage mbNubarInit(){
     file.close();
 
     ndf += nBins + nBins_mu - 1;
+	std::cout << "MBnubar bins: " << nBins + nBins_mu - 1 << std::endl;
     return pack;
 }
 atmPackage atmInit(){
@@ -250,6 +253,7 @@ numiPackage numiInit(){
     }
 
     ndf += nBins;
+	std::cout << "Numi bins: " << nBins << std::endl;
     return pack;
 }
 sinSqPackage lsndInit(){
@@ -333,6 +337,7 @@ sinSqPackage lsndInit(){
 	file.close();
 
     ndf += nBins;
+	std::cout << "LSND bins: " << nBins << std::endl;
     return pack;
 }
 sinSqPackage karmenInit(){
@@ -395,6 +400,7 @@ sinSqPackage karmenInit(){
         }
     }
     ndf += nBins;
+	std::cout << "Karmen bins: " << nBins << std::endl;
     return pack;
 }
 galPackage galInit(){
@@ -433,6 +439,7 @@ galPackage galInit(){
     }
 
     ndf += 4;
+	std::cout << "Gal bins: " << 4 << std::endl;
     return pack;
     }
 minosPackage minosInit(){
@@ -484,6 +491,7 @@ minosPackage minosInit(){
 	pack.EnuQE_ws[nBins_ws] = temp5[nBins_ws];
 
     ndf += nBins;
+	std::cout << "Minos bins: " << nBins << std::endl;
     return pack;
 }
 minosncPackage minosncInit(){
@@ -499,12 +507,11 @@ booneDisPackage mbNuDisInit(){
     booneDisPackage pack;
 
     const int nBins = 16;
-	pack.nFOscEvts = 1267007;
+	pack.nFOscEvts = 126700; // 1267007
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
-
 	pack.foscData = dataLoc+"numudisap_ntuple.txt";
 
     ifstream file;
@@ -525,19 +532,19 @@ booneDisPackage mbNuDisInit(){
     file.close();
 
     ndf += nBins;
+	std::cout << "MBnu Dis bins: " << nBins << std::endl;
     return pack;
 }
 booneDisPackage mbNubarDisInit(){
     booneDisPackage pack;
 
     const int nBins = 16;
-	pack.nFOscEvts = 686529;
+	pack.nFOscEvts = 126700; // 686529
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
-
-    pack.foscData = dataLoc+"numubardisap_ntuple.txt";
+	pack.foscData = dataLoc+"numubardisap_ntuple.txt";
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
@@ -557,6 +564,7 @@ booneDisPackage mbNubarDisInit(){
     file.close();
 
     ndf += nBins;
+	std::cout << "MBnubar Dis bins: " << nBins << std::endl;
     return pack;
 }
 nomadPackage nomadInit(){
@@ -685,6 +693,7 @@ nomadPackage nomadInit(){
     }
 
     ndf += maxEnergyBins * maxRadialBins;
+	std::cout << "Nomad bins: " << maxEnergyBins * maxRadialBins << std::endl;
     return pack;
     }
 ccfrPackage ccfrInit(){
@@ -760,6 +769,7 @@ ccfrPackage ccfrInit(){
 	}
 
 	ndf += maxEnergyBins;
+	std::cout << "CCFR bins: " << maxEnergyBins << std::endl;
     return pack;
 }
 
@@ -897,6 +907,7 @@ cdhsPackage cdhsInit(){
 	*/
 
     ndf += nBins;
+	std::cout << "CDHS bins: " << nBins << std::endl;
     return pack;
 }
 bugeyPackage bugeyInit(){
@@ -982,6 +993,8 @@ bugeyPackage bugeyInit(){
       		}
     	}
   	}
+	ndf += 60;
+	std::cout << "Bugey bins: " << 60 << std::endl;
   	return pack;
 }
 choozPackage choozInit(){
@@ -1125,5 +1138,8 @@ xsecPackage xsecInit(){
 	pack.karmen_sys = sqrt(pow(.088,2) - pow(.07,2));
 	pack.correl_sys = sqrt(pow(.12,2) + pow(.07,2));
 
+
+	ndf += 11;
+	std::cout << "XSEC bins: " << 11 << std::endl;
 	return pack;
 }
