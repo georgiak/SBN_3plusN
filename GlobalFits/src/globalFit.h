@@ -152,8 +152,9 @@ struct minosPackage{
 };
 struct booneDisPackage{
     std::vector < std::vector <double> > full_fractCovMatrix;
-    double * EnuQE, * NumuData, *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight;
+    double * EnuQE, * NumuData;
 	int nFOscEvts;
+	std::string foscData;
 };
 struct nomadPackage{
 	std::vector < std::vector <double> > sigmaRemu;
