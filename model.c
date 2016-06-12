@@ -172,12 +172,12 @@ SBN_spectrum::SBN_spectrum(){
 	fill (icarus_m_bkg.begin(),icarus_m_bkg.end(),0.0); */
 
 
-	TFile *fSBND_app = new TFile("bkg_data/NUBAR_MODE/SBND_bkg_app.root");
-	TFile *fSBND_dis= new TFile("bkg_data/NUBAR_MODE/SBND_bkg_dis.root");
-	TFile *fuBooNE_app = new TFile("bkg_data/NUBAR_MODE/uBooNE_bkg_app.root");
-	TFile *fuBooNE_dis= new TFile("bkg_data/NUBAR_MODE/uBooNE_bkg_dis.root");
-	TFile *fICARUS_app = new TFile("bkg_data/NUBAR_MODE/ICARUS_bkg_app.root");
-	TFile *fICARUS_dis= new TFile("bkg_data/NUBAR_MODE/ICARUS_bkg_dis.root");
+	TFile *fSBND_app = new TFile("bkg_data/SBND_bkg_app.root");
+	TFile *fSBND_dis= new TFile("bkg_data/SBND_bkg_dis.root");
+	TFile *fuBooNE_app = new TFile("bkg_data/uBooNE_bkg_app.root");
+	TFile *fuBooNE_dis= new TFile("bkg_data/uBooNE_bkg_dis.root");
+	TFile *fICARUS_app = new TFile("bkg_data/ICARUS_bkg_app.root");
+	TFile *fICARUS_dis= new TFile("bkg_data/ICARUS_bkg_dis.root");
 
 	TH1D  SBND_app_intrinsic= *((TH1D*)fSBND_app->Get("SBND_intrinsic_app"));
 	TH1D  SBND_app_muon= *((TH1D*)fSBND_app->Get("SBND_muon_app"));
@@ -464,8 +464,8 @@ int SBN_spectrum::fill_dis(SBN_detector * detector )
 	int NpipOBS = 0;
 	int NpimOBS = 0;
 
-	double POTscaling      = detector->potmodifier*66.0; 
-	double fiducialscaling = detector->f_volume/detector->volume; 
+	double POTscaling      = detector->potmodifier*66.0*detector->proposal_modifier; 
+	double fiducialscaling = detector->f_mass/detector->mass; 
 
 
 	double Eff_em = 0.8*POTscaling*fiducialscaling;
@@ -714,7 +714,7 @@ int SBN_spectrum::fill_dis(SBN_detector * detector )
 		}//End NC pi + loop
 	} //end event loop
 	char namei[200];
-	sprintf(namei, "bkg_data/NUBAR_MODE/%s_dis.root",detector->name);
+	sprintf(namei, "bkg_data/%s_dis.root",detector->name);
 
 	TFile f(namei,"RECREATE");
 	H1nue.Write();	
@@ -795,8 +795,8 @@ int SBN_spectrum::fill_app(SBN_detector * detector )
 
 
 
-	double POTscaling =detector->potmodifier*66.0; 
-	double fiducialscaling = detector->f_volume/detector->volume;
+	double POTscaling =detector->potmodifier*66.0*detector->proposal_modifier; 
+	double fiducialscaling = detector->f_mass/detector->mass;
 
 
 
@@ -965,7 +965,7 @@ int SBN_spectrum::fill_app(SBN_detector * detector )
 
 
 	char namei[200];
-	sprintf(namei, "bkg_data/NUBAR_MODE/%s_app.root",detector->name);
+	sprintf(namei, "bkg_data/%s_app.root",detector->name);
 
 	TFile f(namei,"RECREATE");
 	H_nue.Write();
@@ -1035,8 +1035,8 @@ int SBN_spectrum::fill_intrin(SBN_detector * detector )
 	int NpipOBS = 0;
 	int NpimOBS = 0;
 
-	double POTscaling =detector->potmodifier*66.0; 
-	double fiducialscaling = detector->f_volume/detector->volume;
+	double POTscaling =detector->potmodifier*66.0*detector->proposal_modifier; 
+	double fiducialscaling = detector->f_mass/detector->mass;
 
 
 	double Eff_em = 0.8*POTscaling*fiducialscaling;
@@ -1540,7 +1540,7 @@ int SBN_spectrum::fill_intrin(SBN_detector * detector )
 
 
 	char namei[200];
-	sprintf(namei, "bkg_data/NUBAR_MODE/%s_intrin.root",detector->name);
+	sprintf(namei, "bkg_data/%s_intrin.root",detector->name);
 
 	TFile f(namei,"RECREATE");
 
@@ -1612,8 +1612,8 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 	int NpipOBS = 0;
 	int NpimOBS = 0;
 
-	double POTscaling      = detector->potmodifier*66.0; 
-	double fiducialscaling = detector->f_volume/detector->volume; 
+	double POTscaling      = detector->potmodifier*66.0*detector->proposal_modifier; 
+	double fiducialscaling = detector->f_mass/detector->mass; 
 
 	double Eff_em = 0.8*POTscaling*fiducialscaling;
 //	double Eff_ph = 0.06*POTscaling*fiducialscaling*0.192;
@@ -1742,8 +1742,8 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 			double E_ph_smeared = 0;
 			for(int j=0; j<Nph;j++)
 			{
-				E_ph_smeared = smear_energy(E_ph_smeared,EMsmear,rangen);
-				Ehad += E_ph_smeared;
+				//E_ph_smeared = smear_energy(E_ph_smeared,EMsmear,rangen);
+				//Ehad += E_ph_smeared;
 				
 			} 
 		}//end photon addition
@@ -1754,9 +1754,15 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 					
 			for(int j=0; j<No;j++)
 			{
-				Ehad += smear_energy(Eo[j],pismear,rangen);
-			
-				//if(pdgo[j]!=0){	std::cout<<pdgo[j]<<std::endl;	}
+				if(pdgo[j]==321 || pdgo[j]==-321 || pdgo[j]==311){
+					//std::cout<<pdgo[j]<<std::endl;	
+					Ehad += smear_energy(Eo[j]-MKAON,pismear,rangen)+MKAON;
+				}
+
+				 if( pdgo[j]==3222 || pdgo[j]==3112 || pdgo[j]==3122){	
+
+					Ehad += smear_energy(Eo[j]-MSIGMA,pismear,rangen)+MSIGMA;
+				 }
 			} 
 		}//end Other 
 
@@ -1872,7 +1878,7 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 		}//End NC pi + loop
 	} //end event loop
 	char namei[200];
-	sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
 
 	TFile f(namei,"UPDATE");
 
@@ -1937,8 +1943,9 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 	
 
 	TRandom *rangen    = new TRandom();//initialize random generator	
-	rangen->SetSeed(94241);	
+	//rangen->SetSeed(94241);	
 
+	rangen->SetSeed(9842516);//326894);	
 
 	TH1D  H_nue_sin("fullosc_nue_sin","",N_e_bins,e_bins);
 	TH1D  H_nue_sinsq("fullosc_nue_sinsq","",N_e_bins,e_bins);
@@ -1959,8 +1966,8 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 
 
 
-	double POTscaling =detector->potmodifier*66.0; 
-	double fiducialscaling = detector->f_volume/detector->volume;
+	double POTscaling =detector->potmodifier*66.0*detector->proposal_modifier; 
+	double fiducialscaling = detector->f_mass/detector->mass;
 
 	double Eff_em = 0.8*POTscaling*fiducialscaling;
 
@@ -1982,7 +1989,6 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 	int Ntest=0;
 
 	double posX,posY,posZ;
-
 
 
 	double Ep[20];
@@ -2083,13 +2089,13 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 				
 			} 
 		}//end piminus addition
-
+	
 		if(Nph!=0){
 			double E_ph_smeared = 0;
 			for(int j=0; j<Nph;j++)
 			{
 				E_ph_smeared = smear_energy(E_ph_smeared,EMsmear,rangen);
-				//Ehad += E_ph_smeared;
+				Ehad += E_ph_smeared;
 				
 			} 
 		}//end photon addition
@@ -2098,25 +2104,39 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 					
 			for(int j=0; j<No;j++)
 			{
-				Ehad += smear_energy(Eo[j],pismear,rangen);
 			
-				//if(pdgo[j]!=0){	std::cout<<pdgo[j]<<std::endl;	}
+				if(pdgo[j]==321 || pdgo[j]==-321 || pdgo[j]==311){
+					//std::cout<<pdgo[j]<<std::endl;	
+					Ehad += smear_energy(Eo[j]-MKAON,pismear,rangen)+MKAON;
+				}
+
+				 if( pdgo[j]==3222 || pdgo[j]==3112 || pdgo[j]==3122){	
+
+					Ehad += smear_energy(Eo[j]-MSIGMA,pismear,rangen)+MSIGMA;
+				 }
+
 			} 
 		}//end Other 
 
+
+
 		//Check if we actually have a "visibe vertex"
-		if(Ehad >= vertex_thresh)
+		if(Ehad > vertex_thresh)
 		{
 			vis_vertex = true;
+		} else 
+		{
+			vis_vertex = false;
 		}
+	
 	
 			
 /************************************************************************************************
  *				CC Nu_e after oscillation! Lets fill a few
  * **********************************************************************************************/		
-		
+
 			
-		if((PDGnu==12) && CC==1 && Nph==0 && Npi0dph==0)
+		if((PDGnu==12) && CC==1 )
 		{
 			El_smear = smear_energy(El_true, EMsmear, rangen);
 			if(El_smear > EM_thresh)
@@ -2131,7 +2151,7 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 
 		} 
 		
-		if((PDGnu==-12) && CC==1 && Nph==0 && Npi0dph==0)
+		if((PDGnu==-12) && CC==1 )
 		{
 			El_smear = smear_energy(El_true, EMsmear, rangen);
 			if(El_smear > EM_thresh)
@@ -2150,7 +2170,7 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 
 
 	char namei[200];
-	sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name, log10(workingModel.dm41Sq));
+	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name, log10(workingModel.dm41Sq));
 
 	TFile f(namei,"UPDATE");
 	H_nue_sin.Write();
@@ -2228,8 +2248,8 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 	int NpipOBS = 0;
 	int NpimOBS = 0;
 
-	double POTscaling =detector->potmodifier*66.0; 
-	double fiducialscaling = detector->f_volume/detector->volume;
+	double POTscaling =detector->potmodifier*66.0*detector->proposal_modifier; 
+	double fiducialscaling = detector->f_mass/detector->mass;
 	//std::cout<<"volumes "<< fiducialscaling<<" "<<detector->f_volume/(100*100*100)<<" "<<detector->volume/(100*100*100)<<std::endl;
 
 
@@ -2240,6 +2260,7 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 //	double Eff_in = 0.9137;
 //	double Eff_out = (1.0-Eff_in); 
 
+	double n11 =0;
 
 	double Enu;
 	double El_true;
@@ -2365,8 +2386,8 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 			double E_ph_smeared = 0;
 			for(int j=0; j<Nph;j++)
 			{
-				//E_ph_smeared = smear_energy(E_ph_smeared,EMsmear,rangen);
-				//Ehad += E_ph_smeared;
+				E_ph_smeared = smear_energy(E_ph_smeared,EMsmear,rangen);
+				Ehad += E_ph_smeared;
 				
 			} 
 		}//end photon addition
@@ -2406,14 +2427,16 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
  * **********************************************************************************************/		
 		
 			
-		if((PDGnu==12 || PDGnu== -12) && CC == 1 && Nph == 0 && Npi0dph == 0 && Npi0 == 0)// && Npim == 0 && Npip == 0)
+		if((PDGnu==12 && CC == 1)) // || PDGnu== -12) && CC == 1)// && Nph == 0 && Npi0dph == 0 && Npi0 ==0)// && Npim == 0 && Npip == 0)
 		{
+
+				n11 += weight ;
+
 			El_smear = smear_energy(El_true, EMsmear, rangen);
 			if(El_smear > EM_thresh)
 			{
 				double prob = workingModel.oscProbSin(Enu,0.001*(osclen+(vertex_pos[2]/1000.0)));
 				double probsq = workingModel.oscProbSinSq(Enu,0.001*(osclen+(vertex_pos[2]/1000.0)));
-
 
 				THcc_El.Fill(El_smear, weight*Eff_em);
 				THcc_El_true.Fill(El_true, weight*Eff_em);
@@ -2769,7 +2792,7 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 
 	}
 	char namei[200];
-	sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
 
 	TFile f(namei,"UPDATE");
 
@@ -2781,6 +2804,7 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 	H1nue_reco_photon_sinsq.Write();
 	f.Close();
 
+	std::cout<<"n11: "<<n11<<" "<<n11*66.0<<" "<<n11*66.0*0.9<<std::endl;
 
 
 /*	
@@ -2814,11 +2838,11 @@ int SBN_spectrum::load_freq(SBN_detector * detector, int whi)
 {
 
 	char namei[200];
-	sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name, log10(workingModel.dm41Sq));
+	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name, log10(workingModel.dm41Sq));
 	TFile f(namei);
 
 	char namej[200];
-	sprintf(namej, "bkg_data/NUBAR_MODE/%s_bkg.root",detector->name);
+	sprintf(namej, "bkg_data/%s_bkg.root",detector->name);
 	TFile f2(namej);
 
 
@@ -2962,7 +2986,7 @@ int SBN_spectrum::load_bkg(SBN_detector * detector)
 {
 
 	char namej[200];
-	sprintf(namej, "bkg_data/NUBAR_MODE/%s_bkg.root",detector->name);
+	sprintf(namej, "bkg_data/%s_bkg.root",detector->name);
 	TFile f(namej);
 
 
@@ -3048,24 +3072,45 @@ f.Close();
  *
  * *********************
  */
+double sgn(double x){
+if (x > 0){return 1;}
+else if (x < 0){ return -1;}
+return 0;
+//return 1;
+}
+
 
 int SBN_spectrum::load_freq_3p3(SBN_detector * detector)
 {
 	
 	load_bkg(detector);
 
+
+	double fix41=log10(workingModel.dm41Sq);
+	double fix51=log10(workingModel.dm51Sq);
+
 	double round54 = round(log10(fabs(workingModel.dm54Sq))/0.04)*0.04;
 	double round64 = round(log10(fabs(workingModel.dm64Sq))/0.04)*0.04;
 	double round65 = round(log10(fabs(workingModel.dm65Sq))/0.04)*0.04;
 
-	if(workingModel.numsterile ==1)
+	if(workingModel.numsterile == 1)
 	{
 	prob_3p3(log10(workingModel.dm41Sq), detector,41);
 	prob_3p3(round54, detector,54);
 	prob_3p3(round64, detector,64);
 
+	}
+       	else if(workingModel.numsterile ==2)
+	{
 
-	} 
+//	std::cout<<round54<<" "<<sgn(workingModel.dm54Sq)<<" "<<workingModel.dm54Sq<<" 41 "<<log10(workingModel.dm41Sq)<<" 51 "<<log10(workingModel.dm51Sq)<<std::endl;
+	prob_3p3(fix41, detector, 41);
+	prob_3p3(fix51, detector, 51);
+	prob_3p3(round54, detector,54);
+	prob_3p3(round65, detector,65);
+	prob_3p3(round64, detector,64);
+
+	}	
 	else if(workingModel.numsterile ==3)
 	{
 
@@ -3092,8 +3137,14 @@ return 1;
 
 double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 
+	if(dm < -2.0 || isinf(dm) || (dm != dm) ){
+	//	std::cout<<"skipping this dm: "<<dm<<" which: "<<which_dm<<std::endl;
+		return 0 ;
+	}
+
+
 	char namei[200];
-	sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name, dm);
+	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name, dm);
 	TFile f(namei);
 
 
@@ -3107,17 +3158,59 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 	TH1D  h_nue_intrin_sinsq=*((TH1D*)f.Get("nue_intrin_sinsq")); 
 	TH1D  h_nue_muon_sinsq=*((TH1D*)f.Get("nue_muon_sinsq"));
 
+	int which_mode = 0;
+
+	double prob_mumu = 0;
+	double prob_ee = 0;
+	double prob_mue = 0;
+	double prob_muebar = 0;
+	double prob_mue_sq = 0;
+	double prob_muebar_sq = 0;
+
+	switch (which_mode)
+	{
+
+		case APP_ONLY:
+			prob_mumu =0;//  workingModel.oscAmp(2,2,which_dm,2);
+			prob_ee =0;// workingModel.oscAmp(1,1,which_dm,2);
+			prob_mue = workingModel.oscAmp(2,1,which_dm,1);
+			prob_mue_sq = workingModel.oscAmp(2,1,which_dm,2);
+			prob_muebar = workingModel.oscAmp(-2,-1,which_dm,1);	
+			prob_muebar_sq = workingModel.oscAmp(-2,-1,which_dm,2);				
+			break;
+		case DIS_ONLY:
+			prob_mumu = workingModel.oscAmp(2,2,which_dm,2);
+			prob_ee = 0;//workingModel.oscAmp(1,1,which_dm,2);
+			prob_mue = 0;// workingModel.oscAmp(2,1,which_dm,1);
+			prob_mue_sq =0;// workingModel.oscAmp(2,1,which_dm,2);
+			prob_muebar =0;// workingModel.oscAmp(-2,-1,which_dm,1);	
+			prob_muebar_sq =0;// workingModel.oscAmp(-2,-1,which_dm,2);				
+			break;
+		case BOTH_ONLY:
+			prob_mumu = workingModel.oscAmp(2,2,which_dm,2);
+			prob_ee = workingModel.oscAmp(1,1,which_dm,2);
+			prob_mue = workingModel.oscAmp(2,1,which_dm,1);
+			prob_mue_sq = workingModel.oscAmp(2,1,which_dm,2);
+			prob_muebar = workingModel.oscAmp(-2,-1,which_dm,1);	
+			prob_muebar_sq = workingModel.oscAmp(-2,-1,which_dm,2);			
+			break;
+
+	}
 
 
-	h_dis_muon_sinsq.Scale( 	workingModel.oscAmp(2,2,which_dm,2));
-	h_fullosc_nue_sin.Scale(	workingModel.oscAmp(2,1,which_dm,1));
-	h_fullosc_nue_sinsq.Scale(	workingModel.oscAmp(2,1,which_dm,2)); 
-	h_fullosc_nuebar_sin.Scale(	workingModel.oscAmp(-2,-1,which_dm,1)); 
-	h_fullosc_nuebar_sinsq.Scale(	workingModel.oscAmp(-2,-1,which_dm,2));
+
+
+
+
+	h_dis_muon_sinsq.Scale(		prob_mumu	);
+	h_fullosc_nue_sin.Scale( 	prob_mue	);
+	h_fullosc_nue_sinsq.Scale(	prob_mue_sq ); 
+	h_fullosc_nuebar_sin.Scale(	prob_muebar); 
+	h_fullosc_nuebar_sinsq.Scale(	prob_muebar_sq);
 	
 	
-	h_nue_intrin_sinsq.Scale(	workingModel.oscAmp(1,1,which_dm,2)); 
-	h_nue_muon_sinsq.Scale(		workingModel.oscAmp(2,2,which_dm,2));
+	h_nue_intrin_sinsq.Scale(	prob_ee	); 
+	h_nue_muon_sinsq.Scale(		prob_mumu);
 
 
 
@@ -3196,4 +3289,200 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 f.Close();
 
 }
+
+
+
+int SBN_spectrum::load_bkg_unit(SBN_detector * detector)
+{
+
+	char namej[200];
+	sprintf(namej, "bkg_data/%s_bkg.root",detector->name);
+	TFile f(namej);
+
+
+	TH1D  h_dis_muon_sin=*((TH1D*)f.Get("dis_muon_sin")); 
+	TH1D  h_dis_ncpion_sin=*((TH1D*)f.Get("dis_ncpion_sin")); 
+	//h_dis_muon_sin.Add(&h_dis_ncpion_sin); //Not Included for Now
+
+	TH1D  h_fullosc_nue_sin=*((TH1D*)f.Get("fullosc_nue_sin")); 
+	TH1D  h_fullosc_nuebar_sin=*((TH1D*)f.Get("fullosc_nuebar_sin"));
+        h_fullosc_nuebar_sin.Add(&h_fullosc_nuebar_sin);	
+
+	TH1D  h_nue_intrin_sin=*((TH1D*)f.Get("nue_intrin_sin")); 
+	TH1D  h_nue_muon_sin=*((TH1D*)f.Get("nue_muon_sin")); 
+	TH1D  h_nue_photon_sin=*((TH1D*)f.Get("nue_photon_sin")); 
+
+
+
+	for(int i =0; i < N_e_bins; i++)
+	{
+	switch (detector->identifier)
+		{
+			case DET_SBND:
+				sbnd_e[i]= h_nue_photon_sin.GetBinContent(i+1);
+				break;
+			case DET_UBOONE:
+			        uboone_e[i]=h_nue_photon_sin.GetBinContent(i+1);
+ 
+			       	break;
+			case DET_ICARUS:
+				icarus_e[i]= h_nue_photon_sin.GetBinContent(i+1);
+
+				break;
+		}
+
+	}
+
+	for(int i =0; i < N_e_bins; i++)
+	{
+	switch (detector->identifier)
+		{
+			case DET_SBND:
+				sbnd_f[i]= 0.0;//h_fullosc_nue_sin.GetBinContent(i+1);
+				break;
+			case DET_UBOONE:
+				uboone_f[i]= 0.0;//h_fullosc_nue_sin.GetBinContent(i+1);		
+				break;
+			case DET_ICARUS:
+				icarus_f[i]= 0.0;//h_fullosc_nue_sin.GetBinContent(i+1);
+				break;
+		}
+
+	}
+
+
+	for(int i =0; i < N_m_bins; i++)
+	{
+	//	std::cout<<"det: "<<detector->identifier<<" "<<H1nue_reco_intrinsic.GetBinContent(i+1)<<std::endl;
+		switch (detector->identifier)
+		{
+			case DET_SBND:
+				sbnd_m[i]= h_dis_ncpion_sin.GetBinContent(i+1);//    h_dis_muon_sin.GetBinContent(i+1);
+				break;
+			case DET_UBOONE:
+				uboone_m[i]= h_dis_ncpion_sin.GetBinContent(i+1);// h_dis_muon_sin.GetBinContent(i+1);
+				break;
+			case DET_ICARUS:
+				icarus_m[i]= h_dis_ncpion_sin.GetBinContent(i+1);// h_dis_muon_sin.GetBinContent(i+1);
+				break;
+		}
+
+
+	}
+
+f.Close();
+
+}
+int SBN_spectrum::load_unit(SBN_detector * detector)
+{
+	
+	load_bkg_unit(detector);
+	prob_unit(detector);
+
+return 1;
+}
+
+double SBN_spectrum::prob_unit(SBN_detector * detector){
+
+	char namei[200];
+	sprintf(namei, "bkg_data/%s_bkg.root",detector->name);
+	TFile f(namei);
+
+
+	TH1D  h_dis_muon_sinsq=*((TH1D*)f.Get("dis_muon_sinsq")); 
+	
+	TH1D  h_fullosc_nue_sin=*((TH1D*)f.Get("fullosc_nue_sin")); 
+	TH1D  h_fullosc_nue_sinsq=*((TH1D*)f.Get("fullosc_nue_sinsq")); 
+	TH1D  h_fullosc_nuebar_sin=*((TH1D*)f.Get("fullosc_nuebar_sin")); 
+	TH1D  h_fullosc_nuebar_sinsq=*((TH1D*)f.Get("fullosc_nuebar_sinsq"));	
+	
+	TH1D  h_nue_intrin_sinsq=*((TH1D*)f.Get("nue_intrin_sinsq")); 
+	TH1D  h_nue_muon_sinsq=*((TH1D*)f.Get("nue_muon_sinsq"));
+
+
+
+	h_fullosc_nue_sinsq.Scale(	pow(workingModel.UUem,2));
+	h_fullosc_nuebar_sinsq.Scale(	pow(workingModel.UUme,2)); 
+	
+	h_nue_intrin_sinsq.Scale(	pow(workingModel.UUee,2)); 
+	h_nue_muon_sinsq.Scale(		pow(workingModel.UUmm,2));
+
+	h_dis_muon_sinsq.Scale( 	pow(workingModel.UUmm,2));
+
+
+
+
+
+	for(int i =0; i < N_e_bins; i++)
+	{
+		double add = h_nue_intrin_sinsq.GetBinContent(i+1)+h_nue_muon_sinsq.GetBinContent(i+1); 
+	switch (detector->identifier)
+		{
+			case DET_SBND:
+				sbnd_e[i] += add ;
+				break;
+			case DET_UBOONE:
+			        uboone_e[i] +=add; 
+			       	break;
+			case DET_ICARUS:
+				icarus_e[i] +=add;
+
+				break;
+		}
+
+	}
+
+	for(int i =0; i < N_e_bins; i++)
+	{
+
+		double add =h_fullosc_nue_sinsq.GetBinContent(i+1)+ h_fullosc_nuebar_sinsq.GetBinContent(i+1);
+
+	switch (detector->identifier)
+		{
+			
+			case DET_SBND:
+				sbnd_f[i] +=add; 
+				break;
+			case DET_UBOONE:
+				uboone_f[i] += add;		
+				break;
+			case DET_ICARUS:
+				icarus_f[i] += add;
+				break;
+		}
+
+	}
+
+
+	for(int i =0; i < N_m_bins; i++)
+	{
+
+		double add = h_dis_muon_sinsq.GetBinContent(i+1);
+		switch (detector->identifier)
+		{
+	
+			case DET_SBND:
+				sbnd_m[i] +=  add;
+				break;
+			case DET_UBOONE:
+				uboone_m[i] += add;
+
+				break;
+			case DET_ICARUS:
+				icarus_m[i] +=  add;
+
+				break;
+		}
+
+
+	}
+
+
+	
+
+
+f.Close();
+
+}
+
 

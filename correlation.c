@@ -39,6 +39,22 @@ gsl_rng_free(r);
 }
 
 
+std::vector<std::vector<double >> to_vector(TMatrixT <double > Min)
+{
+	int dimension =  Min.GetNrows();
+
+	std::vector<std::vector<double >>  ans(dimension, std::vector<double>(dimension));
+
+	for(int i = 0; i< dimension; i++){
+		for(int k = 0; k< dimension; k++){
+			ans[i][k]=Min(i,k);
+		}	
+	}
+return ans;
+
+
+}
+
 
 void stats_fill(TMatrixT <double> &M, std::vector<double> diag){
 	int matrix_size = M.GetNrows();

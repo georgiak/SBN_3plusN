@@ -176,7 +176,9 @@ SBN_detector::SBN_detector(double h, double w, double l, double fh, double fw, d
 	dl = (l-fl)/2.0;
 	dw = (w-fw)/2.0;
 
-	fname ="rootfiles/NUBAR_MODE/ntuple.ICARUS.root";		
+	proposal_modifier =1;
+
+	fname ="rootfiles/ntuple.ICARUS.root";		
 	potmodifier = 1.0;
 	identifier = DET_ICARUS;
 
@@ -192,14 +194,16 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			length = 500;
 			width = 2*200;
 			volume = height*length*width;
+			mass =112;
 
 			if(ismu)
 			{
 				f_height = 370;
 				f_length = 405;
 				f_width =2*183.5 ;
+				f_mass = 77.0;
 
-
+				proposal_modifier = 0.8*5212690.0/(6.6*887966.0*MET2IMP) ;
 
 			}
 			else
@@ -208,6 +212,9 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 				f_height =350;
 				f_length = 420;
 				f_width = 2*173.5 ;
+				f_mass = 71.4;
+
+				proposal_modifier = 36798.0/(6.6*6931*MET2IMP) ;
 			}
 
 		
@@ -217,13 +224,14 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			baseline=110;
 
 
+
 			dh = (height-f_height)/2.0;
 			dl = (length-f_length)/2.0;
 			dw = (width-f_width)/2.0;
 
 			name = "SBND";
-			fname ="rootfiles/NUBAR_MODE/ntuple.SBND.root";	
-			foscname ="rootfiles/NUBAR_MODE/ntuple.SBND_fullosc.root";	
+			fname ="rootfiles/ntuple.SBND.root";	
+			foscname ="rootfiles/ntuple.SBND_fullosc.root";	
 			potmodifier = 1.0;
 			identifier = DET_SBND;
 			break;
@@ -231,6 +239,7 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			height = 233.0;
 			length = 1037.0;
 			width = 256.0;
+			mass = 86.6;
 			volume = height*length*width;
 		
 			if(ismu)
@@ -239,14 +248,20 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 				f_height = 203;
 				f_length = 942;
 				f_width = 226;
-
+				f_mass = 60.5;
+				proposal_modifier =1.1 *  0.907*mass/89.0*173302/(6.6*26182);
+				//proposal_modifier =  5212690.0/(6.6*887966.0*MET2IMP) ;
 			}
 			else
 			{
 				f_height = 183.0;
 				f_length = 957.0;
 				f_width = 206.0;
+				f_mass = 47.9;
 
+				//proposal_modifier =36798.0/(6.6*6931*MET2IMP) ;
+				proposal_modifier =0.9*  0.90*86.6/89.0*1469/(6.6*258.7);
+				//proposal_modifier   =1469/1417.9;
 			}
 
 					f_volume = f_height*f_length*f_width;	
@@ -259,8 +274,8 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			dw = (width-f_width)/2.0;
 
 			name = "uBooNE";
-			fname ="rootfiles/NUBAR_MODE/ntuple.uBooNE.root";	
-			foscname ="rootfiles/NUBAR_MODE/ntuple.uBooNE_fullosc.root";	
+			fname ="rootfiles/ntuple.uBooNE.root";	
+			foscname ="rootfiles/ntuple.uBooNE_fullosc.root";	
 			potmodifier = 2.0;
 			identifier = DET_UBOONE;
 			break;
@@ -270,13 +285,20 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			length = 1795;
 			width = 4*150;
 			volume = height*length*width;
-		
+			mass = 476;
+
 			if(ismu)
 			{
 
 				f_height = 286;
 				f_length = 1700;
 				f_width = 4*133;
+				f_mass = 363;
+				//proposal_modifier =0.9*mass/476*173302*MET2IMP/(6.6*28182);
+				proposal_modifier =1.1 *  0.907*mass/476*173302/(6.6*26182);
+				//proposal_modifier =  5212690.0/(6.6*887966.0*MET2IMP) ;
+				//proposal_modifier = 173302*87*MET2IMP/(6.6*28182*89);
+
 
 
 			}
@@ -286,8 +308,13 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 				f_height = 266;
 				f_length = 1715;
 				f_width = 4*123.5;
-
+				f_mass = 315;
+				proposal_modifier =0.9*  0.90*86.6/89.0*1469/(6.6*258.7);
+				//proposal_modifier = 1469*87*MET2IMP/(6.6*238.7*89);
 			}
+
+
+		
 
 			f_volume = f_height*f_length*f_width;	
 
@@ -298,8 +325,8 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			dw = (width-f_width)/2.0;
 
 			name = "ICARUS";
-			fname ="rootfiles/NUBAR_MODE/ntuple.ICARUS.root";	
-			foscname ="rootfiles/NUBAR_MODE/ntuple.ICARUS_fullosc.root";	
+			fname ="rootfiles/ntuple.ICARUS.root";	
+			foscname ="rootfiles/ntuple.ICARUS_fullosc.root";	
 			potmodifier = 1.0;
 			identifier = DET_ICARUS;
 			break;
@@ -337,9 +364,9 @@ bool SBN_detector::is_fiducial(double * pos){
 
  void SBN_detector::random_pos(TRandom * rangen, double * vec){
 
-	vec[0]=rangen->Uniform(height);
-	vec[1]=rangen->Uniform(width);
-	vec[2]=rangen->Uniform(length);
+	vec[0]=dh + rangen->Uniform(height-dh);
+	vec[1]=dw + rangen->Uniform(width-dw);
+	vec[2]=dl + rangen->Uniform(length-dl);
 
 }
 

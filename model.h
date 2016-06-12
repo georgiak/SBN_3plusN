@@ -30,10 +30,14 @@
 #define MUsmear  0.06
 
 #define p_thresh  0.021
-#define pip_thresh  0.021
-#define pim_thresh  0.021
+#define pip_thresh  0.00
+#define pim_thresh  0.00
 #define vertex_thresh  0.05
 #define EM_thresh  0.200
+
+#define APP_ONLY 0
+#define DIS_ONLY 1
+#define BOTH_ONLY 2
 
 
 
@@ -131,13 +135,15 @@ class SBN_spectrum {
 	int load_freq(SBN_detector *, int);
 	int load_freq_3p3(SBN_detector *);
  	int load_bkg(SBN_detector *); 
+	int load_unit(SBN_detector *);
+	int load_bkg_unit(SBN_detector *);
 
-
+	double prob_unit(SBN_detector *);
 	double prob_3p3(double dm, SBN_detector *, int which_dm);
 
 
 };
-
+double sgn(double x);
 
 
 

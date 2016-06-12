@@ -16,6 +16,7 @@
 #define DET_UBOONE 1
 #define DET_ICARUS 2
 
+#define MET2IMP 1 //0.9071847
 	double smear_energy(double En, double Percen, TRandom * rangen);
 	double massive_smear_energy(double En, double Percen, TRandom * rangen,double mass);
 	
@@ -41,12 +42,15 @@ class SBN_detector {
 	double height, width, length;
 	double f_height, f_width, f_length;
         double volume;
-	double f_volume;	
+	double f_volume;
+	double mass;
+	double f_mass;	
 	double baseline;
 	char const * fname; // location of root ntuple containing data file		
 	char const * foscname;	//location of full oscillated 
 	double potmodifier;
 	int identifier;
+	double proposal_modifier;
 
 	//Constructors, if blank corresponds to background only. 
 	SBN_detector (double h, double w, double l, double fh, double fw, double fl,double base);

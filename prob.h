@@ -16,7 +16,7 @@ struct neutrinoModel{
 	double mNu[3], Ue[3], Um[3], phi[3];
 	double dm41Sq, dm51Sq, dm61Sq, dm54Sq, dm64Sq, dm65Sq;
 	std::vector< std::vector < std::complex<double> > >  U; 
-	std::vector<std::vector<double>> dm;
+	//std::vector<std::vector<double>> dm;
 
 	int numsterile;
 
@@ -25,6 +25,10 @@ struct neutrinoModel{
 	neutrinoModel(double * mn, double * ue, double *um, double *ph);
 	neutrinoModel(double m4, double ue4, double um4);
 
+	double UUem;
+	double UUme;
+	double UUmm;
+	double UUee;
 
 
 	void zero();

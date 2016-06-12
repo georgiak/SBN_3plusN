@@ -22,7 +22,11 @@ neutrinoModel::neutrinoModel(double * mn, double * ue, double * um, double * ph)
 			Um[i] = um[i];  phi[i] =ph [i];
 	}
 	difference();
-	numsterile = 3;
+	if(mNu[2]==0){
+		numsterile = 2;
+	} else {
+		numsterile = 3;
+	}
 }
 
 /******	3+1 constructor ******/
@@ -50,6 +54,19 @@ void neutrinoModel::zero(){
 			mNu[i] = 0; Ue[i] = 0;
 			Um[i] = 0;  phi[i] = 0;
 	}
+	UUee=0;
+	UUmm=0;
+	UUem=0;
+	UUme=0;
+	dm54Sq = 0;
+	dm64Sq = 0;
+	dm65Sq = 0;
+	dm41Sq = 0;
+	dm51Sq = 0;
+	dm61Sq = 0;
+	numsterile = 1;
+
+
 }
 
 void neutrinoModel::difference(){
