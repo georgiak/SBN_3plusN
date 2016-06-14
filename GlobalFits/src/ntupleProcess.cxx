@@ -21,6 +21,7 @@ std::string procOptLoc;
 TNtuple * chi2_99, * chi2_90, * chi2_95;
 int rasterPoints;
 float dmmin, dmmax;
+double cl90, cl99;
 
 int ntProcess(){
 
@@ -92,6 +93,20 @@ int ntProcess(){
 	std::cout << "phi46_min: " << phi46_min << std::endl;
 	std::cout << "phi56_min: " << phi56_min << std::endl;
 
+	if(steriles == 1){
+		cl90 = 6.25;
+		cl99 = 11.34;
+	}
+	if(steriles == 2){
+		cl90 = 12.02;
+		cl99 = 18.48;
+	}
+	if(steriles == 3){
+		cl90 = 18.55;
+		cl99 = 26.22;
+	}
+
+
 	// Make new file to fill with confidence level ntuples
 	std::string jid = Form("/nt_3%i_",steriles);
 	std::string outfile = output + jid + dataset + ".root";
@@ -111,9 +126,9 @@ int ntProcess(){
 		for(int i = 0; i < in_chain->GetEntries(); i++){
         		in_chain->GetEntry(i);
 
-			if(chi2 - chi2min < 9.201)
+			if(chi2 - chi2min < cl99)
 				chi2_99->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
-			if(chi2 - chi2min < 4.605)
+			if(chi2 - chi2min < cl90)
 				chi2_90->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
 			float sins;
 			if(type == 0) sins = 4*pow(ue4,2)*pow(um4,2);
