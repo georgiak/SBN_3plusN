@@ -417,9 +417,9 @@ of the mixing matrix. The decay rate for this channel is given by
 \frac{G_\text{F}^2m_\ster^5}{96\pi^3}I_1\left(0,\frac{m_e}{m_\ster},\frac{
 m_e}{m_\ster}\right).  \]
 %
-where \begin{align} I_1(x,y,z) & =12 \int_{(x+y)^2}^{(1-z)^2}
-\frac{ds}{s}(s-x^2-y^2)(1+z^2-s)\sqrt{\lambda(s,x^2,y^2)}\sqrt{\lambda(1,s,z^2)},\\
-\lambda(a,b,c) &= a^2+b^2+c^2 - 2ab-2bc-2ca.  \end{align}
+where $I_1(x,y,z)$ is in integral over phase space such that $I_1(0,0,0) = 1$.
+Further details of the decay rates used in this work are given in
+\refapp{app:decayrates}.
 %
 Decays of this type would generally fall into two categories of events at a LAr
 detector, and accordingly we divide our analysis. The first event sample will
@@ -433,81 +433,98 @@ scenario, but as we will show, we get sizable event numbers in this channel due
 to the sterile neutrino's high energy, and a tight cut on the angular
 distribution can make it sensitive to sterile decays.
 
-Also possible at these low masses, the radiative decay
-$\ster\to\nu_i\gamma$ would generate an interesting single photon
-signal \cite{PhysRevD.25.766}. In the minimal model the decay rate goes as
+Although the electron-positron channel dominates the decays at these masses,
+another interesting channel is given by the radiative decay
+$\ster\to\nu_i\gamma$ would generate an interesting single photon signal
+\cite{PhysRevD.25.766}. In the minimal model the decay occurs via a
+charged-lepton/$W$ loop and has a rate given by
 %
-\[ \Gamma(\ster\to\nu_i\gamma) = \frac{G_\text{F}^2m_\ster^5 |U_{\alpha 4}|^2}{192 \pi^3} \left( \frac{27 \alpha}{32 \pi} \right), \]
+\[ \Gamma(\ster\to\nu_i\gamma) = \frac{G_\text{F}^2m_\ster^5 |U_{\alpha
+4}|^2}{192 \pi^3} \left( \frac{27 \alpha}{32 \pi} \right). \]
 %
-this decay channel will be very smal and the total decay rate can be estimated
-at around $\Gamma(\ster\to\nu_i\gamma)/(\text{GeV}) \approx 10^{-20}
+This decay channel is significantly suppressed by the light mass of the
+sterile, the mixing elements and the loop factor. It can be estimated at
+around $\Gamma(\ster\to\nu_i\gamma)/(\text{GeV}) \approx 10^{-20}
 (m_\ster/\text{GeV})^5$.  
 
-When the mass of the sterile neutrino is greater than the kinematic threshold
-for the production of a neutral pion, a new decay dominates $\ster\to\nu_i
-\pi^0$. The decay rate for this process is given by
+Low-mass sterile decay is dominated by the photon and electron-positron decays
+up until the pion mass threshold. In the few keV after this threshold, two
+further decays become possible: $N\to\nu \pi^0$ and $N\to e\pm\pi^\mp$. 
+%
+The decay rate for the first process is given by
 %
 \[ \Gamma\left(\ster \to \nu_i \pi^0\right) =
-\frac{G_\text{F}^2f_\pi^2m_\ster^3}{64\pi} \left[1-\left( \frac{m_\pi}{m_\ster}
-\right)^2\right].  \]
-
-The next channel appears at the kinematic threshold for charged pion production
-with a charged lepton. If mixing between the heavy mass state and the electron
-neutrino is present, this decay occurs almost immediately after the $\nu\pi^0$
-channel opens. However, if this mixing is negligible, there is a gap the size of
-the muon mass before the $\mu^\pm\pi^\mp$ channel opens. As can be seen from
-\reffig{fig:branchingratios}, these decays dominate the visible decays when
-they are allowed. These decays have a similar scaling behaviour of the decay
-rate to the $\nu\pi^0$ channel with an equivalent dependence on the pion
-structure constant,
+\frac{G_\text{F}^2f_\pi^2m_\ster^3\left|U\right|^2}{64\pi} \left[1-\left(
+\frac{m_\pi}{m_\ster} \right)^2\right].  \]
 %
-\[ \Gamma\left(\ster\to l^\pm\pi^\mp\right) =
-	\left|U_{l4}\right|^2\frac{G_\text{F}^2f_\pi^2 |V_{ud}|^2  m_\ster^3}{16\pi}I\left(\frac{m_l^2}{m_\pi^2} , \frac{m_\ster^2}{m_\pi^2}\right) ,
-\]
-with 
-\[
-	I(x,y) = \left[ \left( 1+x+y\right) \left(1+x\right) -4 x\right] \lambda^\frac{1}{2}\left(1,x,y\right)
-\]
+where $\left|U\right|^2 = \sum_{\alpha}\left|U_{\alpha 4}\right|^2$.
+% 
+The decay into a charged pion and an electron is an important channel, and one
+of the most constrained in direct decay experiments due to its clear visible
+two-body signal.  Its decay rate is similar to the $N\to \nu
+\pi^0$ channel, with the addition of a CKM matrix element from the $W$-vertex,
+%
+\begin{align} \Gamma\left(\ster\to l^\pm\pi^\mp\right) =
+\left|U_{l4}\right|^2\frac{G_\text{F}^2f_\pi^2 |V_{ud}|^2
+m_\ster^3}{16\pi}I\left(\frac{m_l^2}{m_\ster^2} ,
+\frac{m_\pi^2}{m_\ster^2}\right) , \label{eq:chargedlep_decayrate}\end{align}
+%
+where $I(x,y)$ is a kinematic function which away from the production threshold
+provides a small suppression $\sim 0.5$. Details are in \refapp{app:decayrates}.
 
-As can be seen from \reffig{fig:branchingratios} there are several additional
-decays possible $\ster\rightarrow \nu_\alpha \mu^+ \mu^-$ and $\ster
-\rightarrow \nu_\alpha e^+ \mu^-$, however, in the kinematic region allowed
-under the assumption the steriles were produced in pion and kaon decays these
-channels have sub dominant branching ratios and are not included in this
-analysis.
+The $N\to e^\pm\pi^\mp$ channel dominates the branching ratios in the mass
+range $130 \gtrsim m_\ster  \lesssim 235$ MeV. However, as it is mediated by a
+$W$ boson, in the absence of $U_{e4}$ mixing, this decay would be impossible
+and the decay into a neutral $\pi^0$ and a light neutrino would be dominant.
+Once the mass of the sterile fermion is above $m_\ster \gtrsim 235$ MeV,
+another charged-lepton pion decay opens up, $\mu^\pm\pi^\mp$. This is another
+strongly constrained channel, and its decay rate is already given in
+\refeq{eq:chargedlep_decayrate} with $m_l = m_\mu$. 
 
+We have plotted the relevant branching ratios of $N$ in
+\reffig{fig:branchingratios}. In addition to those that we have discussed so
+far, there are several further decays possible $\ster\rightarrow \nu_\alpha
+\mu^+ \mu^-$ and $\ster \rightarrow \nu_\alpha e^+ \mu^-$. In the minimal
+model, these decays are subdominant with respect to other decays, and we will
+not discuss them further.
 
 \subsection{Non-minimal models}
 
 An important feature of the minimal model that we have discussed so far is the
-all or nothing approach to decay rates: all decay processes of the sterile
-neutrino are weak processes scaled by a mixing matrix element. 
-%
-Therefore it is the three mixing matrix elements $U_{\alpha 4}$ which dictate
-the magnitude of all the decay rates. This is a great asset when trying to
-constrain the  minimal model, for example it allows us to convert any
-non-observation of a signal into a bound on the mixing matrix, and allows us to
-reinterpret bounds on any one decay rate onto the expected decay rates for
-other channels, such as $\ster \rightarrow \nu_\alpha e^+ e^-$ non-observation
-being used to bound $\ster \rightarrow \nu_\alpha \pi^0$ despite no experiment
-to-date reporting the results of such a search. 
+all-or-nothing approach to decay rates: all decay processes of the sterile
+neutrino are weak processes scaled by a mixing matrix element, and it is the
+three mixing matrix elements $U_{\alpha 4}$ alone which dictate the magnitude
+of all the decay rates. This is a great asset when trying to constrain the
+minimal model, for example it allows us to convert any non-observation of a
+signal into a bound on the mixing matrix, and allows us to reinterpret bounds
+on any one decay rate onto the expected decay rates for other channels, such as
+$\ster \rightarrow \nu_\alpha e^+ e^-$ non-observation being used to bound
+$\ster \rightarrow \nu_\alpha \pi^0$ despite no experiment to-date reporting
+the results of such a search. 
 %
 However, this asset becomes a bias when used in a general search for novel
 neutral states. Although such low-scale see-saws are a viable region of
 parameter space, they lack a theoretically appealing mechanism to explain the
 sub-electroweak sterile neutrino mass scale nor the sizes of neutrino masses.
-Although alternative models exist which can provide a light neutral particle
-and a mechanism to generate light neutrino masses, they rely on extended field
-content or interactions.
+Alternative models exist which feature a light neutral particle and a mechanism
+to generate tiny neutrino masses, but they rely on extended field content or
+interactions.
 %
-Indeed it has been stressed before that a light sterile neutrino would be a
-sign of some non-trivial new physics \cite{delAguila:2008ir}. To exploit the
-most general constraints on the low-energy approximation to the full theory we
-use effective field theory. The effective field theory of a SM extension
-involving new sterile fermions has been presented at dimension 5
-\cite{delAguila:2008ir,Aparici:2009fh}, dimension 6 \cite{delAguila:2008ir} and
-dimension 7 \cite{Bhattacharya:2015vja}.
+Indeed it has been stressed before that the discovery of a light sterile
+neutrino would necessitate not just the addition of new neutral fermions to the
+SM but would be a sign of the existence of some non-trivial new physics
+\cite{delAguila:2008ir}. With these ideas in mind, we briefly consider the
+properties of a light neutral fermion in a low-energy effective theory.  
+
+The effective field theory of a SM extension involving new sterile fermions has
+been presented at dimension 5 \cite{delAguila:2008ir,Aparici:2009fh}, dimension
+6 \cite{delAguila:2008ir} and dimension 7 \cite{Bhattacharya:2015vja}.
 %
+We extend the field content of the SM by a sterile fermion $N$\footnote{As
+before, we focus on the single $N$ case for illustrative purposes. The
+extension to a set of fields $N_i$ is uneventful.}.  
+
+
 In \refref{Aparici:2009fh} the phenomenology of the effective operators at
 dimension 5 are considered in detail. Along with the Weinberg operator, which
 could be the source of a light neutrino Majorana mass term
@@ -1020,6 +1037,34 @@ ITN-INVISIBLES (Marie Curie Actions, PITN-GA-2011-289442).
 
 \appendix
 
+\section{\label{app:decayrates}Decay rates in the minimal model}
+
+The dominant visible decay for sterile neutrinos with masses below the pion
+mass is into an electron positron pair. The total rate can be express as
+%
+\[ \Gamma\left(\ster\to \nu_i e^+e^-\right) =
+\frac{G_\text{F}^2m_\ster^5}{96\pi^3}I_1\left(0,\frac{m_e}{m_\ster},\frac{
+m_e}{m_\ster}\right).  \]
+%
+where
+% 
+\begin{align} I_1(x,y,z) & =12 \int_{(x+y)^2}^{(1-z)^2}
+\frac{ds}{s}(s-x^2-y^2)(1+z^2-s)\sqrt{\lambda(s,x^2,y^2)}\sqrt{\lambda(1,s,z^2)},\\
+\lambda(a,b,c) &= a^2+b^2+c^2 - 2ab-2bc-2ca.  \end{align}
+
+The decays into a charged lepton and a pion are given by 
+%
+\[ \Gamma\left(\ster\to l^\pm\pi^\mp\right) =
+\left|U_{l4}\right|^2\frac{G_\text{F}^2f_\pi^2 |V_{ud}|^2
+m_\ster^3}{16\pi}I\left(\frac{m_l^2}{m_\ster^2} ,
+\frac{m_\pi^2}{m_\ster^2}\right) , \] 
+%
+with \[ I(x,y) = \left[ \left( 1+x+y\right) \left(1+x\right) -4 x\right]
+\lambda^\frac{1}{2}\left(1,x,y\right).  \]
+%
+For $N\to e^\pm\pi^\mp$ the kinematic function $I(x,y)$ produces only weak suppression ($I(x,y)\geq 0.5$) for sterile masses above $m_\ster\gtrsim 150$ MeV, whilst for $N\to
+\mu^\pm\pi^\mp$ the equivalent threshold is $m_\ster\gtrsim 270$ MeV.
+
 \section{Potential Backgrounds\label{sec:bg}}
 
 In order to estimate the effect of expected backgrounds on the sensitivity we
@@ -1261,32 +1306,32 @@ and the blue and red curves are the results of our simulation for $0.86 \times
 
 \end{figure}
 
-
-\newpage
-
-\section{To do list}
-
-\begin{enumerate}
-
-\item Do a bit more checking that the `unobserved' channels are indeed unobserved. 
-
-\item Are the effective model decay channels unbounded? \newtext{PB}{I think } \refref{Aparici:2009fh} \newtext{PB}{goes some of the way to placate my worries: they show bounds for their operators, and in our region of interest there is nothing killer (I think).}
-
-\item Turn on $U_{\tau 4}$,$U_{\mu 4}$ and $U_{e4}$ simultaneously. Think of
-how we can push the analysis beyond the obvious by using flavour effects. Also
-look at ratios of channels and ratios of events to see if we can get any
-(broken) degeneracies that could actually be interesting \emph{i.e} SNO style
-complementary measurements.
-
-\item \newtext{MARK}{Working on} Make nice version of branching ratio plot.
-Need to make prettier. \sout{Also, we probably need to cut it off at
-$M_\ster\lesssim 500$ MeV, there are other decays allowed between 0.5 and 1 GeV
-(with $\eta$ and $\rho$)}.
-
-\item \newtext{MARK}{Working on} Think if there's a nice plot showing the
-sterile effect on our fluxes.
-
-\end{enumerate}
+%\newpage
+%
+%\section{To do list}
+%
+%\begin{enumerate}
+%
+%\item Do a bit more checking that the `unobserved' channels are indeed unobserved. 
+%
+%\item Are the effective model decay channels unbounded? \newtext{PB}{I think } \refref{Aparici:2009fh} \newtext{PB}{goes some of the way to placate my worries: they show bounds for their operators, and in our region of interest there is nothing killer (I think).}
+%
+%\item Turn on $U_{\tau 4}$,$U_{\mu 4}$ and $U_{e4}$ simultaneously. Think of
+%how we can push the analysis beyond the obvious by using flavour effects. Also
+%look at ratios of channels and ratios of events to see if we can get any
+%(broken) degeneracies that could actually be interesting \emph{i.e} SNO style
+%complementary measurements.
+%
+%\item \newtext{MARK}{Working on} Make nice version of branching ratio plot.
+%Need to make prettier. \sout{Also, we probably need to cut it off at
+%$M_\ster\lesssim 500$ MeV, there are other decays allowed between 0.5 and 1 GeV
+%(with $\eta$ and $\rho$)}.
+%
+%\item \newtext{MARK}{Working on} Think if there's a nice plot showing the
+%sterile effect on our fluxes.
+%
+%\end{enumerate}
+%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
