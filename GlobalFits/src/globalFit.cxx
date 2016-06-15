@@ -52,13 +52,14 @@ minosPackage minosPack; minosncPackage minosncPack; booneDisPackage mbNuDisPack,
 bugeyPackage bugeyPack; choozPackage choozPack; xsecPackage xsecPack;
 
 bool debug = true;
+double ntupleFinish = .2;
 
 int globInit(){
 
     using namespace std;
 
-	jobOptLoc = "/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
-	dataLoc = "/Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
+	jobOptLoc = ""; //"/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
+	dataLoc = ""; //"/Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
 
     // read jobOption file and fill variables
     jobOpt();
@@ -163,13 +164,17 @@ int globChisq(int ind){
     // If we're doing a Markov Scan, here we are!
     if(scanType == 2){
 
+		int count = 0;
         for(iMCGen = 1; iMCGen <= nMCGen; iMCGen++){
             std::cout << "iMCGen = " << iMCGen << "/" << nMCGen << "... " << std::endl;
 
-            if(iMCGen == 1)
+            if(count == 0)
 				nuModel = initializeMarkovParams();
 			else
 				nuModel = newModel(nuModelOld);
+
+			if (count > nMCGen*ntupleFinish)
+				break;
             chisqTotal.zero();  chisqDetector.zero();
 
 			// For testing, we settin' our own parameters!
@@ -323,7 +328,7 @@ int globChisq(int ind){
             dof = ndf;  m4 = nuModel.mNu[0];    m5 = nuModel.mNu[1];    m6 = nuModel.mNu[2];    ue4 = nuModel.Ue[0];    ue5 = nuModel.Ue[1];    ue6 = nuModel.Ue[2];
             um4 = nuModel.Um[0];    um5 = nuModel.Um[1];    um6 = nuModel.Um[2]; phi45 = nuModel.phi[0];    phi46 = nuModel.phi[1]; phi56 = nuModel.phi[2];
             chi2Nt->Fill(chi2, step, temp, m4, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45, phi46, phi56);
-
+			count++;
 		}
     }
 
