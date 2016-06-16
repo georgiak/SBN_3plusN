@@ -159,8 +159,7 @@ int ntGridder(){
 		int i0min, i0max, i1min, i1max, i2min, i2max, i3min, i3max, i4min, i4max, i5min, i5max;		// maxes and mins for each parameter to speed shit up
 		i0min = 100; i0max = 0; i1min = 100; i1max = 0; i2min = 100; i2max = 0;
 		i3min = 100; i3max = 0; i4min = 100; i4max = 0; i5min = 100; i5max = 0;
-		//for(int i = 0; i < chi2_99->GetEntries(); i++){
-		for(int i = 550; i < 650; i++){
+		for(int i = 0; i < chi2_99->GetEntries(); i++){
 			chi2_99->GetEntry(i);
 			int _m4 = floor(TMath::Log10(m4/dmmin)/mstep);
 			int _ue4 = floor(ue4/ustep);
@@ -180,7 +179,6 @@ int ntGridder(){
 			if(s4Vec_99[i0][i1][i2].size() == 1){
 				chi2_99->GetEntry(s4Vec_99[i0][i1][i2][0]);
 				fillProcessNT(m4,ue4,um4,m5,ue5,um5,0,0,0,phi45,0,0,99);
-				std::cout << "s4vec: " << m4 << " " << ue4 << " " << um4 << " " << m5 << " " << ue5 << " " << um5 << " " << phi45 << std::endl;
 			}
 			// Otherwise, we go deeper
 			else if(s4Vec_99[i0][i1][i2].size() > 1){
@@ -207,13 +205,11 @@ int ntGridder(){
 					if(s5Vec_99[i3][i4][i5].size() == 1){
 						chi2_99->GetEntry(s5Vec_99[i3][i4][i5][0]);
 						fillProcessNT(m4,ue4,um4,m5,ue5,um5,0,0,0,phi45,0,0,99);
-						std::cout << "s5vec: " << m4 << " " << ue4 << " " << um4 << " " << m5 << " " << ue5 << " " << um5 << " " << phi45 << std::endl;
-
 					}
 					// Deeper!
 					else if(s5Vec_99[i3][i4][i5].size() > 1){
 						// Fill nexter vector
-						phiVec_99.resize(100,vector<int>(0));
+						phiVec_99.clear(); phiVec_99.resize(100,vector<int>(0));
 						for(int i = 0; i < s5Vec_99[i3][i4][i5].size(); i++){
 							chi2_99->GetEntry(s5Vec_99[i3][i4][i5][i]);
 							int _phi45 = floor(phi45/phistep);
@@ -225,7 +221,6 @@ int ntGridder(){
 							if(phiVec_99[j].size() != 0){
 								chi2_99->GetEntry(phiVec_99[j][0]);
 								fillProcessNT(m4,ue4,um4,m5,ue5,um5,0,0,0,phi45,0,0,99);
-								std::cout << "phi: " << m4 << " " << ue4 << " " << um4 << " " << m5 << " " << ue5 << " " << um5 << " " << phi45 << std::endl;
 							}
 						}
 					}
@@ -322,7 +317,7 @@ int ntGridder(){
 		}
 
 		// Now, let's scan it.
-		for(int i0 = i0min; i0 < i0max; i0++) for(int i1 = i1min; i1 < i1max; i1++) for(int i2 = i2min; i2 < i2max; i2++){
+		for(int i0 = i0min; i0 <= i0max; i0++) for(int i1 = i1min; i1 <= i1max; i1++) for(int i2 = i2min; i2 <= i2max; i2++){
 			std::cout << float(10000*i0 + 100*i1 + i2)/float(1000000) * 100 << "%% \r";
 			// If we have only one entry with these coordinates, fucking great! Store that away!
 			if(s4Vec_99[i0][i1][i2].size() == 1){
