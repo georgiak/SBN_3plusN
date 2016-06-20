@@ -58,8 +58,8 @@ int globInit(){
 
     using namespace std;
 
-	jobOptLoc = ""; //"/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
-	dataLoc = ""; //"/Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
+	jobOptLoc = "";//"/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
+	dataLoc = "";//"/Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
 
     // read jobOption file and fill variables
     jobOpt();
@@ -184,11 +184,18 @@ int globChisq(int ind){
 			//nuModel.Ue[2] = .11;	nuModel.Um[2] = .14;	nuModel.mNu[2] = sqrt(22);	nuModel.phi[1] = .28*TMath::Pi(); nuModel.phi[2] = 1.4*TMath::Pi();
 
 			//nuModel.zero();
-			//nuModel.Ue[0] = .12; 	nuModel.Um[0] = .013;	nuModel.mNu[0] = sqrt(.92);
-			//nuModel.Ue[1] = .16;	nuModel.Um[1] = .019; 	nuModel.mNu[1] = sqrt(7.2); 	nuModel.phi[0] = 1.6*TMath::Pi();
-			//nuModel.Ue[2] = .069;	nuModel.Um[2] = .15;	nuModel.mNu[2] = sqrt(18);	nuModel.phi[1] = .28*TMath::Pi(); nuModel.phi[2] = 1.4*TMath::Pi();
+			//nuModel.Ue[0] = .15; 	nuModel.Um[0] = .17;	nuModel.mNu[0] = sqrt(.92);
+			//nuModel.Ue[1] = .069;	nuModel.Um[1] = .16; 	nuModel.mNu[1] = sqrt(17); 	nuModel.phi[0] = 1.8*TMath::Pi();
 
 			// Now, let's actually start calculating the chisq
+			if(ATMOSPHERICProcess == 1){
+			    chisqDetector = getChi2Atm(nuModel, atmPack);
+			    if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+
+			    chisqTotal.chi2 += chisqDetector.chi2;
+				if(debug) std::cout << "ATM: " << chisqDetector.chi2 << std::endl;
+			}
+			if(chisqTotal.chi2 > chi2Cut) continue;
 			if(MINOSProcess == 1){
                 chisqDetector = getChi2Minos(nuModel, minosPack);
                 if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
