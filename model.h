@@ -122,6 +122,8 @@ class SBN_spectrum {
 	int fill_app_sample(SBN_detector *); 	//these are really the ones that are used 
 	int fill_dis_sample(SBN_detector *);
 	int fill_intrin_sample(SBN_detector *);
+	
+	int neutral_test(SBN_detector *);
 
 	std::vector<double > add_SBN_spectrum(SBN_spectrum other);
 

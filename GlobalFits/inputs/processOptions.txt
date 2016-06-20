@@ -1,9 +1,9 @@
 steriles=1
 nRuns=200
-dataset=lsnd
-location=output_lsnd_31
+dataset=all
+location=output_all_31
 output=ntuples
 type(0-app,1-numudis,2-nuedis)=0
 raster=0
 discretized=1
-diag=1
+diag=0

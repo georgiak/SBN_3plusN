@@ -3158,8 +3158,8 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 	TH1D  h_nue_intrin_sinsq=*((TH1D*)f.Get("nue_intrin_sinsq")); 
 	TH1D  h_nue_muon_sinsq=*((TH1D*)f.Get("nue_muon_sinsq"));
 
-	int which_mode = 0;
-
+	int which_mode = APP_ONLY;
+	
 	double prob_mumu = 0;
 	double prob_ee = 0;
 	double prob_mue = 0;
@@ -3483,6 +3483,251 @@ double SBN_spectrum::prob_unit(SBN_detector * detector){
 
 f.Close();
 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+int SBN_spectrum::neutral_test(SBN_detector * detector )
+{
+
+
+//	double DMSQ = workingModel.dm41Sq;
+//	double S2TH = 1.0-4*pow(workingModel.Um[0],2)*(1- pow(workingModel.Um[0],2));
+
+
+	TFile *fnudetector = new TFile(detector->fname);
+	TTree *tnudetector = (TTree*)fnudetector->Get("mainTree");
+
+
+	TH1D H1neut_obs("neut_obs","Observable vertex  energy",N_m_bins,mu_bins);
+
+	TH1D H1neut_all("neut_all","All energy",N_m_bins,mu_bins);
+	TH1D H1neut_1pi0("neut_1pi0","1pi0 energy",N_m_bins,mu_bins);
+
+
+	TRandom *rangen  = new TRandom();//initialize random generator	
+ 	rangen->SetSeed(839231);	
+	
+	int Nnue = 0;
+	int Nnuebar=0;
+	int Nnumu = 0;
+	int Nnumubar=0;
+	int Nsignal = 0;
+
+	int NpOBS = 0;
+	int NpipOBS = 0;
+	int NpimOBS = 0;
+
+	double POTscaling      = detector->potmodifier*66.0*detector->proposal_modifier; 
+	double fiducialscaling = detector->f_mass/detector->mass; 
+
+	double Eff_em = 0.8*POTscaling*fiducialscaling;
+//	double Eff_ph = 0.06*POTscaling*fiducialscaling*0.192;
+//	double Eff_pi = 0.06*POTscaling*fiducialscaling*(1-0.9137);
+
+	int pol = 0;
+	double Enu;
+	double El_true;
+	double El_smear;
+	int PDGnu;
+	double weight;
+	int Np;
+	int Npip;
+	int Npim;
+	int CC;
+	int NC;
+	int Nph;
+	int Npi0dph;
+	int No;
+
+	int Ntest=0;
+
+	double posX,posY,posZ;
+
+	int Ncontained1 = 0;
+	int Ncontained2 = 0;
+
+
+	double Ep[20];
+	double Epip[5];
+	double Epim[5];
+	double pdgo[12];
+	double Eo[5];
+	double Eph[5];
+	double Epi0dph[10];
+	double pl[3];
+
+	tnudetector->SetBranchAddress("Enu",&Enu);
+	tnudetector->SetBranchAddress("El",&El_true);
+	tnudetector->SetBranchAddress("PDGnu",&PDGnu);
+	tnudetector->SetBranchAddress("weight",&weight);
+	tnudetector->SetBranchAddress("Np",&Np);
+	tnudetector->SetBranchAddress("Npip",&Npip);
+	tnudetector->SetBranchAddress("Npim",&Npim);
+	tnudetector->SetBranchAddress("Nph",&Nph);
+	tnudetector->SetBranchAddress("No",&No);
+	tnudetector->SetBranchAddress("Npi0dph",&Npi0dph);
+
+	tnudetector->SetBranchAddress("CC",&CC);
+	tnudetector->SetBranchAddress("NC",&NC);
+	tnudetector->SetBranchAddress("Ep",Ep);
+	tnudetector->SetBranchAddress("Eph",Eph);
+	tnudetector->SetBranchAddress("Epim",Epim);
+	tnudetector->SetBranchAddress("Epip",Epip);
+	tnudetector->SetBranchAddress("Epi0dph",Epi0dph);
+	tnudetector->SetBranchAddress("Eo",Eo);
+	tnudetector->SetBranchAddress("pdgo",pdgo);
+	tnudetector->SetBranchAddress("pl",pl);
+
+	double vertex_pos[3] = {0,0,0};
+
+	for(int i=0; i < tnudetector->GetEntries(); i++)
+	{
+	
+	if(i%1000000==0){std::cout<<"neutral-NC-Det: "<<detector->identifier<<" #: "<<i<<std::endl;}
+
+		tnudetector->GetEntry(i);	
+		detector->random_pos(rangen,vertex_pos); 
+
+
+		//Is there a visible vertex and how much energy is there!
+			
+		
+		double Enu_reco = 0;
+		double Ehad=0;
+		bool vis_vertex = false;
+
+
+		if(Np!=0){
+			double p_kin_true = 0;
+			double p_kin_smeared = 0;
+
+			for(int j=0; j<Np; j++)
+			{
+				p_kin_true = Ep[j]-MPROTON;
+				p_kin_smeared = smear_energy(p_kin_true,psmear,rangen);
+				if(p_kin_smeared>p_thresh)
+				{
+					Ehad += p_kin_smeared;
+				}
+			}
+		} //end proton addition 
+
+		if(Npip!=0){
+			double pip_kin_true = 0;
+			double pip_kin_smeared = 0;
+			for(int j=0; j<Npip;j++)
+			{
+				pip_kin_true = Epip[j]-MPION;
+				pip_kin_smeared = smear_energy(pip_kin_true,pismear,rangen);
+				if(pip_kin_smeared>pip_thresh)
+				{
+					Ehad += pip_kin_smeared+MPION;
+				}
+						
+
+			} 
+		}//end pi+addition
+
+		if(Npim!=0){
+			double pim_kin_true = 0;
+			double pim_kin_smeared = 0;
+			for(int j=0; j<Npim;j++)
+			{
+				pim_kin_true = Epim[j]-MPION;
+				pim_kin_smeared = smear_energy(pim_kin_true,pismear,rangen);
+				if(pim_kin_smeared > pim_thresh)
+				{
+					Ehad += pim_kin_smeared+MPION;
+				}
+				
+			} 
+		}//end piminus addition
+
+		if(Nph!=0){
+			double E_ph_smeared = 0;
+			for(int j=0; j<Nph;j++)
+			{
+				E_ph_smeared = smear_energy(E_ph_smeared,EMsmear,rangen);
+				Ehad += E_ph_smeared;
+				
+			} 
+		}//end photon addition
+
+
+
+		if(No!=0){
+					
+			for(int j=0; j<No;j++)
+			{
+				if(pdgo[j]==321 || pdgo[j]==-321 || pdgo[j]==311){
+					//std::cout<<pdgo[j]<<std::endl;	
+					Ehad += smear_energy(Eo[j]-MKAON,pismear,rangen)+MKAON;
+				}
+
+				 if( pdgo[j]==3222 || pdgo[j]==3112 || pdgo[j]==3122){	
+
+					Ehad += smear_energy(Eo[j]-MSIGMA,pismear,rangen)+MSIGMA;
+				 }
+			} 
+		}//end Other 
+
+		//Check if we actually have a "visibe vertex"
+		if(Ehad >= vertex_thresh)
+		{
+			vis_vertex = true;
+		}
+		
+						
+		/******************************************************************	
+		 * CC Intrinsic Nu_mu
+		 * ****************************************************************/		
+				
+			
+		if(NC == 1 )//&& Nph==0 && Npi0dph==0)
+
+		{
+			El_smear = smear_energy(El_true, MUsmear, rangen);
+
+			H1neut_all.Fill(Ehad, weight);	
+			
+			if(vis_vertex){
+				H1neut_obs.Fill(Ehad, weight);
+		
+				if(Npi0dph ==2){
+					H1neut_1pi0.Fill(Ehad, weight);
+				}
+		
+			}
+				
+
+		}//end nu_mu cc cut
+/************************************************************************************************
+ *				NC Pi_pm mimicing
+ * **********************************************************************************************/		
+	} //end event loop
+	char namei[200];
+	sprintf(namei, "neutral/neutral_%s.root",detector->name);
+
+	TFile f(namei,"UPDATE");
+
+	H1neut_obs.Write();	
+	H1neut_all.Write();	
+	H1neut_1pi0.Write();
+	f.Close();
+
+fnudetector->Close();
 }
 
 

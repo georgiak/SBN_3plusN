@@ -362,11 +362,57 @@ if(unit_flag){
 
 
 
-
-
-
-
 if(fraction_flag)
+{
+	std::cout<<"filename"<<std::endl;
+	char filename[200];
+	if(num_ster == 1){
+//		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
+	        sprintf(filename,"GlobalFits/ntuples/nt_31_all.root");	
+	} else if (num_ster == 2){
+
+		//sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
+		sprintf(filename,"GlobalFits/ntuples/nt_32_all.root"); 
+	} else if(num_ster == 3){
+		sprintf(filename,"GlobalFits/ntuples/nt_33_all_processed.root"); 
+
+	}
+
+
+	std::cout<<"read in`"<<std::endl;
+	//std::cout<<filename<<std::endl;
+	TFile *fm= new TFile(filename);
+//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
+	TTree *chi2_90 =(TTree*)fm->Get("chi2_99");
+	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
+	 Float_t m4 = 0;
+         chi2_90->SetBranchAddress("chi2",&chi2);
+         chi2_90->SetBranchAddress("m4",&m4);
+         chi2_90->SetBranchAddress("ue4",&ue4);
+         chi2_90->SetBranchAddress("um4",&um4);
+         chi2_90->SetBranchAddress("m5",&m5);
+         chi2_90->SetBranchAddress("ue5",&ue5);
+         chi2_90->SetBranchAddress("um5",&um5);
+         chi2_90->SetBranchAddress("m6",&m6);
+         chi2_90->SetBranchAddress("ue6",&ue6);
+         chi2_90->SetBranchAddress("um6",&um6);
+         chi2_90->SetBranchAddress("phi45",&phi45);
+         chi2_90->SetBranchAddress("phi46",&phi46);
+         chi2_90->SetBranchAddress("phi56",&phi56);
+	 int nentries = chi2_90->GetEntries();
+	 for (int i=0;i<nentries;i++) {
+	        chi2_90->GetEntry(i);
+
+		double sins2 = 4*ue4*ue4*um4*um4;
+		//std::cout<<m4<<" "<<sins2<<std::endl;
+		std::cout<<m4<<" "<<m5<<" "<<ue4<<" "<<ue5<<" "<<um4<<" "<<um5<<" "<<phi45<<" "<<chi2<<std::endl;
+
+	}
+}
+
+
+
+if(fraction_flag&& false)
 {
 	SBN_detector * ICARUS = new SBN_detector(2);
  	SBN_detector * SBND = new SBN_detector(0);
@@ -454,7 +500,8 @@ if(fraction_flag)
 
 	char filename[200];
 	if(num_ster == 1){
-		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root"); 
+	//	sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
+	        sprintf(filename,"GlobalFits/ntuples/nt_31_brute.root");	
 	} else if (num_ster == 2){
 		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
 
@@ -473,6 +520,7 @@ if(fraction_flag)
 
 	//std::cout<<filename<<std::endl;
 	TFile *fm= new TFile(filename);
+//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
 	 Float_t m4 = 0;
@@ -600,7 +648,8 @@ if(fraction_flag&& false)
 
 	char filename[200];
 	if(num_ster == 1){
-		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root"); 
+		//sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root"); 
+ 	        sprintf(filename,"GlobalFits/ntuples/nt_31_brute.root");	
 	} else if (num_ster == 2){
 		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
 
@@ -619,7 +668,8 @@ if(fraction_flag&& false)
 
 	//std::cout<<filename<<std::endl;
 	TFile *fm= new TFile(filename);
-	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
+	//TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
+	TTree *chi2_90 =(TTree*)fm->Get("chi2_99");
 	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
 	 Float_t m4 = 0;
          chi2_90->SetBranchAddress("chi2",&chi2);
@@ -1164,7 +1214,7 @@ if(sens_flag)
 	bool usedetsys = true;
 
 	if(dis_flag && !app_flag){
-		usedetsys=false;
+		//usedetsys=false;
 	}
 
 	neutrinoModel nullModel;
@@ -1182,7 +1232,50 @@ if(sens_flag)
 	bkgspec.sbnd_e_cosmo[0] = 9  ;
 	bkgspec.uboone_e_cosmo[0]= 11;
 	bkgspec.icarus_e_cosmo[0]= 10;
-	
+
+			if(true){
+				double modd= 0.5;	
+				for(int i = 0; i < N_e_bins; i++){
+
+				double pot =1e-12;	
+					bkgspec.sbnd_e[i]= bkgspec.sbnd_e[i]*pot;
+					bkgspec.sbnd_e_pho[i]= bkgspec.sbnd_e_pho[i]*pot;
+					bkgspec.sbnd_e_dirt[i]= bkgspec.sbnd_e_dirt[i]*pot;
+					bkgspec.sbnd_e_mu[i]= bkgspec.sbnd_e_mu[i]*pot;
+					bkgspec.sbnd_e_cosmo[i]=pot;
+					bkgspec.sbnd_f[i]= bkgspec.sbnd_f[i]*pot;
+					bkgspec.sbnd_f_bar[i]= bkgspec.sbnd_f_bar[i]*pot;
+		
+					bkgspec.icarus_e[i]= bkgspec.icarus_e[i]*pot;
+					bkgspec.icarus_e_pho[i]= bkgspec.icarus_e_pho[i]*pot;
+					bkgspec.icarus_e_dirt[i]= bkgspec.icarus_e_dirt[i]*pot;
+					bkgspec.icarus_e_mu[i]= bkgspec.icarus_e_mu[i]*pot;
+					bkgspec.icarus_e_cosmo[i]=pot;
+					bkgspec.icarus_f[i]= bkgspec.icarus_f[i]*pot;
+					bkgspec.icarus_f_bar[i]= bkgspec.icarus_f_bar[i]*pot;
+							
+					bkgspec.uboone_e[i]= bkgspec.uboone_e[i]*modd;
+					bkgspec.uboone_e_pho[i]= bkgspec.uboone_e_pho[i]*modd;
+					bkgspec.uboone_e_dirt[i]= bkgspec.uboone_e_dirt[i]*modd;
+					bkgspec.uboone_e_mu[i]= bkgspec.uboone_e_mu[i]*modd;
+					bkgspec.uboone_f[i]= bkgspec.uboone_f[i]*modd;
+					bkgspec.uboone_f_bar[i]= bkgspec.uboone_f_bar[i]*modd;
+
+				}
+			
+				for(int i =0; i< N_m_bins; i++){
+					double pot = 1e-12;
+					bkgspec.sbnd_m[i]= bkgspec.sbnd_m[i]*pot;
+					bkgspec.sbnd_m_pion[i]= bkgspec.sbnd_m_pion[i]*pot;
+
+					bkgspec.uboone_m[i]= bkgspec.uboone_m[i]*modd;
+					bkgspec.uboone_m_pion[i]= bkgspec.uboone_m_pion[i]*modd;
+
+					bkgspec.icarus_m[i]= bkgspec.icarus_m[i]*pot;
+					bkgspec.icarus_m_pion[i]= bkgspec.icarus_m_pion[i]*pot;
+
+				}
+			}
 
 	std::vector<double > back6 = bkgspec.get_sixvector();
 	std::vector<double > back9 = bkgspec.get_ninevector();
@@ -1225,7 +1318,6 @@ if(sens_flag)
 		} else {
 			Mtotal = Msys+Mstat;
 		}
-		//Mtotal = Mstat;
 
 		TMatrixT<double > Mctotal(contMsize,contMsize);
 		contract_signal2(Mtotal,Mctotal);
@@ -1259,9 +1351,9 @@ if(sens_flag)
 
 				SBN_spectrum AppSpec(appearanceModel);
 	
-				AppSpec.load_freq(ICARUS,0);//0 is silly app flag (get rid of this)
-				AppSpec.load_freq(SBND,0);
-				AppSpec.load_freq(UBOONE,0);
+				AppSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+				AppSpec.load_freq_3p3(SBND);
+				AppSpec.load_freq_3p3(UBOONE);
 
 					
 				AppSpec.sbnd_e_dirt[1]=44*1/5;
@@ -1273,7 +1365,49 @@ if(sens_flag)
 				AppSpec.uboone_e_cosmo[0]= 11;
 				AppSpec.icarus_e_cosmo[0]= 10;
 
+				for(int i = 0; i < N_e_bins; i++){
+				double modd = 0.5;
+				double pot =1e-12;	
+					AppSpec.sbnd_e[i]= AppSpec.sbnd_e[i]*pot;
+					AppSpec.sbnd_e_pho[i]= AppSpec.sbnd_e_pho[i]*pot;
+					AppSpec.sbnd_e_dirt[i]= AppSpec.sbnd_e_dirt[i]*pot;
+					AppSpec.sbnd_e_mu[i]= AppSpec.sbnd_e_mu[i]*pot;
+					AppSpec.sbnd_e_cosmo[i]=pot;
+					AppSpec.sbnd_f[i]= AppSpec.sbnd_f[i]*pot;
+					AppSpec.sbnd_f_bar[i]= AppSpec.sbnd_f_bar[i]*pot;
+		
+					AppSpec.icarus_e[i]= AppSpec.icarus_e[i]*pot;
+					AppSpec.icarus_e_pho[i]= AppSpec.icarus_e_pho[i]*pot;
+					AppSpec.icarus_e_dirt[i]= AppSpec.icarus_e_dirt[i]*pot;
+					AppSpec.icarus_e_mu[i]= AppSpec.icarus_e_mu[i]*pot;
+					AppSpec.icarus_e_cosmo[i]=pot;
+					AppSpec.icarus_f[i]= AppSpec.icarus_f[i]*pot;
+					AppSpec.icarus_f_bar[i]= AppSpec.icarus_f_bar[i]*pot;
+
+	
+					AppSpec.uboone_e[i]= AppSpec.uboone_e[i]*modd;
+					AppSpec.uboone_e_pho[i]= AppSpec.uboone_e_pho[i]*modd;
+					AppSpec.uboone_e_dirt[i]= AppSpec.uboone_e_dirt[i]*modd;
+					AppSpec.uboone_e_mu[i]= AppSpec.uboone_e_mu[i]*modd;
+					AppSpec.uboone_f[i]= AppSpec.uboone_f[i]*modd;
+					AppSpec.uboone_f_bar[i]= AppSpec.uboone_f_bar[i]*modd;
+
+								
+				}
 			
+				for(int i =0; i< N_m_bins; i++){
+					double pot = 1e-12;
+				double modd = 0.5;
+					AppSpec.sbnd_m[i]= AppSpec.sbnd_m[i]*pot;
+					AppSpec.sbnd_m_pion[i]= AppSpec.sbnd_m_pion[i]*pot;
+
+					AppSpec.uboone_m[i]= AppSpec.uboone_m[i]*modd;
+					AppSpec.uboone_m_pion[i]= AppSpec.uboone_m_pion[i]*modd;
+
+					AppSpec.icarus_m[i]= AppSpec.icarus_m[i]*pot;
+					AppSpec.icarus_m_pion[i]= AppSpec.icarus_m_pion[i]*pot;
+
+				}
 
 
 				std::vector<double > pred6 = AppSpec.get_sixvector();
@@ -1307,7 +1441,7 @@ if(sens_flag)
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						chi2 += mod*(back6[i]-pred6[i])*McI(i,j)*(back6[j]-pred6[j]);
+						chi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
 					}
 				}
 
@@ -1319,22 +1453,27 @@ if(sens_flag)
 		}//end mass run
 	} //end 3p1 APPearance only sensitivity analysis
 
-	if(sens_num == 1 && dis_flag && dis_which==1)
+	if(sens_num == 1 && dis_flag && dis_which == 1)
 	{
+		std::cout<<"Begining  N=1, muon dis only"<<std::endl;
 		for(double m = -2.00; m <=2.04; m=m+0.04){
-			for(int i = 0; i< 333; i++){
+			for(int i = 0; i< 300; i++){
 
 				double umi = rangen->Uniform(-0.14,-2.0);
-				neutrinoModel disappearanceModel(sqrt(pow(10,m)), 0.0,pow(10,umi));
+				neutrinoModel disappearanceModel(sqrt(pow(10,m)), 0.0, pow(10,umi));
 
 				disappearanceModel.dm41Sq = pow(10,m);
 
-
 				SBN_spectrum DisSpec(disappearanceModel);
 				
-				DisSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				DisSpec.load_freq_3p3(UBOONE);				
+				DisSpec.load_freq_3p3(ICARUS);
 				DisSpec.load_freq_3p3(SBND);
-				DisSpec.load_freq_3p3(UBOONE);
+				
+	
+			//	DisSpec.load_bkg(ICARUS);
+			//	DisSpec.load_bkg(SBND);
+
 
 				DisSpec.sbnd_e_dirt[0] = 44*4/5  ;
 				DisSpec.sbnd_e_dirt[1]=44*1/5;
@@ -1346,9 +1485,50 @@ if(sens_flag)
 				DisSpec.uboone_e_cosmo[0]= 11;
 				DisSpec.icarus_e_cosmo[0]= 10;
 
+				for(int i = 0; i < N_e_bins; i++){
+				double modd = 0.5;
+				double pot =1e-12;	
+					DisSpec.sbnd_e[i]= DisSpec.sbnd_e[i]*pot;
+					DisSpec.sbnd_e_pho[i]= DisSpec.sbnd_e_pho[i]*pot;
+					DisSpec.sbnd_e_dirt[i]= DisSpec.sbnd_e_dirt[i]*pot;
+					DisSpec.sbnd_e_mu[i]= DisSpec.sbnd_e_mu[i]*pot;
+					DisSpec.sbnd_e_cosmo[i]=pot;
+					DisSpec.sbnd_f[i]= DisSpec.sbnd_f[i]*pot;
+					DisSpec.sbnd_f_bar[i]= DisSpec.sbnd_f_bar[i]*pot;
+		
+					DisSpec.icarus_e[i]= DisSpec.icarus_e[i]*pot;
+					DisSpec.icarus_e_pho[i]= DisSpec.icarus_e_pho[i]*pot;
+					DisSpec.icarus_e_dirt[i]= DisSpec.icarus_e_dirt[i]*pot;
+					DisSpec.icarus_e_mu[i]= DisSpec.icarus_e_mu[i]*pot;
+					DisSpec.icarus_e_cosmo[i]=pot;
+					DisSpec.icarus_f[i]= DisSpec.icarus_f[i]*pot;
+					DisSpec.icarus_f_bar[i]= DisSpec.icarus_f_bar[i]*pot;
 
+	
+					DisSpec.uboone_e[i]= DisSpec.uboone_e[i]*modd;
+					DisSpec.uboone_e_pho[i]= DisSpec.uboone_e_pho[i]*modd;
+					DisSpec.uboone_e_dirt[i]= DisSpec.uboone_e_dirt[i]*modd;
+					DisSpec.uboone_e_mu[i]= DisSpec.uboone_e_mu[i]*modd;
+					DisSpec.uboone_f[i]= DisSpec.uboone_f[i]*modd;
+					DisSpec.uboone_f_bar[i]= DisSpec.uboone_f_bar[i]*modd;
 
+								
+				}
 			
+				for(int i =0; i< N_m_bins; i++){
+					double pot = 1e-12;
+				double modd = 0.5;
+					DisSpec.sbnd_m[i]= DisSpec.sbnd_m[i]*pot;
+					DisSpec.sbnd_m_pion[i]= DisSpec.sbnd_m_pion[i]*pot;
+
+					DisSpec.uboone_m[i]= DisSpec.uboone_m[i]*modd;
+					DisSpec.uboone_m_pion[i]= DisSpec.uboone_m_pion[i]*modd;
+
+					DisSpec.icarus_m[i]= DisSpec.icarus_m[i]*pot;
+					DisSpec.icarus_m_pion[i]= DisSpec.icarus_m_pion[i]*pot;
+
+				}
+
 
 				std::vector<double > pred = DisSpec.get_vector();
 				std::vector<double > pred6= DisSpec.get_sixvector();
@@ -1370,14 +1550,14 @@ if(sens_flag)
 
 				int whatsize = McI.GetNcols();
 
-				double mod = 1.0;
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						chi2 += mod*(back6[i]-pred6[i])*McI(i,j)*(back6[j]-pred6[j]);
+						chi2 += (back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
 					}
 				}
 
+			
 
 				double sin22mm = 4.0*(1-pow(disappearanceModel.Um[0],2.0))*pow(disappearanceModel.Um[0],2.0);
 
@@ -1435,7 +1615,7 @@ if(sens_flag)
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						chi2 += mod*(back6[i]-pred6[i])*McI(i,j)*(back6[j]-pred6[j]);
+						chi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
 					}
 				}
 
@@ -1849,9 +2029,144 @@ if(sens_num == 2&& false)   // This is the m41 m51 fixed phi case for best fit
 //		std::cout<<"end all"<<std::endl;
 	} //end 3p2 sensitivity both analysis
 
+if(sens_num == 2)   // Fix everything global, vary phi
+	{
+	std::cout<<"Begining N=2, fix all vary phi "<<std::endl;
+
+
+
+		//std::cout<<"Initialising output files"<<std::endl;
+	//	TFile outputFile("hmm.root","RECREATE");
+	//	outputFile.cd();
+	//	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
+	//	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
+
+                           /*     Double_t nUE4;
+                                  Double_t nUM4;
+                                  Double_t nDM4;
+    				  Double_t nCHI;	
+
+                                  ntuple->Branch("logUe4",&nUE4);
+                                  ntuple->Branch("logUm4",&nUM4);
+                                  ntuple->Branch("logDm4",&nDM4);
+                                  ntuple->Branch("Chi",&nCHI);*/
+     
+
+			//for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
+			//for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
+			
+
+				//neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//bothModel.dm41Sq = pow(10,m);
+			
+				double minPhi = 0;
+				double minChi = 10000;	
+				for(double iphi = 0; iphi< 2; iphi+=0.01){
+				//double iphi = 1.8;
+			
+				
+				//0.69, 1.3
+				double imn[3] = {sqrt(pow(10,-0.16)),sqrt(pow(10,0.12)),0.0};
+				double iue[3] = {0.15,0.13,0};  // These are best fit!
+				double ium[3] = {0.069,0.16, 0.0};
+				//double iue[3] = {0.2,0.2,0};  // generic ones
+				//double ium[3] = {0.2,0.2,0.0};
+
+
+				double iph[3] = {iphi*3.14159, 0.0, 0.0};
+				
+				
+				neutrinoModel bothModel(imn,iue,ium,iph);
+				bothModel.numsterile =2;
+
+				double round54 = round(log10(fabs(bothModel.dm54Sq))/0.04)*0.04;
+
+				if(fabs(bothModel.dm54Sq) >= 100){ 
+				//	std::cout<<"skipping this one 1:"<<std::endl;
+						continue;
+				}
+				if(round54 > 2 ){ 
+				//	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
+						continue;
+				}
+
+//				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
+				SBN_spectrum BothSpec(bothModel);
+				
+				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(SBND);
+				BothSpec.load_freq_3p3(UBOONE);
+
+				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
+				BothSpec.sbnd_e_dirt[1]=44*1/5;
+				BothSpec.uboone_e_dirt[0]= 47*4/5;
+				BothSpec.uboone_e_dirt[1]=47*1/5;
+				BothSpec.icarus_e_dirt[0]= 67*4/5;
+				BothSpec.icarus_e_dirt[1]=67*1/5;
+				BothSpec.sbnd_e_cosmo[0] = 9 ;
+				BothSpec.uboone_e_cosmo[0]= 11;
+				BothSpec.icarus_e_cosmo[0]= 10;
+
+
+				std::vector<double > pred6 = BothSpec.get_sixvector();
+				std::vector<double > pred9 = BothSpec.get_ninevector();
+
+				
+				std::vector<double > pred = BothSpec.get_vector();
+			
+				if(pred6.size()!=Mctotal.GetNcols()){std::cout<<"ERROR"<<std::endl;}
+
 
 	
-if(sens_num == 2 )   // This is the m41 m51 margined phi case for best fit
+		
+				double invdet=0; // just to hold determinant
+				double chi2=0;
+		
+				//	bit o inverting, root tmatrix seems perfectly fast	
+				McI = Mctotal.Invert(&invdet);
+
+				//check for previous known bug!
+				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
+				{
+					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
+					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
+				}
+
+				//Calculate the answer, ie chi square! will functionise
+				// should be matrix_size_c for full app+dis
+
+				int whatsize = McI.GetNcols();
+
+				double mod = 1.0;
+
+				for(int i =0; i<whatsize; i++){
+					for(int j =0; j<whatsize; j++){
+						chi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
+					}
+				}
+			
+
+
+
+				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				/*nCHI = chi2;
+				nUM4 = bothModel.Um[0];
+				nUE4 = bothModel.Ue[0];
+				nDM4 = bothModel.dm41Sq;*/
+//				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
+				std::cout<<chi2<<" "<<iphi*3.14159<<std::endl;
+				//std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
+				} // end phi 
+		
+//		outputFile.cd();
+//		std::cout<<"write ntuple"<<std::endl;
+//		ntuple.Write();
+//	 	std::cout<<"close file"<<std::endl;
+  // 		outputFile.Close();
+//		std::cout<<"end all"<<std::endl;
+	} //end 3p2 sensitivity both analysis
+	
+if(sens_num == 2&& false )   // This is the m41 m51 margined phi case for best fit
 	{
 	std::cout<<"Begining N=2, Dm41 V Dm51: amrgin"<<std::endl;
 
@@ -2039,7 +2354,6 @@ if(sens_num == 2&& false)   // This is the m51 and phi plot for averaged else
 		
 				double iphi= rangen->Uniform(0,2);	
 				double um5 = rangen->Uniform(0.0,-4.0);
-
 				double ue5 = log10(sqrt( pow(10,sinsq)/(4.0*pow(pow(10,um5),2)) )  );
 
 				while( pow(10,ue5) > 1 ){
@@ -2496,7 +2810,13 @@ if(test_flag){
 
 	neutrinoModel nullModel;
 	SBN_spectrum bkgspec(nullModel);
-	
+
+	bkgspec.neutral_test(SBND);
+	bkgspec.neutral_test(SBND);
+	bkgspec.neutral_test(SBND);
+
+
+return 0;	
 	bkgspec.load_bkg(ICARUS);
 	bkgspec.load_bkg(SBND);
 	bkgspec.load_bkg(UBOONE);
