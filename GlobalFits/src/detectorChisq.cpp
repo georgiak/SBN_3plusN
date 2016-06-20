@@ -19,27 +19,6 @@ void myMinInit(){
 	gMinuit = new TMinuit(6);
 }
 
-chisqStruct getChi2Atm(neutrinoModel model, atmPackage pack){
-
-    chisqStruct result;
-    result.zero();
-
-    int dmuVecMaxDim = 101;
-    double dmu = 0;
-
-    ROOT::Math::Interpolator dif(dmuVecMaxDim);
-    dif.SetData(dmuVecMaxDim,pack.dmuVec,pack.dchi2Vec);
-
-    // First, let's find dmu such that dmu**2 - dmu + A = 0
-    double A = (1. - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2)) * (pow(model.Um[0],2) + pow(model.Um[1],2) + pow(model.Um[2],2)) + pow(model.Um[0]*model.Um[1],2) + pow(model.Um[0]*model.Um[2],2) + pow(model.Um[1]*model.Um[2],2);
-    dmu = (1 - sqrt(1. - 4*A))/2.;
-
-    // For this, everything has been figured out, so we just interpolate an array of chi2's to get our result as a function of dmu
-	//std::cout << pack.dmuVec[0] << " " << dmu << " " << pack.dmuVec[dm2VecMaxDim-1] << std::endl;
-	result.chi2 = dif.Eval(dmu);
-
-    return result;
-}
 chisqStruct getChi2Boone(neutrinoModel model, boonePackage pack, bool nubar){
 
     int nBins = 11;
