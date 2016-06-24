@@ -111,24 +111,27 @@ completion of the neutrino sector and the structure of BSM physics.
 However, not all models of neutrino masses lend themselves to experimental
 searches. For example, the canonical Type-I see-saw \cite{Minkowski:1977sc,
 GellMann:1980vs, Mohapatra:1979ia} suggests the existence of new particles with
-masses around $10^{12}$--$10^{15}$ GeV, well beyond the limits of what can
-directly produced using modern experimental techniques. A recurring feature in
-extensions of the SM which account for neutrino masses is the presence of
-sterile neutrinos, SM-gauge singlet fermions which couple to the active
-neutrinos via Yukawa interactions. After electoweak symmetry breaking, these
-particles are coupled bilinearly with the active neutrino fields, and we find a
-mixed mass basis, coupling the new neutrinos to gauge interactions. Although
-the mass and interaction scales for these particles span many orders of
-magnitude, they are plausibly observable in contemporary experiment.
+masses around $10^{12}$--$10^{15}$ GeV, well beyond the limits of what can be
+directly produced using modern experimental techniques. A recurring, although
+not necessary, feature among extensions of the SM which account for neutrino
+masses is the presence of sterile neutrinos, SM-gauge singlet fermions which
+couple to the active neutrinos via Yukawa interactions. After electoweak
+symmetry breaking, these particles are coupled bilinearly to the active
+neutrino fields, and upon diagonalisation, we find an extended neutrino sector
+including new states with mixing suppressed gauge interactions. A priori the
+mass and interaction scales for these particles can span many orders of
+magnitude, and they can be associated with wide range of distinct observable
+phenomena. Many of these are accessible to contemporary experiment
 %
-A well known example of such an effect is the short-baseline oscillation
-signatures associated with a sterile neutrino with a mass around the eV scale
-(see \eg\ \refref{Gariazzo:2015rra} for a recent review). This state would
-produce oscillatory effects over short distances and has been invoked to solve
-the anomalies found at some short-baseline oscillation experiments.  Explaining
-all anomalies in an economical fashion appears challenging in these models
-\cite{Kopp:2013vaa,Conrad:2012qt}, but more data would be needed before a
-decision can be made as to their role in the neutrino sector.
+One of the most well-known examples of such an effect is the short-baseline
+oscillation signatures associated with a sterile neutrino with a mass around
+the eV scale (see \eg\ \refref{Gariazzo:2015rra} for a recent review). This
+state would produce oscillatory effects over short distances and has been
+invoked to solve the anomalies found at some short-baseline oscillation
+experiments.  Explaining all anomalies in an economical fashion appears
+challenging in these models \cite{Kopp:2013vaa,Conrad:2012qt}, but more data
+would be needed before a decision can be made as to their role in the neutrino
+sector.
 
 In this article, we study a complementary paradigm to the oscillatory sterile
 neutrino models where sterile neutrinos exist, are light enough to be produced
@@ -157,7 +160,7 @@ backgrounds than predecessor technologies.
 %perform such a search.
 %
 Given the existing anomalies in short baseline neutrino experiments, including
-MiniBooNE which operated in the Booster beamline, the possibility of seeing an
+MiniBooNE which also operated in the BNB, the possibility of seeing an
 anomalous signature at the SBN complex should not be ignored. It is therefore
 timely to ask how we can extract the physical content of such an excess, and we
 present ways that decaying steriles can be identified or excluded.
@@ -217,20 +220,16 @@ bounds on steriles which mix with electron and muon neutrinos come from PS-191
 \cite{Bernardi:1985ny}, a beam dump experiment which ran at CERN from 1983 to
 1985. 
 %
-PS-191 was located 128~m downstream of the target and $2.3^\circ$ (40 mrads) off
-axis, obtained $0.86 \times 10^{19}$ POT over the course of its run-time, and
-had a total detector volume of $6\times3\times12 = 216 \text{m}^3$. We can
+PS-191 was located 128~m downstream of the target and $2.3^\circ$ (40 mrads)
+off axis, obtained $0.86 \times 10^{19}$ POT over the course of its run-time,
+and had a total detector volume of $6\times3\times12 = 216 \text{m}^3$. We can
 estimate the sensitivity of the three SBN detectors and how they will compare
 to PS-191 by estimating the experiments' \emph{exposure}, defined here as POT
 $\times$ Vol $\times$ $R^{-2}$. We compare the three facilities to PS-191 in
 \reftab{tab:exposure}, which shows that all detectors of the SBN complex expect
 a larger exposure, with SBND seeing the largest enhancement by a factor of
-around $40$. Although the majority of the sensitivity of the full SBN data set
-will come from SBND with its larger event rates, the data will be collected at
-different times --- \muboone\ has already begun to take data and will be able
-to search for such decays many years before SBND and ICARUS come online --- for
-this reason, we will consider all detector sites in our analysis.
-
+around $40$. 
+%
 In addition to the larger exposure, there is also an enhancement of the
 expected decay events at SBN due to its lower beam energy. The steriles at SBN
 are produced by the 8 GeV BNB beam and have a softer spectrum than those
@@ -239,23 +238,35 @@ discuss in more detail in \refsec{sec:decays}, the probability of sterile
 neutrino decay scales as $1/E_\nu$, and we would therefore expect the SBN
 facilities to see more events than PS-191 for equivalent exposures.
 
-Despite the advantage of scale at SBN, backgrounds could limit the improvement
-in performance when compared to PS-191. PS-191 was purposefully built to search
-for decays in flight of heavy fermions, and so as to minimize the background
-induced by active neutrino scattering, the total mass of the detector (and
-therefore number of target nuclei) was chosen to be small (approximately $20$
-ton).  The SBN detectors, whose primary goal is to study neutrino scattering,
-have significantly larger masses ($112$, $66.6$ and $476$ tons respectively).
-We therefore expect SBN to not only see a greater number of decay events than
-PS-191, but to also see a greater background. 
+Unfortunately, the increase in scale of the SBN detectors compared to PS-191
+also increases the backgrounds, which could limit the improvement in
+performance.  PS-191 was purposefully built to search for decays in flight of
+heavy fermions, and so as to minimize the background induced by active neutrino
+scattering, the total mass of the detector (and therefore number of target
+nuclei) was chosen to be small (approximately $20$ ton).  The SBN detectors,
+whose primary goal is to study neutrino scattering, have significantly larger
+masses ($112$, $66.6$ and $476$ tons respectively).  We therefore expect SBN to
+not only see a greater number of decay events than PS-191, but to also see a
+greater background. 
 %
-To understand the sensitivity of SBN to heavy sterile decay, the background
-rejection capabilities of LAr must be sufficiently well understood. We will
-discuss this in more detail in \refapp{sec:bg}.
+Therefore, to understand the sensitivity of SBN to heavy sterile decay, the
+background rejection capabilities of LAr must be sufficiently understood.
+Ultimately, the loss of sensitivity will depend on the skill of the analysis
+and the attainable degree of background suppression. We will discuss this in
+more detail in \refapp{sec:bg}.
+
+It is clear from \reftab{tab:exposure}, that SBND has the best comparison to
+PS-191.  Indeed, we will find that the majority of the sensitivity of the full
+SBN data set will come from SBND thanks to its higher event rates. However, due
+to the staged approach of SBN, data from \muboone\ (which is already collecting
+data) is expected well before that of SBND or Icarus (expected to begin
+operations in 2018). For this reason, we will consider all detector sites in
+our analysis, and comment on the comparison between signals at \muboone\ and at
+the full SBN facility.
 
 Our discussion starts in \refsec{sec:decays} with an overview of sterile
 neutrino decay in minimal and non-minimal models. We then present the details
-of our simulation in \refsec{sec:simulation} and show some illustrative event
+of our simulation in \refsec{sec:simulation} and show illustrative event
 spectra for some channels of interest. In \refsec{sec:sensitivity}, we show the
 exclusion contours that SBN could place on the model in the absence of a
 signal. We then study how the event timing information could be used to
@@ -284,7 +295,7 @@ dynamics at the lower energy scales of interest.} Much work has been done
 understanding the phenomenology of novel neutral states, which varies
 significantly over their large parameter spaces. 
 %
-Lagrangians similar to this have been useed in the literature for a wide range
+Lagrangians similar to this have been used in the literature for a wide range
 of purposes. If the new particle has a mass around $10^{15}$ GeV it could
 provide a natural way to suppress the size of active neutrino masses through
 the Type I or III see-saw mechanisms \cite{Minkowski:1977sc, GellMann:1980vs,
@@ -294,7 +305,7 @@ of these ideas is found in the so-called $\nu$MSM which simultaneously can
 explain dark matter, neutrino masses and successful baryogenesis
 \cite{Asaka:2005pn}. 
 %
-If the sterile gets lighter still, with masses at the eV scale or below, an
+If the sterile gets lighter still, with masses at the eV scale or below,
 important observable effects might exist in neutrino oscillation experiments.
 Indeed, such particles have been proposed to alleviate short-baseline
 oscillation anomalies; although, no minimal solution seems to provide a
@@ -326,8 +337,9 @@ novel heavy states \cite{Gorbunov:2007ak, Asaka:2012bb, Adams:2013qkq}.
 For the BNB, we can estimate the mass at which this decoupling occurs as
 follows: the decay pipe for BNB is around $50$~m in length, which is
 considerably shorter than the decay lengths of the mesons in the beam.
-Therefore this length defines the wavepacket width at production.  The relevant
-parameter is the decoherence parameter \cite{Akhmedov:2009rb, Hernandez:2011rs}
+Therefore we assume that this length defines the wavepacket width at
+production.  The relevant parameter is the decoherence parameter
+\cite{Akhmedov:2009rb, Hernandez:2011rs}
 %
 $\xi = 2\pi \frac{\lambda_\text{d}}{\lambda_\nu},$
 %
@@ -343,46 +355,6 @@ heavy enough to forbid oscillatory effects while light enough to be have
 significant production from the meson decays associated with a conventional
 neutrino beam. 
 
-The observable signature in this model is the direct decay-in-flight of the new
-fermion into SM particles. In the minimal \lagrangian\ in
-\refeq{eq:minimallag}, the only direct couplings to new sterile fermions are
-neutrino Higgs interactions. However, these couplings generate off-diagonal
-neutrino bilinears below the electroweak symmetry breaking scale, which leads
-to mass mixing between the $4$ (or more) flavours of neutrinos. This generates
-production and decay mechanisms of many kinds for the state $\ster$ through
-mass insertion on an active neutrino fermion line in a gauge mediated process.
-These decays have been studied extensively in the literature \cite{Atre:2009rg}
-and depend only on the size of neutrino mixing to various flavours,
-parameterized by the elements of an extended $4\times4$ PMNS matrix,
-%
-$U_{\alpha 4}$ for $\alpha \in \{e,\mu,\tau\}$, 
-%
-and the mass of the state $\ster$ itself. The branching ratios for these decays
-are shown in \reffig{fig:branchingratios} as a function of mass for the case if
-the new state mixes with all flavours of active neutrino equally $U_{e4}=U_{\mu
-4}=U_{\tau 4}$. The main effect of the flavour structure is to forbid certain
-decays which require certain elements of the mixing matrix. This, in turn,
-affects the possible production mechanisms for these particles. In a
-conventional neutrino beam, most neutrinos are derived from meson decay (or
-secondary $\mu^\pm$ decays). If $U_{e4}=U_{\mu 4}=0$, such decays with a mass
-insertion for the sterile neutrino are impossible for pions or kaons.For this
-reason, we will mainly focus on mixing with the first two generations. This
-parameter space will be probed by working at higher energies, where the neutral
-fermions can be produced by decays of charmed mesons such as $D^\pm$, by the
-SHiPS experiment \cite{Alekhin:2015byh, Anelli:2015pba}.   
-
-We focus on five decays in our study, which have the largest branching ratios
-of all channels with visible decay products over the mass range producable from
-pion and kaon decay, $m_{\ster} \lesssim m_K$.
-
-\begin{align*}
-\pi^\pm / K^\pm \longrightarrow \overbrace{l^\pm \ster}^{\text{via } U_{e4} \text{ or } U_{\mu 4}}  &\longrightarrow \left. l^\pm \pi^\mp, \qquad \right\} \text{via } U_{e4} \text{ or } U_{\mu 4}\\
-														    & \drsh \nu_\alpha e^+ e^-,\\[\jot]
-					   & \drsh \nu_\alpha \gamma, \hspace*{3em}
-		\smash{\left.\begin{array}{@{}c@{}}\\[\jot]\\[\jot]\\[\jot]\end{array}\right\}}\text{via } U_{e4}, U_{\mu 4} \text{  or  } U_{\tau 4}\\[\jot]
-						& \drsh \nu_\alpha \pi^0.
-\end{align*}
-
 \begin{figure}[t]
 %
 \centering
@@ -397,6 +369,57 @@ to the very small componant of heavier mesons in the secondary beam. This plot
 assumes equal mixing with all active flavours. Note that below 100 MeV, $\ster
 \rightarrow \nu_\alpha e^+ e^-$ is by far the most dominant visible decay.}
 %
+\end{figure}
+
+The observable signature in this model is the direct decay-in-flight of the new
+fermion into SM particles. In the minimal \lagrangian\ in
+\refeq{eq:minimallag}, the only direct couplings to new sterile fermions are
+neutrino--Higgs interactions. However, these couplings generate off-diagonal
+neutrino bilinears below the electroweak symmetry breaking scale, which leads
+to mass mixing between the $4$ (or more) flavours of neutrinos. This generates
+production and decay mechanisms of many kinds for the state $\ster$ through
+mass insertion on an active neutrino fermion line in a gauge mediated process.
+These decays have been studied extensively in the literature \cite{Atre:2009rg}
+and depend only on the size of neutrino mixing to various flavours,
+parameterized by the elements of an extended $4\times4$ PMNS matrix,
+%
+$U_{\alpha 4}$ for $\alpha \in \{e,\mu,\tau\}$, 
+%
+and the mass of the state $\ster$ itself. The branching ratios for these decays
+are shown in \reffig{fig:branchingratios} as a function of mass for the case if
+the new state mixes with all flavours of active neutrino equally $U_{e4}=U_{\mu
+4}=U_{\tau 4}$. Less democratic flavour patterns are of course possible and, in
+the extreme case, might lead to certain channels being forbidden or vastly
+suppressed. For example, without the coupling to the electron $U_{e4}=0$, the
+dominant channel for masses $m_{\pi^0}~\lesssim m_\ster \lesssim
+m_{\mu}+m_{\pi^\pm}$ will be into a neutral pion and a neutrino.
+%
+
+This suppression of couplings in turn affects the possible production
+mechanisms for the $\ster$ particles. In a conventional neutrino beam, most
+neutrinos are derived from meson decay (or secondary $\mu^\pm$ decays). If
+$U_{e4}=U_{\mu 4}=0$, such decays with a mass insertion for the sterile
+neutrino are impossible for pions or kaons. For this reason, we will mainly
+focus on mixing with the first two generations. This parameter space will be
+probed by working at higher energies, where the neutral fermions can be
+produced by decays of charmed mesons such as $D^\pm$, by the SHiPS experiment
+\cite{Alekhin:2015byh, Anelli:2015pba}.   
+%
+We focus on five decays in our study, which have the largest branching ratios
+of all channels with visible decay products over the mass range producable from
+pion and kaon decay, $m_{\ster} \lesssim m_K$. These are shown in \reffig{fig:decaydiagrams}.
+
+\begin{figure}[t]
+\begin{align*}
+\pi^\pm / K^\pm \longrightarrow \overbrace{l^\pm \ster}^{\text{via } U_{e4} \text{ or } U_{\mu 4}}  &\longrightarrow \left. l^\pm \pi^\mp, \qquad \right\} \text{via } U_{e4} \text{ or } U_{\mu 4}\\
+														    & \drsh \nu_\alpha e^+ e^-,\\[\jot]
+					   & \drsh \nu_\alpha \gamma, \hspace*{3em}
+		\smash{\left.\begin{array}{@{}c@{}}\\[\jot]\\[\jot]\\[\jot]\end{array}\right\}}\text{via } U_{e4}, U_{\mu 4} \text{  or  } U_{\tau 4}\\[\jot]
+						& \drsh \nu_\alpha \pi^0.
+\end{align*}
+
+\caption{\label{fig:decaydiagrams}The production and decay channels considered in this study.}
+
 \end{figure}
 
 \subsection{Minimal model}
