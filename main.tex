@@ -253,7 +253,7 @@ Therefore, to understand the sensitivity of SBN to heavy sterile decay, the
 background rejection capabilities of LAr must be sufficiently understood.
 Ultimately, the loss of sensitivity will depend on the skill of the analysis
 and the attainable degree of background suppression. We will discuss this in
-more detail in \refapp{sec:bg}.
+more detail in \refapp{app:bg}.
 
 It is clear from \reftab{tab:exposure}, that SBND has the best comparison to
 PS-191.  Indeed, we will find that the majority of the sensitivity of the full
@@ -437,14 +437,14 @@ will be into an electron-positron pair as can be seen from
 \reffig{fig:branchingratios}. This is true regardless of the flavour structure
 of the mixing matrix; although, the decay rate is not flavour-blind, due to the
 presence of additional CC diagrams relevant only for the eletron-sterile
-mixing. The decay rate  \marcom{PB}{I'm fairly sure this isn't the correct decay rate.} for this channel is given by 
+mixing. The decay rate for this channel is given by 
 %
-\[ \Gamma\left(\ster\to \nu_i e^+e^-\right) =
-\frac{G_\text{F}^2m_\ster^5}{96\pi^3}I_1\left(0,\frac{m_e}{m_\ster},\frac{
-m_e}{m_\ster}\right).  \]
+\begin{align*} \Gamma\left(\ster\to \nu_\alpha e^+e^-\right) =
+\frac{G_\text{F}^2m_\ster^5}{96\pi^3}\left|U_{\alpha 4}\right|^2&\left[\left( g_Lg_R + \delta_{\alpha e}g_R\right)I_1\left(0,\frac{m_e}{m_\ster}, \frac{
+m_e}{m_\ster}\right)\right.\\ 
+&\left.\qquad + \left(g_L^2 + g_R^2 + \delta_{\alpha e}(1+2g_L)\right)I_2\left(0,\frac{m_e}{m_\ster},\frac{m_e}{m_\ster}\right)\right],  \end{align*}
 %
-where $I_1(x,y,z)$ is in integral over phase space such that $I_1(0,0,0) = 1$.
-Further details of the decay rates used in this work are given in
+where $I_1(x,y,z)$ and $I_2(x,y,z)$ are integrals over phase space such that $I_1(0,0,0) = 1$ and $I_2(0,0,0) = 0$. Further details of the decay rates used in this work are given in
 \refapp{app:decayrates}.
 %
 Decays of this type would generally fall into two categories of events at a LAr
@@ -837,15 +837,15 @@ large number of sample events with a given energy. Each sterile event is
 associated with a decay of type $\text{c}$. We then apply experimental analysis
 cuts to the decays based on our assumptions about the detector's capabilities
 and backgrounds, to produce a spectrum representing the final event sample when
-considering events in the bucket timing window (See Appendix (\ref{sec:bg}) for
+considering events in the bucket timing window (See \refapp{app:bg} for
 details of the background analysis). The percentage of accepted events defines
 the weight factor for that energy. As such the full spectral shape of the
 signal is included in the rate analysis. As a consistency check of our
-methodology, we reproduce in Appendix (\ref{sec:ps191}) some the published
+methodology, we reproduce in \refapp{sec:ps191} some the published
 bounds of PS-191. 
 
 
-\subsection{Signal Spectra}
+\subsection{\label{sec:eventspectra}Event spectra}
 
 %%%% This figure shows two spectra WITHOUT CUTS (left) and WITH CUTS (right)
 \begin{figure}[t]
@@ -857,6 +857,20 @@ bounds of PS-191.
 \caption{\label{fig:spectrum_ee} Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode. The three distributions correspond to parent sterile masses given in the legend. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. On the left, the spectra have no analysis cuts or detector reconstruction effects applied, while on the right these are included, decreasing the discriminatory power of the lowest energy events.}
 %
 \end{figure}
+
+\begin{figure}[t]
+%
+\center
+%
+\Large
+
+\resizebox{0.8\columnwidth}{!}{\input{figures/spectrum_angles_ee.tex}}
+%
+\caption{\label{fig:spectrum_ee_angular} The angular spectrum of $e^+e^-$ events (defined as the direction of the sum of their individual momenta) in \muboone\ for a sterile neutrino mass of $m_N = 100$ MeV. The red histogram shows the true expected distribution, which we see is forward pointing. In blue we see the spectrum of events if we do not take into account the preferential decay rate for lower energy particles. We see that this probabilistic factor leads to a 
+significantly less forward event spectrum.}
+%
+\end{figure}
+
 
 %\begin{figure}[t]
 %%
@@ -880,20 +894,48 @@ bounds of PS-191.
 %
 %
 
-As mentioned before, models of decay-in-flight tend to produce spectra which
-are peaked at lower energies. This is due to the $1/E_\nu$ energy dependence
-from the decay width, as shown in 
+The differerential distributions from heavy sterile decay tend to produce
+distinctive low-energy distributions of events with an appreciably forward
+direction. 
+%
+The tendency towards low energies is predominately due to the higher decay
+rates of low-energy particles, which as can be seen in the previous section,
+leads to factors of $1/E_\nu$ in the event rate formula \refeq{eq:prob_dec1}.
+%
+The forward trajectory in inherited from the kinematics of a boosted object
+decaying in flight. However, this effect is mitigated by the preference for
+lower energy decays, meaning that lower energy steriles are more likely to
+decay, which are the least boosted objects.
 
-Although both models produce visible particles through sterile neutrino decay
-in flight, the additional neutral current cross-section required by the
-Gninenko-type sterile suppresses the lowest energy events. As can be seen in
-\reffig{fig:XXX}, we see a marked difference between these signals at SBND. If
-we factor in the cut-based analysis that was performed in the preceeding
-section, we see that the model in this paper does lose a significant number of
-events from the lowest bins. To separate these events cleanly, the analysis
-should be optimised to keep as many of these lowest energy events as possible. 
+We show an example of a distribution for electron-positron production in the
+left panel of \reffig{fig:spectrum_ee}. For the lowest masses that we consider,
+almost all events have energies below $0.5$ GeV, in this case illustrated by
+the red histogram. The distribution tends towards larger energies as the mass
+of the sterile increases, but for sterile masses less than the kaon mass, never
+produces significant numbers of events about $1$ GeV. As we can see in
+\reffig{fig:spectrum_ee}, the number of events in the lowest energy bin is
+strongly indicative of the mass of the parent particle, and therefore the
+lowest energy events will play a strong role in model discrimination. However,
+as can be seen in the right panel of \reffig{fig:spectrum_ee}, in the cut-based
+analysis which we outline in \refapp{app:bg} the lowest energy event
+distribution is significantly reduced due to poor efficiencies at low-energy in
+our cuts. Through optimisiation of this part of the analysis, we can expect
+improvements in the sensitivity to these models; however, this is beyond the
+scope of the present work. 
 
 
+
+%
+%Although both models produce visible particles through sterile neutrino decay
+%in flight, the additional neutral current cross-section required by the
+%Gninenko-type sterile suppresses the lowest energy events. As can be seen in
+%\reffig{fig:XXX}, we see a marked difference between these signals at SBND. If
+%we factor in the cut-based analysis that was performed in the preceeding
+%section, we see that the model in this paper does lose a significant number of
+%events from the lowest bins. To separate these events cleanly, the analysis
+%should be optimised to keep as many of these lowest energy events as possible. 
+%
+%
 
 \subsection{\label{sec:timing}Role of event timing}
 
@@ -974,8 +1016,7 @@ results of a backgroundless search, corresponding to the theoretical best
 achievable sensitivity at the facility, assuming perfect signal efficiency. The
 results of a simple cut based background analysis is also included as the upper
 colored line. This background analysis is not optimsed, however, and serves
-primarily to show the potential impact of backgrounds, see Appendix
-(\ref{sec:bg}) for details of the backgrounds included in this analysis. We
+primarily to show the potential impact of backgrounds, see \refapp{app:bg} for details of the backgrounds included in this analysis. We
 estimate the true achievable sensitivity in each channel would lie somewhere
 between these two curves (the solid shaded region). The analysis only considers
 the total number of events in each channel, with the 90\% C.L defined as $2.44$
@@ -1080,15 +1121,18 @@ ITN-INVISIBLES (Marie Curie Actions, PITN-GA-2011-289442).
 The dominant visible decay for sterile neutrinos with masses below the pion
 mass is into an electron positron pair. The total rate can be express as
 %
-\[ \Gamma\left(\ster\to \nu_i e^+e^-\right) =
-\frac{G_\text{F}^2m_\ster^5}{96\pi^3}I_1\left(0,\frac{m_e}{m_\ster},\frac{
-m_e}{m_\ster}\right).  \]
+\begin{align*} \Gamma\left(\ster\to \nu_\alpha e^+e^-\right) =
+\frac{G_\text{F}^2m_\ster^5}{96\pi^3}\left|U_{\alpha 4}\right|^2&\left[\left( g_Lg_R + \delta_{\alpha e}g_R\right)I_1\left(0,\frac{m_e}{m_\ster}, \frac{
+m_e}{m_\ster}\right)\right.\\ 
+&\left.\qquad + \left(g_L^2 + g_R^2 + \delta_{\alpha e}(1+2g_L)\right)I_2\left(0,\frac{m_e}{m_\ster},\frac{m_e}{m_\ster}\right)\right],  \end{align*}
 %
-where
+where $g_L = -1/2 + \sin^2\theta_\text{W}$, $g_R = \sin^2\theta_\text{W}$ and
 % 
-\begin{align} I_1(x,y,z) & =12 \int_{(x+y)^2}^{(1-z)^2}
+\begin{align*} I_1(x,y,z) & =12 \int_{(x+y)^2}^{(1-z)^2}
 \frac{ds}{s}(s-x^2-y^2)(1+z^2-s)\sqrt{\lambda(s,x^2,y^2)}\sqrt{\lambda(1,s,z^2)},\\
-\lambda(a,b,c) &= a^2+b^2+c^2 - 2ab-2bc-2ca.  \end{align}
+I_2(x,y,z)& =24yz\int_{(y+z)^2}^{(1-x)^2}\frac{ds}{s}\left(1+x^2-s\right)\sqrt{\lambda\left(s,y^2,z^2\right)}\sqrt{\lambda\left(s,y^2,z^2\right)},\\
+\lambda(a,b,c) &= a^2+b^2+c^2 - 2ab-2bc-2ca.  \end{align*}
+%
 
 The decays into a charged lepton and a pion are given by 
 %
@@ -1103,7 +1147,7 @@ with \[ I(x,y) = \left[ \left( 1+x+y\right) \left(1+x\right) -4 x\right]
 For $N\to e^\pm\pi^\mp$ the kinematic function $I(x,y)$ produces only weak suppression ($I(x,y)\geq 0.5$) for sterile masses above $m_\ster\gtrsim 150$ MeV, whilst for $N\to
 \mu^\pm\pi^\mp$ the equivalent threshold is $m_\ster\gtrsim 270$ MeV.
 
-\section{Potential Backgrounds\label{sec:bg}}
+\section{Potential Backgrounds\label{app:bg}}
 
 In order to estimate the effect of expected backgrounds on the sensitivity we
 have performed a brief Monte-Carlo analysis using the neutrino event generator GENIE
@@ -1296,7 +1340,7 @@ $ e^+ e^- \text{ or } \gamma \text{ (Photon-like)}$ &  42,580 & 3,620 & 6,082\\
 
 \caption{\label{tab:Rates} A summary of the main sources of backgrounds for
 each channel studied, before and after spectral and particle ID cuts are
-applied as discussed in section \ref{sec:bg}. }
+applied as discussed in \refapp{app:bg}. }
 
 \end{table}
 
