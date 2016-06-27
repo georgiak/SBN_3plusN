@@ -142,6 +142,7 @@ struct sinSqPackage{
 };
 struct galPackage{
     double * obsRatioGal, * errorGal, * arLinesE, * arLinesBr, * arLinesXSec, * crLinesE, * crLinesBr, * crLinesXSec;
+	std::vector < std::vector < double > > length, volInt;
 };
 struct minosncPackage{
     double theta24_bestfit;
@@ -152,7 +153,7 @@ struct minosPackage{
 };
 struct booneDisPackage{
     std::vector < std::vector <double> > full_fractCovMatrix;
-    double * EnuQE, * NumuData;
+    double * EnuQE, * NumuData; double *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight;
 	int nFOscEvts;
 	std::string foscData;
 };

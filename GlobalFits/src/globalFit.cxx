@@ -52,14 +52,14 @@ minosPackage minosPack; minosncPackage minosncPack; booneDisPackage mbNuDisPack,
 bugeyPackage bugeyPack; choozPackage choozPack; xsecPackage xsecPack;
 
 bool debug = true;
-double ntupleFinish = .2;
+double ntupleFinish = .1;
 
 int globInit(){
 
     using namespace std;
 
-	jobOptLoc = "";//"/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
-	dataLoc = "";//"/Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
+	jobOptLoc = "";///Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
+	dataLoc = "";///Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
 
     // read jobOption file and fill variables
     jobOpt();
@@ -177,6 +177,10 @@ int globChisq(int ind){
 				break;
             chisqTotal.zero();  chisqDetector.zero();
 
+
+			clock_t t, st;
+	  		t = clock();
+
 			// For testing, we settin' our own parameters!
 			//nuModel.zero();
 			//nuModel.Ue[0] = .11; 	nuModel.Um[0] = .12;	nuModel.mNu[0] = sqrt(.9);
@@ -195,6 +199,7 @@ int globChisq(int ind){
 			    chisqTotal.chi2 += chisqDetector.chi2;
 				if(debug) std::cout << "ATM: " << chisqDetector.chi2 << std::endl;
 			}
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
 			if(chisqTotal.chi2 > chi2Cut) continue;
 			if(MINOSProcess == 1){
                 chisqDetector = getChi2Minos(nuModel, minosPack);
@@ -203,6 +208,7 @@ int globChisq(int ind){
                 chisqTotal.chi2 += chisqDetector.chi2;
 				if(debug) std::cout << "Minos: " << chisqDetector.chi2 << std::endl;
             }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
 			if(chisqTotal.chi2 > chi2Cut) continue;
 			if(CCFRProcess == 1){
                 chisqDetector = getChi2CCFR(nuModel, ccfrPack);
@@ -211,6 +217,7 @@ int globChisq(int ind){
                 chisqTotal.chi2 += chisqDetector.chi2;
 				if(debug) std::cout << "CCFR: " << chisqDetector.chi2 << std::endl;
             }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
 			if(chisqTotal.chi2 > chi2Cut) continue;
             if(CDHSProcess == 1){
                 chisqDetector = getChi2CDHS(nuModel, cdhsPack);
@@ -219,6 +226,43 @@ int globChisq(int ind){
                 chisqTotal.chi2 += chisqDetector.chi2;
 				if(debug) std::cout << "CDHS: " << chisqDetector.chi2 << std::endl;
             }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
+			if(chisqTotal.chi2 > chi2Cut) continue;
+			if(LSNDProcess == 1){
+                chisqDetector = getLogLikelihood(nuModel, 5, lsndPack);
+                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+
+                chisqTotal.chi2 += chisqDetector.chi2;
+				if(debug) std::cout << "LSND: " << chisqDetector.chi2 << std::endl;
+            }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
+			if(chisqTotal.chi2 > chi2Cut) continue;
+            if(KARMENProcess == 1){
+                chisqDetector = getLogLikelihood(nuModel, 9, karmenPack);
+                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+
+                chisqTotal.chi2 += chisqDetector.chi2;
+				if(debug) std::cout << "Karmen: " << chisqDetector.chi2 << std::endl;
+            }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
+			if(chisqTotal.chi2 > chi2Cut) continue;
+            if(NUMIProcess == 1){
+                chisqDetector = getChi2Numi(nuModel, numiPack);
+                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+
+                chisqTotal.chi2 += chisqDetector.chi2;
+				if(debug) std::cout << "Numi: " << chisqDetector.chi2 << std::endl;
+            }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
+			if(chisqTotal.chi2 > chi2Cut) continue;
+            if(NOMADProcess == 1){
+                chisqDetector = getChi2Nomad(nuModel, nomadPack);
+                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+
+                chisqTotal.chi2 += chisqDetector.chi2;
+				if(debug) std::cout << "Nomad: " << chisqDetector.chi2 << std::endl;
+            }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
 			if(chisqTotal.chi2 > chi2Cut) continue;
             if(MBProcess == 1){
                 chisqDetector = getChi2Boone(nuModel, mbNuPack, false);
@@ -228,6 +272,7 @@ int globChisq(int ind){
                 chisqTotal.chi2_det += chisqDetector.chi2_det;
 				if(debug) std::cout << "MB: " << chisqDetector.chi2 << std::endl;
             }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
 			if(chisqTotal.chi2 > chi2Cut) continue;
             if(MBProcessNubar == 1){
                 chisqDetector = getChi2Boone(nuModel, mbNubarPack, true);
@@ -237,38 +282,7 @@ int globChisq(int ind){
                 chisqTotal.chi2_det += chisqDetector.chi2_det;
 				if(debug) std::cout << "MBNubar: " << chisqDetector.chi2 << std::endl;
             }
-			if(chisqTotal.chi2 > chi2Cut) continue;
-            if(LSNDProcess == 1){
-                chisqDetector = getLogLikelihood(nuModel, 5, lsndPack);
-                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
-
-                chisqTotal.chi2 += chisqDetector.chi2;
-				if(debug) std::cout << "LSND: " << chisqDetector.chi2 << std::endl;
-            }
-			if(chisqTotal.chi2 > chi2Cut) continue;
-            if(KARMENProcess == 1){
-                chisqDetector = getLogLikelihood(nuModel, 9, karmenPack);
-                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
-
-                chisqTotal.chi2 += chisqDetector.chi2;
-				if(debug) std::cout << "Karmen: " << chisqDetector.chi2 << std::endl;
-            }
-			if(chisqTotal.chi2 > chi2Cut) continue;
-            if(NUMIProcess == 1){
-                chisqDetector = getChi2Numi(nuModel, numiPack);
-                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
-
-                chisqTotal.chi2 += chisqDetector.chi2;
-				if(debug) std::cout << "Numi: " << chisqDetector.chi2 << std::endl;
-            }
-			if(chisqTotal.chi2 > chi2Cut) continue;
-            if(NOMADProcess == 1){
-                chisqDetector = getChi2Nomad(nuModel, nomadPack);
-                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
-
-                chisqTotal.chi2 += chisqDetector.chi2;
-				if(debug) std::cout << "Nomad: " << chisqDetector.chi2 << std::endl;
-            }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
 			if(chisqTotal.chi2 > chi2Cut) continue;
 			if(GALLIUMProcess == 1){
 				chisqDetector = getChi2Gallium(nuModel, galPack);
@@ -277,22 +291,7 @@ int globChisq(int ind){
 				chisqTotal.chi2 += chisqDetector.chi2;
 				if(debug) std::cout << "Gal: " << chisqDetector.chi2 << std::endl;
 			}
-			if(chisqTotal.chi2 > chi2Cut) continue;
-            if(MBDISProcess == 1){
-                chisqDetector = getChi2MBDis(nuModel, mbNuDisPack);
-                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
-
-                chisqTotal.chi2 += chisqDetector.chi2;
-				if(debug) std::cout << "MBDis: " << chisqDetector.chi2 << std::endl;
-            }
-			if(chisqTotal.chi2 > chi2Cut) continue;
-            if(MBDISProcessNubar == 1){
-                chisqDetector = getChi2MBDis(nuModel, mbNubarDisPack);
-                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
-
-                chisqTotal.chi2 += chisqDetector.chi2;
-				if(debug) std::cout << "MBDisNubar: " << chisqDetector.chi2 << std::endl;
-            }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
 			if(chisqTotal.chi2 > chi2Cut) continue;
 			if(BugeyProcess == 1){
                 chisqDetector = getChi2Bugey(nuModel, bugeyPack);
@@ -301,6 +300,7 @@ int globChisq(int ind){
                 chisqTotal.chi2 += chisqDetector.chi2;
 				if(debug) std::cout << "Bugey: " << chisqDetector.chi2 << std::endl;
             }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
 			if(chisqTotal.chi2 > chi2Cut) continue;
 			if(XSECProcess == 1){
                 chisqDetector = getChi2Xsec(nuModel, xsecPack);
@@ -309,6 +309,25 @@ int globChisq(int ind){
                 chisqTotal.chi2 += chisqDetector.chi2;
 				if(debug) std::cout << "Xsec: " << chisqDetector.chi2 << std::endl;
             }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
+			if(chisqTotal.chi2 > chi2Cut) continue;
+			if(MBDISProcessNubar == 1){
+				chisqDetector = getChi2MBDis(nuModel, mbNubarDisPack);
+				if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+
+				chisqTotal.chi2 += chisqDetector.chi2;
+				if(debug) std::cout << "MBDisNubar: " << chisqDetector.chi2 << std::endl;
+			}
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
+			if(chisqTotal.chi2 > chi2Cut) continue;
+            if(MBDISProcess == 1){
+                chisqDetector = getChi2MBDis(nuModel, mbNuDisPack);
+                if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+
+                chisqTotal.chi2 += chisqDetector.chi2;
+				if(debug) std::cout << "MBDis: " << chisqDetector.chi2 << std::endl;
+            }
+			std::cout << clock() - t << " ticks" << std::endl; t = clock();
 			if(chisqTotal.chi2 > chi2Cut) continue;
 
             std::cout << "chisqtotal: " << chisqTotal.chi2 << std::endl;

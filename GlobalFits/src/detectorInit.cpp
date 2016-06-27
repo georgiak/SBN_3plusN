@@ -438,10 +438,45 @@ galPackage galInit(){
     	pack.arLinesXSec[i] = temp4[i];
     }
 
+	// Here's a little experiment.
+	// so, L will go from 0 to the corner. In this way, we'll magically reduce two parameters to only one!
+	// we need three L's and their corresponding volume integrals
+	double nLength, nInt;
+	nLength = 2000; nInt = 600;
+
+	pack.volInt.resize(3, std::vector<double>(nLength));
+	for(int i = 0; i < nLength; i++){
+		pack.volInt[0][i] = 0.;	pack.volInt[1][i] = 0.;	pack.volInt[2][i] = 0.;
+	}
+	double radiusGallex = 1.9;  double heightGallex = 5.0;  double sourceHeightGallex[2] = {2.7,2.38};
+	double radiusSage = 0.7;    double heightSage = 1.47;   double sourceHeightSage = 0.72;
+
+	// Let's just start this whole mess over and make sure it works from the start.
+	double Radius[3] = {radiusGallex, radiusGallex, radiusSage};
+	double Height[3] = {heightGallex, heightGallex, heightSage};
+	double SourceHeight[3] = {sourceHeightGallex[0], sourceHeightGallex[1], sourceHeightSage};
+
+	for(int iex = 0; iex < 3; iex++){
+		double maxht = max(Height[iex]-SourceHeight[iex],SourceHeight[iex]);
+		double maxlen = sqrt(pow(Radius[iex],2) + pow(maxht,2));
+
+		double ht, dht, rad, dr;
+		for(int iHt = 0; iHt < nInt; iHt++){
+			ht = (Height[iex] / nInt) * (iHt + .5); dht = Height[iex] / nInt;
+
+			for(int iRd = 0; iRd < nInt; iRd++){
+				rad = (Radius[iex] / nInt) * iRd; dr = Radius[iex] / nInt;
+
+				int _ind = floor(sqrt(pow(rad,2) + pow(ht-SourceHeight[iex],2))/(maxlen/float(nLength)));
+				pack.volInt[iex][_ind] += dr * dht * 2*TMath::Pi()*rad;
+			}
+		}
+	}
+
     ndf += 4;
 	std::cout << "Gal bins: " << 4 << std::endl;
     return pack;
-    }
+}
 minosPackage minosInit(){
     minosPackage pack;
 
@@ -507,12 +542,16 @@ booneDisPackage mbNuDisInit(){
     booneDisPackage pack;
 
     const int nBins = 16;
-	pack.nFOscEvts = 126700; // 1267007
+	pack.nFOscEvts = 1267007; // 1267007
+	const int nfosc = pack.nFOscEvts;
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
-	pack.foscData = dataLoc+"numudisap_ntuple.txt";
+	pack.FOsc_EnuQE = new double[nfosc];
+	pack.FOsc_EnuTrue = new double[nfosc];
+	pack.FOsc_LnuTrue = new double[nfosc];
+	pack.FOsc_weight = new double[nfosc];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
@@ -531,6 +570,16 @@ booneDisPackage mbNuDisInit(){
             file >> pack.full_fractCovMatrix[i][j];
     file.close();
 
+ 	file.open(dataLoc+"numudisap_ntuple.txt");
+ 	int dummy;
+    for(int iEvt = 0; iEvt < nfosc; iEvt++){
+ 		file >> dummy;
+        file >> pack.FOsc_EnuQE[iEvt];
+        file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> pack.FOsc_weight[iEvt];    // event weight
+	}
+
     ndf += nBins;
 	std::cout << "MBnu Dis bins: " << nBins << std::endl;
     return pack;
@@ -539,12 +588,16 @@ booneDisPackage mbNubarDisInit(){
     booneDisPackage pack;
 
     const int nBins = 16;
-	pack.nFOscEvts = 126700; // 686529
+	pack.nFOscEvts = 686529;
+	const int nfosc = pack.nFOscEvts;
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
-	pack.foscData = dataLoc+"numubardisap_ntuple.txt";
+	pack.FOsc_EnuQE = new double[nfosc];
+	pack.FOsc_EnuTrue = new double[nfosc];
+	pack.FOsc_LnuTrue = new double[nfosc];
+	pack.FOsc_weight = new double[nfosc];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
@@ -562,6 +615,17 @@ booneDisPackage mbNubarDisInit(){
         for(int j = 0; j < nBins; j++)
             file >> pack.full_fractCovMatrix[i][j];
     file.close();
+
+	file.open(dataLoc+"numubardisap_ntuple.txt");
+ 	int dummy;
+    for(int iEvt = 0; iEvt < nfosc; iEvt++){
+		if(iEvt%2==0) continue;
+ 		file >> dummy;
+        file >> pack.FOsc_EnuQE[iEvt];
+        file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> pack.FOsc_weight[iEvt];    // event weight
+	}
 
     ndf += nBins;
 	std::cout << "MBnubar Dis bins: " << nBins << std::endl;

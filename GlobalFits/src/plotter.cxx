@@ -10,6 +10,8 @@ int steriles, nRuns, type, raster, discretized, diag, dims;
 std::string dataset, location, output;
 std::string procOptLoc;
 std::string suffix;
+float chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56;
+float m4_min,ue4_min,um4_min,m5_min,ue5_min,um5_min,m6_min,ue6_min,um6_min,phi45_min,phi46_min,phi56_min;
 
 int globFit_plotter(){
 
@@ -41,11 +43,60 @@ int globFit_plotter(){
 		suffix = "_disc";
 	}
 
+	// Find chi2Min
+	chi2_90->SetBranchAddress("chi2",&chi2);
+	chi2_90->SetBranchAddress("m4",&m4);
+	chi2_90->SetBranchAddress("ue4",&ue4);
+	chi2_90->SetBranchAddress("um4",&um4);
+	chi2_90->SetBranchAddress("m5",&m5);
+	chi2_90->SetBranchAddress("ue5",&ue5);
+	chi2_90->SetBranchAddress("um5",&um5);
+	chi2_90->SetBranchAddress("m6",&m6);
+	chi2_90->SetBranchAddress("ue6",&ue6);
+	chi2_90->SetBranchAddress("um6",&um6);
+	chi2_90->SetBranchAddress("phi45",&phi45);
+	chi2_90->SetBranchAddress("phi46",&phi46);
+	chi2_90->SetBranchAddress("phi56",&phi56);
+	float chi2min = 3000.f;
+    for(int i = 0; i < chi2_90->GetEntries(); i++){
+        chi2_90->GetEntry(i);
+		if(chi2 < chi2min){
+			chi2min = chi2;
+        	m4_min = m4;
+			ue4_min = ue4;
+			um4_min = um4;
+			m5_min = m5;
+			ue5_min = ue5;
+			um5_min = um5;
+			m6_min = m6;
+			ue6_min = ue6;
+			um6_min = um6;
+			phi45_min = phi45;
+			phi46_min = phi46;
+			phi56_min = phi56;
+		}
+    }
+    std::cout << chi2min << std::endl;
+	std::cout << "m4_min: " << m4_min << std::endl;
+	std::cout << "ue4_min: " << ue4_min << std::endl;
+	std::cout << "um4_min: " << um4_min << std::endl;
+	std::cout << "m5_min: " << m5_min << std::endl;
+	std::cout << "ue5_min: " << ue5_min << std::endl;
+	std::cout << "um5_min: " << um5_min << std::endl;
+	std::cout << "m6_min: " << m6_min << std::endl;
+	std::cout << "ue6_min: " << ue6_min << std::endl;
+	std::cout << "um6_min: " << um6_min << std::endl;
+	std::cout << "phi45_min: " << phi45_min << std::endl;
+	std::cout << "phi46_min: " << phi46_min << std::endl;
+	std::cout << "phi56_min: " << phi56_min << std::endl;
+
 	TCanvas *c1 = new TCanvas("c1");
 
 	if(dims == 2){
 		// Setup histo
     	TH2F *h = new TH2F("h","3+3 #Chi^2;U_{e 4};U_{#mu 4}",1000,0.01,100.,1000,.01,100.);
+		TH2F *h_99 = new TH2F("h99","",1000,0.0001,1.,1000,.01,100.);
+		TH2F *h_90 = new TH2F("h90","",1000,0.0001,1.,1000,.01,100.);
     	h->GetXaxis()->SetTitleOffset(1.1);
     	h->GetYaxis()->SetTitleOffset(.8);
     	h->GetXaxis()->SetTitleFont(62);
@@ -110,7 +161,6 @@ int globFit_plotter(){
 			overlay->SetMarkerStyle(7);
 		}
 
-
 		TLegend *leg = new TLegend(0.1,0.1,0.35,0.3);
 		leg->SetFillStyle(0);
 		leg->SetFillColor(0);
@@ -164,8 +214,6 @@ int globFit_plotter(){
 		if(steriles == 1){
 			if(raster == 0){
 				if(type==0)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
-				if(type==1)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{#mu#mu});#Delta m^{2}_{41}");
-				if(type==2)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{ee});#Delta m^{2}_{41}");
 				if(type==0)	h->GetXaxis()->SetLimits(.0001,.1);
 				if(type>0)	h->GetXaxis()->SetLimits(.0001,1.);
 				h->GetYaxis()->SetLimits(.01,100.);
@@ -187,7 +235,7 @@ int globFit_plotter(){
         				chi2_90->Draw("m4*m4:4*um4*um4*(1-um4*um4)","","same");
 					}
 					else if(type == 2){
-						chi2_99->Draw("m4*m4:4*ue4*ue4*(1-ue4*ue4)","","same colz");
+						chi2_99->Draw("m4*m4:4*ue4*ue4*(1-ue4*ue4)","","same");
         				chi2_90->Draw("m4*m4:4*ue4*ue4*(1-ue4*ue4)","","same");
 					}
 					leg->Draw();
