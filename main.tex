@@ -819,16 +819,31 @@ bounds of PS-191.
 
 \subsection{\label{sec:eventspectra}Event spectra}
 
-%%%% This figure shows two spectra WITHOUT CUTS (left) and WITH CUTS (right)
+%%%%% This figure shows two spectra WITHOUT CUTS (left) and WITH CUTS (right)
+%\begin{figure}[t]
+%%
+%\center
+%%
+%\includegraphics[width=0.47\textwidth]{figures/spectrum_ee_truth.png} \includegraphics[width=0.47\textwidth]{figures/spectrum_ee_truth_cuts.png}
+%%
+%\caption{\label{fig:spectrum_ee} Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode. The three distributions correspond to parent sterile masses given in the legend. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. On the left, the spectra have no analysis cuts or detector reconstruction effects applied, while on the right these are included, decreasing the discriminatory power of the lowest energy events.}
+%%
+%\end{figure}
+%
 \begin{figure}[t]
 %
 \center
 %
-\includegraphics[width=0.47\textwidth]{figures/spectrum_ee_truth.png} \includegraphics[width=0.47\textwidth]{figures/spectrum_ee_truth_cuts.png}
+\large
+
+\resizebox{\columnwidth}{!}{\input{figures/spectrum.tex}}
 %
 \caption{\label{fig:spectrum_ee} Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode. The three distributions correspond to parent sterile masses given in the legend. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. On the left, the spectra have no analysis cuts or detector reconstruction effects applied, while on the right these are included, decreasing the discriminatory power of the lowest energy events.}
 %
 \end{figure}
+
+
+
 
 \begin{figure}[t]
 %
@@ -838,12 +853,17 @@ bounds of PS-191.
 
 \resizebox{0.8\columnwidth}{!}{\input{figures/spectrum_angles_ee.tex}}
 %
-\caption{\label{fig:spectrum_ee_angular} The angular spectrum of $e^+e^-$ events (defined as the direction of the sum of their individual momenta) in \muboone\ for a sterile neutrino mass of $m_N = 100$ MeV. The red histogram shows the true expected distribution, which we see is forward pointing. In blue we see the spectrum of events if we do not take into account the preferential decay rate for lower energy particles. We see that this probabilistic factor leads to a 
-significantly less forward event spectrum.}
+\caption{\label{fig:spectrum_ee_angular} The angular spectrum of $e^+e^-$
+events (defined as the direction of the sum of their individual momenta) in
+\muboone\ for a sterile neutrino mass of $m_N = 100$ MeV. The red histogram
+shows the true expected distribution, which we see is forward pointing. In blue
+we see the spectrum of events if we do not take into account the preferential
+decay rate for lower energy particles, instead using an energy independent
+decay rate. We see that this leads to a significantly more forward event 
+spectrum.}
 %
 \end{figure}
-\marcom{MARK}{Are the colors/ discription in this plot backwards? as in the Blue spectrum is more forward correct?}
-
+ 
 %\begin{figure}[t]
 %%
 %\center
