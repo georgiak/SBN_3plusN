@@ -368,21 +368,20 @@ probed by working at higher energies, where the neutral fermions can be
 produced by decays of charmed mesons such as $D^\pm$, by the SHiPS experiment
 \cite{Alekhin:2015byh, Anelli:2015pba}.   
 %
-We focus on five decays in our study, which have the largest branching ratios
-of all channels with visible decay products over the mass range producible from
+For completeness we study all possible decays to visible daughters particles in our study, over the mass range producible from
 pion and kaon decay, $m_{\ster} \lesssim m_K$. These are shown schematically in
 \reffig{fig:decaydiagrams}.
 
 \begin{figure}[t]
 \begin{align*}
 \pi^\pm / K^\pm \longrightarrow \overbrace{l^\pm \ster}^{\text{via } U_{e4} \text{ or } U_{\mu 4}}  &\longrightarrow \left. l^\pm \pi^\mp, \qquad \right\} \text{via } U_{e4} \text{ or } U_{\mu 4}\\
-														    & \drsh \nu_\alpha e^+ e^-,\\[\jot]
-					   & \drsh \nu_\alpha \gamma, \hspace*{3em}
-		\smash{\left.\begin{array}{@{}c@{}}\\[\jot]\\[\jot]\\[\jot]\end{array}\right\}}\text{via } U_{e4}, U_{\mu 4} \text{  or  } U_{\tau 4}\\[\jot]
-						& \drsh \nu_\alpha \pi^0.
+														    & \drsh \nu_\alpha l^+ l^-,\\[\jot]
+														& \drsh \nu_\alpha \gamma   ,\hspace*{3em}
+\smash{\left.\begin{array}{@{}c@{}}\\[\jot]\\[\jot]\\[\jot]\end{array}\right\}}\text{via } U_{e4}, U_{\mu 4} \text{  or  } U_{\tau 4}\\[\jot]					 
+			& \drsh \nu_\alpha \pi^0.
 \end{align*}
 
-\caption{\label{fig:decaydiagrams}The production and decay channels considered in this study.}
+\caption{\label{fig:decaydiagrams}The production and decay channels considered in this study, where $l$ referes to either $e^+e^-$, $\mu^+ \mu^-$ or $\mu^\mp e^\pm$. }
 
 \end{figure}
 
@@ -436,6 +435,12 @@ sterile, the mixing elements and the loop factor. It can be estimated at
 around $\Gamma(\ster\to\nu_i\gamma)/(\text{GeV}) \approx 10^{-20}
 (m_\ster/\text{GeV})^5$.  
 
+Additional leptonic decays open up once $m_\ster \geq m_\mu+m_e$. Although a smaller branching ratio, decays involving muons can be clean signatures at LAr detectors. In the case of $N\rightarrow \nu_\alpha \mu^+ \mu^-$ the decay rate occurs by both neutral and weak currents and is identical to  $N\rightarrow \nu_\alpha e^+ e^-$ given above with the replacement $m_e \rightarrow m_\nu$. The mixed-flavour decay $N\rightarrow \nu_\alpha \mu^\pm e^\pm$ occurs by neutral currents only and is given by 
+\[
+	\Gamma(\ster\to\nu_{\alpha} \beta^- \alpha^+) = \frac{G_\text{F}^2m_\ster^5 |U_{\beta 4}|^2}{192 \pi^3} I_1\left(\frac{m_\beta}{m_N},\frac{ m_\alpha}{m_N}, \frac{ m_\alpha}{m_N} \right) ,
+\]
+with $\alpha,\beta = e \mu$, $\alpha \neq \beta$. \\
+
 Low-mass sterile decay is dominated by the photon and electron-positron decays
 up until the pion mass threshold. In the few keV after this threshold, two
 further decays become possible: $N\to\nu \pi^0$ and $N\to e\pm\pi^\mp$. 
@@ -447,7 +452,8 @@ The decay rate for the first process is given by
 \frac{m_\pi}{m_\ster} \right)^2\right].  \]
 %
 where $\left|U\right|^2 = \sum_{\alpha}\left|U_{\alpha 4}\right|^2$.
-% 
+%
+
 The decay into a charged pion and an electron is an important channel, and one
 of the most constrained in direct decay experiments due to its clear visible
 two-body signal.  Its decay rate is similar to the $N\to \nu
@@ -471,10 +477,7 @@ strongly constrained channel, and its decay rate is already given in
 \refeq{eq:chargedlep_decayrate} with $m_l = m_\mu$. 
 
 We have plotted the relevant branching ratios of $N$ in
-\reffig{fig:branchingratios}. In addition to those that we have discussed so
-far, there are several further decays possible $\ster\rightarrow \nu_\alpha
-\mu^+ \mu^-$ and $\ster \rightarrow \nu_\alpha e^+ \mu^-$. In the minimal
-model, these decays are sub-dominant with respect to other decays, and are beyond the scope of this work.
+\reffig{fig:branchingratios}.
 
 \subsection{Non-minimal models}
 
@@ -997,7 +1000,7 @@ The increased event rate of sterile decays at the SBN program in comparison to P
 
 \begin{figure}[t]
 \center
-\includegraphics[width=1.0\textwidth]{figures/band_sbn.pdf}
+\includegraphics[width=1.0\textwidth]{figures/band_sbn_new.pdf}
 
 \caption{\label{fig:band_sbn}The predicted sensitivity contours for the combined SBN
 facility. Shown also in black solid lines is the prior best bounds from PS-191,
