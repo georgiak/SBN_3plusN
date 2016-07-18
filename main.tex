@@ -53,7 +53,7 @@ id est laborum.}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\title{MeV scale sterile neutrino decay signatures at the Fermilab Short-Baseline Neutrino program}
+\title{MeV-scale sterile neutrino decays at the Fermilab Short-Baseline Neutrino program}
 
 \author{Peter Ballett,}
 \author{Silvia Pascoli}
@@ -69,19 +69,24 @@ Physics, Durham University, South Road, Durham DH1 3LE, United Kingdom}
 \abstract{
 %
 We study the sensitivity of the Short-Baseline Neutrino (SBN) program at
-Fermilab to $\mathcal{O}$(MeV) sterile neutrino decay-in-flight in both a minimal extension
-and more generic beyond the Standard Model scenarios. Such states would be naturally produced in decays of the secondary meson beam, propagate to the SBN detectors and subsequently decay to visible particles allowing for a complementary search paradigm in parallel with the more traditional eV scale oscillating steriles searches. We provide estimates for the bounds that the the full SBN facility can be expected to place on the
-parameter spaces of these models and demonstrate that the facility can in many cases
-extend existing bounds on $\ster \rightarrow \nu_\alpha e^+ e^-$ and $\ster
-\rightarrow l^- \pi^+$ whilst, due to the strong particle identification
+Fermilab to $\mathcal{O}$(MeV) sterile neutrino decay-in-flight in both a
+minimal extension and more generic beyond the Standard Model scenarios. Such
+states would be naturally produced in decays of the secondary meson beam,
+propagate to the SBN detectors and subsequently decay into visible particles
+allowing for a complementary new physics search to eV-scale oscillations. We
+provide estimates for the bounds that the full SBN facility can place on the
+parameter spaces of these models and demonstrate that the facility can in many
+cases extend existing bounds on $\ster \rightarrow \nu_\alpha l_1^+ l_2^-$ and
+$\ster \rightarrow l^- \pi^+$ whilst, due to the strong particle identification
 capabilities of liquid-Argon technology, also place bounds on often neglected
 channels $\ster \rightarrow \gamma \nu_\alpha$ and $\ster \rightarrow
-\nu_\alpha \pi^0$, which may be enhanced in a non-minimal model. Additionally we show that the if the light detection system employed by SBN has a sufficiently good timing resolution, $\mathcal{O}$(ns), it in principle allows for observable structure in the timing distributions of events relative to the beam-buckets. This in combination with the spectral differences of decay-in-flight signatures, allows the SBN program to act in a near backgroundless environment.
-%
-%We then compare the signals of decays in flight to other models with sterile
-%neutrinos and show that significant differences exist between the spectra of a
-%decay in flight signal and alternative models motivated by the MiniBooNE
-%excess.
+\nu_\alpha \pi^0$, which may be enhanced in a non-minimal model. Additionally
+we show that the if the light detection system employed by SBN can achieve
+nano-second timing resolution, it in principle allows for observable structure
+in the temporal distribution of events relative to the beam-buckets. When
+combined with information from the energy spectrum, this allows SBN to act in a
+near backgroundless environment, whilst also providing a distinctive signature
+for this class of models.
 %
 }
 
@@ -92,59 +97,68 @@ channels $\ster \rightarrow \gamma \nu_\alpha$ and $\ster \rightarrow
 \section{Introduction}
 
 The neutrino sector of the Standard Model (SM) is known to be incomplete. The
-observation of oscillatory behaviour between neutrino flavour states \cite{Fukuda:1998mi} suggests a
-set of mass matrices with off-diagonal terms in the flavour basis. There are
-many ways that have been suggested in the literature to explain the lightness of neutrino masses
-from a theoretical perspective, ranging from the ever popular see-saw scenarios
+observation of oscillatory behaviour between neutrino flavour states
+\cite{Fukuda:1998mi} suggests a set of mass matrices with off-diagonal terms in
+the flavour basis. There are many ways that have been suggested in the
+literature to explain the lightness of neutrino masses from a theoretical
+perspective, ranging from the ever popular see-saw scenarios
 \cite{Minkowski:1977sc, GellMann:1980vs, Mohapatra:1979ia} to radiative mass
 generation \cite{Zee:1980ai,Babu:1988ki} or even more involved constructions
-such as neutrino masses from extra-dimensions \cite{ArkaniHamed:1998vp}. However, it will ultimately be the role of phenomenology to find ways to
-distinguish between potential candidate models, and see what can be deduced about the
-completion of the neutrino sector from the continued analysis of the neutrino sector in contemporary experiments.
+such as neutrino masses from extra-dimensions \cite{ArkaniHamed:1998vp}.
+However, it will ultimately be the role of phenomenology to find ways to
+distinguish between potential candidate models, and see what can be deduced
+about the completion of the neutrino sector from the analysis of contemporary
+experiments.
 %
-Not all models of neutrino masses, however, lend themselves to such direct experimental
-searches. For example, the canonical Type-I see-saw \cite{Minkowski:1977sc,
-GellMann:1980vs, Mohapatra:1979ia} suggests the existence of new particles with
-masses  $\approx 10^{12}$--$10^{15}$ GeV, well beyond the limits of what can be
-directly produced using modern experimental techniques. An oft recurring feature among extensions of the SM which account for neutrino
-masses is the presence of sterile neutrinos, SM-gauge singlet fermions which
-couple to the active neutrinos via Yukawa interactions. After electoweak
-symmetry breaking, these particles are coupled bilinearly to the active
-neutrino fields, and upon diagonalisation, we find an extended neutrino sector
-including new states with mixing suppressed gauge interactions. \emph{A priori} the
-mass and interaction scales for these particles can span many orders of
-magnitude, and they can be associated with wide range of distinct observable
-phenomena. 
+Not all models of neutrino masses, however, lend themselves to such direct
+experimental searches. For example, the canonical Type-I see-saw
+\cite{Minkowski:1977sc, GellMann:1980vs, Mohapatra:1979ia} suggests the
+existence of new particles with masses  $\approx 10^{12}$--$10^{15}$ GeV, well
+beyond the limits of foreseeable direct production. An oft recurring feature
+among extensions of the SM which account for neutrino masses is the presence of
+sterile neutrinos, SM-gauge singlet fermions which couple to the active
+neutrinos via Yukawa interactions. After electroweak symmetry breaking, these
+particles are coupled bilinearly to the active neutrino fields, and upon
+diagonalisation, we find an extended neutrino sector including new states with
+mixing suppressed gauge interactions. \emph{A priori} the mass and interaction
+scales for these particles can span many orders of magnitude, and they can be
+associated with wide range of distinct observable phenomena. 
 %
 One of the most well-known examples of such an effect is the short-baseline
-oscillation signatures associated with a sterile neutrino with a mass around
-the eV scale (see \eg\ \refref{Gariazzo:2015rra} for a recent review). This
-state would produce oscillatory effects over short $\mathcal{O}(100)$m distances and has been
-invoked to solve the anomalies found at some short-baseline oscillation
-experiments \cite{Aguilar:2001ty,Aguilar-Arevalo:2013pmq,AguilarArevalo:2008rc}.  Explaining all anomalies in an economical fashion appears
-challenging in these models \cite{Kopp:2013vaa,Conrad:2012qt}, but more data
-would be needed before a decision can be made as to their role in the neutrino
-sector. The Fermilab SBN \cite{Antonello:2015lea} program was primarily designed with an exhaustive search of such $\mathcal{O}$(eV) scale steriles in mind.
+oscillation signatures associated with a sterile neutrino mass around
+the eV-scale (see \eg\ \refref{Gariazzo:2015rra} for a recent review). This
+state would produce oscillatory effects over short $\mathcal{O}(100)$m
+distances and has been invoked to solve the anomalies found at some
+short-baseline oscillation experiments
+\cite{Aguilar:2001ty,Aguilar-Arevalo:2013pmq,AguilarArevalo:2008rc}.
+Explaining all anomalies in an economical fashion appears challenging in these
+models \cite{Kopp:2013vaa,Conrad:2012qt}, but more data would be needed before
+a decision can be made as to their role in the neutrino sector. The Fermilab
+SBN \cite{Antonello:2015lea} program was primarily designed with an exhaustive
+search of such $\mathcal{O}$(eV) scale steriles in mind.
 
-In this article, we study a distinctly different but complementary paradigm to the oscillatory sterile
-neutrino models where sterile neutrinos exist, are light enough to be produced
-in neutrino beams via meson decay, but have masses sufficiently large to
-prevent oscillatory effects with the active neutrinos through loss of coherence
-(see \eg\ \refref{Akhmedov:2009rb}). Due to the presence of mixing effects,
-these particles are not expected to be stable and their subsequent decay products could
-be observed in neutrino detectors.
+In this article, we study a distinct but complementary paradigm to the
+oscillatory models where sterile neutrinos exist, are light enough to be
+produced in neutrino beams via meson decay, but have masses sufficiently large
+to prevent oscillatory effects with the active neutrinos through loss of
+coherence (see \eg\ \refref{Akhmedov:2009rb}). Due to the presence of mixing
+effects, these particles are not expected to be stable and their subsequent
+decay products could be observed in neutrino detectors.
 %
 %have been enumerated \cite{Atre:2009rg} and searched for in many previous
 %experiments.
 %
-The focus of this paper will be on estimating the potential sensitivity of the SBN
-program for the search for sterile neutrinos of this type, with masses between $1-493$ MeV.
+The focus of this paper will be on estimating the potential sensitivity of the
+SBN program for the search for sterile neutrinos of this type, with masses
+between $1-493$ MeV.
 %
-The SBN facility comprises of three separate detectors placed in the
-Booster Neutrino Beam (BNB) at different (short) baseline distances: SBND
-(previously known as LAr1-ND) at 110~m from the target, \muboone\ at 470~m and
-ICARUS at 600~m.  All three detectors employ Liquid Argon Time Projection Chamber (LArTPC) technology \cite{Rubbia:1977} with
-strong event reconstruction capabilities allowing for significantly better understood backgrounds than predecessor technologies. 
+The SBN facility is comprised of three detectors placed in the Booster Neutrino
+Beam (BNB) at different (short) baseline distances: SBND (previously known as
+LAr1-ND) at 110~m from the target, \muboone\ at 470~m and ICARUS at 600~m.  All
+three detectors employ Liquid Argon Time Projection Chamber (LArTPC) technology
+\cite{Rubbia:1977} with strong event reconstruction capabilities allowing for a
+significantly improved understanding of background processes compared to
+predecessor technologies. 
 %
 %We will focus in particular on \muboone\ as it the experiment has already
 %began to collect data and will be first of the SBN detectors to be able to
@@ -155,11 +169,21 @@ MiniBooNE which also operated in the BNB, the possibility of seeing an
 anomalous signature at the SBN complex should not be ignored. It is therefore
 timely to ask how we can extract the physical content of such an excess, and we
 present ways that such decaying steriles can be identified or excluded.
+\marcom{PB}{Delete the last 2 sentences?}
 
-The reconstruction \cite{Church:2013hea,Marshall:2015rfa}, energy resolution\cite{Sorel:2014rka} and excellent calorimeter particle identification capabilities of LAr \cite{Antonello:2012hu} technology means the SBN program provides an ideal scenario to study the
-decay in flight of sterile neutrinos. It allows for the
-investigation of channels which are often unbounded in similar experiments, due
-to larger backgrounds or indistinguishable signals, such as the ability of distinguishing electrons and photon EM showers by their rate of energy loss, $dE/dx$, in the first 3cm of ionizing track \cite{szelc:2007}. Furthermore, as we discuss in \ref{sec:timing}, if a sufficiently good timing resolution of scintillation light is achieved, the timing structure of sub-luminal steriles can be utilised as both a beam related background rejection mechanism and to further aid in mass measurement.
+The reconstruction \cite{Church:2013hea, Marshall:2015rfa}, energy resolution
+\cite{Sorel:2014rka} and excellent calorimeter particle identification
+capabilities of LAr \cite{Antonello:2012hu} technology means the SBN program
+provides an ideal scenario to study the decay in flight of sterile neutrinos.
+It allows for the investigation of channels which are often unbounded by
+similar experiments, due to larger backgrounds or unidentifiable signals, such
+as the ability of distinguishing electrons and photon EM showers by their rate
+of energy loss, $dE/dx$, in the first 3cm of ionizing track \cite{szelc:2007}.
+Furthermore, as we discuss in \ref{sec:timing}, if a sufficiently good timing
+resolution of scintillation light is achieved, the timing structure of markedly
+sub-luminal steriles can be utilised as both a rejection mechanism for beam
+related backgrounds as well as a further aid for model discimination and mass
+measurement.
 
 \begin{table}[t!]
 \centering
@@ -182,42 +206,45 @@ should reduce these significantly.}
 
 \end{table}
 
-In the mass range of interest for SBN, the strongest
+To have an appreciable production rate at BNB, we restrict our search to
+sterile neutrino masses below the Kaon mass. In this mass range, the strongest
 bounds on steriles which mix with electron and muon neutrinos come from PS-191
-\cite{Bernardi:1985ny,Bernardi:1987ek}, a beam dump experiment which ran at CERN from 1983 to
-1985. 
+\cite{Bernardi:1985ny,Bernardi:1987ek}, a beam dump experiment which ran at
+CERN from 1983 to 1985. 
 %
-PS-191 was constructed from a helium filled flash chamber decay region, followed by interleaved iron plates and EM calorimeters. It was located 128~m downstream of a Beryllium target and $2.3^\circ$ (40 mrads)
-off axis, obtained $0.86 \times 10^{19}$ POT over the course of its run-time,
-and had a total detector volume of $6\times3\times12 = 216 \text{m}^3$. We can
-estimate the sensitivity of the three SBN detectors and how they will compare
-to PS-191 by estimating the experiments' \emph{exposure}, defined here as POT
-$\times$ Vol $\times$ $R^{-2}$. We compare the three facilities to PS-191 in
+PS-191 was constructed from a helium filled flash chamber decay region,
+followed by interleaved iron plates and EM calorimeters. It was located 128~m
+downstream of a Beryllium target and $2.3^\circ$ (40 mrads) off axis, obtained
+$0.86 \times 10^{19}$ POT over the course of its run-time, and had a total
+detector volume of $6\times3\times12 = 216 \text{m}^3$. We can estimate the
+sensitivity of the three SBN detectors and how they will compare to PS-191 by
+estimating the experiments' \emph{exposure}, defined here as POT $\times$ Vol
+$\times$ $R^{-2}$. We compare the three facilities to PS-191 in
 \reftab{tab:exposure}, which shows that all detectors of the SBN complex expect
-a larger exposure, with SBND seeing the largest enhancement by a factor of
+a larger exposure, with SBND seeing the greatest enhancement by a factor of
 around $40$. 
 %
 In addition to the larger exposure, there is also an enhancement of the
 expected decay events at SBN due to its lower beam energy. The steriles at SBN
 are produced by the 8 GeV BNB beam and have a softer spectrum than those
-produced by the 19.2 GeV proton synchrotron beam used at PS-191. As we 
-discuss in more detail in \refsec{sec:decays}, the probability of sterile
-neutrino decay scales as $1/E_\nu$, and we would therefore expect the SBN
-facilities to see more events than PS-191 for equivalent exposures.
+produced by the 19.2 GeV proton synchrotron beam used at PS-191. As we discuss
+in more detail in \refsec{sec:decays}, the probability of sterile neutrino
+decay scales as $1/E_\nu$, and we would therefore expect the SBN facilities to
+see more events than PS-191 for equivalent exposures.
 
-PS-191 was purposefully built to search for decays in flight of
-heavy fermions, and so as to minimize the background induced by active neutrino
-scattering, the total mass of the detector (and therefore number of target
-nuclei) was chosen to be small (approximately $20$ ton). Conversely, the SBN detectors were designed to search for neutrino interactions and thus have significantly larger
-masses ($112$, $66.6$ and $476$ tons respectively).  We therefore expect SBN to
-not only see a greater number of decay events than PS-191, but to also see a
-dis-proportionally greater background for a given exposure.
+However, exposure alone does not dictate sensitivity. PS-191 was purposefully
+built to search for decays in flight of heavy fermions, and so as to minimize
+the background induced by active neutrino scattering, the total mass of the
+detector (and therefore number of target nuclei) was chosen to be small
+(approximately $20$ ton). Conversely, the SBN detectors were designed to search
+for neutrino interactions and thus have significantly larger masses ($112$,
+$66.6$ and $476$ tons respectively).  We therefore expect SBN to not only see a
+greater number of decay events than PS-191, but to also see a disproportionally
+greater background for a given exposure.
 %
-Therefore, to understand the sensitivity of SBN to heavy sterile decay, the
-modest background rejection capability must be sufficiently motivated.
-Ultimately, the loss of sensitivity will depend on the skill of the analysis
-and the attainable degree of background suppression. We will discuss this in
-more detail in \refapp{app:bg}.
+Ultimately, the sensitivity of SBN to heavy sterile decay will depend on the
+skill of the analysis and the attainable degree of background suppression. We
+will discuss this in more detail in \refsec{sec:timing} and \refapp{app:bg}.
 
 It is clear from \reftab{tab:exposure}, that SBND has the best comparison to
 PS-191. Indeed, we will find that the majority of the sensitivity of the full
