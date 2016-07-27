@@ -220,7 +220,7 @@ detector volume of $6\times3\times12 = 216 \text{m}^3$. We can estimate the
 sensitivity of the three SBN detectors and how they will compare to PS-191 by
 estimating the experiments' \emph{exposure}, defined here as POT $\times$ Vol
 $\times$ $R^{-2}$. We compare the three facilities to PS-191 in
-\reftab{tab:exposure}, which shows that all detectors of the SBN complex expect
+\reftab{tab:exposure}, which indicates that all detectors of the SBN complex expect
 a larger exposure, with SBND seeing the greatest enhancement by a factor of
 around $40$. 
 %
@@ -229,30 +229,19 @@ expected decay events at SBN due to its lower beam energy. The steriles at SBN
 are produced by the 8 GeV BNB beam and have a softer spectrum than those
 produced by the 19.2 GeV proton synchrotron beam used at PS-191. As we discuss
 in more detail in \refsec{sec:decays}, the probability of sterile neutrino
-decay scales as $1/E_\nu$, and we would therefore expect the SBN facilities to
+decay scales as $1/|P_\nu|$, and we would therefore expect any BNB detectors to
 see more events than PS-191 for equivalent exposures.
 
 However, exposure alone does not dictate sensitivity. PS-191 was purposefully
-built to search for decays in flight of heavy fermions, and so as to minimize
+built to search for such decays of heavy fermions, and so to minimize
 the background induced by active neutrino scattering, the total mass of the
 detector (and therefore number of target nuclei) was chosen to be small
 (approximately $20$ ton). Conversely, the SBN detectors were designed to search
 for neutrino interactions and thus have significantly larger masses ($112$,
-$66.6$ and $476$ tons respectively).  We therefore expect SBN to not only see a
+$66.6$ and $476$ tons respectively). We therefore expect SBN to not only see a
 greater number of decay events than PS-191, but to also see a disproportionally
 greater background for a given exposure.
 %
-Ultimately, the sensitivity of SBN to heavy sterile decay will depend on the
-skill of the analysis and the attainable degree of background suppression. We
-will discuss this in more detail in \refsec{sec:timing} and \refapp{app:bg}.
-
-It is clear from \reftab{tab:exposure}, that SBND has the best comparison to
-PS-191. Indeed, we will find that the majority of the sensitivity of the full
-SBN data set will come from SBND thanks to its higher event rates. However, due
-to the staged approach of SBN, data from \muboone\ (which is already collecting
-data) is expected well before that of SBND or ICARUS (expected to begin
-operations in 2018). As such \muboone\ may revel hints of a decay-like signature that would have a distinct pattern to search for in SBND and ICARUS once they come on line.
-
 Our discussion starts in \refsec{sec:decays} with an overview of sterile
 neutrino decay in minimal and non-minimal models. We then present the details
 of our simulation in \refsec{sec:simulation} and show illustrative event
@@ -638,15 +627,15 @@ lifetime of $\tau_N \leq 10^{-9}$s.
 
 When considering any of these enlarged decay rates, we must be careful with
 existing bounds on the model, as an enlarged decay rate would affect all prior
-beam dump experiments in the same way until the point where baseline dependence
-becomes significant. It is instructive now to explore how to scale the bounds
+beam dump experiments in the same manner until the point where baseline dependence
+becomes significant, i.e sufficient steriles decay before reaching the detector. It is instructive now to explore how to scale the bounds
 presented here, or indeed any preexisting beam-dump experimental bounds, from
 the minimal model to an extended model that has a enhancement in one or more
 channels. To estimate this we assume the same production mechanism and rate
 (i.e via standard meson decay through sterile-active mixing $\propto
 |U_{\alpha}|^2$ only) along with the enhancement of a single channel by a
 factor $\alpha$, such that the total decay rate is given by $\Gamma_T =
-\Gamma_\text{other}+\Gamma_c (1+\alpha)$. Every beam-dump style experiment
+\Gamma_\text{other}+\Gamma_c (1+\alpha)$. Every beam-dump style experiment such as PS-191
 produces two bounds on $|U_{\alpha 4}|^2$ even though many only report one, an
 upper bound where decreasing decay rates produce too few decays to be
 statistically significant and lower bound corresponding to the scenario where
@@ -654,9 +643,9 @@ increasing decay rates have a vanish survival probability of reaching the
 detector. To estimate these values one compares the flux folded probabilities
 for an experiment of baseline(length) L($\lambda$) to decay in each scenario,
 which in the limit of small $\epsilon \equiv \lambda/L \ll 1$ approximates
-Lamberts equation with solutions, \begin{align*} |U_\text{extended}|^2 &\leq
+Lamberts equation with solutions, \begin{align*} |U_\text{extended}|^2 &\leq (\geq)
 \frac{-2 |U_\text{minimal}|^2}{\alpha \Gamma^\prime_c +\Gamma^\prime_T}
-\mathcal{W}_{0,-1}\left[-\exp^{-\frac{\Gamma^\prime_T \kappa}{2}}
+\mathcal{W}_{0(-1)}\left[-\exp^{-\frac{\Gamma^\prime_T \kappa}{2}}
 \frac{(\Gamma^\prime_c \alpha + \Gamma^\prime_T)\kappa}{2\sqrt{1+\alpha}}
 \right], \end{align*} where $\mathcal{W}_{(0,-1)}$ are the two real branches of
 the Lambert-W function corresponding to the two regimes of bounds in a decay in
@@ -675,12 +664,12 @@ Additionally non-terrestrial measurements may also place bounds on such long liv
 \end{align*}
 at the 90\% C.L. Although the scenario for $m_N > m_{\pi^0}$ has not been studied in detail, an oft used bound is that $\tau_N > 0.1$s is excluded under current BBN measurements \cite{Dolgov:2000j}. In the minimal model this upper bound on the sterile lifetime can be directly mapped to a minimum bound on the active-sterile mixings $U_{\alpha 4}$'s. However, even a modest increase of decay rate, for example by additional interactions in the sterile sector leading to decays that are not mixing suppressed, pushes the total sterile lifetime below 0.1s and removes the bounds completely. Similarly any bounds derived as such fold in a plethora of early universe model assumptions. As such we argue that terrestrial bounds on each individual decay channel are still vital probes of the sterile sector. \\
 
-\section{\label{sec:simulation}Short Baseline Neutrino complex}
+\section{\label{sec:simulation}Short Baseline Neutrino Programme}
 
 
 \subsection{Simulation details}
-A critical aspect of estimating the sensitivity of the SBN to sterile decays is
-accurate modeling of the incoming sterile fluxes. 
+A critical aspect of estimating the sensitivity of the SBN to sterile decays is an
+accurate modeling of the incoming sterile fluxes.  
 %
 Although novel dynamics may lead to enhanced production rates of sterile
 neutrinos by unconventional means, we neglect this possibility and assume that
@@ -707,19 +696,19 @@ the matrix element, $\mathcal{F}_M(a,b)= a+b -\left(a-b\right)^2$, with
 $\delta_M^{a(i)}=m_{l_a(\nu_i)}^2/M^2$ \cite{PhysRevD.24.1232}. This kinematic
 effect for the pion and kaon can be substantial, in the case of $\pi
 \rightarrow e \nu$ this factor can be as large as $10^5$, which more than compensates
-for the significantly smaller intrinsic flux of $\nu_e$  inherent in the BNB, $\approx 0.52$\% \cite{AguilarArevalo:2008yp}. We only
+for the significantly smaller intrinsic flux of $\nu_e$  inherent in the BNB, $\approx 0.52$\% \cite{AguilarArevalo:2008yp}. This study only
 consider steriles below the kinematic threshold of the kaon (388 MeV for
 production via $|U_{\mu4}|$ mixing and 493 MeV for $|U_{e4}|$ driven
 production) as although there is a small component of heavier mesons such as
 the D meson which could produce heavier sterile states, they are produced in
-very small numbers due to the relatively low energy protons of the BNB beam \cite{AguilarArevalo:2008yp}. As
+extremely numbers due to the relatively low energy protons of the BNB beam \cite{AguilarArevalo:2008yp}. As
 the mass of the sterile increases, we begin to see components of the active flux
 having energies less that the sterile mass, artificially loosing these events
 from the beam. In order to keep the normalisation of total neutrino events
 constant, before $U_{\alpha 4}$ and kinematic scaling, these events are shifted
 to be above the sterile mass threshold.
 
-The input neutrino fluxes at all three SBN detectors are calculated from published
+The input active neutrino fluxes at all three SBN detectors are calculated from published
 MiniBooNE fluxes \cite{AguilarArevalo:2008yp}, after scaling by appropriate
 $1/r^2$ baseline dependence, e.g $(470/540)^2 \approx 1.3$ at \muboone. This
 is similarly scaled by $1/r^2$ for ICARUS at 600m, however, an additional
@@ -728,12 +717,9 @@ softer energy spectrum due to the proximity of the detector to the production
 target \cite{Antonello:2015lea}. We consider sources of neutrinos that are
 relevant including wrong sign neutrinos, smaller sub-dominant $K^+\rightarrow
 \pi^+\rightarrow \nu_\alpha$ as well as other contributions, predominately from
-meson decay chains initiated by meson-nucleus interactions, although all
-contributions other than neutrinos from two body meson decays are scaled by
-$|U_{\alpha 4}|^2$ only, not including the kinematic enhancement mentioned
-above. The neutrino spectrum at \muboone\ is shown below in figure
+meson decay chains initiated by meson-nucleus interactions. The neutrino spectrum at \muboone\ is shown below in figure
 (\ref{fig:flux_plots}). As the probability for any given sterile to subsequently decay scales as
-$1/|P_{\ster}|$ the fluxes at low energy are of particular importance, in stark contrast to neutrino interaction cross sections, which scale as $E_\nu$. This leads to further kinematic discrepancies between decay-in-flight and interaction spectra. 
+$1/|P_{\ster}|$ the fluxes of active neutrinos at low energy are of particular importance, in stark contrast to standard neutrino interaction cross sections, which scale as $E_\nu$. This leads to further kinematic discrepancies between decay-in-flight and interaction spectra. 
 
 
 
