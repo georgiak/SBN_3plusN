@@ -246,21 +246,23 @@ Ultimately, the sensitivity of SBN to heavy sterile decay will depend on the
 skill of the analysis and the attainable degree of background suppression. We
 will discuss this in more detail in \refsec{sec:timing} and \refapp{app:bg}.
 
-It is clear from \reftab{tab:exposure}, that SBND has the best comparison to
+It is clear from \reftab{tab:exposure} that SBND has the best comparison to
 PS-191. Indeed, we will find that the majority of the sensitivity of the full
 SBN data set will come from SBND thanks to its higher event rates. However, due
 to the staged approach of SBN, data from \muboone\ (which is already collecting
 data) is expected well before that of SBND or ICARUS (expected to begin
-operations in 2018). As such \muboone\ may revel hints of a decay-like signature that would have a distinct pattern to search for in SBND and ICARUS once they come on line.
+operations in 2018). As such \muboone\ may reveal hints of a decay-like
+signature that would have a distinct pattern to search for in SBND and ICARUS
+once they come on line.
 
 Our discussion starts in \refsec{sec:decays} with an overview of sterile
 neutrino decay in minimal and non-minimal models. We then present the details
 of our simulation in \refsec{sec:simulation} and show illustrative event
-spectra for some channels of interest. In \refsec{sec:sensitivities}, we show the
-exclusion contours that SBN could place on the model in the absence of a
+spectra for some channels of interest. In \refsec{sec:sensitivities}, we show
+the exclusion contours that SBN could place on the model in the absence of a
 signal. We then study how the event timing information could be used to
-constrain the particle masses if a positive signal were indeed detected. We make some
-concluding remarks in \refsec{sec:conclusions}.
+constrain the particle masses if a positive signal were indeed detected. We
+make some concluding remarks in \refsec{sec:conclusions}.
 
 \section{\label{sec:decays}Sterile neutrino decay}
 
@@ -268,21 +270,21 @@ The most general renormalizable \lagrangian\ extending the SM to include a
 single new gauge-singlet fermion $\ster$ is given by
 %
 \begin{align}   \mathcal{L} = \mathcal{L}_\text{SM} +
-\overline{\ster}i\slashed{\partial}\ster+ \frac{\mu}{2}
-\overline{\ster^\text{c}}\ster  + y_\alpha\overline{L}_\alpha\tilde{H} \ster +
-y_\alpha^* \overline{\ster}\widetilde{H}^*L_\alpha\label{eq:minimallag}
-\end{align}
+\overline{\ster}i\slashed{\partial}\ster + \left(\frac{\mu}{2}
+\overline{\ster^\text{c}}\ster  + y_\alpha\overline{L}_\alpha\widetilde{H}
+\ster + \text{\emph{h.c.}}\right)\label{eq:minimallag} \end{align}
 %
-where $y_\alpha$ denote Yukawa couplings and $\mu$ a Majorana mass term for
-$\ster$. The extension to multiple new fermions involves promoting $y$ and
-$\mu$ to matrices with indices for the new states, but will offer no real
-phenomenological difference in the current work.\footnote{The minimal single
-$\ster$ extension does not allow for the observed masses of the neutrinos, as
-the mass matrix is rank 1. We assume that an appropriate extension has been
-introduced to satisfy neutrino oscillation data while introducing no new
-dynamics at the lower energy scales of interest.} Much work has been done
-understanding the phenomenology of such novel neutral states, which varies
-significantly over their large parameter spaces. 
+where $N^c=C\overline{N}^\text{T}$ with $C=i\gamma^2\gamma^0$, $L_\alpha$ is
+the SM leptonic doublet of flavour $\alpha$, $y_\alpha$ denote Yukawa couplings
+and $\mu$ a Majorana mass term for $\ster$. The extension to multiple new
+fermions involves promoting $y$ and $\mu$ to matrices with indices for the new
+states, but will offer no real phenomenological difference in the current
+work.\footnote{The minimal single $\ster$ extension does not allow for the
+observed masses of the neutrinos, as the mass matrix is rank 1. We assume that
+an appropriate extension has been introduced to satisfy neutrino oscillation
+data while introducing no new dynamics at the lower energy scales of interest.}
+Much work has been done understanding the phenomenology of such novel neutral
+states, which varies significantly over their large parameter spaces. 
 %
 Lagrangians similar to this have been used in the literature for a wide range
 of purposes. If the new particle has a mass around $10^{15}$ GeV it could
@@ -298,7 +300,8 @@ If the sterile gets lighter still, with masses at the eV scale or below,
 important observable effects might exist in neutrino oscillation experiments.
 Indeed, such particles have been proposed to alleviate short-baseline
 oscillation anomalies; although, no minimal solution seems to provide a
-compelling universal improvement to the current data \cite{Kopp:2013vaa,Conrad:2012qt}.
+compelling universal improvement to the current data
+\cite{Kopp:2013vaa,Conrad:2012qt}.
 
 For steriles which are light enough to be produced in a neutrino beam,
 %
@@ -325,10 +328,10 @@ novel heavy states \cite{Gorbunov:2007ak, Asaka:2012bb, Adams:2013qkq}.
 %
 For the BNB, we can estimate the mass at which this decoupling occurs as
 follows: the decay pipe for BNB is around $50$~m in length, which is
-considerably shorter than the decay lengths of the mesons in the beam.
-Therefore we assume that this length defines the wavepacket width at
-production.  The relevant parameter is the decoherence parameter
-\cite{Akhmedov:2009rb, Hernandez:2011rs}
+considerably shorter than the decay lengths of the mesons in the beam, and we
+assume that this length defines the wavepacket width at production.  The
+relevant parameter is the decoherence parameter \cite{Akhmedov:2009rb,
+Hernandez:2011rs}
 %
 $\xi = 2\pi \frac{\lambda_\text{d}}{\lambda_\nu},$
 %
@@ -337,7 +340,7 @@ oscillation length $\lambda_\nu = \Delta m^2/4E_\nu$. For $\xi\gg1$ the wave
 packet is insufficiently broad to accommodate a coherent superposition of the
 heavy and light neutrino states. We estimate that this occurs for the BNB at 
 %
-$ \Delta m^2 \gtrsim 0.01~\text{keV}^2.$
+$ \Delta m^2 \gtrsim 100~\text{eV}^2.$
 %
 In this article we study the region of MeV scale sterile masses. These are
 heavy enough to forbid oscillatory effects while light enough to be have
@@ -354,35 +357,42 @@ neutrino beam.
  \centering
 \includegraphics[width=\linewidth]{figures/BR_notlog_square2.pdf}
 \end{subfigure}
+
 \caption{\label{fig:branchingratios}The branching ratios for sterile neutrino
 decays in the minimal 3 sterile SM extension, with masses between 1 MeV and 0.5
-GeV. (Left) Assumes flavour agnostic mixing whereas (Right) assumes a hierarchical scenario in which either $U_{e4}$ (solid lines) or $U_{\mu 4}$ (dashed lines) is only non-zero. Heavier steriles will not be produced in great numbers in the BNB beam due
-to the very small component of heavier mesons in the secondary beam \cite{AguilarArevalo:2008yp}. Note that below 100 MeV, in all scenarios, $\ster
-\rightarrow \nu_\alpha e^+ e^-$ is by far the most dominant visible decay.}
+GeV. (Left) Assumes flavour agnostic mixing whereas (Right) assumes a
+hierarchical scenario in which either $U_{e4}$ (solid lines) or $U_{\mu 4}$
+(dashed lines) is only non-zero. Heavier steriles will not be produced in great
+numbers in the BNB beam due to the very small component of heavier mesons in
+the secondary beam \cite{AguilarArevalo:2008yp}. Note that below 100 MeV, in
+all scenarios, $\ster \rightarrow \nu_\alpha e^+ e^-$ is by far the most
+dominant visible decay.}
+
 \end{figure}
 
-The observable signature in this model is the direct decay-in-flight of the new
-fermion into SM particles. In the minimal \lagrangian\ in
-\refeq{eq:minimallag}, the only direct couplings to new sterile fermions are
-neutrino--Higgs interactions. However, these couplings generate off-diagonal
-neutrino bilinears below the electroweak symmetry breaking scale, which leads
-to mass mixing between the $4$ (or more) flavours of neutrinos. This generates
-production and decay mechanisms of many kinds for the state $\ster$ through
-mass insertion on an active neutrino fermion line in a gauge mediated process.
-These decays have been studied extensively in the literature \cite{Atre:2009rg}
-and depend only on the size of neutrino mixing to various flavours,
-parameterized by the elements of an extended $4\times4$ PMNS matrix,
+The fermions $N$ will generally be unstable, allowing for decays-in-flight into
+SM particles. In the minimal \lagrangian\ in \refeq{eq:minimallag}, the only
+direct couplings to new sterile fermions are neutrino--Higgs interactions.
+However, these couplings generate off-diagonal neutrino bilinears below the
+electroweak symmetry breaking scale, leading to mass mixing between the $4$ (or
+more) flavours of neutrinos. This leads to production and decay mechanisms of
+many kinds for the state $\ster$ through mass insertion on an active neutrino
+fermion line in a SM gauge mediated process.  These decays have been studied
+extensively in the literature \cite{Atre:2009rg} and depend only on the size of
+neutrino mixing to various flavours, parameterized by the elements of an
+extended $4\times4$ PMNS matrix,
 %
 $U_{\alpha 4}$ for $\alpha \in \{e,\mu,\tau\}$, 
 %
-and the mass of the state $\ster$ itself, $M_\ster$. The branching ratios for these decays
-are shown in \reffig{fig:branchingratios} as a function of mass for the case if
-the new state mixes with all flavours of active neutrino equally $U_{e4}=U_{\mu
-4}=U_{\tau 4}$ (left) and for less democratic flavour patterns ($U_{e4}$ only and $U_{\mu 4}$ only,right) are of course possible and, in
-the extreme case, might lead to certain channels being forbidden or vastly
-suppressed. For example, without the coupling to the electron $U_{e4}=0$, the
-dominant channel for masses $m_{\pi^0}~\lesssim m_\ster \lesssim
-m_{\mu}+m_{\pi^\pm}$ will be into a neutral pion and a neutrino.
+and the mass of the state $\ster$ itself, $M_\ster$. The branching ratios for
+these decays are shown in \reffig{fig:branchingratios} as a function of mass
+for the case if the new state mixes with all flavours of active neutrino
+equally $U_{e4}=U_{\mu 4}=U_{\tau 4}$ (left) and for less democratic flavour
+patterns ($U_{e4}$ only and $U_{\mu 4}$ only, right) are of course possible
+and, in the extreme case, might lead to certain channels being forbidden or
+vastly suppressed. For example, without the coupling to the electron
+$U_{e4}=0$, the dominant channel for masses $m_{\pi^0}~\lesssim m_\ster
+\lesssim m_{\mu}+m_{\pi^\pm}$ will be into a neutral pion and a neutrino.
 %
 
 This suppression of couplings in turn affects the possible production
@@ -392,26 +402,28 @@ $U_{e4}=U_{\mu 4}=0$, these decays with a mass insertion for the sterile
 neutrino are impossible for pions or kaons. For this reason, we will mainly
 focus on mixing with the first two generations. This parameter space will be
 probed by working at higher energies, where the neutral fermions can be
-produced by decays of charmed mesons such as $D^\pm$, by the SHiPS experiment
-\cite{Alekhin:2015byh, Anelli:2015pba}.   
+produced by decays of charmed mesons such as $D^\pm$, for example by the
+upcoming SHiPS experiment \cite{Alekhin:2015byh, Anelli:2015pba}.   
+
+For completeness we study all kinematically possible decays to visible daughter
+particles for sterile fermions produced by pion and kaon decays, $m_{\ster}
+\lesssim m_K$. 
+
+%These are shown schematically in \reffig{fig:decaydiagrams}.
 %
-For completeness we study all possible decays to visible daughters particles in our study, over the mass range producible from
-pion and kaon decay, $m_{\ster} \lesssim m_K$. These are shown schematically in
-\reffig{fig:decaydiagrams}.
-
-\begin{figure}[t]
-\begin{align*}
-\pi^\pm / K^\pm \longrightarrow \overbrace{l^\pm \ster}^{\text{via } U_{e4} \text{ or } U_{\mu 4}}  &\longrightarrow \left. l^\pm \pi^\mp, \qquad \right\} \text{via } U_{e4} \text{ or } U_{\mu 4}\\
-														    & \drsh \nu_\alpha l^+ l^-,\\[\jot]
-														& \drsh \nu_\alpha \gamma   ,\hspace*{3em}
-\smash{\left.\begin{array}{@{}c@{}}\\[\jot]\\[\jot]\\[\jot]\end{array}\right\}}\text{via } U_{e4}, U_{\mu 4} \text{  or  } U_{\tau 4}\\[\jot]					 
-			& \drsh \nu_\alpha \pi^0.
-\end{align*}
-
-\caption{\label{fig:decaydiagrams}The production and decay channels considered in this study, where $l$ referes to either $e^+e^-$, $\mu^+ \mu^-$ or $\mu^\mp e^\pm$. }
-
-\end{figure}
-
+%\begin{figure}[t]
+%\begin{align*}
+%\pi^\pm / K^\pm \longrightarrow \overbrace{l^\pm \ster}^{\text{via } U_{e4} \text{ or } U_{\mu 4}}  &\longrightarrow \left. l^\pm \pi^\mp, \qquad \right\} \text{via } U_{e4} \text{ or } U_{\mu 4}\\
+%														    & \drsh \nu_\alpha l^+ l^-,\\[\jot]
+%														& \drsh \nu_\alpha \gamma   ,\hspace*{3em}
+%\smash{\left.\begin{array}{@{}c@{}}\\[\jot]\\[\jot]\\[\jot]\end{array}\right\}}\text{via } U_{e4}, U_{\mu 4} \text{  or  } U_{\tau 4}\\[\jot]					 
+%			& \drsh \nu_\alpha \pi^0.
+%\end{align*}
+%
+%\caption{\label{fig:decaydiagrams}The production and decay channels considered in this study, where $l$ referes to either $e^+e^-$, $\mu^+ \mu^-$ or $\mu^\mp e^\pm$. }
+%
+%\end{figure}
+%
 \subsection{Minimal model}
 
 We define the minimal sterile neutrino model by the Lagrangian in
