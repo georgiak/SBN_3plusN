@@ -685,7 +685,7 @@ MiniBooNE requires a very large mixing with muon neutrinos, $|U_{\mu 4}|^2
 lifetime of $\tau_N \leq 10^{-9}$s.
 
 \subsection{Bounds on $U_{\alpha 4}$}
-\newtext{MARK}{Haven't changed this section yet, just seperated it out}
+\newtext{MARK}{Haven't modified this section yet, just seperated it out. I like this was significantly more.}
 
 When considering any of these enlarged decay rates, we must be careful with
 existing bounds on the model, as an enlarged decay rate would affect all prior
@@ -719,8 +719,6 @@ $\Gamma_T L \ll 1$, the bound can be reduced to the more intuitive form
 to map any published bounds, and the bounds presented below to any enhanced sterile
 model.\\
 
-\newtext{MARK}{another bound for btoh minimal and non-minimal}
-
 Additionally non-terrestrial measurements may also place bounds on such long lived sterile neutrinos. One such implication is they may strongly impact the success of Big-Bang Nucleosynthes(BBN) by both speeding up the expansion of the universe with their extra energy, as well as potentially modifying the spectra of active neutrinos via their subsequent decays. If, however, the sterile has sufficiently short lifetime  then their effect on BBN is mitigated as the bulk of thermally produced steriles have decayed long before $T^i_\text{BBN} \approx 10$ MeV \cite{Fields:2006ga}. The strength of these bounds have been estimated conservatively for a single sterile neutrino, $m_N < m_{\pi^0}$, as \cite{Dolgov:2000jw,Dolgov:2000pj}
 \begin{align*}
 	\tau_\text{N} &< 1.287 \left( \frac{m_N}{\text{MeV}}\right)^{-1.828}+0.04179 \text{  s    $\qquad$  for $U_{\mu 4}$ or $U_{\tau 4}$ mixing},\\
@@ -731,7 +729,6 @@ at the 90\% C.L. Although the scenario for $m_N > m_{\pi^0}$ has not been studie
 \section{\label{sec:simulation}Short Baseline Neutrino Programme}
 
 \subsection{Simulation details}
-
 
 We simulate the event numbers and distributions at each detector site using a custom
 Monte Carlo program which allows efficiency's to be taken into account due to
@@ -877,22 +874,82 @@ threshold of 21 MeV on proton kinetic energy in liquid Argon \cite{Acciarri:2014
 Background events that contain less than this and events that do not contain
 any protons, such as events originating from coherent pion production, remain a
 viable background and further rejection must come from the kinematics of the
-final state particles only. The kinematics of signal decay-in-flight and backgrounds from scattering events, however,  have strikingly different behaviour leading to strong supression capalities.
+final state particles only. The kinematics of such daughter particles originating from decay-in-flight and backgrounds from scattering events, however,  have strikingly different behaviour leading to strong supression capalities. \\
 
-All two body decays containing visible daughters have a powerful discriminator in
+As a representative example of this we discuss here the backgrounds associated with the decay $\ster \rightarrow \mu^\pm \pi^\mp$, the channel with largest expected beam related backgrounds. The dominant backgrounds to this channel will be genuine charged current $\pi \mu$ production associated with the $\nu_\mu$ neutrino beam of which there are many expected at the SBN detectors. In essence the signal of a traditional neutrino scattering experiment become the backgrounds for a decay-in-flight analysis. 
+This channel, and indeed $e^\pm \pi^\mp$, has a powerful discriminator in
 the reconstructed invariant mass of the charged particle pair, e.g  $M_{l^\pm
 \pi^\mp}^2=m_l^2+m_{p^\pm}^2+ 2(E_l E_\pi - |P_l||P_\pi|\cos\theta_\text{sep})$
 for $\ster\rightarrow \pi^+ l^-$, which sum to that of the the parent sterile
 (within detector resolution), where as the background is expected form a broad
-spectra spanning the energies of incoming neutrino. Additionaly, two body
+spectra spanning the energies of incoming neutrino. Additionaly such two body
 decays allow for reconstruction of the parent sterile angle with respect to the
-beamline which is assumed to be close to on-axis, unlike the more isotropic
-backgrounds. We found $\approx 95$\% of reconstructed sterile from two bodys
-decays were below $4^\circ$ relative to the beamline and we cut all events
-greater than this. 
+beamline which, as the sterile impinged the detector, is very close to on-axis unlike the more isotropic
+backgrounds. We found $\approx 95$\% of reconstructed sterile angles from such two bodys
+decays were inside $4^\circ$ relative to the beamline. 
 
-As a representative example we show here the backgrounds associated with the decay $\ster \rightarrow \mu^\pm \pi^\mp$. The dominant backgrounds to this channel will be genuine chargedcurrent $\pi \mu$ production associated with the $\nu_\mu$ neutrino beam of which there are many expected at the SBN detectors. In essence the signal of a traditional neutrino scattering experiment become the backgrounds for a decay-in-flight analysis. We show in \reffig{fig:mu_pi_cutflow} the power of such a kinematic analysis as each cut is implemented, reducing the inclusive $\mu \pi$ eventrate at $\mu$BooNE from $\approx 100,000$ to $\approx 30$ with a signal efficiency of 56\%. 
+We show in \reffig{fig:mu_pi_cutflow} the power of such a kinematic analysis as each cut is implemented, reducing the inclusive $\mu \pi$ eventrate at $\mu$BooNE from $\approx 100,000$ to $\approx 30$ with a signal efficiency of 56\%. This level of background supression relys on the angular and energy resolution of LAr dectectors and allows for such a decay in flight search to be undertaken without the need for modifications to current detector design.
 For discussions of backgrounds for the remaining channels see Appendix (\ref{app:bg}) for details.
+
+\subsection{\label{sec:timing}Role of event timing}
+
+\begin{figure}[t]
+\center
+\begin{subfigure}[c]{0.68\textwidth}
+\includegraphics[width=\textwidth]{figures/timing.pdf} 
+\end{subfigure}%
+~
+\begin{subfigure}[c]{0.32\textwidth}
+\includegraphics[width=\textwidth]{figures/line_plots_long.pdf}
+\end{subfigure}
+\caption{\label{fig:timing} \emph{Left:} The timing delay of sterile neutrino
+decays in nano-seconds for both a 25 MeV (top) and 350 MeV (bottom) sterile
+neutrino at the SBND and and \icarus\ detectors (110 and 600m
+respectively). The 4 ns beam bucket window is shown highlighted in red from 0
+to 4 ns, followed by an additional 17 ns gap. The timings are calculated as a
+difference to the time of flight of a active neutrino, assuming the decay
+occurred in a uniform sample across the 50m BNB decay pipe. A timing resolution
+of 1 ns is assumed to smear the observed events. \emph{Right:} The percentage of sterile decay events that
+fall into the inter-bucket region as a function of sterile mass for SBND and
+ICARUS, assuming a flux derived from $U_{e4}$ ($U_{\mu 4}$) mixing in solid
+(dashed) lines. Both SBND and ICARUS see a sizable fraction of total events
+outside the beam bucket windows when the sterile mass exceeds $\approx10$ MeV.
+}
+
+\end{figure}
+On top of the impressive background rejection capabilities of LAr utilising kinematic cuts there is the potential for even greater background supression by utilising the time of arrival of observed events. Although the drift time of electrons in LAr can be as large as $\mathcal{O}$(100)$\mu$s, the ionization and excitation of Argon from the passing of a charged particle also produces 128nm scintillation light of which there is a nano-second scale contribution from the excited state $Ar^*_2$ decaying \cite{Acciarri:2015hha}. LAr is transparent to this light so if the light detection system (LDS) employed by the SBN detectors has a similar nanosecond resolution, this can allow for precise timing to be attached to each TPC triggered event.\\
+
+Light neutrinos propagate and reach the furthest detector
+of the SBN complex after approximately 2 $\mu$s. In the conventional physics program
+of the SBN, the timing of these events play an important role in the analysis
+of backgrounds, tight timing windows are placed around the 19.2$\mu$s beam
+spill to limit constant rate backgrounds such as cosmogenic events. The LDS of both SBND
+and ICARUS, however, are expected to be able to achieve significantly better
+timing resolution than this, $\approx \mathcal{O}$(1-2 ns) depending on the exact technology used, which potentially allows for the use of both bucket
+and spill structure in the background analysis. The BNB consists of 81
+Radio-Frequency buckets of approximately 2ns length, separated by 19 ns, to
+form the 19.2$\mu$s spill with a frequency of 3Hz \cite{Antonello:2015lea}.
+If this nano-second resolution is indeed achieved, it allows for events in individual buckets to be
+identified. Such a nano-second resolution was achieved previously by the PMT's utilised in MiniBooNE \cite{Antonello:2015lea}, with potential for improvement in the next generation SBN detectors. \muboone\ is omitted from such a timing related analysis as the achievable timing
+resolution is lower, $\approx 10$ns. \\
+
+As particles with finite rest mass, these heavy steriles will propagate
+at subluminal speeds and for larger masses can produce observable timing
+delays. This effect begins to become relevant when the sterile neutrinos are of
+MeV-scale masses and above. As the flux of decaying sterile is inversely
+proportional to its momentum after convoluting with their decay probability, many of these low energy steriles are
+traveling at sufficiently slower speeds than their light counterparts to be distinguishable. Shown
+in \reffig{fig:timing_line} below is the fraction of events that are expected
+to fall outside the  bucket window in both SBND and ICARUS, with detailed
+timing spectrum's of a 25 and 350 MeV sterile shown in \ref{fig:timing}. For the purposes of this study we define the beam-correlated window to be a 4ns period, 1ns each side of the 2ns beam bucket.
+
+As can be seen a significant proportion of sterile events are distributed throughout the inter-bucket area. Events which fall into the beam-bucket timing window have to be analysed on top of all known beam-related backgrounds, where as the increasingly larger fraction which populate the inter-bucket window have extremely reduced beam-correlated backgrounds.  
+
+The implication of the timing effects is that our discussion of backgrounds is
+twofold: for low mass steriles, or any mass at \muboone\ due to timing
+resolution, we must consider all beam-related backgrounds as potential
+backgrounds. For larger masses at SBND and ICARUS, we instead reduce the number of signal events by the appropriate fraction that lies in the bucket window and assume that the beam-related backgrounds are removed. 
+
 
 \subsection{\label{sec:eventspectra}Event spectra}
 
@@ -1005,66 +1062,6 @@ scope of the present work.
 %should be optimised to keep as many of these lowest energy events as possible. 
 %
 %
-
-\subsection{\label{sec:timing}Role of event timing}
-
-
-\begin{figure}[t]
-\center
-\begin{subfigure}[c]{0.68\textwidth}
-\includegraphics[width=\textwidth]{figures/timing.pdf} 
-\end{subfigure}%
-~
-\begin{subfigure}[c]{0.32\textwidth}
-\includegraphics[width=\textwidth]{figures/line_plots_long.pdf}
-\end{subfigure}
-\caption{\label{fig:timing} \emph{Left:} The timing delay of sterile neutrino
-decays in nano-seconds for both a 25 MeV (top) and 350 MeV (bottom) sterile
-neutrino at the SBND and and \icarus\ detectors (110 and 600m
-respectively). The 4 ns beam bucket window is shown highlighted in red from 0
-to 4 ns, followed by an additional 17 ns gap. The timings are calculated as a
-difference to the time of flight of a active neutrino, assuming the decay
-occurred in a uniform sample across the 50m BNB decay pipe. A timing resolution
-of 1 ns is assumed to smear the observed events. \emph{Right:} The percentage of sterile decay events that
-fall into the inter-bucket region as a function of sterile mass for SBND and
-ICARUS, assuming a flux derived from $U_{e4}$ ($U_{\mu 4}$) mixing in solid
-(dashed) lines. Both SBND and ICARUS see a sizable fraction of total events
-outside the beam bucket windows when the sterile mass exceeds $\approx10$ MeV.
-}
-
-\end{figure}
-Although the drift time of electrons in LAr can be as large as $\mathcal{O}$(100)$\mu$s, the ionization and excitation of Argon from the passing of a charged particle also produces 128nm scintillation light of which there is a nano-second scale contribution from the excited state $Ar^*_2$ decaying \cite{Acciarri:2015hha}. LAr is transparent to this light so if the light detection system (LDS) employed by the SBN detectors has a similar nanosecond resolution, this can allow for precise timing to be attached to each TPC triggered event.\\
-
-Light neutrinos propagate and reach the furthest detector
-of the SBN complex after approximately 2 $\mu$s. In the conventional physics program
-of the SBN, the timing of these events play an important role in the analysis
-of backgrounds, tight timing windows are placed around the 19.2$\mu$s beam
-spill to limit constant rate backgrounds such as cosmogenic events. The LDS of both SBND
-and ICARUS, however, are expected to be able to achieve significantly better
-timing resolution than this, $\approx \mathcal{O}$(1-2 ns) depending on the exact technology used, which potentially allows for the use of both bucket
-and spill structure in the background analysis. The BNB consists of 81
-Radio-Frequency buckets of approximately 2ns length, separated by 19 ns, to
-form the 19.2$\mu$s spill with a frequency of 3Hz \cite{Antonello:2015lea}.
-If this nano-second resolution is indeed achieved, it allows for events in individual buckets to be
-identified. Such a nano-second resolution was achieved previously by the PMT's utilised in MiniBooNE \cite{Antonello:2015lea}, with potential for improvement in the next generation SBN detectors. \muboone\ is omitted from such a timing related analysis as the achievable timing
-resolution is lower, $\approx 10$ns. \\
-
-As particles with finite rest mass, these heavy steriles will propagate
-at subluminal speeds and for larger masses can produce observable timing
-delays. This effect begins to become relevant when the sterile neutrinos are of
-MeV-scale masses and above. As the flux of decaying sterile is inversely
-proportional to its momentum after convoluting with their decay probability, many of these low energy steriles are
-traveling at sufficiently slower speeds than their light counterparts to be distinguishable. Shown
-in \reffig{fig:timing_line} below is the fraction of events that are expected
-to fall outside the  bucket window in both SBND and ICARUS, with detailed
-timing spectrum's of a 25 and 350 MeV sterile shown in \ref{fig:timing}. For the purposes of this study we define the beam-correlated window to be a 4ns period, 1ns each side of the 2ns beam bucket.
-
-As can be seen a significant proportion of sterile events are distributed throughout the inter-bucket area. Events which fall into the beam-bucket timing window have to be analysed on top of all known beam-related backgrounds, where as the increasingly larger fraction which populate the inter-bucket window have extremely reduced beam-correlated backgrounds.  
-
-The implication of the timing effects is that our discussion of backgrounds is
-twofold: for low mass steriles, or any mass at \muboone\ due to timing
-resolution, we must consider all beam-related backgrounds as potential
-backgrounds. For larger masses at SBND and ICARUS, we instead reduce the number of signal events by the appropriate fraction that lies in the bucket window and assume that the beam-related backgrounds are removed. 
 
 \section{\label{sec:sensitivities}Results}
 
@@ -1198,43 +1195,43 @@ For $N\to e^\pm\pi^\mp$ the kinematic function $I(x,y)$ produces only weak suppr
 \mu^\pm\pi^\mp$ the equivalent threshold is $m_\ster\gtrsim 270$ MeV.
 
 \section{Potential Backgrounds\label{app:bg}}
-In order to estimate the effect of expected backgrounds on the sensitivity we
-have performed a Monte-Carlo analysis using the neutrino event generator GENIE
-\cite{Andreopoulos:2009rq}. This provides us with generator level information about the
-kinematics of the beam-driven backgrounds, with rates normalised off expected
-NC and CC inclusive values as published in the SBN proposal. Energy and angular
-smearing is then implemented to allow for approximate estimates of the effects
-of detector performance to the level necessary for this analysis, without the
-need for a full GEANT detector simulation. Energies are smeared according to a
-Gaussian distribution around their true MC energies, with a relative variance
-$\sigma_E/E = \xi/ \sqrt(E) $, where $\xi$ is a detector dependant resolution.
-For this study we take the energy resolution for EM showers, muons and protons
-to be 15\%, 6\% and a conservative 15\% respectively, alongside the angular
-resolution of LAr to be $1.73^{\circ}$ \cite{Antonello:2015lea}. 
-
-Of utmost importance in all studied channels is the identification of a scattering vertex. Any hadronic activity
-localized at the beginning of the lepton track is a smoking gun signal for beam
-related scattering from deep-inelastic or quasi-elastic scattering. Therefore
-any event containing one or more reconstructed protons or additional hadrons is
-rejected outright. For counting this proton multiplicity we assume an detection
-threshold of 21 MeV on proton kinetic energy in liquid Argon \cite{Acciarri:2014gev}, after smearing.
-Background events that contain less than this and events that do not contain
-any protons, such as events originating from coherent pion production, remain a
-viable background and further rejection must come from the kinematics of the
-final state particles only.
-
-All two body visible decays discussed below have a powerful discriminator in
-the reconstructed invariant mass of the charged particle pair, e.g  $M_{l^\pm
-\pi^\mp}^2=m_l^2+m_{p^\pm}^2+ 2(E_l E_\pi - |P_l||P_\pi|\cos\theta_\text{sep})$
-for $\ster\rightarrow \pi^+ l^-$, which sum to that of the the parent sterile
-(within detector resolution), where as the background is expected form a broad
-spectra spanning the energies of incoming neutrino. Additionaly, two body
-decays allow for reconstruction of the parent sterile angle with respect to the
-beamline which is assumed to be close to on-axis, unlike the more isotropic
-backgrounds. We found $\approx 95$\% of reconstructed sterile from two bodys
-decays were below $4^\circ$ relative to the beamline and we cut all events
-greater than this. 
-
+%In order to estimate the effect of expected backgrounds on the sensitivity we
+%have performed a Monte-Carlo analysis using the neutrino event generator GENIE
+%\cite{Andreopoulos:2009rq}. This provides us with generator level information about the
+%kinematics of the beam-driven backgrounds, with rates normalised off expected
+%NC and CC inclusive values as published in the SBN proposal. Energy and angular
+%smearing is then implemented to allow for approximate estimates of the effects
+%of detector performance to the level necessary for this analysis, without the
+%need for a full GEANT detector simulation. Energies are smeared according to a
+%Gaussian distribution around their true MC energies, with a relative variance
+%$\sigma_E/E = \xi/ \sqrt(E) $, where $\xi$ is a detector dependant resolution.
+%For this study we take the energy resolution for EM showers, muons and protons
+%to be 15\%, 6\% and a conservative 15\% respectively, alongside the angular
+%resolution of LAr to be $1.73^{\circ}$ \cite{Antonello:2015lea}. 
+%
+%Of utmost importance in all studied channels is the identification of a scattering vertex. Any hadronic activity
+%localized at the beginning of the lepton track is a smoking gun signal for beam
+%related scattering from deep-inelastic or quasi-elastic scattering. Therefore
+%any event containing one or more reconstructed protons or additional hadrons is
+%rejected outright. For counting this proton multiplicity we assume an detection
+%threshold of 21 MeV on proton kinetic energy in liquid Argon \cite{Acciarri:2014gev}, after smearing.
+%Background events that contain less than this and events that do not contain
+%any protons, such as events originating from coherent pion production, remain a
+%viable background and further rejection must come from the kinematics of the
+%final state particles only.
+%
+%All two body visible decays discussed below have a powerful discriminator in
+%the reconstructed invariant mass of the charged particle pair, e.g  $M_{l^\pm
+%\pi^\mp}^2=m_l^2+m_{p^\pm}^2+ 2(E_l E_\pi - |P_l||P_\pi|\cos\theta_\text{sep})$
+%for $\ster\rightarrow \pi^+ l^-$, which sum to that of the the parent sterile
+%(within detector resolution), where as the background is expected form a broad
+%spectra spanning the energies of incoming neutrino. Additionaly, two body
+%decays allow for reconstruction of the parent sterile angle with respect to the
+%beamline which is assumed to be close to on-axis, unlike the more isotropic
+%backgrounds. We found $\approx 95$\% of reconstructed sterile from two bodys
+%decays were below $4^\circ$ relative to the beamline and we cut all events
+%greater than this. 
+%
 All three cuts defined above are applied to all events, both those that fall inside and outside the bucket timing window. Outside the timing window where one already expects extremely reduced beam related backgrounds these cuts reduce any the remaining to effectively zero. Inside the bucket timing window (and for all events at $\mu$BooNE) we look at further kinematic cuts to reduce potential backgrounds as elaborated below.
 
 \subsection{$\ster \rightarrow \mu^\pm \pi^\mp$ and $\ster \rightarrow e^\pm \pi^\mp$   }
