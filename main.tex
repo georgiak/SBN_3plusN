@@ -332,13 +332,14 @@ particles to be observed down-wind of the source \cite{CooperSarkar:1985nh,
 Bergsma:1985is, Vaitaitis:1999wq, Bernardi:1985ny, Bernardi:1987ek,
 Anelli:2015pba, Alekhin:2015byh}. It has been pointed out that the difference
 between a beam dump and a conventional neutrino beam is more a matter of
-philosophy, and we can expect many experiments to have some sensitivity to
-novel heavy states \cite{Gorbunov:2007ak, Asaka:2012bb, Adams:2013qkq}. 
+philosophy than design, and we can expect many experiments to have some
+sensitivity to novel heavy states \cite{Gorbunov:2007ak, Asaka:2012bb,
+Adams:2013qkq}. 
 %
-For the BNB, we can estimate the mass at which this decoupling occurs as
-follows: the decay pipe for BNB is around $50$~m in length, which is
-considerably shorter than the decay lengths of the mesons in the beam, and we
-assume that this length defines the wavepacket width at production.  The
+For the BNB, we can estimate the mass at which the oscillatory behaviour is
+suppressed as follows: the decay pipe for BNB is around $50$~m in length, which
+is considerably shorter than the decay lengths of the mesons in the beam, and
+we assume that this length defines the wavepacket width at production.  The
 relevant parameter is the decoherence parameter \cite{Akhmedov:2009rb,
 Hernandez:2011rs}
 %
@@ -351,62 +352,82 @@ heavy and light neutrino states. We estimate that this occurs for the BNB at
 %
 $ \Delta m^2 \gtrsim 100~\text{eV}^2.$
 %
-In this article we study the region of MeV scale sterile masses. These are
-heavy enough to forbid oscillatory effects while light enough to be have
-significant production from the meson decays associated with a conventional
-neutrino beam. 
+%In this article we study the region of MeV scale sterile masses. These are
+%heavy enough to forbid oscillatory effects while light enough to be have
+%significant production from the meson decays associated with a conventional
+%neutrino beam. 
 
 In a conventional neutrino beam, most neutrinos are derived from meson decay,
-and we assume that the sterile neutrinos are produced in similar channels with
-suppression from a mixing matrix element $U_{\alpha 4}$. We restrict ourselves
-to sterile masses below the Kaon mass, $m_{\ster}\lesssim m_K$. 
+and we assume in this work that the steriles are produced from the decays of
+pions and kaons, restricting our sterile mass to $m_\ster \le m_K$.
 %
-Larger sterile masses can be probed by working at higher energies, where the
+Larger sterile masses could be probed by working at higher energies, where the
 neutral fermions come from decays of charmed mesons such as $D^\pm$. This
 strategy will be used by the upcoming SHiPS experiment \cite{Alekhin:2015byh,
-Anelli:2015pba} but will not be considered futher in the paper as D mesons are
-produced in extremely small numbers due to the relatively low energy protons of
-the BNB beam \cite{AguilarArevalo:2008yp}.
-
+Anelli:2015pba} but will not be considered futher in the present work as $D$
+mesons are produced in extremely small numbers due to the relatively low energy
+protons of the BNB beam \cite{AguilarArevalo:2008yp}.
+%
 Although novel dynamics may lead to enhanced production rates of sterile
 neutrinos by alternative unconventional means, we neglect this possibility and
-assume that the sterile component of the BNB flux arises soley from such meson
-(or secondary $\nu_\mu$) decays only. This process requires only mass-mixing
-from the $N$-$\nu$ Yukawa term in \refeq{eq:minimallag}. It follows that the
-amplitudes for these decays are related to those of the standard leptonic
-decays of mesons via an insertion of the mixing matrix element $U_{\alpha 4}$,
-and to leading order in the mass of the sterile neutrino over the meson, the
-$\ster$-fluxes will be a rescaling of the fluxes for the active neutrinos. 
-
-The final sterile fluxes can be estimated by taking known active neutrino
-fluxes and scaling them by the appropriate mixing $U_{\alpha 4}$, with an
-additional kinematic factor to take into account the helicity un-suppression of
-channels if the flavour pattern allows, such as $\pi^+ \rightarrow e^+\ster$
-for massive $\ster \gg m_e$ if $U_{e4}$ is non-zero. As the meson decay comes
-with an associated charged lepton, mixing with the $\tau$-flavour cannot lead
-to production at the BNB, and so production is possible with $U_{e4}$, $U_{\mu
-4}$ or a combination of the two.
-
-The flux of steriles produced from the decay of a given meson M is therefore
+assume that the sterile component of the BNB flux arises soley from meson (or
+secondary $\mu$) decays. This process requires only mass-mixing from the
+$N$-$\nu$ Yukawa term in \refeq{eq:minimallag}. It follows that the amplitudes
+for these decays are related to those of the standard leptonic decays of mesons
+via an insertion of the mixing matrix element $U_{\alpha 4}$, and to leading
+order in the mass of the sterile neutrino over the meson, the $\ster$-fluxes
+will be a rescaling of the fluxes for the active neutrinos. 
+%
+However, it is necessary to go beyond this approximation and consider the
+kinematic differences of heavy sterile production.
+%
+The flux of steriles produced from the decay of a given meson $M$ is approximated
+by
 %
 \[ \phi_{\ster}(E_{\ster}) \approx \phi_{\nu_\alpha} (E_{\nu_\alpha})\vert
 U_{\alpha 4}\vert^2 \frac{\rho\left( \delta_M^a , \delta_M^i
-\right)}{\delta_M^a \left(1- \delta_M^a\right)^2}.  \]
+\right)}{\delta_M^a \left(1- \delta_M^a\right)^2},  \]
 %
-Where $\rho(a,b)=\mathcal{F}_M(a,b) \lambda^{\frac{1}{2}}(1,a,b)$ is a
+where $\rho(a,b)=\mathcal{F}_M(a,b) \lambda^{\frac{1}{2}}(1,a,b)$ is a
 kinematic factor consisting of a term proportional to the two body phase space
 factor, $\lambda(x,y,z)=x^2+y^2+z^2-2(x y+yz+x z)$ and a term proportional to
 the matrix element, $\mathcal{F}_M(a,b)= a+b -\left(a-b\right)^2$, with
-$\delta_M^{a(i)}=m_{l_a(\nu_i)}^2/M^2$ \cite{PhysRevD.24.1232}. This kinematic
-effect for the pion and kaon can be substantial, in the case of $\pi
+$\delta_M^{a(i)}=m_{l_a(\nu_i)}^2/M^2$ \cite{PhysRevD.24.1232}. 
+
+The kinematic factor leads to two effects. First it provides a threshold effect
+of suppressing the production when the phase space decreases near a kinematic
+boundary.  Secondly, it allows for the helicity un-suppression of channels
+which in a conventional beam are highly suppressed. For example, the decay
+$\pi^\pm \to e^\pm \nu_e$ which is significantly suppressed compared to the
+comparable muonic channel, sees no such suppression when the neutrino is
+replaced with $N$.
+%
+This kinematic effect for the pion and kaon can be substantial, for $\pi
 \rightarrow e \nu$ this factor can be as large as $10^5$, which more than
-compensates for the significantly smaller intrinsic flux of $\nu_e$  inherent
-in the BNB, $\approx 0.52$\% \cite{AguilarArevalo:2008yp}. As the mass of the
-sterile increases, we begin to see components of the active flux having
-energies less that the sterile mass, artificially loosing these events from the
-beam. In order to keep the normalisation of total neutrino events constant,
-before $U_{\alpha 4}$ and kinematic scaling, these events are shifted to be
-above the sterile mass threshold.
+compensates for the significantly smaller intrinsic flux of $\nu_e$ inherent in
+the BNB, $\approx 0.52$\% \cite{AguilarArevalo:2008yp}. This approximation
+starts to fail slightly as the mass of the sterile increases, where we begin to
+see components of the active flux having energies less than the sterile mass
+which are truncated by the kinematic factor. In order to keep the normalisation
+of total neutrino events constant, before $U_{\alpha 4}$ and kinematic scaling,
+these events are shifted to be above the sterile mass threshold.
+
+%The final sterile fluxes can be estimated by taking known active neutrino
+%fluxes and scaling them by the appropriate mixing $U_{\alpha 4}$, with an
+%additional kinematic factor to take into account the helicity un-suppression of
+%channels if the flavour pattern allows, such as $\pi^+ \rightarrow e^+\ster$
+%for massive $\ster \gg m_e$ if $U_{e4}$ is non-zero. 
+%
+%As mentioned in the introduction, because the meson decay comes with an
+%associated charged lepton, mixing with the $\tau$-flavour cannot lead to
+%production at the BNB, and so production is only possible with $U_{e4}$,
+%$U_{\mu 4}$ or a combination of the two.
+%
+
+We end by pointing out that the details of sterile neutrino production in the
+BNB has naturally defines a mass range of interest eV $\gg m_\ster \lesssim$
+494~MeV. We focus on MeV scale states where the prospects for detection are
+greatest.
 
 
 \begin{figure}[t]
@@ -1119,11 +1140,39 @@ scope of the present work.
 
 \section{\label{sec:sensitivities}Results}
 
+In this section we present the results of our simulation. We have have
+performed two analyses. In the first, we compute exclusion contours which could
+be expected to be set by SBN if no signal is seen. We compute these for all
+decay modes presented in \reffig{fig:branchingratios}. Our second analysis
+considers the phenomenological potential of timing information at the SBN
+experiment.
+
 \subsection{Exclusion contours}
 %
-\reffig{fig:band_sbn} presents the results of this analysis for the combined 6.6e20 POT exposure at SBND and ICARUS, and 13.2e20 POT at \muboone. Shown is the predicted sensitivity for the $\ster \rightarrow \nu_\mu e^+e^-$ (blue, top left), $\ster \rightarrow \pi^+ \mu^-$ (red, top left), $\ster \rightarrow \nu_e e^+ e^-$ (blue, top right),  $\ster \rightarrow \pi^+ e^-$ (green, top right), $\ster \rightarrow \nu_\mu \gamma$ (purple, middle left), $\ster \rightarrow \nu_\mu \pi^0$ (yellow, middle left),$\ster \rightarrow \nu_e \gamma$ (purple, middle right), $\ster \rightarrow \nu_e \pi^0$ (yellow, middle right), $\ster \rightarrow \nu_e e^\pm \mu^\mp $ (bright green, bottom right), $\ster \rightarrow \nu_e \mu^+ \mu^- $ (pink, bottom right),  $\ster \rightarrow \nu_\mu e^- \mu^+$ (pink, bottom right) and $\ster \rightarrow \nu_\mu \mu^+ \mu^- $ (pink, bottom left). The lower solid coloured lines are the background-less 90\% C.L sensitivity contours defined as 2.44 events following the procedure of \refref{Feldman:1997qc} designed for
-background-less searches for rare events. This represents the best theoretical achievable sensitivity at the SBN program, assuming perfect signal efficiency. We also present the results of a simple cut based background analysis (upper solid colored lines), taking advantage of the stark spectral differences between decay-in-flight and the majority of the beam-related backgrounds. This background analysis is not optimized, however, and primarily serves to show the potential impact of the backgrounds on our sensitivity,  see \refapp{app:bg} for details of this analysis. We estimate the true achievable sensitivity of the SBN program would lie somewhere
-between these two curves (the solid shaded region). 
+\reffig{fig:band_sbn} presents the results of this analysis for the combined
+6.6e20 POT exposure at SBND and ICARUS, and 13.2e20 POT at \muboone. Shown is
+the predicted sensitivity for the $\ster \rightarrow \nu_\mu e^+e^-$ (blue, top
+left), $\ster \rightarrow \pi^+ \mu^-$ (red, top left), $\ster \rightarrow
+\nu_e e^+ e^-$ (blue, top right),  $\ster \rightarrow \pi^+ e^-$ (green, top
+right), $\ster \rightarrow \nu_\mu \gamma$ (purple, middle left), $\ster
+\rightarrow \nu_\mu \pi^0$ (yellow, middle left),$\ster \rightarrow \nu_e
+\gamma$ (purple, middle right), $\ster \rightarrow \nu_e \pi^0$ (yellow, middle
+right), $\ster \rightarrow \nu_e e^\pm \mu^\mp $ (bright green, bottom right),
+$\ster \rightarrow \nu_e \mu^+ \mu^- $ (pink, bottom right),  $\ster
+\rightarrow \nu_\mu e^- \mu^+$ (pink, bottom right) and $\ster \rightarrow
+\nu_\mu \mu^+ \mu^- $ (pink, bottom left). The lower solid coloured lines are
+the background-less 90\% C.L sensitivity contours defined as 2.44 events
+following the procedure of \refref{Feldman:1997qc} designed for background-less
+searches for rare events. This represents the best theoretical achievable
+sensitivity at the SBN program, assuming perfect signal efficiency. We also
+present the results of a simple cut based background analysis (upper solid
+colored lines), taking advantage of the stark spectral differences between
+decay-in-flight and the majority of the beam-related backgrounds. This
+background analysis is not optimized, however, and primarily serves to show the
+potential impact of the backgrounds on our sensitivity,  see \refapp{app:bg}
+for details of this analysis. We estimate the true achievable sensitivity of
+the SBN program would lie somewhere between these two curves (the solid shaded
+region). 
 
 The increased event rate of sterile decays at the SBN program in comparison to PS-191 has the potential for the improvement on the bounds on $|U_{e4}|^2$ and $|U_{\mu 4}|^2$ in all channels studied for a wide region of parameter space even when taking into account the increased rate of backgrounds expected. Additionally, the previously unbounded $\ster \rightarrow \nu_\alpha \pi^0$ and $\ster \rightarrow \nu_\alpha \gamma$ can potentially be bounded at a level very similar to the previous $e^+ e^-$ channel bounds as published by PS-191.
 
