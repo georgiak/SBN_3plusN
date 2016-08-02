@@ -12,7 +12,7 @@ then outputs two final ntuples that contain all points within the 90 and 99% CL
 #include "TCut.h"
 bool procOpt();
 
-float chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56;
+float chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,step,temp;
 float m4_min,ue4_min,um4_min,m5_min,ue5_min,um5_min,m6_min,ue6_min,um6_min,phi45_min,phi46_min,phi56_min;
 int steriles, nRuns, type, raster, discretized, diag;
 std::string dataset, location, output;
@@ -25,7 +25,7 @@ double cl90, cl99;
 
 int ntProcess(){
 
-	procOptLoc = "/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; //"/lar1nd/app/users/dcianci/SBN_3plusN/GlobalFits/inputs/";
+	procOptLoc = "/sbnd/app/users/dcianci/SBN_3plusN/GlobalFits/inputs/";
 	procOpt();
 
 	rasterPoints = 500;
@@ -46,6 +46,8 @@ int ntProcess(){
     }
 
     in_chain->SetBranchAddress("chi2",&chi2);
+	in_chain->SetBranchAddress("step",&step);
+	in_chain->SetBranchAddress("temp",&temp);
 	in_chain->SetBranchAddress("m4",&m4);
 	in_chain->SetBranchAddress("ue4",&ue4);
 	in_chain->SetBranchAddress("um4",&um4);
@@ -119,8 +121,8 @@ int ntProcess(){
 		return 0;
 	}
 
-	chi2_99 = new TNtuple("chi2_99","chi2_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
-	chi2_90 = new TNtuple("chi2_90","chi2_90","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
+	chi2_99 = new TNtuple("chi2_99","chi2_99","chi2:step:temp:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
+	chi2_90 = new TNtuple("chi2_90","chi2_90","chi2:step:temp:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
 	chi2_95 = new TNtuple("chi2_95","chi2_95","chi2:dm2:sin22th");
 
 	if(raster == 0){
@@ -128,9 +130,9 @@ int ntProcess(){
         		in_chain->GetEntry(i);
 
 			if(chi2 - chi2min < cl99)
-				chi2_99->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
+				chi2_99->Fill(chi2,step,temp,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
 			if(chi2 - chi2min < cl90)
-				chi2_90->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
+				chi2_90->Fill(chi2,step,temp,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
 			float sins;
 			if(type == 0) sins = 4*pow(ue4,2)*pow(um4,2);
 			if(type == 1) sins = 4*pow(um4,2)*(1 - pow(um4,2));
