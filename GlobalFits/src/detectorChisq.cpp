@@ -325,6 +325,7 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 	oscCont = getOscContributionsNumuDis(model);
 
 	for(int iEvt = 0; iEvt < pack.nFOscEvts; iEvt++){
+		//if(iEvt%5==0) continue;
 
 		for(int iB = 0; iB < nBins; iB++){
         	minEBins[iB] = pack.EnuQE[iB];

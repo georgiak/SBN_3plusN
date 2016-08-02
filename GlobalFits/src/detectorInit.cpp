@@ -541,13 +541,19 @@ minosncPackage minosncInit(){
 booneDisPackage mbNuDisInit(){
     booneDisPackage pack;
 
-    const int nBins = 16;
-	pack.nFOscEvts = 1267007; // 1267007
-	const int nfosc = pack.nFOscEvts;
+	int throttle = 2;
+
+	const int nBins = 16;
+	const int nfosc = 1267007;
+	pack.nFOscEvts = nfosc/throttle;
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
+	double * FOsc_EnuQE = new double[nfosc];
+	double * FOsc_EnuTrue = new double[nfosc];
+	double * FOsc_LnuTrue = new double[nfosc];
+	double * FOsc_weight = new double[nfosc];
 	pack.FOsc_EnuQE = new double[nfosc];
 	pack.FOsc_EnuTrue = new double[nfosc];
 	pack.FOsc_LnuTrue = new double[nfosc];
@@ -571,14 +577,26 @@ booneDisPackage mbNuDisInit(){
     file.close();
 
  	file.open(dataLoc+"numudisap_ntuple.txt");
- 	int dummy;
+	int dummy;
     for(int iEvt = 0; iEvt < nfosc; iEvt++){
  		file >> dummy;
-        file >> pack.FOsc_EnuQE[iEvt];
-        file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
-        file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
-        file >> pack.FOsc_weight[iEvt];    // event weight
+        file >> FOsc_EnuQE[iEvt];
+        file >> FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> FOsc_weight[iEvt];    // event weight
 	}
+	file.close();
+	// Now, let's shorten it a touch
+	int count = 0;
+	for(int iEvt = 0; iEvt < nfosc; iEvt++){
+		if(iEvt%throttle != 0) continue;
+        pack.FOsc_EnuQE[count] = FOsc_EnuQE[iEvt];
+        pack.FOsc_EnuTrue[count] = FOsc_EnuTrue[iEvt];    // true energy of neutrino
+        pack.FOsc_LnuTrue[count] = FOsc_LnuTrue[iEvt];    // distance from production and detection points
+        pack.FOsc_weight[count] = FOsc_weight[iEvt];     // event weight
+		count++;
+	}
+	std::cout << "EVENTS: " << nfosc << " THROTTLED: " << pack.nFOscEvts << std::endl;
 
     ndf += nBins;
 	std::cout << "MBnu Dis bins: " << nBins << std::endl;
@@ -587,13 +605,19 @@ booneDisPackage mbNuDisInit(){
 booneDisPackage mbNubarDisInit(){
     booneDisPackage pack;
 
+	int throttle = 1;
+
     const int nBins = 16;
-	pack.nFOscEvts = 686529;
-	const int nfosc = pack.nFOscEvts;
+	const int nfosc = 686529;
+	pack.nFOscEvts = nfosc/throttle;
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
     pack.NumuData = new double[nBins];
+	double * FOsc_EnuQE = new double[nfosc];
+	double * FOsc_EnuTrue = new double[nfosc];
+	double * FOsc_LnuTrue = new double[nfosc];
+	double * FOsc_weight = new double[nfosc];
 	pack.FOsc_EnuQE = new double[nfosc];
 	pack.FOsc_EnuTrue = new double[nfosc];
 	pack.FOsc_LnuTrue = new double[nfosc];
@@ -619,13 +643,24 @@ booneDisPackage mbNubarDisInit(){
 	file.open(dataLoc+"numubardisap_ntuple.txt");
  	int dummy;
     for(int iEvt = 0; iEvt < nfosc; iEvt++){
-		if(iEvt%2==0) continue;
  		file >> dummy;
-        file >> pack.FOsc_EnuQE[iEvt];
-        file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
-        file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
-        file >> pack.FOsc_weight[iEvt];    // event weight
+        file >> FOsc_EnuQE[iEvt];
+        file >> FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> FOsc_weight[iEvt];    // event weight
 	}
+	file.close();
+	// Now, let's shorten it a touch
+	int count = 0;
+	for(int iEvt = 0; iEvt < nfosc; iEvt++){
+		if(iEvt%throttle != 0) continue;
+        pack.FOsc_EnuQE[count] = FOsc_EnuQE[iEvt];
+        pack.FOsc_EnuTrue[count] = FOsc_EnuTrue[iEvt];    // true energy of neutrino
+        pack.FOsc_LnuTrue[count] = FOsc_LnuTrue[iEvt];    // distance from production and detection points
+        pack.FOsc_weight[count] = FOsc_weight[iEvt];     // event weight
+		count++;
+	}
+	std::cout << "EVENTS: " << nfosc << " THROTTLED: " << pack.nFOscEvts << std::endl;
 
     ndf += nBins;
 	std::cout << "MBnubar Dis bins: " << nBins << std::endl;
