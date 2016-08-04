@@ -776,7 +776,9 @@ chisqStruct getChi2CDHS(neutrinoModel model, cdhsPackage pack){
 
         for(int iContribution = 0; iContribution < 6; iContribution++){
 			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
+			else    {
+				sinSq = dif.Eval(oscCont.dm2[iContribution]);
+			}
             nFront[iC] += oscCont.aMuMu[iContribution] * sinSq;
         }
         nFront[iC] *= pack.m_front[iC];

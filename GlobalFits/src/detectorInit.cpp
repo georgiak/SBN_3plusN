@@ -541,11 +541,9 @@ minosncPackage minosncInit(){
 booneDisPackage mbNuDisInit(){
     booneDisPackage pack;
 
-	int throttle = 2;
-
 	const int nBins = 16;
 	const int nfosc = 1267007;
-	pack.nFOscEvts = nfosc/throttle;
+	pack.nFOscEvts = nfosc;
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
@@ -589,14 +587,12 @@ booneDisPackage mbNuDisInit(){
 	// Now, let's shorten it a touch
 	int count = 0;
 	for(int iEvt = 0; iEvt < nfosc; iEvt++){
-		if(iEvt%throttle != 0) continue;
         pack.FOsc_EnuQE[count] = FOsc_EnuQE[iEvt];
         pack.FOsc_EnuTrue[count] = FOsc_EnuTrue[iEvt];    // true energy of neutrino
         pack.FOsc_LnuTrue[count] = FOsc_LnuTrue[iEvt];    // distance from production and detection points
         pack.FOsc_weight[count] = FOsc_weight[iEvt];     // event weight
 		count++;
 	}
-	std::cout << "EVENTS: " << nfosc << " THROTTLED: " << pack.nFOscEvts << std::endl;
 
     ndf += nBins;
 	std::cout << "MBnu Dis bins: " << nBins << std::endl;
@@ -605,11 +601,9 @@ booneDisPackage mbNuDisInit(){
 booneDisPackage mbNubarDisInit(){
     booneDisPackage pack;
 
-	int throttle = 1;
-
     const int nBins = 16;
 	const int nfosc = 686529;
-	pack.nFOscEvts = nfosc/throttle;
+	pack.nFOscEvts = nfosc;
 
     pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
     pack.EnuQE = new double[nBins + 1];
@@ -653,14 +647,12 @@ booneDisPackage mbNubarDisInit(){
 	// Now, let's shorten it a touch
 	int count = 0;
 	for(int iEvt = 0; iEvt < nfosc; iEvt++){
-		if(iEvt%throttle != 0) continue;
         pack.FOsc_EnuQE[count] = FOsc_EnuQE[iEvt];
         pack.FOsc_EnuTrue[count] = FOsc_EnuTrue[iEvt];    // true energy of neutrino
         pack.FOsc_LnuTrue[count] = FOsc_LnuTrue[iEvt];    // distance from production and detection points
         pack.FOsc_weight[count] = FOsc_weight[iEvt];     // event weight
 		count++;
 	}
-	std::cout << "EVENTS: " << nfosc << " THROTTLED: " << pack.nFOscEvts << std::endl;
 
     ndf += nBins;
 	std::cout << "MBnubar Dis bins: " << nBins << std::endl;
@@ -953,6 +945,7 @@ cdhsPackage cdhsInit(){
 			file >> pack.dm2Vec[k];
 			file >> pack.sinSqDeltaGrid_front[k][i];
 			file >> pack.sinSqDeltaGrid_back[k][i];
+			//std::cout << pack.dm2Vec[k] << " " << pack.sinSqDeltaGrid_front[k][i] << " " << pack.sinSqDeltaGrid_back[k][i] << std::endl;
 		}
     }
     file.close();
