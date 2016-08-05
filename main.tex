@@ -1299,9 +1299,15 @@ the entire range of sterile mass allowed if 100 events are observed. Note that e
 \newtext{MARK}{I have text planned to explain this plot, but sleep first, I'll get it up as soon as I can tomorrow morning. I also have a contour plot to go alongside it.}
 \begin{figure}[t]
 \center
-\includegraphics[width=0.65\textwidth]{figures/hockey_plot.pdf}
+\begin{subfigure}[t]{0.5\textwidth}
+\includegraphics[width=\textwidth]{figures/hockey_plot.pdf}
+\end{subfigure}%
+~
+\begin{subfigure}[t]{0.5\textwidth}
+\includegraphics[width=\textwidth]{figures/icarus_contour.pdf}
+\end{subfigure}
 \caption{\label{fig:hockey}
-	\emph{Left:}Expected significance by which ICARUS can exclude an excess to be associated with the beam-bucket, in favour of a decay-in-flight model as a function of timing resolution. Assumes 100 observed events. }
+\emph{Left:} Expected significance by which ICARUS can exclude an excess to be associated with the beam-bucket, in favour of a temporally delayed decay-in-flight model as a function of timing resolution. This assumes a hypothetical signal of 100 observed $e^\pm \pi^\mp$ events potentially consistant with $\ster \rightarrow e^\pm \pi^\mp$. If we want to ensure a $3\sigma$ signifance ~95\% of the time one requres $~3.5ns$ timing resolution.\emph{Right:} Regions in the "Signal Strength"-"Time Resolution" plane that ICARUS could exclude such a beam-window model in favour of a decay-in-flight for the median experiment (Solid) as well as for 1$\sigma$ (Dashed) and 2$\sigma$ (Dotted) downward fluctuations respectively.}
 
 \end{figure}
 
