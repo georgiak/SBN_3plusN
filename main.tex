@@ -1210,12 +1210,35 @@ the radiative decay\cite{Duk:2011yv} and reinterpreted $\ster \rightarrow \nu
 
 \subsection{\label{sec:timing_physics}Constraining an Observed Sigal}
 
+
 In addition to being able to reduce beam-related backgrounds by studying the
 populations of events in inter-bucket windows, the timing of the observed
 events can also be used to discriminate between different models, as well as
 provide additional information for an independent measurement of the sterile
-mass that avoids the need for any normalisation. This is a very important tool,
-being valid in both the minimal model as described above but also in extensions
+mass that avoids the need for any normalisation. In the event that a  potential signal was observed the first step would be to confirm that the excess is indeed from a temporally delayed decay-in-flight, and is not just mearly a mis-understood beam-related background or unknown nuclear effect. Timing is crucial for this as an energy analyis alone is not capable of proving the events arise from a decay-in-flight even if the energy spectrum is consistent, as we cannot discount unknown beam-related backgrounds or alternative models that mimics the energy spectrum. Observation of such a temporal signal inconsistant with a gaussian around the BNB beam bucket is a smoking gun proof of a sub-luminal propagating parent. 
+
+We estimate the required time resolution that demonstrates such a disagreement with beam-related models by generating many thousands of Monte-Carlo experiments simulating a decaying sterile and analyse the generated data under both the decay-in-flight hypothesis as well as a beam-bucket-model hypothesis. This beam-bucket-mode is shape only, always generating the correct rate and encompases all models (and backgrounds) that would generate a signal in time with the neutrino beam and associated backgrounds. It assumes that all events originate in a 4ns window surrouning the BNB beam spill, all smeared according to an assumed time resolution. We define our test statistic  as \cite{Agashe:2014kda} \[ t_m =
+-2 \ln \left(\mathcal{L}\right) =  2 \sum_{i=1}^N \left[ \mu_i(m)-n_i +n_i
+\ln(\frac{n_i}{\mu_i(m)})  \right], \] where $\mu_i(m)$ is the expected number
+of events in bin $i$ if the sterile is of mass m,
+
+
+\begin{figure}[t]
+\center
+\begin{subfigure}[t]{0.5\textwidth}
+\includegraphics[width=\textwidth]{figures/hockey_plot.pdf}
+\end{subfigure}%
+~
+\begin{subfigure}[t]{0.5\textwidth}
+\includegraphics[width=\textwidth]{figures/icarus_contour.pdf}
+\end{subfigure}
+\caption{\label{fig:hockey}
+\emph{Left:} Expected significance by which ICARUS can exclude an excess to be associated with the beam-bucket, in favour of a temporally delayed decay-in-flight model as a function of timing resolution. This assumes a hypothetical signal of 100 observed $e^\pm \pi^\mp$ events potentially consistant with $\ster \rightarrow e^\pm \pi^\mp$. If we want to ensure a $3\sigma$ signifance ~95\% of the time one requres $~3.5ns$ timing resolution. \emph{Right:} Regions in the "Signal Strength"-"Time Resolution" plane that ICARUS could exclude such a beam-window model in favour of a decay-in-flight for the median experiment (Solid) as well as for 1$\sigma$ (Dashed) and 2$\sigma$ (Dotted) downward fluctuations respectively.}
+
+\end{figure}
+
+
+If the timing resolution is sufficent such the signal is indeed verified as originating outside the BNB beam bucket timeing, the next step is to use a combiened energy and temporal analysis to extract measurable parameters such as $m_\ster$. This is a very important tool, being valid in both the minimal model as described above but also in extensions
 in which the total rate has additional parameters allowing decoupling of the
 mass from the new degrees of freedom.  Elementary special relativity tells us
 that for an arrival time delay (behind a luminal or near luminal particle) over
@@ -1251,11 +1274,8 @@ Maximum Liklihood analysis of the reconstructed sterile energy and $\Delta T$,
 assuming events are poission distributed. As we wish to perform a
 normalisation-less analysis we assume that the experiment, for example ICARUS,
 observes 100 events consistent with a possible $\ster\rightarrow e^- \pi^+$
-decay in flight. We define our test statistic as \cite{Agashe:2014kda} \[ t_m =
--2 \ln \left(\mathcal{L}\right) =  2 \sum_{i=1}^N \left[ \mu_i(m)-n_i +n_i
-\ln(\frac{n_i}{\mu_i(m)})  \right], \] where $\mu_i(m)$ is the expected number
-of events in bin $i$ if the sterile is of mass m, then the reconstructed mass
-defined as the mass which minimises $t_m$. As many bins contain low if any
+decay in flight. We use the same test statistic as used in the temporal analyis above, expanded to include the energy spectra. The reconstructed mass
+defined as the mass which minimises the test statistic $t_m$. As many bins contain low if any
 events, as well as the cyclic nature of $\Delta T$ we have elected to perform a
 Monte Carlo estimation of the distribution of $t_m$ simulating the entire
 experiment many thousand times in order to account for any non-gaussianity in
@@ -1295,23 +1315,6 @@ Energy alone does poorly in identifying the parent mass, especially at low masse
 the entire range of sterile mass allowed if 100 events are observed. Note that energy alone has significantly better resolution due to lack of missing-energy in the final state. }
 
 \end{figure}
-
-\newtext{MARK}{I have text planned to explain this plot, but sleep first, I'll get it up as soon as I can tomorrow morning. I also have a contour plot to go alongside it.}
-\begin{figure}[t]
-\center
-\begin{subfigure}[t]{0.5\textwidth}
-\includegraphics[width=\textwidth]{figures/hockey_plot.pdf}
-\end{subfigure}%
-~
-\begin{subfigure}[t]{0.5\textwidth}
-\includegraphics[width=\textwidth]{figures/icarus_contour.pdf}
-\end{subfigure}
-\caption{\label{fig:hockey}
-\emph{Left:} Expected significance by which ICARUS can exclude an excess to be associated with the beam-bucket, in favour of a temporally delayed decay-in-flight model as a function of timing resolution. This assumes a hypothetical signal of 100 observed $e^\pm \pi^\mp$ events potentially consistant with $\ster \rightarrow e^\pm \pi^\mp$. If we want to ensure a $3\sigma$ signifance ~95\% of the time one requres $~3.5ns$ timing resolution.\emph{Right:} Regions in the "Signal Strength"-"Time Resolution" plane that ICARUS could exclude such a beam-window model in favour of a decay-in-flight for the median experiment (Solid) as well as for 1$\sigma$ (Dashed) and 2$\sigma$ (Dotted) downward fluctuations respectively.}
-
-\end{figure}
-
-
 
 
 \section{\label{sec:conclusions}Conclusions}
