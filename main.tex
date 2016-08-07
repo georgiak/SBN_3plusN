@@ -1210,14 +1210,13 @@ the radiative decay\cite{Duk:2011yv} and reinterpreted $\ster \rightarrow \nu
 
 \subsection{\label{sec:timing_physics}Constraining an Observed Sigal}
 
-
 In addition to being able to reduce beam-related backgrounds by studying the
 populations of events in inter-bucket windows, the timing of the observed
 events can also be used to discriminate between different models, as well as
 provide additional information for an independent measurement of the sterile
-mass that avoids the need for any normalisation. In the event that a  potential signal was observed the first step would be to confirm that the excess is indeed from a temporally delayed decay-in-flight, and is not just mearly a mis-understood beam-related background or unknown nuclear effect. Timing is crucial for this as an energy analyis alone is not capable of proving the events arise from a decay-in-flight even if the energy spectrum is consistent, as we cannot discount unknown beam-related backgrounds or alternative models that mimics the energy spectrum. Observation of such a temporal signal inconsistant with a gaussian around the BNB beam bucket is a smoking gun proof of a sub-luminal propagating parent. 
+mass that avoids the need for any normalisation. In the event that a  potential signal was observed the first step would be to confirm that the excess is indeed from a temporally delayed decay-in-flight, and is not just mearly a mis-understood beam-related background or unknown nuclear effect. Timing is crucial for this as an energy analyis alone is not capable of proving the events arise from a decay-in-flight even if the energy spectrum is consistent, as we cannot discount unknown beam-related backgrounds or alternative models that mimics the energy spectrum. Observation of such a temporal signal inconsistant with a gaussian around the BNB beam bucket is a smoking gun signal of a sub-luminal propagating parent. 
 
-We estimate the required time resolution that demonstrates such a disagreement with beam-related models by generating many thousands of Monte-Carlo experiments simulating a decaying sterile and analyse the generated data under both the decay-in-flight hypothesis as well as a beam-bucket-model hypothesis. This beam-bucket-mode is shape only, always generating the correct rate and encompases all models (and backgrounds) that would generate a signal in time with the neutrino beam and associated backgrounds. It assumes that all events originate in a 4ns window surrouning the BNB beam spill, all smeared according to an assumed time resolution. We define our test statistic  as \cite{Agashe:2014kda} \[ t_m =
+We estimate the required time resolution that demonstrates such a disagreement with beam-related models by generating many thousands of Monte-Carlo experiments simulating a decaying sterile and analyse the generated data under both the decay-in-flight hypothesis as well as a beam-bucket-model hypothesis. This beam-bucket-mode is shape only, always generating the correct rate and encompases all models (and backgrounds) that would generate a signal in time with the neutrino beam and associated backgrounds. It assumes that all events originate in a 6ns window surrouning the BNB beam spill, all smeared according to an assumed time resolution. We define our test statistic  as \cite{Agashe:2014kda} \[ t_m =
 -2 \ln \left(\mathcal{L}\right) =  2 \sum_{i=1}^N \left[ \mu_i(m)-n_i +n_i
 \ln(\frac{n_i}{\mu_i(m)})  \right], \] where $\mu_i(m)$ is the expected number
 of events in bin $i$ if the sterile is of mass m,
@@ -1237,8 +1236,21 @@ of events in bin $i$ if the sterile is of mass m,
 
 \end{figure}
 
+Although observation and confirmation of events falling outside the beam-bucket would be a huge hint of new physics, observation in one detector alone (such as SBND with the largest statistics, or $\mu$BooNE which could see a signal first) would not be enough to claim discovery of such a decay-in-flight model due to heavy particle propagation. If an unaccounted for background had a fixed time delay with respect to the neutrino-beam $\Delta_t$, such as the relaxation time of an excited atom, it could easily produce events in the inter-bucket window if $\Delta_t \approx \mathcal{O}$(ns). Luckily the SBN programme has multiple detectors at multiple baselines. Such a constant fixed time delay would produce idential temporal signals in both SBND and ICARUS, where as if the observed excess is indeed from a propagating particle then it would have to travel approximately 6 times further to ICARUS leading to events populating further and further from the beam-window. This effect is clearly shown in \reffig{fig:icarus_the_great} where the ratio of events at SBND and ICARUS are plotted showing the distortion due to increased travel distance. A constant time delay would produce a ratio of 1 and curves that lie on the grey circle. Measuring this distortion would be definitive proof of the heavy particle haveing transversed the distance from target to detector and not mearly being produced in-situ.
 
-If the timing resolution is sufficent such the signal is indeed verified as originating outside the BNB beam bucket timeing, the next step is to use a combiened energy and temporal analysis to extract measurable parameters such as $m_\ster$. This is a very important tool, being valid in both the minimal model as described above but also in extensions
+Similarly, this observation would allows us to distinguish a decay-in-flight model from other scenarios involving heavy steriles such as Gninenko's \cite{Gninenko:2009ks,Gninenko:2010pr} class of models. In this model it is the the active neutrino that propagates the baseline and upon impinging the detector it produces a heavy sterile which promptly decays, $\mathcal{O}$(m), to produce the visible signal. As this could produce a small timing delay from the active neutrino beam it could indeed fill the inter-bucket window, but this delay could be constant across all detectors meaning SBN with multiple baselines would still be able to distinguish models even if the energy spectrums of the decay products are comparable. \\
+
+\begin{figure}[h]
+\center
+\includegraphics[width=0.6\textwidth]{figures/ICARUS_the_great.pdf}
+
+\caption{\label{fig:icarus_the_great}
+Ratio of temporal shape of $\ster \rightarrow \nu_\alpha e^+ e^-$ events in ICARUS to SBND after scaling out $1/R^2$ dependance. If events were due to an unknown background with a fixed time delay after the neutrino beam, one would expect the ratio to be a constant value of 1 (shaded grey ring). As the steriles have to travel approximately 6 times further to ICARUS than SBND, incresingly higher energy steriles can leave the beam-bucket (red arc) and populate the inter-bucket region leading to the distinct signature. This assumes a timing resolution of 1ns. }
+
+\end{figure}
+
+
+If the timing resolution is sufficent such the signal is indeed verified as originating outside the BNB beam bucket timing, the next step is to use a combiened energy and temporal analysis to extract measurable parameters such as $m_\ster$. This is a very important tool, being valid in both the minimal model as described above but also in extensions
 in which the total rate has additional parameters allowing decoupling of the
 mass from the new degrees of freedom.  Elementary special relativity tells us
 that for an arrival time delay (behind a luminal or near luminal particle) over
