@@ -10,7 +10,9 @@ int noOfSteriles, CPConserving, scanType, gridPoints, jobID, nMCGen, rndInit, Bu
 double chi2Cut, stepSize, temperature, UMax, UMaxSq;
 bool usingUe = true;
 bool usingUm = true;
-std::string dataLoc, jobOptLoc;
+std::string jobOptLoc = "inputs/";
+std::string dataLoc = "data/";
+bool debug = false;
 
 // For Integral Evaluations,
 double dm2Vec[dm2VecMaxDim];
@@ -113,7 +115,7 @@ boonePackage mbNuInit(){
     file.close();
 
     ndf += nBins + nBins_mu - 1;
-	std::cout << "MBnu bins: " << nBins + nBins_mu - 1 << std::endl;
+	if(debug) std::cout << "MBnu initialized. Bins: " << nBins + nBins_mu - 1 << std::endl;
     return pack;
 }
 boonePackage mbNubarInit(){
@@ -182,7 +184,7 @@ boonePackage mbNubarInit(){
     file.close();
 
     ndf += nBins + nBins_mu - 1;
-	std::cout << "MBnubar bins: " << nBins + nBins_mu - 1 << std::endl;
+	if(debug) std::cout << "MBnubar initialized. Bins: " << nBins + nBins_mu - 1 << std::endl;
     return pack;
 }
 atmPackage atmInit(){
@@ -206,6 +208,7 @@ atmPackage atmInit(){
     }
 
     ndf += 1;
+	if(debug) std::cout << "Atmospheric initialized. Bins: " << 1 << std::endl;
     return pack;
 }
 numiPackage numiInit(){
@@ -253,7 +256,7 @@ numiPackage numiInit(){
     }
 
     ndf += nBins;
-	std::cout << "Numi bins: " << nBins << std::endl;
+	if(debug) std::cout << "Numi initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 sinSqPackage lsndInit(){
@@ -337,7 +340,7 @@ sinSqPackage lsndInit(){
 	file.close();
 
     ndf += nBins;
-	std::cout << "LSND bins: " << nBins << std::endl;
+	if(debug) std::cout << "LSND initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 sinSqPackage karmenInit(){
@@ -400,7 +403,7 @@ sinSqPackage karmenInit(){
         }
     }
     ndf += nBins;
-	std::cout << "Karmen bins: " << nBins << std::endl;
+	if(debug) std::cout << "Karmen initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 galPackage galInit(){
@@ -474,7 +477,7 @@ galPackage galInit(){
 	}
 
     ndf += 4;
-	std::cout << "Gal bins: " << 4 << std::endl;
+	if(debug) std::cout << "Gal initialized. Bins: " << 4 << std::endl;
     return pack;
 }
 minosPackage minosInit(){
@@ -526,7 +529,7 @@ minosPackage minosInit(){
 	pack.EnuQE_ws[nBins_ws] = temp5[nBins_ws];
 
     ndf += nBins;
-	std::cout << "Minos bins: " << nBins << std::endl;
+	if(debug) std::cout << "Minos initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 minosncPackage minosncInit(){
@@ -595,7 +598,7 @@ booneDisPackage mbNuDisInit(){
 	}
 
     ndf += nBins;
-	std::cout << "MBnu Dis bins: " << nBins << std::endl;
+	if(debug) std::cout << "MBnu Dis initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 booneDisPackage mbNubarDisInit(){
@@ -655,7 +658,7 @@ booneDisPackage mbNubarDisInit(){
 	}
 
     ndf += nBins;
-	std::cout << "MBnubar Dis bins: " << nBins << std::endl;
+	if(debug) std::cout << "MBnubar Dis initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 nomadPackage nomadInit(){
@@ -784,7 +787,7 @@ nomadPackage nomadInit(){
     }
 
     ndf += maxEnergyBins * maxRadialBins;
-	std::cout << "Nomad bins: " << maxEnergyBins * maxRadialBins << std::endl;
+	if(debug) std::cout << "Nomad initialized. Bins: " << maxEnergyBins * maxRadialBins << std::endl;
     return pack;
     }
 ccfrPackage ccfrInit(){
@@ -860,7 +863,7 @@ ccfrPackage ccfrInit(){
 	}
 
 	ndf += maxEnergyBins;
-	std::cout << "CCFR bins: " << maxEnergyBins << std::endl;
+	if(debug) std::cout << "CCFR initialized. Bins: " << maxEnergyBins << std::endl;
     return pack;
 }
 
@@ -999,7 +1002,7 @@ cdhsPackage cdhsInit(){
 	*/
 
     ndf += nBins;
-	std::cout << "CDHS bins: " << nBins << std::endl;
+	if(debug) std::cout << "CDHS initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 bugeyPackage bugeyInit(){
@@ -1086,7 +1089,7 @@ bugeyPackage bugeyInit(){
     	}
   	}
 	ndf += 60;
-	std::cout << "Bugey bins: " << 60 << std::endl;
+	if(debug) std::cout << "Bugey initialized. Bins: " << 60 << std::endl;
   	return pack;
 }
 choozPackage choozInit(){
@@ -1232,6 +1235,6 @@ xsecPackage xsecInit(){
 
 
 	ndf += 11;
-	std::cout << "XSEC bins: " << 11 << std::endl;
+	if(debug) std::cout << "XSEC initialized. Bins: " << 11 << std::endl;
 	return pack;
 }

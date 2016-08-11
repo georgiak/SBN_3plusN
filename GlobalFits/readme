@@ -1,8 +1,6 @@
 So, here's a quick overview of what's going on. All the source files are in src. You can build them using make -f makefile.
 
 To run a fit, just use ./globalFit -- It gets input from inputs/jobOptions.txt, so you can modify configurations in there.
-Unfortunately, you may need to add the right path to get to the joboptions file in src/globalfit.cxx code, because right now, it's set
-for grid running.
 
 Once you've run a job, you get a globFit.root file as output. If you get a bunch of these, you can combine them using ./ntupleProcess -- this guy
 gets input from inputs/processOptions.txt. It takes a bunch of globFit.root files, puts them together and splits them into 90% and 99% confidence
