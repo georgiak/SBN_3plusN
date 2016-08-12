@@ -125,6 +125,7 @@ struct boonePackage{
     std::vector < std::vector <double> > full_fractCovMatrix;
     double *EnuQE; double *NueBgr; double *Numu; double *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight;
     int *NueData; int *NumuData;
+	int nFOscEvts;
 };
 struct atmPackage{
     double * dchi2Vec, * dmuVec;

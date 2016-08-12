@@ -3,6 +3,8 @@ Created by Davio Cianci and Georgia Karagiorgi
 Jan 25th, 2016
 
 ------------------------------------------// */
+#include "TStopwatch.h"
+
 
 TMatrixT <double> cov;      // inverted cov matrix
 TMatrixT <double> covMatrix;
@@ -23,7 +25,7 @@ chisqStruct getChi2Boone(neutrinoModel model, boonePackage pack, bool nubar){
 
     int nBins = 11;
     int nBins_mu = 8;
-    int nFOscEvts = 17204;
+    int nFOscEvts = pack.nFOscEvts;
 
     // Initialize the result!
     chisqStruct result;
@@ -162,6 +164,7 @@ chisqStruct getChi2Gallium(neutrinoModel model, galPackage pack){
 	double SourceHeight[3] = {sourceHeightGallex[0], sourceHeightGallex[1], sourceHeightSage};
 
 	oscContribution oscCon = getOscContributionsNueDis(model);
+
     for(int iG = 0; iG < nPoints; iG++){
         numerator[iG] = 0;
         if(iG < 3){
@@ -260,6 +263,7 @@ chisqStruct getChi2Numi(neutrinoModel model, numiPackage pack){
     }
 
 	oscCont = getOscContributionsNueApp(model, false, true);
+
     // Loop over FOsc Events
     for(int iFOsc = 0; iFOsc < nFOscEvts; iFOsc++){
         // Loop over energy bins
@@ -604,7 +608,14 @@ chisqStruct getLogLikelihood(neutrinoModel model, int nBins, sinSqPackage pack){
 }
 // NOMAD, I suppose
 chisqStruct getChi2Nomad(neutrinoModel model, nomadPackage pack){
-    chisqStruct result;
+
+	TStopwatch *watch = new TStopwatch;
+	//CLOCKER
+	watch->Stop();	std::cout << "calculate signal" << std::endl;
+	watch->Print("u");
+	watch->Start();
+
+	chisqStruct result;
     result.zero();
     oscContribution oscCont;
 
@@ -766,10 +777,12 @@ chisqStruct getChi2CDHS(neutrinoModel model, cdhsPackage pack){
 
     // Front Detector
     for(int iC = 0; iC < maxEnergyBins; iC++){
+
         for(int k = 0; k < 601; k++){
 			cdhsDm2Vec[k] = pack.dm2Vec[k];
             sinSqDeltaVec[k] = pack.sinSqDeltaGrid_front[k][iC];
         }
+
         dif.SetData(601,cdhsDm2Vec,sinSqDeltaVec);
 
         nFront[iC] = pack.noOscGrid[iC][0];

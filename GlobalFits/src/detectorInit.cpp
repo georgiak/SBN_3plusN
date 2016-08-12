@@ -55,17 +55,17 @@ boonePackage mbNuInit(){
 
     int nBins = 11;
     int nBins_mu = 8;
-    int nFOscEvts = 17204;
+    pack.nFOscEvts = 17204;
     pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<double>(nBins + nBins + nBins_mu));
     pack.EnuQE = new double[nBins+1];
     pack.NueData = new int[nBins+nBins];
     pack.NumuData = new int[nBins_mu];
     pack.NueBgr = new double[nBins];
     pack.Numu = new double[nBins_mu];
-    pack.FOsc_EnuQE = new double[nFOscEvts];     // reconstructed neutrino energy
-    pack.FOsc_EnuTrue = new double[nFOscEvts];   // true energy of neutrino
-    pack.FOsc_LnuTrue = new double[nFOscEvts];   // distance from production and detection points
-    pack.FOsc_weight = new double[nFOscEvts];
+    pack.FOsc_EnuQE = new double[pack.nFOscEvts];     // reconstructed neutrino energy
+    pack.FOsc_EnuTrue = new double[pack.nFOscEvts];   // true energy of neutrino
+    pack.FOsc_LnuTrue = new double[pack.nFOscEvts];   // distance from production and detection points
+    pack.FOsc_weight = new double[pack.nFOscEvts];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_lowe.txt");
@@ -106,7 +106,7 @@ boonePackage mbNuInit(){
 
     // Get nFullOscEvts for full numu->nue osc events after nue cuts
     file.open(dataLoc+"miniboone_numode_fullosc_ntuple.txt");
-    for(int i = 0; i < nFOscEvts; i++){
+    for(int i = 0; i < pack.nFOscEvts; i++){
         file >> pack.FOsc_EnuQE[i];     // reconstructed neutrino energy
         file >> pack.FOsc_EnuTrue[i];   // true energy of neutrino
         file >> pack.FOsc_LnuTrue[i];   // distance from production and detection points
@@ -123,7 +123,7 @@ boonePackage mbNubarInit(){
 
     int nBins = 11;
     int nBins_mu = 8;
-    int nFOscEvts = 86403;
+    pack.nFOscEvts = 86403;
 
     pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<double>(nBins + nBins + nBins_mu));
     pack.EnuQE = new double[nBins+1];
@@ -131,10 +131,10 @@ boonePackage mbNubarInit(){
     pack.NumuData = new int[nBins_mu];
     pack.NueBgr = new double[nBins];
     pack.Numu = new double[nBins_mu];
-    pack.FOsc_EnuQE = new double[nFOscEvts];     // reconstructed neutrino energy
-    pack.FOsc_EnuTrue = new double[nFOscEvts];   // true energy of neutrino
-    pack.FOsc_LnuTrue = new double[nFOscEvts];   // distance from production and detection points
-    pack.FOsc_weight = new double[nFOscEvts];
+    pack.FOsc_EnuQE = new double[pack.nFOscEvts];     // reconstructed neutrino energy
+    pack.FOsc_EnuTrue = new double[pack.nFOscEvts];   // true energy of neutrino
+    pack.FOsc_LnuTrue = new double[pack.nFOscEvts];   // distance from production and detection points
+    pack.FOsc_weight = new double[pack.nFOscEvts];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_lowe.txt");
@@ -175,7 +175,7 @@ boonePackage mbNubarInit(){
 
     // Get nFullOscEvts for full numu->nue osc events after nue cuts
     file.open(dataLoc+"miniboone_numubarnuebarfullosc_ntuple.txt");
-    for(int i = 0; i < nFOscEvts; i++){
+    for(int i = 0; i < pack.nFOscEvts; i++){
         file >> pack.FOsc_EnuQE[i];     // reconstructed neutrino energy
         file >> pack.FOsc_EnuTrue[i];   // true energy of neutrino
         file >> pack.FOsc_LnuTrue[i];   // distance from production and detection points

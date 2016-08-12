@@ -107,8 +107,8 @@ int globChisq(int ind){
 	RanGen.SetSeed(0);
 
 	//We're gonna set a random step size and temp size for now - that way we can play with it and see what works best, yeah?
-	step = RanGen.Rndm() * stepsize;
-	temp = RanGen.Rndm() * temperature.;
+	step = RanGen.Rndm() * stepSize;
+	temp = RanGen.Rndm() * temperature;
 
     // Initialize the parameters we'll be using
     neutrinoModel nuModel;
