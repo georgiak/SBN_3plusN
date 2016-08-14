@@ -422,9 +422,8 @@ starts to fail slightly as the mass of the sterile increases, where we begin to
 see components of the active flux having energies less than the sterile mass
 which are truncated by the kinematic factor. In order to keep the normalisation
 of total neutrino events constant, before $U_{\alpha 4}$ and kinematic scaling,
-any events which are below the sterile mass threshold are removed and the remaining flux is scaled accordingly.
-\marcom{PB}{This sounds a bit dodgy. How do we chose where to move
-them to? First bin? Shared over all bins? Can we clarify? Just re-normalising the sterile flux to have same number of events as neutrino after chopping. It is dodgey in that we know there would be spectral shifts.}
+any events which are below the sterile mass threshold are removed and the
+remaining flux is scaled accordingly.
 
 %The final sterile fluxes can be estimated by taking known active neutrino
 %fluxes and scaling them by the appropriate mixing $U_{\alpha 4}$, with an
@@ -497,7 +496,7 @@ neutrino phenomenology: the UV-complete Type I see-saw (and its low-scale
 variants), but would also well describe other extensions of the SM with fields
 and symmetries not directly affecting the neutrino sector. Decays of sterile
 neutrinos in such a model have been studied in \refref{Atre:2009rg}
-\marcom{PB}{Others?}, and we have plotted the branching ratios for sterile
+\marcom{PB}{Others? Schrock?}, and we have plotted the branching ratios for sterile
 neutrinos in our mass range in \reffig{fig:branchingratios}. We will now
 briefly summarize the decay rates most important for the present study.
 
@@ -577,7 +576,7 @@ muons are clean signatures at LAr detectors. In the case of $N\rightarrow
 and is identical to $N\rightarrow \nu_\alpha e^+ e^-$ given above with the
 replacement $m_e \rightarrow m_\mu$.  The mixed-flavour decays, \emph{e.g.}
 $N\rightarrow \nu_\alpha \mu^\pm e^\pm$, occur by charged current only and are given
-by \marcom{PB}{Can we add a line about how? MARK: I don't quite understand, how they decay by charge current only?}
+by 
 %
 \[ \Gamma(\ster\to\nu_{\alpha} \beta^- \alpha^+) = \frac{G_\text{F}^2m_\ster^5
 |U_{\beta 4}|^2}{192 \pi^3} I_1\left(\frac{m_\beta}{m_N},\frac{ m_\alpha}{m_N},
@@ -585,7 +584,7 @@ by \marcom{PB}{Can we add a line about how? MARK: I don't quite understand, how 
 %
 with $\{\alpha,\beta\} = \{e, \mu\}$. The next threshold is at the pion mass,
 where in the following few keV two further decays become possible: $N\to\nu
-\pi^0$ and $N\to e\pm\pi^\mp$. These processes quickly become the dominant
+\pi^0$ and $N\to e^\pm\pi^\mp$. These processes quickly become the dominant
 decays at this mass range. 
 %
 The decay rate for the first process is given by
@@ -713,8 +712,6 @@ others \cite{Batell:2016zod,Ballett:2016xxx}.
 As an example, a model with a leptophilic $Z^\prime$ \cite{Foot:1994vd} could
 enhance purely leptonic decay rates, such as $\ster\to \nu e^+\mu^-$, while not
 enhancing semileptonic processes like $\ster\to e^\pm \pi^\mp$.
-\marcom{PB}{Check this reference. It is $\mu$-$\tau$, does what I say make
-sense? I follow it, seems good.}
 %
 Often, such models would have to be checked individually to see if they satisfy
 bounds from other experiments; however, the point stands that if new physics
@@ -769,13 +766,13 @@ There have been a variety of methods used in past experiments to bound the
 magnitude of the active-sterile mixing when steriles are of $\mathcal{O}$(MeV)
 scale. Alongside beam-dump style experiments such as PS-191 as mentioned above,
 there are extensive studies of the lepton spectra involved in two-body pion and
-kaon decays\cite{PhysRevD.46.R885,PhysRevLett.68.3000} , in which a
+kaon decays \cite{PhysRevD.46.R885,PhysRevLett.68.3000} , in which a
 mono-chromatic line at $E_l = \left( m_{\pi
 (K)}^2+m_l^2-m_N^2\right)/m_{\pi(K)}^2$ would appear if a heavy sterile was
 produced instead of a light active neutrino. These are powerful probes but are
 limited in the parameter-space they can search leaving beam-dump style
 experiments the only terrestrial experiments for a large region of sterile
-masses. \\ 
+masses. 
 
 Bounds on $U_{\alpha 4}$ from such beam-dump experiments are most often
 presented in the context of the minimal model as discussed above. If one then
@@ -818,7 +815,7 @@ $\Gamma_T L \ll 1$, the bound can be reduced to a more intuitive form
 completely independent of total decay rate, being a function of the channel in
 question only.  These can be used to map any published bounds, and the bounds
 presented below to any non-minimal sterile model in which a specific channel is
-enhanced.\\
+enhanced.
 
 Additionally, non-terrestrial measurements may also place bounds on such long
 lived sterile neutrinos due to their effect on the evolution of the early
@@ -839,7 +836,7 @@ conservatively for a single sterile neutrino, $m_N < m_{\pi^0}$, as
 %
 at the 90\% C.L. Although the scenario for $m_N > m_{\pi^0}$ has not been
 studied in as much detail, an oft quoted bound is that $\tau_N > 0.1$s is
-excluded under current BBN measurements \cite{Dolgov:2000j}. In the minimal
+excluded under current BBN measurements \cite{Dolgov:2000j}.\marcom{PB}{Fix me.} In the minimal
 model this upper bound on the sterile lifetime can be directly mapped to a
 minimum bound on the active-sterile mixings $U_{\alpha 4}$'s. However, even a
 modest increase in the total sterile decay rate, for example by additional
@@ -912,7 +909,7 @@ small.}
 
 
 As we are exploring a large parameter space, often this expression takes a
-simplified form depending on the size of $\Gamma_\text{T}\lambda/\gamma\beta$:\marcom{PB}{Only the upper one applies to us, right? Is this unnecessary? The lower one applies in the extended case so  err on keeping.}
+simplified form depending on the size of $\Gamma_\text{T}\lambda/\gamma\beta$:
 %
 \begin{align} 
 %
@@ -934,11 +931,11 @@ therefore we see a fixed fraction of the total events in our channel of
 interest. 
 
 The spectral flux of sterile neutrinos impinging on a SBN detector,
-$\mathrm{d}\phi/\mathrm{d}E$, is estimated as described in \refsec{sec:prod}
-above.  Of crucial importance to this is accurate knowledge of active neutrino
-fluxes at all three SBN detectors. These are calculated from published
-MiniBooNE fluxes \cite{AguilarArevalo:2008yp}, after scaling by appropriate
-$1/r^2$ baseline dependence, e.g $(470/540)^2 \approx 1.3$ at \muboone. This is
+$\mathrm{d}\phi/\mathrm{d}E$, is estimated as described in \refsec{sec:prod}.
+Of crucial importance to this is accurate knowledge of active neutrino fluxes
+at all three SBN detectors. These are calculated from published MiniBooNE
+fluxes \cite{AguilarArevalo:2008yp}, after scaling by appropriate $1/r^2$
+baseline dependence, e.g $(470/540)^2 \approx 1.3$ at \muboone. This is
 similarly scaled by $1/r^2$ for ICARUS at 600m, however, an additional energy
 dependent flux modifier is applied for SBND at 110m to account for the softer
 energy spectrum due to the proximity of the detector to the production target
@@ -947,10 +944,10 @@ including wrong sign neutrinos, smaller sub-dominant $K^+\rightarrow
 \pi^+\rightarrow \nu_\alpha$ as well as other contributions, predominately from
 meson decay chains initiated by meson-nucleus interactions. The neutrino
 spectrum at \muboone\ is shown below in \reffig{fig:flux_plots}. As the
-probability for any given sterile to subsequently decay inside a detector scales as
-$1/|P_{\ster}|$\marcom{PB}{What did you mean by this, Mark? E? No its 1/momentum scaling, so correct here.} the fluxes of
-active neutrinos at low energy are of particular importance, in stark contrast
-to standard neutrino interaction cross sections, which scale as $E_\nu$. 
+probability for any given sterile to subsequently decay inside a detector
+scales as $1/|P_{\ster}|$ the fluxes of active neutrinos at low
+energy are of particular importance, in stark contrast to standard neutrino
+interaction cross sections, which scale as $E_\nu$. 
 %
 This means the effective spectrum of \emph{decaying} particles is biased
 towards lower energies, this can be seen in the right panel of
@@ -959,11 +956,9 @@ towards lower energies, this can be seen in the right panel of
 This low-energy bias exaggerates the kinematic differences between our
 decay-in-flight signal and the dominant background events. 
 
-%
 Finally, the function $W_\text{c}(E)$ is a weighting factor which accounts for
 all effects which reduce the number of events in the sample: for example,
-analysis cuts or detector performance effects. \marcom{PB}{What do you think
-about a plot of our weight functions from the cuts? The cuts are very background dependant so if it were in it would make more sense in appendix or after background have been discussed. I think its unnecessary here}
+analysis cuts or detector performance effects. 
 %
 To compute these factors, we run a Monte Carlo simulation of the decays for a
 large number of sample events with a given energy. Each sterile event is
@@ -993,7 +988,7 @@ showers, muons and protons to be 15\%, 6\% and a conservative 15\%
 respectively, alongside the angular resolution of LAr to be $1.73^{\circ}$
 \cite{Antonello:2015lea}. 
 
-\begin{figure}[h]
+\begin{figure}[t]
 \center
 \includegraphics[width=0.6\textwidth,clip,trim=0 0 0 0]{figures/mu_pi_cutflow.pdf}
 
@@ -1101,8 +1096,10 @@ individual buckets to be identified. Such a nano-second resolution was achieved
 previously by the PMT's utilised in MiniBooNE \cite{Antonello:2015lea}, with
 potential for improvement in the next generation SBN detectors. \muboone\ is
 omitted from such a timing related analysis as the achievable timing resolution
-is lower, $\approx 10$ns \cite{Katori:2013wqa}.\marcom{PB}{Can we comment on why? I believe it comes from fewer PMT's however I cannot find an accurate source, Andzrej was the first person to highlight it so I will ask him. }
-
+is lower at around $10$~ns \cite{Katori:2013wqa}.
+%
+\marcom{MARK}{I cannot find an accurate source, Andzrej was the first person to
+highlight it so I will ask him. }
 
 As particles with finite rest mass, heavy sterile neutrinos will propagate at
 subluminal speeds which can produce observable timing delays.  This effect
@@ -1117,11 +1114,16 @@ sterile shown on the left \reffig{fig:timing}, we use polar plots to highlight t
 the purposes of this study we define the beam-correlated window to be a $6$~ns
 period, $2$~ns each side of the $2$~ns beam bucket.
 
+
 As can be seen a significant proportion of sterile events are distributed
 throughout the inter-bucket area. Events which fall into the beam-bucket timing
 window have to be analysed on top of all known beam-related backgrounds, where
 as the increasingly larger fraction which populate the inter-bucket window have
-extremely reduced beam-correlated backgrounds. Cosmegenic backgrounds are not expected to play a major role, as the combination of fiducial veto, trajectory and particle composition can be well understood from in-situ inter-spill and beam-off measurements \cite{Antonello:2015lea}.   \marcom{PB}{We need to comment on cosmogenics.} 
+extremely reduced beam-correlated backgrounds. Cosmogenic backgrounds are not
+expected to play a major role, as the combination of fiducial veto, trajectory
+and particle composition can be well understood from in-situ inter-spill and
+beam-off measurements \cite{Antonello:2015lea}. However a full analysis of this
+background is beyond the scope of this work. \marcom{PB}{Tweak this?}  
 
 The implication of the timing effects is that our discussion of backgrounds is
 twofold: for low mass steriles, or any mass at \muboone\ due to its worse timing
@@ -1228,20 +1230,25 @@ lower energy decays, meaning that lower energy steriles are more likely to
 decay, which are the least boosted objects.
 
 We show an example of a distribution for electron-positron production in the
-top left panel of \reffig{fig:spectrum_ee}. For the lowest masses that we consider,
-almost all events have energies below $0.5$ GeV, in this case illustrated by
-the red histogram. The distribution tends towards larger energies as the mass
-of the sterile increases, but for sterile masses less than the kaon mass, never
-produces significant numbers of events above $1$ GeV. As we can see in
+top left panel of \reffig{fig:spectrum_ee}.\marcom{PB}{Cut one of these
+figures?} For the lowest masses that we consider, almost all events have
+energies below $0.5$ GeV, in this case illustrated by the red histogram. The
+distribution tends towards larger energies as the mass of the sterile
+increases, but for sterile masses less than the kaon mass, never produces
+significant numbers of events above $1$ GeV. As we can see in
 \reffig{fig:spectrum_ee}, the number of events in the lowest energy bin is
 strongly indicative of the mass of the parent particle, and therefore the
 lowest energy events will play a strong role in model discrimination. However,
-as can be seen in the top right panel of \reffig{fig:spectrum_ee}, in the cut-based
-analysis which we outline in \refapp{app:bg} the lowest energy event
+as can be seen in the top right panel of \reffig{fig:spectrum_ee}, in the
+cut-based analysis which we outline in \refapp{app:bg} the lowest energy event
 distribution is significantly reduced due to poor efficiencies at low-energy in
-our cuts. In the bottom panel of \reffig{fig:spectrum_ee} we show the same distributions for electron-pion production, noting the same spectral features of the electron-positron channel. In the inset we also show the differences that a good timing resolution can give, with the in-bucket and out of bucket spectra showing significant differences.  Through optimisiation of this part of the analysis, we can expect
-improvements in the sensitivity to these models; however, this is beyond the
-scope of the present work.  
+our cuts. In the bottom panel of \reffig{fig:spectrum_ee} we show the same
+distributions for electron-pion production, noting the same spectral features
+of the electron-positron channel.  In the inset we also show the differences
+that a good timing resolution can give, with the in-bucket and out of bucket
+spectra showing significant differences.  Through optimisiation of this part of
+the analysis, we can expect improvements in the sensitivity to these models;
+however, this is beyond the scope of the present work.  
 
 
 
@@ -1282,8 +1289,7 @@ events for the same parameter space. \muboone\ would see such a signal several
 years before SBND, however, and as such any anomalous observations in \muboone\
 possibly consistent with a decay-in-flight would strongly encourage SBND and
 ICARUS to ensure they achieve the target $~1$~ns resolution needed to prove the
-anomaly is indeed from the decay of a heavy propagating sterile. Non-observation of any excess at $\mu$BooNE would not negatively effect the program for a subsequent search at SBND or ICARUS as a large amount of their probable parameter space is not available to $\mu$BooNE.  \marcom{PB}{We
-should mention consequences of non-observation at microboone.}
+anomaly is indeed from the decay of a heavy propagating sterile. Non-observation of any excess at $\mu$BooNE would not negatively effect the program for a subsequent search at SBND or ICARUS as a large amount of their probable parameter space is not available to $\mu$BooNE.  \marcom{PB}{Reduce this paragraph?}
 
 \subsection{SBN upper limits on sterile mixing}
 %
@@ -1315,15 +1321,26 @@ approximates the lower background-less curves. As such we estimate the true
 achievable upper limits of the SBN program would lie somewhere between these two
 curves (the solid shaded region). 
 
-As can be seen the increased event rate of sterile decays at the SBN program in comparison to
-PS-191 has the potential for the improvement on the bounds on $|U_{e4}|^2$ and
-$|U_{\mu 4}|^2$ in all channels studied for wide regions of parameter space
-even when taking into account the increased rate of backgrounds expected. The strongest bounds come from semi-leptonic $\ster \rightarrow l^\pm \pi^\mp$ searches, with mixing greater than $|U_{e4}|^2 \leq 10^{-9}$ excluded at the 90\% C.L for $m_\ster \approx 0.350$ GeV. The bounds have the potential to improve upon the $\pi^-$ peak search bounds on for $m_\ster \leq 0.033$ MeV and $\leq 0.138$ for muon and electron mixing respectively, if the backgrounds can indeed be keep under control by sufficient timing resolution. 
+As can be seen the increased event rate of sterile decays at the SBN program in
+comparison to PS-191 has the potential for the improvement on the bounds on
+$|U_{e4}|^2$ and $|U_{\mu 4}|^2$ in all channels studied for wide regions of
+parameter space even when taking into account the increased rate of backgrounds
+expected. The strongest bounds come from semi-leptonic $\ster \rightarrow l^\pm
+\pi^\mp$ searches, with mixing greater than $|U_{e4}|^2 \leq 10^{-9}$ excluded
+at the 90\% C.L for $m_\ster \approx 0.350$ GeV. The bounds have the potential
+to improve upon the $\pi^-$ peak search bounds on for $m_\ster \leq 0.033$ MeV
+and $\leq 0.138$ for muon and electron mixing respectively, if the backgrounds
+can indeed be keep under control by sufficient timing resolution. 
 
 Additionally, the previously unbounded $\ster \rightarrow \nu_\alpha \pi^0$ and
-$\ster \rightarrow \nu_\alpha \gamma$ can be probed across the entire parameter space providing new constraints on exotic sterile signatures, although the potential backgrounds are larger in these photonic channels leading to a wider spread in achievable limits. For steriles  $m_\pi^0 \geq m_\ster \leq m_\pi^\pm +m_\mu$ the  $\ster \rightarrow \nu_\mu \pi^0$ channel can extend the limits beyond that of the traditional $e^+e^-$ searches, even in the minimal model, although in the case of electron mixing the $\pi^0$ bounds are always below that of the semi-leptonic $\ster \rightarrow e^\pm \pi^\mp$.  
-
-\marcom{PB}{This needs expanding.}
+$\ster \rightarrow \nu_\alpha \gamma$ can be probed across the entire parameter
+space providing new constraints on exotic sterile signatures, although the
+potential backgrounds are larger in these photonic channels leading to a wider
+spread in achievable limits. For steriles  $m_\pi^0 \leq m_\ster \leq m_\pi^\pm
++m_\mu$ the  $\ster \rightarrow \nu_\mu \pi^0$ channel can extend the limits
+beyond that of the traditional $e^+e^-$ searches, even in the minimal model,
+although in the case of electron mixing the $\pi^0$ bounds are always below
+that of the semi-leptonic $\ster \rightarrow e^\pm \pi^\mp$.  
 
 \begin{figure}[t]
 \center
