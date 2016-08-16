@@ -7,7 +7,7 @@ Jan 25th, 2016
 // Declare JobOptions Variables
 int noOfSteriles, CPConserving, scanType, gridPoints, jobID, nMCGen, rndInit, BugeyProcess, CCFRProcess, CDHSProcess, CHOOZProcess, KARMENProcess, LSNDProcess, NOMADProcess, MBProcess, MBProcessNubar, ATMOSPHERICProcess,
         NUMIProcess, MINOSProcess, MINOSNCProcess, GALLIUMProcess, ReactorAnomaly, XSECProcess, MBDISProcess, MBDISProcessNubar, nRuns;
-double chi2Cut, stepSize, temperature, UMax, UMaxSq;
+double chi2Cut, stepSize, temperature, UMax, UMaxSq, trim;
 bool usingUe = true;
 bool usingUm = true;
 std::string jobOptLoc = "inputs/";

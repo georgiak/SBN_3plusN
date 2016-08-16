@@ -249,8 +249,8 @@ int globChisq(int ind){
 
 		if(chisqTotal.chi2 > chi2Cut) continue;
 
-		chi2Log = chisqTotal.chi2;
-		gof = TMath::Prob(chi2Log,ndf);
+		chi2Log = abs(chisqTotal.chi2-trim);
+		//gof = TMath::Prob(chi2Log,ndf);
 
 		if(ran[12] < TMath::Min(1., exp(-(chi2Log - chi2LogOld)/temp)) || iMCGen == 1){
             chi2LogOld = chi2Log;
@@ -524,7 +524,7 @@ bool jobOpt(){
 	NUMIProcess=    	paraVal[18];	MINOSProcess=   	paraVal[19];	MINOSNCProcess= 	paraVal[20];
 	GALLIUMProcess= 	paraVal[21];	ReactorAnomaly= 	paraVal[22];    XSECProcess=    	paraVal[23];
 	MBDISProcess=   	paraVal[24];	MBDISProcessNubar=  paraVal[25];    chi2Cut =       	paraVal[26];
-	stepSize =      	paraVal[27];	temperature =       paraVal[28];
+	stepSize =      	paraVal[27];	temperature =       paraVal[28];	trim =       		paraVal[29];
     return true;
 }
 
