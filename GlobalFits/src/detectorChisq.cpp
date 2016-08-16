@@ -17,6 +17,10 @@ std::vector <double> _totalError;
 TMinuit *gMinuit;
 minPack myMin;
 
+TStopwatch *watch = new TStopwatch();
+TStopwatch *mini = new TStopwatch();
+//watch->Stop(); watch->Print("m"); std::cout << "Fill cov matrix " << nBins*nBins << std::endl; watch->Start();
+
 void myMinInit(){
 	gMinuit = new TMinuit(6);
 }
@@ -301,6 +305,7 @@ chisqStruct getChi2Numi(neutrinoModel model, numiPackage pack){
 // MiniBoone disappearance
 chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
+	watch->Stop(); watch->Start();
     const int nBins = 16;
 
     // Initialize the result!
@@ -309,13 +314,15 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
 	oscContribution oscCont;
 
-    double minEBins[nBins], maxEBins[nBins];
-    double dtIntegral = 0.;     double MCIntegral = 0.;
-	double ETru, LTru;
-	double FOsc_EnuQE, FOsc_EnuTrue, FOsc_LnuTrue, FOsc_weight;
+    float minEBins[nBins], maxEBins[nBins];
+    float dtIntegral = 0.;     float MCIntegral = 0.;
+	float ETru, LTru;
+	float FOsc_EnuQE, FOsc_EnuTrue, FOsc_LnuTrue, FOsc_weight;
 
     _signal.resize(nBins);
     _prediction.resize(nBins);
+	covMatrix.ResizeTo(nBins, nBins);
+	covMatrix.Zero();
 
     for(int iB = 0; iB < nBins; iB ++){
         _signal[iB] = 0;
@@ -323,13 +330,9 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
         dtIntegral += pack.NumuData[iB];
     }
 
-    covMatrix.ResizeTo(nBins, nBins);
-    covMatrix.Zero();
-
 	oscCont = getOscContributionsNumuDis(model);
 
 	for(int iEvt = 0; iEvt < pack.nFOscEvts; iEvt++){
-		//if(iEvt%5==0) continue;
 
 		for(int iB = 0; iB < nBins; iB++){
         	minEBins[iB] = pack.EnuQE[iB];
@@ -346,6 +349,7 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
         		for(int iContribution = 0; iContribution < 6; iContribution++){
             		_signal[iB] += pack.FOsc_weight[iEvt]*oscCont.aMuMu[iContribution]*pow(sin(1.267*oscCont.dm2[iContribution]*LTru / ETru),2);
             	}
+				break;
 			}
 		}
 	}
@@ -608,12 +612,6 @@ chisqStruct getLogLikelihood(neutrinoModel model, int nBins, sinSqPackage pack){
 }
 // NOMAD, I suppose
 chisqStruct getChi2Nomad(neutrinoModel model, nomadPackage pack){
-
-	TStopwatch *watch = new TStopwatch;
-	//CLOCKER
-	watch->Stop();	std::cout << "calculate signal" << std::endl;
-	watch->Print("u");
-	watch->Start();
 
 	chisqStruct result;
     result.zero();

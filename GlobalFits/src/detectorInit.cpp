@@ -544,36 +544,32 @@ minosncPackage minosncInit(){
 booneDisPackage mbNuDisInit(){
     booneDisPackage pack;
 
-	const int nBins = 16;
+	const short nBins = 16;
 	const int nfosc = 1267007;
 	pack.nFOscEvts = nfosc;
 
-    pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
-    pack.EnuQE = new double[nBins + 1];
-    pack.NumuData = new double[nBins];
-	double * FOsc_EnuQE = new double[nfosc];
-	double * FOsc_EnuTrue = new double[nfosc];
-	double * FOsc_LnuTrue = new double[nfosc];
-	double * FOsc_weight = new double[nfosc];
-	pack.FOsc_EnuQE = new double[nfosc];
-	pack.FOsc_EnuTrue = new double[nfosc];
-	pack.FOsc_LnuTrue = new double[nfosc];
-	pack.FOsc_weight = new double[nfosc];
+    pack.full_fractCovMatrix.resize(nBins, std::vector<float>(nBins));
+    pack.EnuQE = new float[nBins + 1];
+    pack.NumuData = new float[nBins];
+	pack.FOsc_EnuQE = new float[nfosc];
+	pack.FOsc_EnuTrue = new float[nfosc];
+	pack.FOsc_LnuTrue = new float[nfosc];
+	pack.FOsc_weight = new float[nfosc];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
-    for(int i = 0; i < nBins+1; i++)
+    for(short i = 0; i < nBins+1; i++)
         file >> pack.EnuQE[i];
     file.close();
 
     file.open(dataLoc+"miniboone_numudata_disap.txt");
-    for(int i = 0; i < nBins; i++)
+    for(short i = 0; i < nBins; i++)
         file >> pack.NumuData[i];
     file.close();
 
     file.open(dataLoc+"miniboone_frac_shape_matrix_numu_disap.txt");
-    for(int i = 0; i < nBins; i++)
-        for(int j = 0; j < nBins; j++)
+    for(short i = 0; i < nBins; i++)
+        for(short j = 0; j < nBins; j++)
             file >> pack.full_fractCovMatrix[i][j];
     file.close();
 
@@ -581,21 +577,12 @@ booneDisPackage mbNuDisInit(){
 	int dummy;
     for(int iEvt = 0; iEvt < nfosc; iEvt++){
  		file >> dummy;
-        file >> FOsc_EnuQE[iEvt];
-        file >> FOsc_EnuTrue[iEvt];   // true energy of neutrino
-        file >> FOsc_LnuTrue[iEvt];   // distance from production and detection points
-        file >> FOsc_weight[iEvt];    // event weight
+        file >> pack.FOsc_EnuQE[iEvt];
+        file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> pack.FOsc_weight[iEvt];    // event weight
 	}
 	file.close();
-	// Now, let's shorten it a touch
-	int count = 0;
-	for(int iEvt = 0; iEvt < nfosc; iEvt++){
-        pack.FOsc_EnuQE[count] = FOsc_EnuQE[iEvt];
-        pack.FOsc_EnuTrue[count] = FOsc_EnuTrue[iEvt];    // true energy of neutrino
-        pack.FOsc_LnuTrue[count] = FOsc_LnuTrue[iEvt];    // distance from production and detection points
-        pack.FOsc_weight[count] = FOsc_weight[iEvt];     // event weight
-		count++;
-	}
 
     ndf += nBins;
 	if(debug) std::cout << "MBnu Dis initialized. Bins: " << nBins << std::endl;
@@ -604,36 +591,32 @@ booneDisPackage mbNuDisInit(){
 booneDisPackage mbNubarDisInit(){
     booneDisPackage pack;
 
-    const int nBins = 16;
+    const short nBins = 16;
 	const int nfosc = 686529;
 	pack.nFOscEvts = nfosc;
 
-    pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
-    pack.EnuQE = new double[nBins + 1];
-    pack.NumuData = new double[nBins];
-	double * FOsc_EnuQE = new double[nfosc];
-	double * FOsc_EnuTrue = new double[nfosc];
-	double * FOsc_LnuTrue = new double[nfosc];
-	double * FOsc_weight = new double[nfosc];
-	pack.FOsc_EnuQE = new double[nfosc];
-	pack.FOsc_EnuTrue = new double[nfosc];
-	pack.FOsc_LnuTrue = new double[nfosc];
-	pack.FOsc_weight = new double[nfosc];
+    pack.full_fractCovMatrix.resize(nBins, std::vector<float>(nBins));
+    pack.EnuQE = new float[nBins + 1];
+    pack.NumuData = new float[nBins];
+	pack.FOsc_EnuQE = new float[nfosc];
+	pack.FOsc_EnuTrue = new float[nfosc];
+	pack.FOsc_LnuTrue = new float[nfosc];
+	pack.FOsc_weight = new float[nfosc];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
-    for(int i = 0; i < nBins+1; i++)
+    for(short i = 0; i < nBins+1; i++)
         file >> pack.EnuQE[i];
     file.close();
 
     file.open(dataLoc+"miniboone_numubardata_disap.txt");
-    for(int i = 0; i < nBins; i++)
+    for(short i = 0; i < nBins; i++)
         file >> pack.NumuData[i];
     file.close();
 
     file.open(dataLoc+"miniboone_frac_shape_matrix_numubar_disap.txt");
-    for(int i = 0; i < nBins; i++)
-        for(int j = 0; j < nBins; j++)
+    for(short i = 0; i < nBins; i++)
+        for(short j = 0; j < nBins; j++)
             file >> pack.full_fractCovMatrix[i][j];
     file.close();
 
@@ -641,21 +624,12 @@ booneDisPackage mbNubarDisInit(){
  	int dummy;
     for(int iEvt = 0; iEvt < nfosc; iEvt++){
  		file >> dummy;
-        file >> FOsc_EnuQE[iEvt];
-        file >> FOsc_EnuTrue[iEvt];   // true energy of neutrino
-        file >> FOsc_LnuTrue[iEvt];   // distance from production and detection points
-        file >> FOsc_weight[iEvt];    // event weight
+        file >> pack.FOsc_EnuQE[iEvt];
+        file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> pack.FOsc_weight[iEvt];    // event weight
 	}
 	file.close();
-	// Now, let's shorten it a touch
-	int count = 0;
-	for(int iEvt = 0; iEvt < nfosc; iEvt++){
-        pack.FOsc_EnuQE[count] = FOsc_EnuQE[iEvt];
-        pack.FOsc_EnuTrue[count] = FOsc_EnuTrue[iEvt];    // true energy of neutrino
-        pack.FOsc_LnuTrue[count] = FOsc_LnuTrue[iEvt];    // distance from production and detection points
-        pack.FOsc_weight[count] = FOsc_weight[iEvt];     // event weight
-		count++;
-	}
 
     ndf += nBins;
 	if(debug) std::cout << "MBnubar Dis initialized. Bins: " << nBins << std::endl;

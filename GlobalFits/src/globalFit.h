@@ -153,8 +153,8 @@ struct minosPackage{
     double * EnuQE, * NumubarData, * NumubarBkg, * fracError, * dataErr, * EnuQE_ws, * NumubarData_ws, * NumubarBkg_ws, * fracError_ws, * dataErr_ws;
 };
 struct booneDisPackage{
-    std::vector < std::vector <double> > full_fractCovMatrix;
-    double * EnuQE, * NumuData; double *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight;
+    std::vector < std::vector <float> > full_fractCovMatrix;
+    float * EnuQE, * NumuData; float *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight, *LOverE;
 	int nFOscEvts;
 	std::string foscData;
 };
