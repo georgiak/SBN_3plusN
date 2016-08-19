@@ -68,17 +68,17 @@ Physics, Durham University, South Road, Durham DH1 3LE, United Kingdom}
 
 \abstract{
 %
-If a sterile neutrino exists it would be naturally produced in the beam of the
+If a sterile neutrino exists it would naturally be produced in the beam of the
 Short-Baseline Neutrino (SBN) program at Fermilab. In this article we study the
-potential for SBN to constrain models of these particles with massess at the
+potential for SBN to constrain such models with sterile massess at the
 MeV scale.  
 %
-We discuss the decays which might be visible at SBN in a minimal and
+We discuss the decays which will be visible at SBN in a minimal and
 non-minimal extension of the Standard Model, and perform a simulation to
 compute the parameter space constraints which could be placed in the absence of
 a signal.
 %
-We demonstrate that the programme can extend existing bounds on well
+We demonstrate that the SBN programme can extend existing bounds on well
 constrained channels such as $\ster \rightarrow \nu l^+ l^-$ and $\ster
 \rightarrow l^\pm \pi^\mp$ while, thanks to the strong particle identification
 capabilities of liquid-Argon technology, also place bounds on often neglected
@@ -87,8 +87,8 @@ channels such as $\ster \rightarrow \gamma \nu$ and $\ster \rightarrow \nu
 %
 Furthermore, we consider the phenomenological impact of improved event timing
 information at the three detectors. If the light detection system employed by
-SBND and ICARUS can achieve nano-second timing resolution, the effect of finite
-sterile neutrino mass may be observable as events are expected to arrive
+SBND and ICARUS can achieve $~$nano-second timing resolution, the effect of finite
+sterile neutrino mass would be observable as events are expected to arrive
 outside the neutrino beam-buckets. When combined with spectral energy
 information SBN can significantly reduce its
 beam-correlated backgrounds, while through the
@@ -1135,48 +1135,48 @@ decaying steriles.
 
 \subsection{\label{sec:eventspectra}Event spectra}
 
-%%%%% This figure shows two spectra WITHOUT CUTS (left) and WITH CUTS (right)
-%\begin{figure}[t]
-%%
-%\center
-%%
-%\includegraphics[width=0.47\textwidth]{figures/spectrum_ee_truth.png} \includegraphics[width=0.47\textwidth]{figures/spectrum_ee_truth_cuts.png}
-%%
-%\caption{\label{fig:spectrum_ee} Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode. The three distributions correspond to parent sterile masses given in the legend. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. On the left, the spectra have no analysis cuts or detector reconstruction effects applied, while on the right these are included, decreasing the discriminatory power of the lowest energy events.}
-%%
-%\end{figure}
-%
 \begin{figure}[t]
-\begin{subfigure}[c]{0.5\textwidth}
+\begin{subfigure}[t]{\textwidth}
 	\center
-	\includegraphics[width=\textwidth]{figures/sterilecomparason.pdf}
-\end{subfigure}
-\begin{subfigure}[c]{0.5\textwidth}
+	%
+	\large
+
+	\resizebox{\columnwidth}{!}{\input{figures/spectrum.tex}}\\
+
+	%
+	%
+\end{subfigure}\\
+
+\begin{subfigure}[c]{\textwidth}
 	\center
-	%\begin{subfigure}[t]{\textwidth}
-	%	\large
-	%	\resizebox{\columnwidth}{!}{\input{figures/spectrum.tex}}
-	%\end{subfigure}
-	\begin{subfigure}[b]{\textwidth}
-		\Large
-		\resizebox{\columnwidth}{!}{\input{figures/spectrum_angles_ee.tex}}
+	\large
+	\resizebox{0.5\columnwidth}{!}{\input{figures/spectrum_angles_ee.tex}}
+
 	\end{subfigure}
-\end{subfigure}
-%
-%
-\caption{\label{fig:spectrum_ee} \emph{Left: } Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode. The three distributions correspond to parent sterile masses given in the legend. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. Insert shows the stark differences in spectrum when on considers between events falling within the beam bucket window and without. 
-%\emph{Right Top: }  The same characteristic spectra for observed energy in the  $\ster\rightarrow e^\pm \pi^\mp$ decay mode for sterile masses of 150,
-%250 and 350 MeV respectively. We include the effect of analysis cuts and detector reconstruction effects on the spectra, decreasing the overall discriminatory power of the lowest energy events.
-\emph{Right: } The angular spectrum of $e^+e^-$ events (defined as the direction of the sum of their individual momenta) in
-\muboone\ for a sterile neutrino mass of $m_N = 100$ MeV. The red histogram
-shows the true expected distribution, which we see is forward pointing. In blue
-we see the spectrum of events if we do not take into account the preferential
-decay rate for lower energy particles, instead using an energy independent
-decay rate. We see that this leads to a significantly more forward event 
-spectrum.  \newtext{MARK}{Had the cuts-spectra above the angular one, but I realised it was for epi channel so really made no sense on its own.}}
+
+	\caption{\label{fig:spectrum_ee} \emph{Top} : Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode. The three distributions correspond to parent sterile masses given in the legend. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. On the left, the spectra have no analysis cuts or detector reconstruction effects applied, while on the right these are included, decreasing the discriminatory power of the lowest energy events.\\
+		\emph{Bottom: }	The angular spectrum of $e^+e^-$ events (defined as the direction of the sum of their individual momenta) in
+		\muboone\ for a sterile neutrino mass of $m_N = 100$ MeV. The red histogram
+		shows the true expected distribution, which we see is forward pointing. In blue
+		we see the spectrum of events if we do not take into account the preferential
+		decay rate for lower energy particles, instead using an energy independent
+		decay rate. We see that this leads to a significantly more forward event 
+		spectrum. \newtext{MARK}{Cut this caption down.}
+	}
 \end{figure}
 
 
+
+
+\begin{figure}[t]
+	%
+	\center
+		\includegraphics[width=0.5\textwidth]{figures/sterilecomparason.pdf}
+	\caption{\label{fig:spectrum_epi} 
+		The same characteristic spectra as \reffig{fig:spectrum_ee} for observed energy in the  $\ster\rightarrow e^\pm \pi^\mp$ decay mode for sterile masses of 150,
+	250 and 350 MeV respectively. Now this energy is associated with the reconstructed sterile energy. One observes the exact same preference for low energy events and same qualatative behaviour as $m_\ster$ increases. This behaviour is common across all channels studied. Insert shows the stark differences in spectrum when on considers between events falling within the beam bucket window and without. \newtext{MARK}{I played around with combining these and cutting one plot, but in the end as they are different channels nothing worked and I think showing how this is a common element in each channel actually warrents them both.}}
+	%
+\end{figure}
 
 
 
@@ -1227,13 +1227,58 @@ lowest energy events will play a strong role in model discrimination. However,
 as can be seen in the top right panel of \reffig{fig:spectrum_ee}, in the
 cut-based analysis which we outline in \refapp{app:bg} the lowest energy event
 distribution is significantly reduced due to poor efficiencies at low-energy in
-our cuts. In the bottom panel of \reffig{fig:spectrum_ee} we show the same
+our cuts. In \reffig{fig:spectrum_epi} we show the same
 distributions for electron-pion production, noting the same spectral features
-of the electron-positron channel.  In the inset we also show the differences
-that a good timing resolution can give, with the in-bucket and out of bucket
-spectra showing significant differences.  Through optimisiation of this part of
+of the electron-positron channel. Indeed this behaviour qualatitively exists in all channels studdied. In the inset of \reffig{fig:spectrum_epi} we highlight the differences
+that an accurate timing resolution can give, with the in-bucket and out of bucket
+spectra showing very significant differences.  Through optimisiation of this part of
 the analysis, we can expect improvements in the sensitivity to these models;
 however, this is beyond the scope of the present work.  
+
+
+
+%%%%% This figure shows two spectra WITHOUT CUTS (left) and WITH CUTS (right)
+%\begin{figure}[t]
+%%
+%\center
+%%
+%\includegraphics[width=0.47\textwidth]{figures/spectrum_ee_truth.png} \includegraphics[width=0.47\textwidth]{figures/spectrum_ee_truth_cuts.png}
+%%
+%\caption{\label{fig:spectrum_ee} Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode. The three distributions correspond to parent sterile masses given in the legend. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. On the left, the spectra have no analysis cuts or detector reconstruction effects applied, while on the right these are included, decreasing the discriminatory power of the lowest energy events.}
+%%
+%\end{figure}
+%
+
+
+%\begin{figure}[t]
+%\begin{subfigure}[c]{0.5\textwidth}
+%	\center
+%	\includegraphics[width=\textwidth]{figures/sterilecomparason.pdf}
+%\end{subfigure}
+%\begin{subfigure}[c]{0.5\textwidth}
+%	\center
+	%\begin{subfigure}[t]{\textwidth}
+	%	\large
+	%	\resizebox{\columnwidth}{!}{\input{figures/spectrum.tex}}
+	%\end{subfigure}
+%	\begin{subfigure}[b]{\textwidth}
+%		\Large
+%		\resizebox{\columnwidth}{!}{\input{figures/spectrum_angles_ee.tex}}
+%	\end{subfigure}
+%\end{subfigure}
+%
+%
+%\caption{\label{fig:spectrum_ee} \emph{Left: } Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode. The three distributions correspond to parent sterile masses given in the legend. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. Insert shows the stark differences in spectrum when on considers between events falling within the beam bucket window and without. 
+%\emph{Right Top: }  The same characteristic spectra for observed energy in the  $\ster\rightarrow e^\pm \pi^\mp$ decay mode for sterile masses of 150,
+%250 and 350 MeV respectively. We include the effect of analysis cuts and detector reconstruction effects on the spectra, decreasing the overall discriminatory power of the lowest energy events.
+%\emph{Right: } The angular spectrum of $e^+e^-$ events (defined as the direction of the sum of their individual momenta) in
+%\muboone\ for a sterile neutrino mass of $m_N = 100$ MeV. The red histogram
+%shows the true expected distribution, which we see is forward pointing. In blue
+%we see the spectrum of events if we do not take into account the preferential
+%decay rate for lower energy particles, instead using an energy independent
+%decay rate. We see that this leads to a significantly more forward event 
+%spectrum.  \newtext{MARK}{Had the cuts-spectra above the angular one, but I realised it was for epi channel so really made no sense on its own.}}
+%\end{figure}
 
 
 
