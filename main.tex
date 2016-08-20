@@ -734,24 +734,24 @@ restrict our study to those decays which lead to the most stringent bounds on
 the parameters of the minimal model, instead studying all kinematically viable
 decays independently.
 
-\subsection{Bounds on $U_{\alpha 4}$}
+\subsection{\label{sec:bounds}Bounds on $U_{\alpha 4}$}
 
-There have been a variety of methods used in\marcom{PB}{Restructure.} past experiments to bound the
+There have been a variety of methods used in past experiments to bound the
 magnitude of the active-sterile mixing when steriles are of $\mathcal{O}$(MeV)
-scale. Alongside beam-dump style experiments such as PS-191 as mentioned above,
-there are extensive studies of the lepton spectra involved in two-body pion and
-kaon decays \cite{PhysRevD.46.R885, PhysRevLett.68.3000} , in which a
+scale. 
+
+Strong bounds have been reported from many extensive studies of the lepton spectra involved in two-body pion and kaon decays \cite{PhysRevD.46.R885, PhysRevLett.68.3000}, where it was noticed that a
 mono-chromatic line at $E_l = \left( m_{\pi
 (K)}^2+m_l^2-m_N^2\right)/m_{\pi(K)}^2$ would appear if a heavy sterile was
-produced instead of a light active neutrino. A sufficiently short-lived
-sterile, however, could decay back effectively instantly to visible particles
-voiding the single lepton cut these analysis implement and thus escaping the
-bounds.  These can be powerful probes but are limited in the parameter-space
-they can search leaving beam-dump style experiments the only terrestrial
-experiments for a large region of sterile masses. Bounds on $U_{\alpha 4}$
-from such beam-dump experiments are most often presented in the context of the
-minimal model as discussed above. If one then considers enlarged decay rates in
-a non-minimal model, care must be taken with existing bounds, as an enlarged
+produced instead of a light active neutrino. These peak searches provide strong bounds on the sterile-active mixing which crucially care little about the decay specifics of the sterile, being valid even for extremely long lived steriles. A sufficiently short-lived
+sterile, however, could decay back to visible paricles effectively instantly on the experiments scale voiding the ``single lepton'' cut these analysis implement and thus escaping the
+bounds. Such peak searches have taken place for $\pi\rightarrow \nu e (\mu)$ and $K \rightarrow \nu e (\mu)$ and provide strong bounds at low masses. The strength of these bounds is based purely on the statistics of meson decays observed, and is not a function of sterile decay-rate. As such peak searches tend to perform poorly at higher masses in comparason to beam-dump style bounds, such as those provided by PS-191, which are driven by both the flux intensity and the decay rate of the heavy sterile which scales as $\propto (m^3) m^5$ for (semi-) leptonic decays. 
+
+These beam-dump style experiments have taken place at many accelator complexes, often taking advantage of prexisting proton beams in their design. PS-191, which ran in parallel with the BEBC bubble chamber, provides the strongest limits on active-sterile mixing for masses below the Kaon mass since 1984. Above this mass, a higher energy proton beam is needed, and was achieved by moving from the CERN PS to SPS proton beam in both the CHARM \cite{Bergsma:1985is} and NA3 \cite{Badier:1986xz} experiments. These experiments are increadibly sensitive to active-sterile mixing and limits $|U_{e 4}|^2 \leq 10^{-8}\rightarrow10^{-9}$ were achieved for $m_\ster \geq 200$ MeV.
+
+Results from beam-dump experiments are most often presented in the context of the
+minimal model as discussed above, with upper limits on active-sterile mixing in the absense of a signal. If one considers enlarged decay rates in
+a non-minimal model, however, care must be taken with existing bounds as an enlarged
 decay rate would increase the number of expected events and hence improve the
 bounds in all prior beam dump experiments until the point where baseline
 dependence becomes significant, i.e when sufficient steriles decay before
@@ -820,8 +820,8 @@ interactions in the sterile sector leading to decays that are not mixing
 suppressed, pushes the total sterile lifetime below 0.1s and removes the bounds
 completely, and can still leave channel specific signatures observable at SBN
 as the upper bounds are independent on total decay rate. Similarly any bounds
-derived as such fold in a plethora of early universe model assumptions. As such
-we argue that terrestrial bounds on each individual decay channel are necessary
+derived as such fold in a plethora of early-universe model assumptions. As such
+we argue that terrestrial laboratory bounds on each individual decay channel are necessary
 and vital probes of the sterile sector. \\
 
 \section{\label{sec:simulation}Simulation of SBN}
@@ -1155,19 +1155,15 @@ decaying steriles.
 \begin{subfigure}[c]{\textwidth}
 	\center
 	\large
-	\resizebox{0.99\columnwidth}{!}{\input{figures/spectrum_angles_ee.tex}}
+	\resizebox{0.7\columnwidth}{!}{\input{figures/spectrum_angles_ee.tex}}
 
 	\end{subfigure}
 
-	\caption{\label{fig:spectrum_ee} \emph{Top} : Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode. The three distributions correspond to parent sterile masses given in the legend. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. On the left, the spectra have no analysis cuts or detector reconstruction effects applied, while on the right these are included, decreasing the discriminatory power of the lowest energy events.\\
-		\emph{Bottom: }	The angular spectrum of $e^+e^-$ events (defined as the direction of the sum of their individual momenta) in
-		\muboone\ for a sterile neutrino mass of $m_N = 100$ MeV. The red histogram
-		shows the true expected distribution, which we see is forward pointing. In blue
-		we see the spectrum of events if we do not take into account the preferential
+	\caption{\label{fig:spectrum_ee} \emph{Top} : Characteristic spectra for the total energy of observed  $e^+e^-$ pairs seen at \muboone\ produced in the $\ster \to \nu e^+e^-$ decay mode, for three representative masses. We see a preference for low energy events, with most events with energies below $0.4$ GeV. The modal peak of the distribution moves to higher energies as the mass of the sterile neutrino increases. On the left, the spectra have no analysis cuts or detector reconstruction effects applied, while on the right these are included, decreasing the discriminatory power of the lowest energy events.\\
+		\emph{Bottom: }	 Same as above but for the angular spectrum (defined as the direction of the sum of their individual momenta) for a sterile mass of $m_\ster = 100$ MeV. The red histogram shows the true expected distribution, which we see is forward pointing. In blue we see the spectrum of events if we do not take into account the preferential
 		decay rate for lower energy particles, instead using an energy independent
 		decay rate. We see that this leads to a significantly more forward event 
-		spectrum. \newtext{MARK}{Cut this caption down.}
-	}
+		spectrum.	}
 \end{figure}
 
 
@@ -1282,7 +1278,7 @@ however, this is beyond the scope of the present work.
 %we see the spectrum of events if we do not take into account the preferential
 %decay rate for lower energy particles, instead using an energy independent
 %decay rate. We see that this leads to a significantly more forward event 
-%spectrum.  \newtext{MARK}{Had the cuts-spectra above the angular one, but I realised it was for epi channel so really made no sense on its own.}}
+%spectrum. 
 %\end{figure}
 
 
@@ -1375,8 +1371,10 @@ $\ster \rightarrow \nu_\mu \pi^0$ channel can extend the limits beyond that of
 the traditional $e^+e^-$ searches to probe new parameter space, even in the
 purely minimal model. In the case of electron mixing the $\pi^0$ bounds are
 less powerful than that of the semi-leptonic $\ster \rightarrow e^\pm \pi^\mp$
-when one soley considers the minimal model. \marcom{PB}{Comment on non-minimal
-interpretation of these.}
+when one soley considers the minimal model.
+
+To re-interpret any bounds on \reffig{fig:band_sbn} in the context of a non-minimal extention in which a channel is enhanced by $(1+\alpha)$ then the quantity bounded on each vertical axis is given by  $|U_{\alpha 4}|^2/\sqrt{1+\alpha}$ $(\approx |U_{\alpha 4}|^2/\sqrt{\alpha} $ for large $\alpha$) as discussed in \refsec{sec:bounds}.  
+
 
 \begin{figure}[t]
 \center
@@ -1527,14 +1525,7 @@ We utilise the same test Monte Carlo analysis and test statistic as used in the 
 above, expanded to include a binned energy spectra. The reconstructed mass defined
 as the mass which minimises the test statistic $t_m$. 
 
-We perform the analysis for energy only (dashed black lines) and for energy and
-time-of-flight combined (colored bands). The results\marcom{PB}{Update this?
-COmment on three body vs. two body.} of this study can be found in
-\reffig{fig:tof_scatter} below in the form of 1 and 2 $\sigma$ ranges of
-reconstructed sterile mass as a function of true simulated mass. Resolution of
-approx 45 MeV at 2$\sigma$ level is achievable for the entire range of sterile
-mass allowed. We estimate the $\ster\rightarrow \mu^- \pi^+$ channel would be
-approximately 10\% better due to the better energy resolution of muons in LAr.  
+The results of this analysis can be found in \reffig{fig:tof_scatter} for energy only (dashed black lines) and for energy and time-of-flight combined (colored bands), for one leptonic $\ster \rightarrow \nu e^+ e^-$ (left)  and one semi-leptonic $\ster \rightarrow e^\pm \pi^\mp$ (right) channel. Shown are the 1 and 2 $\sigma$ ranges of reconstructed sterile mass as a function of true simulated mass. In the case of the 2-body $\ster \rightarrow e^\pm \pi^\pm$ channel, resolution of approx 45 MeV at 2$\sigma$ level is achievable for the entire range of sterile mass allowed. We estimate the $\ster\rightarrow \mu^- \pi^+$ channel would be approximately 10\% better due to the better energy resolution of muons in LAr. Temporal information only trivially improves the situation in comparason to energy only, as the exact parent kinematics can be reconstructed, limited only by detector resolution. In contrast when one considers the 3-body leptonic $\ster \rightarrow \nu e^+ e^-$ channel, we no longer have full reconstruction of the parent sterile kinematics so the achievable resolution is less. Here the addition of timing information has a much larger effect, almost halving the 2$\sigma$ mass range from ~300 MeV to ~150 MeV for wide region of parameter space.
 
 
 
