@@ -18,6 +18,7 @@
 
 #define MET2IMP 1 //0.9071847
 	double smear_energy(double En, double Percen, TRandom * rangen);
+	double smear_angle(double the, double ang, TRandom *rangen);
 	double massive_smear_energy(double En, double Percen, TRandom * rangen,double mass);
 	
 	double muon_track_length(double El);
@@ -47,7 +48,9 @@ class SBN_detector {
 	double f_mass;	
 	double baseline;
 	char const * fname; // location of root ntuple containing data file		
-	char const * foscname;	//location of full oscillated 
+	char const * foscname;	//location of full oscillated
+	char const * fbarname; // location of root ntuple containing data file		
+	char const * fbaroscname;	//location of full oscillated 
 	double potmodifier;
 	int identifier;
 	double proposal_modifier;

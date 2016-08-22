@@ -16,6 +16,7 @@ std::vector<double >  calc_signal_events(struct neutrinoModel &nuModel);
 
 void contract_signal(TMatrixT <double> & M, TMatrixT <double> &Mc);
 void contract_signal2(TMatrixT <double> & M, TMatrixT <double> &Mc);
+void contract_signal2_anti(TMatrixT <double> & M, TMatrixT <double> &Mc);
 std::vector<std::vector<double >> to_vector(TMatrixT <double> McI);
 
 

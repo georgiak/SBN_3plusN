@@ -60,7 +60,13 @@ class SBN_spectrum {
 	static constexpr double ebinw[N_e_bins]   = {0.15,0.15,0.15,0.15,0.15,0.15,0.2,0.2,0.25,0.25,1.0};
 	static constexpr double mubinw[N_m_bins] = {0.1, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.25, 0.25, 0.5, 0.5, 0.5};
 
+
+
 	public:
+
+	bool numode;
+	bool nubarmode;
+	int which_mode;
 	std::vector<double >	uboone_e ;
 	std::vector<double > 	sbnd_e ;
 	std::vector<double >    icarus_e ;
@@ -133,6 +139,8 @@ class SBN_spectrum {
 	void fill_hists();
         void fill_vectors();	
 	void vec_print();
+
+	void SetNuBarMode();
 
 	int load_freq(SBN_detector *, int);
 	int load_freq_3p3(SBN_detector *);

@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 gSystem->Load("libTree");
 
 
-// Just a few flags to control program flow.
+//--> Just a few flags to control program flow.
 bool fit_flag = false;
 bool verbose_flag = false;
 bool test_flag=false;
@@ -67,6 +67,10 @@ bool comb_flag = false;
 bool both_flag = false;
 bool unit_flag = false;
 bool fraction_flag = false;
+bool anti_flag = false;
+
+int mode_flag = 0;
+
 
 int  sens_num=1;
 double dm41 = -1.0;
@@ -91,8 +95,10 @@ const struct option longopts[] =
 {
 	{"fit", 		no_argument, 		0, 'F'},
 	{"bkg",			no_argument,		0, 'B'},
+	{"mode",		required_argument,	0, 'M'},
 	{"test", 		no_argument, 		0, 'T'},
 	{"mass",		required_argument,	0, 'm'},
+	{"anti",		no_argument,		0, 'A'},
 	{"ue4", 		required_argument,	0, 'e'},
 	{"um4"	,		required_argument,	0, 'u'},
 	{"help",		no_argument, 		0, 'h'},
@@ -111,16 +117,22 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "d:alf:nue:m:svhS:cFTB", longopts, &index);
+	iarg = getopt_long(argc,argv, "d:alf:nuM:e:m:svhS:cFTAB", longopts, &index);
 
 	switch(iarg)
 	{
 		case 'F':
 			fit_flag = true;
-			//mS = strtof(optarg,NULL);
+			//-->mS = strtof(optarg,NULL);
 			break;
 		case 'B':
 			bkg_flag = true;
+			break;
+		case 'M':
+			mode_flag = strtof(optarg,NULL);
+			break;
+		case 'A':
+			anti_flag = true;
 			break;
 		case 'n':
 			unit_flag = true;
@@ -172,7 +184,8 @@ while(iarg != -1)
 			std::cout<<"\t-u\t--um4\t\tSet 3p1 Um4 value"<<std::endl;
 			std::cout<<"\t-e\t--ue4\t\tSet 3p1 Ue4 value"<<std::endl;
 			std::cout<<"\t-T\t--test\t\trun SBN test code"<<std::endl;
-			std::cout<<"\t-S\t--sensitivity\t\trun a full sensitivity fit. Required argument, number of steriles. Run with -a -d"<<std::endl;	
+			std::cout<<"\t-S\t--sensitivity\t\trun a full sensitivity fit. Required argument, number of steriles. Run with -a -d"<<std::endl;
+			std::cout<<"\t\t\t --sensitivity 1 --app --dis 1 --mode 1,  makes 3p1_both_em.dat"<<std::endl;
 			std::cout<<"\t-f\t--fraction\t\tRun fraction analysis, takes 1 argument for 3+N"<<std::endl;
 			std::cout<<"\t-d\t--app\t\tRun app only sensitivity"<<std::endl;
 			std::cout<<"\t-a\t--dis\t\tRun dis only sensitivity, takes 1 arg 0 for e-dis 1 for mudis"<<std::endl;
@@ -256,36 +269,36 @@ if(unit_flag){
 		TMatrixT <double> Mstat(bigMsize,bigMsize);
 		stats_fill(Mstat, back);
 
-		//stat_only =false;
+		//-->stat_only =false;
 		TMatrixT <double > Mtotal(bigMsize,bigMsize);
-		//if(stat_only){
-		//	Mtotal =  Mstat;
-		//} else {
-		//	Mtotal = Msys+Mstat;
-		//}
+		//-->if(stat_only){
+		//-->	Mtotal =  Mstat;
+		//-->} else {
+		//-->	Mtotal = Msys+Mstat;
+		//-->}
 		Mtotal = Mstat+Msys;
 
 		TMatrixT<double > Mctotal(contMsize,contMsize);
 		contract_signal2(Mtotal,Mctotal);
 
 
-		double invdet=0; // just to hold determinant
+		double invdet=0; //--> just to hold determinant
 
-		//	bit o inverting, root tmatrix seems perfectly fast	
+		//-->	bit o inverting, root tmatrix seems perfectly fast	
 		McI = Mctotal.Invert(&invdet);
 
 
 		for(double uuee = 1; uuee > 1-0.15; uuee-=0.01){
-		for(double uuem = 0; uuem <0.05; uuem+=0.002){//0.005
-       		for(double uumm = 1; uumm >1-0.08; uumm-=0.005){//0.02
-				//double uuee =0;// rangen->Uniform(0,1);
-				//double uumm =0;// rangen->Uniform(0,1);
-			//	double uuee = 0.3; 
-			//	double uumm = 0;
-			//	double uumm = 1;
-			//	double uuee = 1;
-				//double uuem =0;// rangen->Uniform(0,1);
-				double uume =uuem;// rangen->Uniform(0,1);
+		for(double uuem = 0; uuem <0.05; uuem+=0.002){//-->0.005
+       		for(double uumm = 1; uumm >1-0.08; uumm-=0.005){//-->0.02
+				//-->double uuee =0;//--> rangen->Uniform(0,1);
+				//-->double uumm =0;//--> rangen->Uniform(0,1);
+			//-->	double uuee = 0.3; 
+			//-->	double uumm = 0;
+			//-->	double uumm = 1;
+			//-->	double uuee = 1;
+				//-->double uuem =0;//--> rangen->Uniform(0,1);
+				double uume =uuem;//--> rangen->Uniform(0,1);
 
 				neutrinoModel unitModel(0.0,0.0,0.0);
 				unitModel.zero();
@@ -325,15 +338,15 @@ if(unit_flag){
 	
 				double chi2=0;
 			
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -367,11 +380,11 @@ if(fraction_flag)
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
 	if(num_ster == 1){
-//		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
+//-->		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
 	        sprintf(filename,"GlobalFits/ntuples/nt_31_all.root");	
 	} else if (num_ster == 2){
 
-		//sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
+		//-->sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
 		sprintf(filename,"GlobalFits/ntuples/nt_32_all.root"); 
 	} else if(num_ster == 3){
 		sprintf(filename,"GlobalFits/ntuples/nt_33_all_processed.root"); 
@@ -380,9 +393,9 @@ if(fraction_flag)
 
 
 	std::cout<<"read in`"<<std::endl;
-	//std::cout<<filename<<std::endl;
+	//-->std::cout<<filename<<std::endl;
 	TFile *fm= new TFile(filename);
-//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
+//-->	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	TTree *chi2_90 =(TTree*)fm->Get("chi2_99");
 	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
 	 Float_t m4 = 0;
@@ -404,7 +417,7 @@ if(fraction_flag)
 	        chi2_90->GetEntry(i);
 
 		double sins2 = 4*ue4*ue4*um4*um4;
-		//std::cout<<m4<<" "<<sins2<<std::endl;
+		//-->std::cout<<m4<<" "<<sins2<<std::endl;
 		std::cout<<m4<<" "<<m5<<" "<<ue4<<" "<<ue5<<" "<<um4<<" "<<um5<<" "<<phi45<<" "<<chi2<<std::endl;
 
 	}
@@ -485,22 +498,22 @@ if(fraction_flag&& false)
 		} else {
 			Mtotal = Msys+Mstat;
 		}
-		//Mtotal = Mstat;
+		//-->Mtotal = Mstat;
 
 		TMatrixT<double > Mctotal(contMsize,contMsize);
 		contract_signal2(Mtotal,Mctotal);
 
 
-		double invdet=0; // just to hold determinant
+		double invdet=0; //--> just to hold determinant
 
-		//	bit o inverting, root tmatrix seems perfectly fast	
+		//-->	bit o inverting, root tmatrix seems perfectly fast	
 		McI = Mctotal.Invert(&invdet);
 
 		std::vector<std::vector<double >> vMcI = to_vector(McI);
 
 	char filename[200];
 	if(num_ster == 1){
-	//	sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
+	//-->	sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
 	        sprintf(filename,"GlobalFits/ntuples/nt_31_brute.root");	
 	} else if (num_ster == 2){
 		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
@@ -513,14 +526,14 @@ if(fraction_flag&& false)
 	sprintf(outfilename,"ntuples/nt_3%d_all_processed_SBN.root",num_ster);
 
 		TFile outputFile(outfilename,"RECREATE");
-//		outputFile.cd();
+//-->		outputFile.cd();
 		TNtuple ntuple("SBN1_99","SBN1_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56:mychi2");
 
 
 
-	//std::cout<<filename<<std::endl;
+	//-->std::cout<<filename<<std::endl;
 	TFile *fm= new TFile(filename);
-//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
+//-->	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
 	 Float_t m4 = 0;
@@ -541,7 +554,7 @@ if(fraction_flag&& false)
 	 for (int i=0;i<nentries;i++) {
 	        chi2_90->GetEntry(i);
 	
-	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
+	//-->	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
 
 				double imn[3] = {(double)m4,(double)m5,(double)m6};
 				double iue[3] = {ue4,ue5,ue6};
@@ -551,9 +564,9 @@ if(fraction_flag&& false)
 				neutrinoModel appearanceModel(imn,iue,ium,iph);
 				
 				SBN_spectrum AppSpec(appearanceModel);
-				//std::cout<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<std::endl;
+				//-->std::cout<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<std::endl;
 
-				AppSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+				AppSpec.load_freq_3p3(ICARUS);//-->0 is silly app flag (get rid of this)
 				AppSpec.load_freq_3p3(SBND);
 				AppSpec.load_freq_3p3(UBOONE);
 
@@ -582,15 +595,15 @@ if(fraction_flag&& false)
 	
 				double mychi2=0;
 			
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -648,7 +661,7 @@ if(fraction_flag&& false)
 
 	char filename[200];
 	if(num_ster == 1){
-		//sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root"); 
+		//-->sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root"); 
  	        sprintf(filename,"GlobalFits/ntuples/nt_31_brute.root");	
 	} else if (num_ster == 2){
 		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
@@ -660,15 +673,15 @@ if(fraction_flag&& false)
 	char outfilename[200];
 	sprintf(outfilename,"ntuples/nt_3%d_all_processed_SBN.root",num_ster);
 
-		//TFile outputFile(outfilename,"RECREATE");
-//		outputFile.cd();
+		//-->TFile outputFile(outfilename,"RECREATE");
+//-->		outputFile.cd();
 		TNtuple ntuple("SBN1_99","SBN1_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56:mychi2");
 
 
 
-	//std::cout<<filename<<std::endl;
+	//-->std::cout<<filename<<std::endl;
 	TFile *fm= new TFile(filename);
-	//TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
+	//-->TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	TTree *chi2_90 =(TTree*)fm->Get("chi2_99");
 	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
 	 Float_t m4 = 0;
@@ -793,15 +806,15 @@ if(fraction_flag&& false)
 		} else {
 			Mtotal = Msys+Mstat;
 		}
-		//Mtotal = Mstat;
+		//-->Mtotal = Mstat;
 
 		TMatrixT<double > Mctotal(contMsize,contMsize);
 		contract_signal2(Mtotal,Mctotal);
 
 
-		double invdet=0; // just to hold determinant
+		double invdet=0; //--> just to hold determinant
 
-		//	bit o inverting, root tmatrix seems perfectly fast	
+		//-->	bit o inverting, root tmatrix seems perfectly fast	
 		McI = Mctotal.Invert(&invdet);
 
 		std::vector<std::vector<double >> vMcI = to_vector(McI);
@@ -814,7 +827,7 @@ if(fraction_flag&& false)
 	 for (int i=0;i<nentries;i++) {
 	        chi2_90->GetEntry(i);
 			
-	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
+	//-->	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
 
 				double imn[3] = {(double)m4,(double)m5,(double)m6};
 				double iue[3] = {ue4,ue5,ue6};
@@ -824,9 +837,9 @@ if(fraction_flag&& false)
 				neutrinoModel appearanceModel(imn,iue,ium,iph);
 				
 				SBN_spectrum AppSpec(appearanceModel);
-				//std::cout<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<std::endl;
+				//-->std::cout<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<std::endl;
 
-				AppSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+				AppSpec.load_freq_3p3(ICARUS);//-->0 is silly app flag (get rid of this)
 				AppSpec.load_freq_3p3(SBND);
 				AppSpec.load_freq_3p3(UBOONE);
 
@@ -841,7 +854,7 @@ if(fraction_flag&& false)
 				AppSpec.icarus_e_cosmo[0]= 10;
 
 		
-				// Change PoT!!
+				//--> Change PoT!!
 
 				for(int i = 0; i < N_e_bins; i++){
 
@@ -897,15 +910,15 @@ if(fraction_flag&& false)
 	
 				double mychi2=0;
 			
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -924,10 +937,10 @@ if(fraction_flag&& false)
 					ncovered2++;
 				}
 
-			//std::cout<<i<<" mn: "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
-		//	ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
+			//-->std::cout<<i<<" mn: "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
+		//-->	ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
 	
-	 }// end of above n_entries loop
+	 }//--> end of above n_entries loop
 
 	 std::cout<<pot<<" "<<ncovered<<" "<<nentries<<" "<<(double)ncovered/((double)nentries)<<" "<<ncovered2<<" "<<" "<<(double)ncovered2/((double)nentries)<<std::endl;
 	
@@ -935,11 +948,11 @@ if(fraction_flag&& false)
 
 
 
-	}// end of pot loop
+	}//--> end of pot loop
 	fm->Close();
-	//	outputFile.cd();
-	//	ntuple.Write();
-   	//	outputFile.Close();
+	//-->	outputFile.cd();
+	//-->	ntuple.Write();
+   	//-->	outputFile.Close();
 
 }
 
@@ -947,7 +960,7 @@ if(fraction_flag&& false)
 
 
 
-//Begin program flow control
+//-->Begin program flow control
 if(fit_flag){
 
 /*************************************************************
@@ -971,14 +984,14 @@ if(fit_flag){
 	bkgspec.load_bkg(SBND);
 	bkgspec.load_bkg(UBOONE);
 
-	bkgspec.sbnd_e_dirt[0] = 44  ;
-	bkgspec.uboone_e_dirt[0]= 47;
-	bkgspec.icarus_e_dirt[0]= 67;
-
+	bkgspec.sbnd_e_dirt[1]=44*1/5;
+	bkgspec.uboone_e_dirt[0]= 47*4/5;
+	bkgspec.uboone_e_dirt[1]=47*1/5;
+	bkgspec.icarus_e_dirt[0]= 67*4/5;
+	bkgspec.icarus_e_dirt[1]=67*1/5;
 	bkgspec.sbnd_e_cosmo[0] = 9  ;
 	bkgspec.uboone_e_cosmo[0]= 11;
 	bkgspec.icarus_e_cosmo[0]= 10;
-
 
 	std::vector<double > back6 = bkgspec.get_sixvector();
 	std::vector<double > back9 = bkgspec.get_ninevector();
@@ -996,12 +1009,15 @@ if(fit_flag){
 				wrkSpec.load_freq_3p3(UBOONE);	
 				wrkSpec.load_freq_3p3(SBND);
 
-				wrkSpec.sbnd_e_dirt[0] = 44  ;
-				wrkSpec.uboone_e_dirt[0]= 47;
-				wrkSpec.icarus_e_dirt[0]= 67;
-				wrkSpec.sbnd_e_cosmo[0] = 9;
+				wrkSpec.sbnd_e_dirt[1]=44*1/5;
+				wrkSpec.uboone_e_dirt[0]= 47*4/5;
+				wrkSpec.uboone_e_dirt[1]=47*1/5;
+				wrkSpec.icarus_e_dirt[0]= 67*4/5;
+				wrkSpec.icarus_e_dirt[1]=67*1/5;
+				wrkSpec.sbnd_e_cosmo[0] = 9  ;
 				wrkSpec.uboone_e_cosmo[0]= 11;
 				wrkSpec.icarus_e_cosmo[0]= 10;
+
 
 				std::vector<double > pred6 = wrkSpec.get_sixvector();
 				std::vector<double > pred9 = wrkSpec.get_ninevector();
@@ -1050,21 +1066,21 @@ if(fit_flag){
 
 
 	
-				double invdet=0; // just to hold determinant
+				double invdet=0; //--> just to hold determinant
 				double chi2=0;
 					
-				//bit o inverting, root tmatrix seems perfectly fast	
+				//-->bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
-
-				//check for previous known bug!
+	std::vector<std::vector<double >> vMcI = to_vector(McI);
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 				std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -1072,7 +1088,7 @@ if(fit_flag){
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						chi2 += mod*(back6[i]-pred6[i])*McI(i,j)*(back6[j]-pred6[j]);
+						chi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
 					}
 				}
 
@@ -1085,7 +1101,7 @@ if(fit_flag){
 				}
 
 
-}// end fit flag
+}//--> end fit flag
 
 
 if(bkg_flag){
@@ -1100,10 +1116,10 @@ if(bkg_flag){
 	system("rm bkg_data/SBND_-inf.root");
 	system("rm bkg_data/uBooNE_-inf.root");
 		
-	// Create a model to test, as we are reproducing bkg, create NULL model (m=0, u=0)
+	//--> Create a model to test, as we are reproducing bkg, create NULL model (m=0, u=0)
 	neutrinoModel nullModel(0,0,0);
 
-	//and create a SBN spectrum with the model we want to test
+	//-->and create a SBN spectrum with the model we want to test
 	SBN_spectrum bkgspectrum(nullModel);
 
 	/* bkgspectrum can then do lots of useful things
@@ -1119,11 +1135,11 @@ if(bkg_flag){
 	 * 	bkgspectrum.fill_dis(SBN_detector *);
 	 */
 
-	//Alternatively we can run oscillate()
-	//will then run the model over all detectors
-	// creating the detecter objects internally for all uses
+	//-->Alternatively we can run oscillate()
+	//-->will then run the model over all detectors
+	//--> creating the detecter objects internally for all uses
 
-	//bkgspectrum.oscillate();
+	//-->bkgspectrum.oscillate();
 	bkgspectrum.oscillate_sample();
 
 
@@ -1131,9 +1147,9 @@ if(bkg_flag){
 	system("cp bkg_data/SBND_-inf.root bkg_data/SBND_bkg.root"); 
 	system("cp bkg_data/uBooNE_-inf.root bkg_data/uBooNE_bkg.root");
 
-	//and keep the end histograms in internal variable, sbnd_e sbnd_m ..etc..	
-	//as well as writing them all to root files for plotting.. etc..
-	// NO lotting should be done in this sbnfit code. doesnt seem right. 
+	//-->and keep the end histograms in internal variable, sbnd_e sbnd_m ..etc..	
+	//-->as well as writing them all to root files for plotting.. etc..
+	//--> NO lotting should be done in this sbnfit code. doesnt seem right. 
 
 /*	std::cout<<"****************** mu-spectra *******************************"<<std::endl;
 	for(int i = 0; i < bkgspectrum.sbnd_m.size(); i++)
@@ -1170,7 +1186,7 @@ if(bkg_flag){
 
 
 
-}// end bkg_flag
+}//--> end bkg_flag
 
 if(sample_flag)
 {
@@ -1195,10 +1211,6 @@ if(sample_flag)
 if(cov_flag){
 
 
-
-
-
-
 }
 
 if(sens_flag)
@@ -1214,7 +1226,7 @@ if(sens_flag)
 	bool usedetsys = true;
 
 	if(dis_flag && !app_flag){
-		//usedetsys=false;
+		//-->usedetsys=false;
 	}
 
 	neutrinoModel nullModel;
@@ -1233,7 +1245,7 @@ if(sens_flag)
 	bkgspec.uboone_e_cosmo[0]= 11;
 	bkgspec.icarus_e_cosmo[0]= 10;
 
-			if(true){
+			if(false){
 				double modd= 0.5;	
 				for(int i = 0; i < N_e_bins; i++){
 
@@ -1323,9 +1335,9 @@ if(sens_flag)
 		contract_signal2(Mtotal,Mctotal);
 
 
-		double invdet=0; // just to hold determinant
+		double invdet=0; //--> just to hold determinant
 
-		//	bit o inverting, root tmatrix seems perfectly fast	
+		//-->	bit o inverting, root tmatrix seems perfectly fast	
 		McI = Mctotal.Invert(&invdet);
 		std::vector<std::vector<double >> vMcI = to_vector(McI);
 
@@ -1351,7 +1363,7 @@ if(sens_flag)
 
 				SBN_spectrum AppSpec(appearanceModel);
 	
-				AppSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+				AppSpec.load_freq_3p3(ICARUS);//-->0 is silly app flag (get rid of this)
 				AppSpec.load_freq_3p3(SBND);
 				AppSpec.load_freq_3p3(UBOONE);
 
@@ -1425,15 +1437,15 @@ if(sens_flag)
 	
 				double chi2=0;
 			
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -1449,9 +1461,9 @@ if(sens_flag)
 				double sin22em = 4.0*pow(appearanceModel.Ue[0]*appearanceModel.Um[0],2.0);
 
 				std::cout<<m<<" "<<appearanceModel.Ue[0]<<" "<<appearanceModel.Um[0]<<" "<<chi2<<" "<<sin22em<<std::endl;
-			}//end random u run
-		}//end mass run
-	} //end 3p1 APPearance only sensitivity analysis
+			}//-->end random u run
+		}//-->end mass run
+	} //-->end 3p1 APPearance only sensitivity analysis
 
 	if(sens_num == 1 && dis_flag && dis_which == 1)
 	{
@@ -1471,8 +1483,8 @@ if(sens_flag)
 				DisSpec.load_freq_3p3(SBND);
 				
 	
-			//	DisSpec.load_bkg(ICARUS);
-			//	DisSpec.load_bkg(SBND);
+			//-->	DisSpec.load_bkg(ICARUS);
+			//-->	DisSpec.load_bkg(SBND);
 
 
 				DisSpec.sbnd_e_dirt[0] = 44*4/5  ;
@@ -1536,7 +1548,7 @@ if(sens_flag)
 			
 				if(pred6.size()!=Mctotal.GetNcols()){std::cout<<"ERROR"<<std::endl;}
 
-					//check for previous known bug!
+					//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
@@ -1545,8 +1557,8 @@ if(sens_flag)
 
 				double chi2=0;
 				
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -1562,11 +1574,11 @@ if(sens_flag)
 				double sin22mm = 4.0*(1-pow(disappearanceModel.Um[0],2.0))*pow(disappearanceModel.Um[0],2.0);
 
 				std::cout<<m<<" "<<disappearanceModel.Ue[0]<<" "<<disappearanceModel.Um[0]<<" "<<chi2<<" "<<sin22mm<<std::endl;
-			}//end random um4
-		}//end m for loop
-	} //end 3p1 sensitivity disapearance only analysis 
+			}//-->end random um4
+		}//-->end m for loop
+	} //-->end 3p1 sensitivity disapearance only analysis 
 
-	if(sens_num == 1 && dis_flag && dis_which == 0)// This is the nu_e disapearance only channel, Interesting
+	if(sens_num == 1 && dis_flag && dis_which == 0)//--> This is the nu_e disapearance only channel, Interesting
 	{
 		for(double m = -2.00; m <=2.04; m=m+0.04){
 			for(int i = 0; i< 333; i++){
@@ -1597,7 +1609,7 @@ if(sens_flag)
 			
 				if(pred6.size()!=Mctotal.GetNcols()){std::cout<<"ERROR"<<std::endl;}
 
-					//check for previous known bug!
+					//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
@@ -1606,8 +1618,8 @@ if(sens_flag)
 
 				double chi2=0;
 				
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -1623,16 +1635,16 @@ if(sens_flag)
 				double sin22ee = 4.0*(1-pow(disappearanceModel.Ue[0],2.0))*pow(disappearanceModel.Ue[0],2.0);
 
 				std::cout<<m<<" "<<disappearanceModel.Ue[0]<<" "<<chi2<<" "<<sin22ee<<std::endl;
-			}//end random ue4
-		}//end m for loop
-	} //end 3p1 sensitivity disapearance (ue4 dis only) only analysis 
+			}//-->end random ue4
+		}//-->end m for loop
+	} //-->end 3p1 sensitivity disapearance (ue4 dis only) only analysis 
 
 
 
 
-	if(sens_num == 1 && both_flag)
+	if(sens_num == 1 && both_flag && mode_flag == 1)
 	{
-	std::cout<<"Begining N=1, dual appearance and dissapearance"<<std::endl;
+	std::cout<<"Begining N=1, dual appearance and dissapearance, optimised for sin^2them   : 3p1_both_em.dat"<<std::endl;
 
 		std::cout<<"Initialising output files"<<std::endl;
 		TFile outputFile("hmm.root","RECREATE");
@@ -1651,26 +1663,31 @@ if(sens_flag)
                                   ntuple->Branch("Chi",&nCHI);*/
      
 
-		for(double m = -2.00; m <=2.04; m=m+0.08){
-			for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
-			for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
+		for(double m = -2.00; m <=2.04; m=m+0.04){
+			for(double sins2 = log10(0.25) ; sins2 > -5; sins2 = sins2 - 0.2){
+			for(double uei2 = log10(0.4) ; uei2 > -3; uei2 = uei2 - 0.05){
+				double uei = pow(10,uei2);
 				
-				neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				double umi = sqrt(pow(10,sins2))/(2*uei);
+				if(umi > 0.4){continue;};
+
+				neutrinoModel bothModel(sqrt(pow(10,m)), uei , umi);
 				bothModel.dm41Sq = pow(10,m);
 			
 				
-			//	double imn[3] = {sqrt(pow(10,m)),sqrt(pow(10,1.24)),0.0};
-			//	double iue[3] = {uei,0.069,0};
-			//	double ium[3] = {umi, 0.16, 0.0};
-			//	double iph[3] = {1.8*3.14159,0.0, 0.0};
+			//-->	double imn[3] = {sqrt(pow(10,m)),sqrt(pow(10,1.24)),0.0};
+			//-->	double iue[3] = {uei,0.069,0};
+			//-->	double ium[3] = {umi, 0.16, 0.0};
+			//-->	double iph[3] = {1.8*3.14159,0.0, 0.0};
 
-			//	neutrinoModel bothModel(imn,iue,ium,iph);
+			//-->	neutrinoModel bothModel(imn,iue,ium,iph);
 				
 
 
 				SBN_spectrum BothSpec(bothModel);
-				
-				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.which_mode = 2;
+
+				BothSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
@@ -1684,7 +1701,6 @@ if(sens_flag)
 				BothSpec.uboone_e_cosmo[0]= 11;
 				BothSpec.icarus_e_cosmo[0]= 10;
 
-
 				std::vector<double > pred6 = BothSpec.get_sixvector();
 				std::vector<double > pred9 = BothSpec.get_ninevector();
 
@@ -1695,21 +1711,21 @@ if(sens_flag)
 
 	
 		
-				double invdet=0; // just to hold determinant
+				double invdet=0; //--> just to hold determinant
 				double chi2=0;
 		
-				//	bit o inverting, root tmatrix seems perfectly fast	
+				//-->	bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
 
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -1717,23 +1733,23 @@ if(sens_flag)
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						chi2 += mod*(back6[i]-pred6[i])*McI(i,j)*(back6[j]-pred6[j]);
+						chi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
 					}
 				}
 
 
-				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				//-->std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
 				/*nCHI = chi2;
 				nUM4 = bothModel.Um[0];
 				nUE4 = bothModel.Ue[0];
 				nDM4 = bothModel.dm41Sq;*/
 
 				ntuple.Fill(bothModel.dm41Sq,bothModel.Ue[0],bothModel.Um[0],chi2);
-				std::cout<<bothModel.dm41Sq<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<std::endl;
-			}//end um4
-			std::cout<<"#Finished m: "<<m<<" "<<umi<<std::endl;
-			}//end ue4
-		}//end m for loop
+				std::cout<<bothModel.dm41Sq<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<pow(10,sins2)<<std::endl;
+			}//-->end um4
+			std::cout<<"#Finished m: "<<m<<" "<<sins2<<std::endl;
+			}//-->end ue4
+		}//-->end m for loop
 
  
 		
@@ -1743,7 +1759,9 @@ if(sens_flag)
 	 	std::cout<<"close file"<<std::endl;
    		outputFile.Close();
 		std::cout<<"end all"<<std::endl;
-	} //end 3p1 sensitivity both analysis
+	} //-->end 3p1 sensitivity both analysis
+
+
 
 
 if(sens_num == 2&& false)
@@ -1770,8 +1788,8 @@ if(sens_num == 2&& false)
      
 
 		for(double m = -2.00; m <=2.04; m=m+0.08){
-			//for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
-			//for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
+			//-->for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
+			//-->for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
 			
 				for(double sinsq = -4; sinsq <=0; sinsq = sinsq + 0.5){
 				double umiMin = -10;
@@ -1783,8 +1801,8 @@ if(sens_num == 2&& false)
 
 				for(int n = 0; n< 200; n++){
 
-				//neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
-				//bothModel.dm41Sq = pow(10,m);
+				//-->neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//-->bothModel.dm41Sq = pow(10,m);
 				
 				double umi = rangen->Uniform(0.0,-4.0);
 
@@ -1793,7 +1811,7 @@ if(sens_num == 2&& false)
 				while( pow(10,uei)>1 ){
 					umi = rangen->Uniform(0.0,-4.0);
 					uei = log10(sqrt( pow(10,sinsq)/(4.0*pow(pow(10,umi),2) )  ));
-					//std::cout<<umi<<" "<<uei<<" "<<sinsq<<std::endl;
+					//-->std::cout<<umi<<" "<<uei<<" "<<sinsq<<std::endl;
 				}
 				
 				double imn[3] = {sqrt(pow(10,m)),sqrt(pow(10,1.24)),0.0};
@@ -1807,7 +1825,7 @@ if(sens_num == 2&& false)
 
 				SBN_spectrum BothSpec(bothModel);
 				
-				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
@@ -1832,21 +1850,21 @@ if(sens_num == 2&& false)
 
 	
 		
-				double invdet=0; // just to hold determinant
+				double invdet=0; //--> just to hold determinant
 				double chi2=0;
 		
-				//	bit o inverting, root tmatrix seems perfectly fast	
+				//-->	bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
 
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -1859,7 +1877,7 @@ if(sens_num == 2&& false)
 				}
 
 
-				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				//-->std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
 				/*nCHI = chi2;
 				nUM4 = bothModel.Um[0];
 				nUE4 = bothModel.Ue[0];
@@ -1872,13 +1890,13 @@ if(sens_num == 2&& false)
 				}
 
 
-				}//end random
+				}//-->end random
 				ntuple.Fill(pow(10,m),pow(10,ueiMin),pow(10,umiMin),chiMin);
 				std::cout<<pow(10,m)<<" "<<pow(10,ueiMin)<<" "<<pow(10,umiMin)<<" "<<pow(10,sinsq)<<" "<<chiMin<<std::endl;
-			}//end sinsq loop
+			}//-->end sinsq loop
 
 				std::cout<<"#Finished m: "<<m<<" "<<std::endl;
-		}//end m for loop
+		}//-->end m for loop
 
  
 		
@@ -1888,19 +1906,19 @@ if(sens_num == 2&& false)
 	 	std::cout<<"close file"<<std::endl;
    		outputFile.Close();
 		std::cout<<"end all"<<std::endl;
-	} //end 3p1 sensitivity both analysis
+	} //-->end 3p1 sensitivity both analysis
 	
-if(sens_num == 2&& false)   // This is the m41 m51 fixed phi case for best fit
+if(sens_num == 2&& false)   //--> This is the m41 m51 fixed phi case for best fit
 	{
 	std::cout<<"Begining N=2, Dm41 V Dm51"<<std::endl;
 
 
 
-		//std::cout<<"Initialising output files"<<std::endl;
-	//	TFile outputFile("hmm.root","RECREATE");
-	//	outputFile.cd();
-	//	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
-	//	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
+		//-->std::cout<<"Initialising output files"<<std::endl;
+	//-->	TFile outputFile("hmm.root","RECREATE");
+	//-->	outputFile.cd();
+	//-->	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
+	//-->	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
 
                            /*     Double_t nUE4;
                                   Double_t nUM4;
@@ -1915,22 +1933,22 @@ if(sens_num == 2&& false)   // This is the m41 m51 fixed phi case for best fit
 
 		for(double m4 = -2.00; m4 <=2.04; m4=m4+0.04){
 		for(double m5 = m4; m5 <=2.04; m5=m5+0.04){
-			//for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
-			//for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
+			//-->for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
+			//-->for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
 			
 
-				//neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
-				//bothModel.dm41Sq = pow(10,m);
+				//-->neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//-->bothModel.dm41Sq = pow(10,m);
 			
 				double minPhi = 0;
 				double minChi = 10000;	
 				double iphi = 1.8;
 				
 				double imn[3] = {sqrt(pow(10,m4)),sqrt(pow(10,m5)),0.0};
-				double iue[3] = {0.15,0.13,0};  // These are best fit!
+				double iue[3] = {0.15,0.13,0};  //--> These are best fit!
 				double ium[3] = {0.069,0.16, 0.0};
-				//double iue[3] = {0.2,0.2,0};  // generic ones
-				//double ium[3] = {0.2,0.2,0.0};
+				//-->double iue[3] = {0.2,0.2,0};  //--> generic ones
+				//-->double ium[3] = {0.2,0.2,0.0};
 
 
 				double iph[3] = {iphi*3.14159, 0.0, 0.0};
@@ -1942,18 +1960,18 @@ if(sens_num == 2&& false)   // This is the m41 m51 fixed phi case for best fit
 				double round54 = round(log10(fabs(bothModel.dm54Sq))/0.04)*0.04;
 
 				if(fabs(bothModel.dm54Sq) >= 100){ 
-				//	std::cout<<"skipping this one 1:"<<std::endl;
+				//-->	std::cout<<"skipping this one 1:"<<std::endl;
 						continue;
 				}
 				if(round54 > 2 ){ 
-				//	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
+				//-->	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
 						continue;
 				}
 
-//				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
+//-->				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
 				SBN_spectrum BothSpec(bothModel);
 				
-				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
@@ -1979,21 +1997,21 @@ if(sens_num == 2&& false)   // This is the m41 m51 fixed phi case for best fit
 
 	
 		
-				double invdet=0; // just to hold determinant
+				double invdet=0; //--> just to hold determinant
 				double chi2=0;
 		
-				//	bit o inverting, root tmatrix seems perfectly fast	
+				//-->	bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
 
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -2007,39 +2025,39 @@ if(sens_num == 2&& false)   // This is the m41 m51 fixed phi case for best fit
 			
 			
 
-				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				//-->std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
 				/*nCHI = chi2;
 				nUM4 = bothModel.Um[0];
 				nUE4 = bothModel.Ue[0];
 				nDM4 = bothModel.dm41Sq;*/
-//				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
+//-->				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
 				std::cout<<pow(10,m4)<<" "<<pow(10,m5)<<" "<<chi2<<std::endl;
-				//std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
-		}//end m5 loop
-				//std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
-		}//end m for loop
+				//-->std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
+		}//-->end m5 loop
+				//-->std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
+		}//-->end m for loop
 
  
 		
-//		outputFile.cd();
-//		std::cout<<"write ntuple"<<std::endl;
-//		ntuple.Write();
-//	 	std::cout<<"close file"<<std::endl;
-  // 		outputFile.Close();
-//		std::cout<<"end all"<<std::endl;
-	} //end 3p2 sensitivity both analysis
+//-->		outputFile.cd();
+//-->		std::cout<<"write ntuple"<<std::endl;
+//-->		ntuple.Write();
+//-->	 	std::cout<<"close file"<<std::endl;
+  //--> 		outputFile.Close();
+//-->		std::cout<<"end all"<<std::endl;
+	} //-->end 3p2 sensitivity both analysis
 
-if(sens_num == 2)   // Fix everything global, vary phi
+if(sens_num == 2)   //--> Fix everything global, vary phi
 	{
 	std::cout<<"Begining N=2, fix all vary phi "<<std::endl;
 
 
 
-		//std::cout<<"Initialising output files"<<std::endl;
-	//	TFile outputFile("hmm.root","RECREATE");
-	//	outputFile.cd();
-	//	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
-	//	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
+		//-->std::cout<<"Initialising output files"<<std::endl;
+	//-->	TFile outputFile("hmm.root","RECREATE");
+	//-->	outputFile.cd();
+	//-->	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
+	//-->	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
 
                            /*     Double_t nUE4;
                                   Double_t nUM4;
@@ -2052,25 +2070,25 @@ if(sens_num == 2)   // Fix everything global, vary phi
                                   ntuple->Branch("Chi",&nCHI);*/
      
 
-			//for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
-			//for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
+			//-->for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
+			//-->for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
 			
 
-				//neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
-				//bothModel.dm41Sq = pow(10,m);
+				//-->neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//-->bothModel.dm41Sq = pow(10,m);
 			
 				double minPhi = 0;
 				double minChi = 10000;	
 				for(double iphi = 0; iphi< 2; iphi+=0.01){
-				//double iphi = 1.8;
+				//-->double iphi = 1.8;
 			
 				
-				//0.69, 1.3
+				//-->0.69, 1.3
 				double imn[3] = {sqrt(pow(10,-0.16)),sqrt(pow(10,0.12)),0.0};
-				double iue[3] = {0.15,0.13,0};  // These are best fit!
+				double iue[3] = {0.15,0.13,0};  //--> These are best fit!
 				double ium[3] = {0.069,0.16, 0.0};
-				//double iue[3] = {0.2,0.2,0};  // generic ones
-				//double ium[3] = {0.2,0.2,0.0};
+				//-->double iue[3] = {0.2,0.2,0};  //--> generic ones
+				//-->double ium[3] = {0.2,0.2,0.0};
 
 
 				double iph[3] = {iphi*3.14159, 0.0, 0.0};
@@ -2082,18 +2100,18 @@ if(sens_num == 2)   // Fix everything global, vary phi
 				double round54 = round(log10(fabs(bothModel.dm54Sq))/0.04)*0.04;
 
 				if(fabs(bothModel.dm54Sq) >= 100){ 
-				//	std::cout<<"skipping this one 1:"<<std::endl;
+				//-->	std::cout<<"skipping this one 1:"<<std::endl;
 						continue;
 				}
 				if(round54 > 2 ){ 
-				//	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
+				//-->	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
 						continue;
 				}
 
-//				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
+//-->				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
 				SBN_spectrum BothSpec(bothModel);
 				
-				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
@@ -2119,21 +2137,21 @@ if(sens_num == 2)   // Fix everything global, vary phi
 
 	
 		
-				double invdet=0; // just to hold determinant
+				double invdet=0; //--> just to hold determinant
 				double chi2=0;
 		
-				//	bit o inverting, root tmatrix seems perfectly fast	
+				//-->	bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
 
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -2148,35 +2166,35 @@ if(sens_num == 2)   // Fix everything global, vary phi
 
 
 
-				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				//-->std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
 				/*nCHI = chi2;
 				nUM4 = bothModel.Um[0];
 				nUE4 = bothModel.Ue[0];
 				nDM4 = bothModel.dm41Sq;*/
-//				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
+//-->				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
 				std::cout<<chi2<<" "<<iphi*3.14159<<std::endl;
-				//std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
-				} // end phi 
+				//-->std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
+				} //--> end phi 
 		
-//		outputFile.cd();
-//		std::cout<<"write ntuple"<<std::endl;
-//		ntuple.Write();
-//	 	std::cout<<"close file"<<std::endl;
-  // 		outputFile.Close();
-//		std::cout<<"end all"<<std::endl;
-	} //end 3p2 sensitivity both analysis
+//-->		outputFile.cd();
+//-->		std::cout<<"write ntuple"<<std::endl;
+//-->		ntuple.Write();
+//-->	 	std::cout<<"close file"<<std::endl;
+  //--> 		outputFile.Close();
+//-->		std::cout<<"end all"<<std::endl;
+	} //-->end 3p2 sensitivity both analysis
 	
-if(sens_num == 2&& false )   // This is the m41 m51 margined phi case for best fit
+if(sens_num == 2&& false )   //--> This is the m41 m51 margined phi case for best fit
 	{
 	std::cout<<"Begining N=2, Dm41 V Dm51: amrgin"<<std::endl;
 
 
 
-		//std::cout<<"Initialising output files"<<std::endl;
-	//	TFile outputFile("hmm.root","RECREATE");
-	//	outputFile.cd();
-	//	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
-	//	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
+		//-->std::cout<<"Initialising output files"<<std::endl;
+	//-->	TFile outputFile("hmm.root","RECREATE");
+	//-->	outputFile.cd();
+	//-->	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
+	//-->	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
 
                            /*     Double_t nUE4;
                                   Double_t nUM4;
@@ -2191,23 +2209,23 @@ if(sens_num == 2&& false )   // This is the m41 m51 margined phi case for best f
 
 		for(double m4 = 0.0; m4 <=2.04; m4=m4+0.04){
 		for(double m5 = 0.0; m5 <=2.04; m5=m5+0.04){
-			//for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
-			//for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
+			//-->for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
+			//-->for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
 			
 
-				//neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
-				//bothModel.dm41Sq = pow(10,m);
+				//-->neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//-->bothModel.dm41Sq = pow(10,m);
 			
 				double minPhi = 0;
 				double minChi = 10000;	
 				for(double iphi = 0; iphi< 2; iphi+=0.05){
-				//double iphi = 1.8;
+				//-->double iphi = 1.8;
 				
 				double imn[3] = {sqrt(pow(10,m4)),sqrt(pow(10,m5)),0.0};
-				double iue[3] = {0.15,0.13,0};  // These are best fit!
+				double iue[3] = {0.15,0.13,0};  //--> These are best fit!
 				double ium[3] = {0.069,0.16, 0.0};
-				//double iue[3] = {0.2,0.2,0};  // generic ones
-				//double ium[3] = {0.2,0.2,0.0};
+				//-->double iue[3] = {0.2,0.2,0};  //--> generic ones
+				//-->double ium[3] = {0.2,0.2,0.0};
 
 
 				double iph[3] = {iphi*3.14159, 0.0, 0.0};
@@ -2219,18 +2237,18 @@ if(sens_num == 2&& false )   // This is the m41 m51 margined phi case for best f
 				double round54 = round(log10(fabs(bothModel.dm54Sq))/0.04)*0.04;
 
 				if(fabs(bothModel.dm54Sq) >= 100){ 
-				//	std::cout<<"skipping this one 1:"<<std::endl;
+				//-->	std::cout<<"skipping this one 1:"<<std::endl;
 						continue;
 				}
 				if(round54 > 2 ){ 
-				//	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
+				//-->	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
 						continue;
 				}
 
-//				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
+//-->				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
 				SBN_spectrum BothSpec(bothModel);
 				
-				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
@@ -2256,21 +2274,21 @@ if(sens_num == 2&& false )   // This is the m41 m51 margined phi case for best f
 
 	
 		
-				double invdet=0; // just to hold determinant
+				double invdet=0; //--> just to hold determinant
 				double chi2=0;
 		
-				//	bit o inverting, root tmatrix seems perfectly fast	
+				//-->	bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
 
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -2287,42 +2305,42 @@ if(sens_num == 2&& false )   // This is the m41 m51 margined phi case for best f
 					minChi=chi2;
 				}
 
-					} // end phi loop
+					} //--> end phi loop
 
 
-				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				//-->std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
 				/*nCHI = chi2;
 				nUM4 = bothModel.Um[0];
 				nUE4 = bothModel.Ue[0];
 				nDM4 = bothModel.dm41Sq;*/
-//				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
+//-->				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
 				std::cout<<pow(10,m4)<<" "<<pow(10,m5)<<" "<<minChi<<" "<<minPhi<<std::endl;
-				//std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
-		}//end m5 loop
-				//std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
-		}//end m for loop
+				//-->std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
+		}//-->end m5 loop
+				//-->std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
+		}//-->end m for loop
 
  
 		
-//		outputFile.cd();
-//		std::cout<<"write ntuple"<<std::endl;
-//		ntuple.Write();
-//	 	std::cout<<"close file"<<std::endl;
-  // 		outputFile.Close();
-//		std::cout<<"end all"<<std::endl;
-	} //end 3p2 sensitivity both analysis
+//-->		outputFile.cd();
+//-->		std::cout<<"write ntuple"<<std::endl;
+//-->		ntuple.Write();
+//-->	 	std::cout<<"close file"<<std::endl;
+  //--> 		outputFile.Close();
+//-->		std::cout<<"end all"<<std::endl;
+	} //-->end 3p2 sensitivity both analysis
 
-if(sens_num == 2&& false)   // This is the m51 and phi plot for averaged else
+if(sens_num == 2&& false)   //--> This is the m51 and phi plot for averaged else
 	{
 	std::cout<<"Begining N=2, Dm51 V sinsq5"<<std::endl;
 
 
 
-		//std::cout<<"Initialising output files"<<std::endl;
-	//	TFile outputFile("hmm.root","RECREATE");
-	//	outputFile.cd();
-	//	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
-	//	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
+		//-->std::cout<<"Initialising output files"<<std::endl;
+	//-->	TFile outputFile("hmm.root","RECREATE");
+	//-->	outputFile.cd();
+	//-->	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
+	//-->	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
 
                            /*     Double_t nUE4;
                                   Double_t nUM4;
@@ -2337,14 +2355,14 @@ if(sens_num == 2&& false)   // This is the m51 and phi plot for averaged else
 
 		for(double sinsq = -3.6; sinsq <=-2; sinsq+=0.1){
 		for(double m5 = -2.0; m5 <=2.04; m5=m5+0.04){
-			//for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
-			//for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
+			//-->for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
+			//-->for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
 			
 
 				double m4 = -1;
 
-				//neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
-				//bothModel.dm41Sq = pow(10,m);
+				//-->neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//-->bothModel.dm41Sq = pow(10,m);
 				double minPhi = 0;	
 				double minUm5 = 0;
 				double minUe5 = 0;
@@ -2359,15 +2377,15 @@ if(sens_num == 2&& false)   // This is the m51 and phi plot for averaged else
 				while( pow(10,ue5) > 1 ){
 					um5 = rangen->Uniform(0.0,-4.0);
 					ue5 = log10(sqrt( pow(10,sinsq)/(4.0*pow(pow(10,um5),2) )  ));
-					//std::cout<<umi<<" "<<uei<<" "<<sinsq<<std::endl;
+					//-->std::cout<<umi<<" "<<uei<<" "<<sinsq<<std::endl;
 				}
 
 
 				double imn[3] = {sqrt(pow(10,m4)),sqrt(pow(10,m5)),0.0};
-				//double iue[3] = {0.15,0.13,0};  // These are best fit!
-				//double ium[3] = {0.069,0.16, 0.0};
-				double iue[3] = {0.1,pow(10,ue5),0};//ue5,0};  // generic ones
-				double ium[3] = {0.1,pow(10,um5),0};//um5,0.0};
+				//-->double iue[3] = {0.15,0.13,0};  //--> These are best fit!
+				//-->double ium[3] = {0.069,0.16, 0.0};
+				double iue[3] = {0.1,pow(10,ue5),0};//-->ue5,0};  //--> generic ones
+				double ium[3] = {0.1,pow(10,um5),0};//-->um5,0.0};
 
 
 				double iph[3] = {iphi*3.14159, 0.0, 0.0};
@@ -2379,18 +2397,18 @@ if(sens_num == 2&& false)   // This is the m51 and phi plot for averaged else
 				double round54 = round(log10(fabs(bothModel.dm54Sq))/0.04)*0.04;
 
 				if(fabs(bothModel.dm54Sq) >= 100){ 
-				//	std::cout<<"skipping this one 1:"<<std::endl;
+				//-->	std::cout<<"skipping this one 1:"<<std::endl;
 						continue;
 				}
 				if(round54 > 2 ){ 
-				//	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
+				//-->	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
 						continue;
 				}
 
-//				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
+//-->				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
 				SBN_spectrum BothSpec(bothModel);
 				
-				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
@@ -2416,21 +2434,21 @@ if(sens_num == 2&& false)   // This is the m51 and phi plot for averaged else
 
 	
 		
-				double invdet=0; // just to hold determinant
+				double invdet=0; //--> just to hold determinant
 				double chi2=0;
 		
-				//	bit o inverting, root tmatrix seems perfectly fast	
+				//-->	bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
 
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -2452,43 +2470,43 @@ if(sens_num == 2&& false)   // This is the m51 and phi plot for averaged else
 
 				}
 
-				} // end N loop
+				} //--> end N loop
 
 
-				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				//-->std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
 				/*nCHI = chi2;
 				nUM4 = bothModel.Um[0];
 				nUE4 = bothModel.Ue[0];
 				nDM4 = bothModel.dm41Sq;*/
-//				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
+//-->				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
 				std::cout<<pow(10,m4)<<" "<<pow(10,m5)<<" "<<minChi<<" "<<minPhi<<" "<<minUe5<<" "<<minUm5<<" "<<sinsq<<std::endl;
-				//std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
-		}//end m5 loop
-				//std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
-		}//end sinsq
+				//-->std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
+		}//-->end m5 loop
+				//-->std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
+		}//-->end sinsq
 
  
 		
-//		outputFile.cd();
-//		std::cout<<"write ntuple"<<std::endl;
-//		ntuple.Write();
-//	 	std::cout<<"close file"<<std::endl;
-  // 		outputFile.Close();
-//		std::cout<<"end all"<<std::endl;
-	} //end 3p2 sensitivity both analysis
+//-->		outputFile.cd();
+//-->		std::cout<<"write ntuple"<<std::endl;
+//-->		ntuple.Write();
+//-->	 	std::cout<<"close file"<<std::endl;
+  //--> 		outputFile.Close();
+//-->		std::cout<<"end all"<<std::endl;
+	} //-->end 3p2 sensitivity both analysis
 
 
-if(sens_num == 2&&false)   // This is the m51 and phi plot for averaged else
+if(sens_num == 2&&false)   //--> This is the m51 and phi plot for averaged else
 	{
 	std::cout<<"Begining N=2, Dm51 V phi"<<std::endl;
 
 
 
-		//std::cout<<"Initialising output files"<<std::endl;
-	//	TFile outputFile("hmm.root","RECREATE");
-	//	outputFile.cd();
-	//	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
-	//	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
+		//-->std::cout<<"Initialising output files"<<std::endl;
+	//-->	TFile outputFile("hmm.root","RECREATE");
+	//-->	outputFile.cd();
+	//-->	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
+	//-->	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
 
                            /*     Double_t nUE4;
                                   Double_t nUM4;
@@ -2503,14 +2521,14 @@ if(sens_num == 2&&false)   // This is the m51 and phi plot for averaged else
 
 		for(double iphi =0; iphi <=2.025; iphi+=0.025){
 		for(double m5 = -2.0; m5 <=2.04; m5=m5+0.04){
-			//for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
-			//for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
+			//-->for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
+			//-->for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
 			
 
 				double m4 = -1;
 
-				//neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
-				//bothModel.dm41Sq = pow(10,m);
+				//-->neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//-->bothModel.dm41Sq = pow(10,m);
 				double minPhi = 0;	
 				double minUm5 = 0;
 				double minUe5 = 0;
@@ -2520,10 +2538,10 @@ if(sens_num == 2&&false)   // This is the m51 and phi plot for averaged else
 		
 
 				double imn[3] = {sqrt(pow(10,m4)),sqrt(pow(10,m5)),0.0};
-				//double iue[3] = {0.15,0.13,0};  // These are best fit!
-				//double ium[3] = {0.069,0.16, 0.0};
-				double iue[3] = {0.13,0.13,0};//ue5,0};  // generic ones
-				double ium[3] = {0.05,0.05,0};//um5,0.0};
+				//-->double iue[3] = {0.15,0.13,0};  //--> These are best fit!
+				//-->double ium[3] = {0.069,0.16, 0.0};
+				double iue[3] = {0.13,0.13,0};//-->ue5,0};  //--> generic ones
+				double ium[3] = {0.05,0.05,0};//-->um5,0.0};
 
 
 				double iph[3] = {iphi*3.14159, 0.0, 0.0};
@@ -2535,18 +2553,18 @@ if(sens_num == 2&&false)   // This is the m51 and phi plot for averaged else
 				double round54 = round(log10(fabs(bothModel.dm54Sq))/0.04)*0.04;
 
 				if(fabs(bothModel.dm54Sq) >= 100){ 
-				//	std::cout<<"skipping this one 1:"<<std::endl;
+				//-->	std::cout<<"skipping this one 1:"<<std::endl;
 						continue;
 				}
 				if(round54 > 2 ){ 
-				//	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
+				//-->	std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
 						continue;
 				}
 
-//				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
+//-->				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
 				SBN_spectrum BothSpec(bothModel);
 				
-				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
@@ -2572,21 +2590,21 @@ if(sens_num == 2&&false)   // This is the m51 and phi plot for averaged else
 
 	
 		
-				double invdet=0; // just to hold determinant
+				double invdet=0; //--> just to hold determinant
 				double chi2=0;
 		
-				//	bit o inverting, root tmatrix seems perfectly fast	
+				//-->	bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
 
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -2602,27 +2620,27 @@ if(sens_num == 2&&false)   // This is the m51 and phi plot for averaged else
 			
 			
 
-				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				//-->std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
 				/*nCHI = chi2;
 				nUM4 = bothModel.Um[0];
 				nUE4 = bothModel.Ue[0];
 				nDM4 = bothModel.dm41Sq;*/
-//				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
+//-->				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
 				std::cout<<pow(10,m4)<<" "<<pow(10,m5)<<" "<<chi2<<" "<<iphi*3.14159<<std::endl;
-				//std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
-		}//end m5 loop
-				//std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
-		}//end sinsq
+				//-->std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
+		}//-->end m5 loop
+				//-->std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
+		}//-->end sinsq
 
  
 		
-//		outputFile.cd();
-//		std::cout<<"write ntuple"<<std::endl;
-//		ntuple.Write();
-//	 	std::cout<<"close file"<<std::endl;
-  // 		outputFile.Close();
-//		std::cout<<"end all"<<std::endl;
-	} //end 3p2 sensitivity both analysis
+//-->		outputFile.cd();
+//-->		std::cout<<"write ntuple"<<std::endl;
+//-->		ntuple.Write();
+//-->	 	std::cout<<"close file"<<std::endl;
+  //--> 		outputFile.Close();
+//-->		std::cout<<"end all"<<std::endl;
+	} //-->end 3p2 sensitivity both analysis
 
 
 
@@ -2634,11 +2652,11 @@ if(sens_num == 3)
 
 
 
-		//std::cout<<"Initialising output files"<<std::endl;
-	//	TFile outputFile("hmm.root","RECREATE");
-	//	outputFile.cd();
-	//	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
-	//	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
+		//-->std::cout<<"Initialising output files"<<std::endl;
+	//-->	TFile outputFile("hmm.root","RECREATE");
+	//-->	outputFile.cd();
+	//-->	std::cout<<"Initialising ntuple ~ TNuple"<<std::endl;
+	//-->	TNtuple ntuple("3p1chiNtuple","3p1chiNtuple","logDm4:logUe4:logUm4:Chi2");
 
                            /*     Double_t nUE4;
                                   Double_t nUM4;
@@ -2653,19 +2671,19 @@ if(sens_num == 3)
 
 		for(double m4 = -2.00; m4 <=2.04; m4+=0.04){
 		for(double m5 = m4; m5 <=2.04; m5=m5+0.04){
-	//	for(double m6 = m4; m6 <=2.04; m6+=0.04){
+	//-->	for(double m6 = m4; m6 <=2.04; m6+=0.04){
 
 			nn++;
-			//if(nn%2==0){continue;}
+			//-->if(nn%2==0){continue;}
 
-				//neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
-				//bothModel.dm41Sq = pow(10,m);
+				//-->neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//-->bothModel.dm41Sq = pow(10,m);
 				
 				double m6 = round(log10(22.0)/0.04)*0.04;
-			//	double m5 = round(log10(17.0)/0.04)*0.04;
+			//-->	double m5 = round(log10(17.0)/0.04)*0.04;
 			
 
-	//			for(double iphi = 0; iphi<2; iphi+=0.2){
+	//-->			for(double iphi = 0; iphi<2; iphi+=0.2){
 
 				double imn[3] = {sqrt(pow(10,m4)),sqrt(pow(10,m5)),sqrt(pow(10,m6))};
 				double iue[3] = {0.11,0.11,0.11};
@@ -2689,10 +2707,10 @@ if(sens_num == 3)
 				if(fabs(bothModel.dm65Sq) >= 100 || round65 > 2 ){
 						continue;
 				}
-//				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
+//-->				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
 				SBN_spectrum BothSpec(bothModel);
 				
-				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
@@ -2717,21 +2735,21 @@ if(sens_num == 3)
 
 	
 		
-				double invdet=0; // just to hold determinant
+				double invdet=0; //--> just to hold determinant
 				double chi2b=0;
 		
-				//	bit o inverting, root tmatrix seems perfectly fast	
+				//-->	bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
 
-				//check for previous known bug!
+				//-->check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
 
 				int whatsize = McI.GetNcols();
 
@@ -2740,7 +2758,7 @@ if(sens_num == 3)
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 				}
 
-				//	std::cout<<"test: "<<McI[4][5]<<" "<<vMcI[4][5]<<std::endl;
+				//-->	std::cout<<"test: "<<McI[4][5]<<" "<<vMcI[4][5]<<std::endl;
 
 
 
@@ -2757,36 +2775,249 @@ if(sens_num == 3)
 				double sum_of_back=0;
 				for (double n : back)
 	    			sum_of_back += n;
-				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				//-->std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
 				/*nCHI = chi2;
 				nUM4 = bothModel.Um[0];
 				nUE4 = bothModel.Ue[0];
 				nDM4 = bothModel.dm41Sq;*/
-//				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
-				//std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
+//-->				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
+				//-->std::cout<<m4<<" "<<m5<<" "<<bothModel.dm54Sq<<" "<<std::endl;
 				std::cout<<pow(10,m4)<<" "<<pow(10,m5)<<" "<<pow(10,m6)<<" "<<chi2b<<std::endl;
-				//std::cout<<pow(10,m4)<<" "<<pow(10,m5)<<" "<<pow(10,m6)<<" "<<chi2b<<" "<<sum_of_elems<<" "<<sum_of_back<<" "<<sum_of_back-sum_of_elems<<" "<<m4<<" "<<m5<<std::endl;
-//		}//phi loop
+				//-->std::cout<<pow(10,m4)<<" "<<pow(10,m5)<<" "<<pow(10,m6)<<" "<<chi2b<<" "<<sum_of_elems<<" "<<sum_of_back<<" "<<sum_of_back-sum_of_elems<<" "<<m4<<" "<<m5<<std::endl;
+//-->		}//-->phi loop
 			
 	
-		}//end m5 loop
-				//std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
-		}//end m for loop
+		}//-->end m5 loop
+				//-->std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
+		}//-->end m for loop
 
  
 		
-//		outputFile.cd();
-//		std::cout<<"write ntuple"<<std::endl;
-//		ntuple.Write();
-//	 	std::cout<<"close file"<<std::endl;
-  // 		outputFile.Close();
-//		std::cout<<"end all"<<std::endl;
-	} //end 3p2 sensitivity both analysis
-}//end sens_flag
+//-->		outputFile.cd();
+//-->		std::cout<<"write ntuple"<<std::endl;
+//-->		ntuple.Write();
+//-->	 	std::cout<<"close file"<<std::endl;
+  //--> 		outputFile.Close();
+//-->		std::cout<<"end all"<<std::endl;
+	} //-->end 3p2 sensitivity both analysis
+}//-->end sens_flag
 
 	
 
 
+if(anti_flag){
+
+	SBN_detector * ICARUS = new SBN_detector(2);
+ 	SBN_detector * SBND = new SBN_detector(0);
+ 	SBN_detector * UBOONE = new SBN_detector(1);
+
+	//SBN_detector * ICARUS_mu = new SBN_detector(2,true);
+ 	//SBN_detector * SBND_mu = new SBN_detector(0,true);
+ 	//SBN_detector * UBOONE_mu = new SBN_detector(1,true);
+	bool usedetsys = true;
+
+	if(dis_flag && !app_flag){
+		usedetsys=false;
+	}
+
+	neutrinoModel nullModel;
+
+	SBN_spectrum bkgspec(nullModel);
+	SBN_spectrum bkgbarspec(nullModel);
+	
+	bkgspec.load_bkg(ICARUS);
+	bkgspec.load_bkg(SBND);
+	bkgspec.load_bkg(UBOONE);
+			
+	bkgbarspec.load_bkg(ICARUS);
+	bkgbarspec.load_bkg(SBND);
+	bkgbarspec.load_bkg(UBOONE);
+	
+	bkgspec.sbnd_e_dirt[1]=44*1/5;
+	bkgspec.uboone_e_dirt[0]= 47*4/5;
+	bkgspec.uboone_e_dirt[1]=47*1/5;
+	bkgspec.icarus_e_dirt[0]= 67*4/5;
+	bkgspec.icarus_e_dirt[1]=67*1/5;
+	bkgspec.sbnd_e_cosmo[0] = 9  ;
+	bkgspec.uboone_e_cosmo[0]= 11;
+	bkgspec.icarus_e_cosmo[0]= 10;
+
+	bkgbarspec.sbnd_e_dirt[1]=44*1/5;
+	bkgbarspec.uboone_e_dirt[0]= 47*4/5;
+	bkgbarspec.uboone_e_dirt[1]=47*1/5;
+	bkgbarspec.icarus_e_dirt[0]= 67*4/5;
+	bkgbarspec.icarus_e_dirt[1]=67*1/5;
+	bkgbarspec.sbnd_e_cosmo[0] = 9  ;
+	bkgbarspec.uboone_e_cosmo[0]= 11;
+	bkgbarspec.icarus_e_cosmo[0]= 10;
+
+	std::vector<double > back6 = bkgspec.get_sixvector();
+	std::vector<double > back9 = bkgspec.get_ninevector();
+	std::vector<double > back  = bkgspec.get_vector();
+
+	std::vector<double > backbar6 = bkgbarspec.get_sixvector();
+	std::vector<double > backbar9 = bkgbarspec.get_ninevector();
+	std::vector<double > backbar  = bkgbarspec.get_vector();
+
+	std::vector<double> back_all = back;
+	back_all.insert(back_all.end(), backbar.begin(), backbar.end() );
+
+	std::vector<double> back_all_12 =back6;
+       	back_all_12.insert(back_all_12.end(), backbar6.begin(), backbar6.end() );
+
+
+	TRandom *rangen    = new TRandom();
+
+
+		int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*2;
+		int contMsize = (N_e_bins+N_m_bins)*N_dets*2;
+
+		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
+		 * */
+
+		TMatrixT <double> McI(contMsize, contMsize);
+		TMatrixT <double> McIbar(contMsize, contMsize);
+
+		//--> Fill systematics from pre-computed files
+		TMatrixT <double> Msys(bigMsize,bigMsize);
+		sys_fill(Msys,usedetsys);
+
+		//--> systematics per scaled event
+		for(int i =0; i<Msys.GetNcols(); i++)
+		{
+			for(int j =0; j<Msys.GetNrows(); j++)
+			{
+				Msys(i,j)=Msys(i,j)*back_all[i]*back_all[j];
+			}
+		}
+
+
+		//--> Fill stats from the back ground vector
+		TMatrixT <double> Mstat(bigMsize,bigMsize);
+		stats_fill(Mstat, back_all);
+
+		//-->And then define the total covariance matrix in all its glory
+		TMatrixT <double > Mtotal(bigMsize,bigMsize);
+		if(stat_only){
+			Mtotal =  Mstat;
+		} else {
+			Mtotal = Msys+Mstat;
+		}
+
+		//--> Now contract back the larger antimatrix
+		TMatrixT<double > Mctotal(contMsize,contMsize);
+		std::cout<<"Just starting contract_signal2"<<std::endl;
+		contract_signal2_anti(Mtotal,Mctotal);
+
+		//--> just to hold determinant
+		double invdet=0; 
+
+		//--> Bit o inverting, root tmatrix seems perfectly fast	
+		McI = Mctotal.Invert(&invdet);
+		std::vector<std::vector<double >> vMcI = to_vector(McI);
+		//--> There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
+
+
+				double m4 = 0.04;
+				double m5 = -0.04;			
+
+				//-->neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//-->bothModel.dm41Sq = pow(10,m);
+			
+				double iphi = 1.58;	
+				
+				double imn[3] = {sqrt(pow(10,m4)),sqrt(pow(10,m5)),0.0};
+				double iue[3] = {0.15,0.13,0};  //--> These are best fit!
+				double ium[3] = {0.069,0.16, 0.0};
+				//-->double iue[3] = {0.2,0.2,0};  //--> generic ones
+				//-->double ium[3] = {0.2,0.2,0.0};
+
+
+				double iph[3] = {iphi*3.14159, 0.0, 0.0};
+				
+				
+				neutrinoModel bothModel(imn,iue,ium,iph);
+				bothModel.numsterile =2;
+
+				double round54 = round(log10(fabs(bothModel.dm54Sq))/0.04)*0.04;
+
+			//	if(fabs(bothModel.dm54Sq) >= 100){ 
+				//	std::cout<<"skipping this one 1:"<<std::endl;
+			//			continue;
+			//	}
+			//	if(round54 > 2 ){ 
+			//		std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
+			//			continue;
+			//	}
+
+//-->				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
+				SBN_spectrum BothSpec(bothModel);
+				SBN_spectrum BothBarSpec(bothModel);
+				BothBarSpec.SetNuBarMode();
+
+				BothSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(SBND);
+				BothSpec.load_freq_3p3(UBOONE);
+
+				BothBarSpec.load_freq_3p3(ICARUS);//-->1 is stupid dis flag (temp)
+				BothBarSpec.load_freq_3p3(SBND);
+				BothBarSpec.load_freq_3p3(UBOONE);
+			
+				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
+				BothSpec.sbnd_e_dirt[1]=44*1/5;
+				BothSpec.uboone_e_dirt[0]= 47*4/5;
+				BothSpec.uboone_e_dirt[1]=47*1/5;
+				BothSpec.icarus_e_dirt[0]= 67*4/5;
+				BothSpec.icarus_e_dirt[1]=67*1/5;
+				BothSpec.sbnd_e_cosmo[0] = 9 ;
+				BothSpec.uboone_e_cosmo[0]= 11;
+				BothSpec.icarus_e_cosmo[0]= 10;
+
+				BothBarSpec.sbnd_e_dirt[0] = 44*4/5  ;
+				BothBarSpec.sbnd_e_dirt[1]=44*1/5;
+				BothBarSpec.uboone_e_dirt[0]= 47*4/5;
+				BothBarSpec.uboone_e_dirt[1]=47*1/5;
+				BothBarSpec.icarus_e_dirt[0]= 67*4/5;
+				BothBarSpec.icarus_e_dirt[1]=67*1/5;
+				BothBarSpec.sbnd_e_cosmo[0] = 9 ;
+				BothBarSpec.uboone_e_cosmo[0]= 11;
+				BothBarSpec.icarus_e_cosmo[0]= 10;
+
+
+				std::vector<double > pred6 = BothSpec.get_sixvector();
+				std::vector<double > predbar6 = BothBarSpec.get_sixvector();
+		
+				std::vector<double> pred_all_12 = pred6;	
+			     	pred_all_12.insert( pred_all_12.end(), predbar6.begin(), predbar6.end() );
+		
+				double chi2=0;
+		
+			
+				//-->Calculate the answer, ie chi square! will functionise
+				//--> should be matrix_size_c for full app+dis
+
+				int whatsize = McI.GetNcols();
+
+				double mod = 1.0;
+
+				for(int i =0; i<whatsize; i++){
+					for(int j =0; j<whatsize; j++){
+						chi2 += mod*(back_all_12[i]-pred_all_12[i])*vMcI[i][j]*(back_all_12[j]-pred_all_12[j]);
+					}
+				}
+			
+			
+
+				//-->std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				/*nCHI = chi2;
+				nUM4 = bothModel.Um[0];
+				nUE4 = bothModel.Ue[0];
+				nDM4 = bothModel.dm41Sq;*/
+//-->				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
+				std::cout<<pow(10,m4)<<" "<<pow(10,m5)<<" "<<chi2<<std::endl;
+
+
+}
 
 
 
@@ -2812,8 +3043,8 @@ if(test_flag){
 	SBN_spectrum bkgspec(nullModel);
 
 	bkgspec.neutral_test(SBND);
-	bkgspec.neutral_test(SBND);
-	bkgspec.neutral_test(SBND);
+//-->	bkgspec.neutral_test(SBND);
+//-->	bkgspec.neutral_test(SBND);
 
 
 return 0;	
@@ -2860,9 +3091,9 @@ if(true){
 	SBN_spectrum myspecb(testModelb);
 
 
-	//myspecb.load_freq(ICARUS,1);
-	//myspecb.load_freq(SBND,1);
-	//myspecb.load_freq(UBOONE,1);
+	//-->myspecb.load_freq(ICARUS,1);
+	//-->myspecb.load_freq(SBND,1);
+	//-->myspecb.load_freq(UBOONE,1);
 
 	myspecb.load_freq_3p3(ICARUS);
 
@@ -2911,7 +3142,7 @@ if(true){
 	SBN_spectrum myspec(testModel);
 	std::vector<double > pred = myspec.add_SBN_spectrum(nullsp);
 
-		//myspec.vec_print();
+		//-->myspec.vec_print();
 
 
 	myspec.oscillate();
@@ -2924,14 +3155,14 @@ if(true){
 	}
 */
 
-} //end test flag
+} //-->end test flag
 
 
 
 
 
 return 0;
-}// end main
+}//--> end main
 
 
 

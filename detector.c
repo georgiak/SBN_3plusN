@@ -14,6 +14,11 @@
 		return ans;
 	} 
 
+	double smear_angle(double th, double an, TRandom * rangen){
+		double ans = 0;
+		ans = rangen->Gaus(th,an);
+		return ans;
+	}
 	double massive_smear_energy(double En, double Percen, TRandom * rangen, double mass){
 		double ans = 0;
 		while(ans <=mass){
@@ -232,6 +237,9 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			name = "SBND";
 			fname ="rootfiles/ntuple.SBND.root";	
 			foscname ="rootfiles/ntuple.SBND_fullosc.root";	
+			fbarname ="rootfiles/NUBAR_MODE/ntuple.SBND.root";	
+			fbaroscname ="rootfiles/NUBAR_MODE/ntuple.SBND_fullosc.root";	
+
 			potmodifier = 1.0;
 			identifier = DET_SBND;
 			break;
@@ -276,6 +284,8 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			name = "uBooNE";
 			fname ="rootfiles/ntuple.uBooNE.root";	
 			foscname ="rootfiles/ntuple.uBooNE_fullosc.root";	
+			fbarname ="rootfiles/NUBAR_MODE/ntuple.uBooNE.root";	
+			fbaroscname ="rootfiles/NUBAR_MODE/ntuple.uBooNE_fullosc.root";
 			potmodifier = 2.0;
 			identifier = DET_UBOONE;
 			break;
@@ -327,6 +337,9 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 			name = "ICARUS";
 			fname ="rootfiles/ntuple.ICARUS.root";	
 			foscname ="rootfiles/ntuple.ICARUS_fullosc.root";	
+			fbarname ="rootfiles/NUBAR_MODE/ntuple.ICARUS.root";	
+			fbaroscname ="rootfiles/NUBAR_MODE/ntuple.ICARUS_fullosc.root";	
+	
 			potmodifier = 1.0;
 			identifier = DET_ICARUS;
 			break;
