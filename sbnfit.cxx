@@ -24,23 +24,14 @@
 #include "Math/Functor.h"
 #include "TError.h"
 
+#include "params.h"
 
-/*************************************************************
- *************************************************************
- *Hardcoded Defines -> poor practice, will wrap intp SBN_spectrum soon
- actually no here is probably best.
- ************************************************************
- ************************************************************/
-
-#define N_m_bins 19
-#define N_e_bins 11
-#define N_dets 3
-#define N_e_spectra 7
-#define N_m_spectra 2
 
 #define no_argument 0
 #define required_argument 1
 #define optional_argument 2
+
+
 
 /*************************************************************
  *************************************************************
@@ -201,6 +192,23 @@ while(iarg != -1)
 	}
 
 }
+
+
+
+if(verbose_flag)
+{
+	std::cout<<"#***************** Initial Parameters ******************"<<std::endl;
+	std::cout<<"# N_m_bins "<<N_m_bins<<std::endl;
+	std::cout<<"# N_e_bins "<<N_e_bins<<std::endl;
+	std::cout<<"# N_dets "<<N_dets<<std::endl;
+	std::cout<<"# N_e_spectra "<<N_e_spectra<<std::endl;
+	std::cout<<"# N_m_spectra "<<N_m_spectra<<std::endl;
+	std::cout<<"# N_anti "<<N_anti<<std::endl;
+	std::cout<<"#*******************************************************"<<std::endl;
+
+}
+
+
 
 if(app_flag&&dis_flag){both_flag = true; app_flag=false; dis_flag=false;}
 
@@ -2548,6 +2556,7 @@ if(sens_num == 3)
 
 if(anti_flag){
 
+	if(verbose_flag) std::cout<<"#**********Begining nu+nubar mode analysis**********"<<std::endl;
 	SBN_detector * ICARUS = new SBN_detector(2);
  	SBN_detector * SBND = new SBN_detector(0);
  	SBN_detector * UBOONE = new SBN_detector(1);
@@ -2563,6 +2572,8 @@ if(anti_flag){
 
 	neutrinoModel nullModel;
 
+
+	if(verbose_flag) std::cout<<"# Initialising nu+nubar mode backgrrounds"<<std::endl;
 	SBN_spectrum bkgspec(nullModel);
 	SBN_spectrum bkgbarspec(nullModel);
 	bkgbarspec.SetNuBarMode();
@@ -2593,8 +2604,8 @@ if(anti_flag){
 	TRandom *rangen    = new TRandom();
 
 
-		int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*2;
-		int contMsize = (N_e_bins+N_m_bins)*N_dets*2;
+		int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti;
+		int contMsize = (N_e_bins+N_m_bins)*N_dets*N_anti;
 
 		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
 		 * */
@@ -2602,6 +2613,7 @@ if(anti_flag){
 		TMatrixT <double> McI(contMsize, contMsize);
 		TMatrixT <double> McIbar(contMsize, contMsize);
 
+		if(verbose_flag) std::cout<<"# Filling up Systematics correlation matrix, size: "<<bigMsize <<std::endl;
 		// Fill systematics from pre-computed files
 		TMatrixT <double> Msys(bigMsize,bigMsize);
 		sys_fill(Msys,usedetsys);
@@ -2616,6 +2628,9 @@ if(anti_flag){
 		}
 
 
+
+
+		if(verbose_flag) std::cout<<"# Filling up Statistics correlation matrix, size: "<<bigMsize <<std::endl;
 		// Fill stats from the back ground vector
 		TMatrixT <double> Mstat(bigMsize,bigMsize);
 		stats_fill(Mstat, back_all);
@@ -2630,16 +2645,21 @@ if(anti_flag){
 
 		// Now contract back the larger antimatrix
 		TMatrixT<double > Mctotal(contMsize,contMsize);
-		std::cout<<"Just starting contract_signal2"<<std::endl;
+
+		if(verbose_flag) std::cout<<"# Begin nu+nubar mode matrix contraction: contract_signal2()"<<std::endl;
 		contract_signal2_anti(Mtotal,Mctotal);
+	
+		if(verbose_flag) std::cout<<"# Finished contraction, matrix size reduced from: "<<Mtotal.GetNcols()<<" to: "<<Mctotal.GetNcols()<<std::endl;
 
 		// just to hold determinant
 		double invdet=0; 
 
-		// Bit o inverting, root tmatrix seems perfectly fast	
+		// Bit o inverting, root tmatrix seems perfectly and sufficiently fast for this, even with anti_mode
 		McI = Mctotal.Invert(&invdet);
-		std::vector<std::vector<double >> vMcI = to_vector(McI);
+
+
 		// There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
+		std::vector<std::vector<double >> vMcI = to_vector(McI);
 
 
 				double m4 = 0.04;
@@ -2703,11 +2723,20 @@ if(anti_flag){
 
 				int whatsize = McI.GetNcols();
 
-				double mod = 1.0;
+
+
+				if( McI.GetNcols() != McI.GetNrows() && back_all_12.size() != pred_all_12.size() && back_all_12.size() != McI.GetNcols() )
+				{
+					std::cout<<"ERROR: Something is wrong. In Chi^2 calc matrix != vector length "<<std::endl;
+				}
+
+
+
+				if(verbose_flag) std::cout<<"# calculate chi^2 value using contracted matrix!"<<std::endl;
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						chi2 += mod*(back_all_12[i]-pred_all_12[i])*vMcI[i][j]*(back_all_12[j]-pred_all_12[j]);
+						chi2 += (back_all_12[i]-pred_all_12[i])*vMcI[i][j]*(back_all_12[j]-pred_all_12[j]);
 					}
 				}
 			
@@ -2756,15 +2785,6 @@ return 0;
 	bkgspec.load_bkg(ICARUS);
 	bkgspec.load_bkg(SBND);
 	bkgspec.load_bkg(UBOONE);
-
-
-	bkgspec.sbnd_e_dirt[0] = 44  ;
-	bkgspec.uboone_e_dirt[0]= 47;
-	bkgspec.icarus_e_dirt[0]= 67;
-
-	bkgspec.sbnd_e_cosmo[0] = 9  ;
-	bkgspec.uboone_e_cosmo[0]= 11;
-	bkgspec.icarus_e_cosmo[0]= 10;
 
 
 	std::vector<double > back6 = bkgspec.get_sixvector();

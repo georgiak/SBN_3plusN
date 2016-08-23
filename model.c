@@ -51,7 +51,7 @@ std::vector<double > SBN_spectrum::add_SBN_spectrum(SBN_spectrum other)
 
 
 	//First 3*N_e_bins are the SBND, muboone and icaraus e appearance bins so they are added to the background
-	for(int k=0; k<3*(N_e_bins);k++)
+	for(int k=0; k<N_dets*(N_e_bins);k++)
 	{
 		ans.push_back(vbkg[k]+vsignal[k]);
 
@@ -60,7 +60,7 @@ std::vector<double > SBN_spectrum::add_SBN_spectrum(SBN_spectrum other)
 
 
 	//Last 3*N_m_bins are the SBND, muboone and icaraus mu appearance bins so they are just the oscillated away ones.
-	for(int k=3*(N_e_bins); k < 3*(N_e_bins+N_m_bins);k++)
+	for(int k=N_dets*(N_e_bins); k < N_dets*(N_e_bins+N_m_bins);k++)
 	{
 
 		ans.push_back(vsignal[k]);
@@ -316,8 +316,8 @@ void SBN_spectrum::vec_print(){
 }
 
 
-const int SBN_spectrum::N_e_bins;
-const int SBN_spectrum::N_m_bins;
+//const int SBN_spectrum::N_e_bins;
+//const int SBN_spectrum::N_m_bins;
 
 constexpr double SBN_spectrum::mu_bins[N_m_bins+1];
 constexpr double SBN_spectrum::e_bins[N_e_bins+1];
