@@ -77,7 +77,39 @@ void stats_fill(TMatrixT <double> &M, std::vector<double> diag){
  return ;
 }
 
+void sys_fill(TMatrixT <double> & Min, bool detsys)
+{
+
+	Min.Zero();
+
+	if(Min.GetNrows()==690){
+		TFile *fm= new TFile("rootfiles/covariance_matrices_690x690.root");
+		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+		fm->Close();
+	} else {
+	if(detsys){
+
+		TFile *fm= new TFile("rootfiles/covariance_matrices_345x345.root");
+		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+		fm->Close();
+	} else {
+		TFile *fm= new TFile("rootfiles/covariance_matrices_nodetsys_345x345.root");
+		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+		fm->Close();
+	}	
+
+return;
+
+	}
+}
+
+
+
+
 void contract_signal(TMatrixT <double> & M, TMatrixT <double> & Mc){
+	/******************************************************
+	 * REDUNDANT/OBSOLETE see contracr_signal2() below
+	 *****************************************************/
 
 	// take the lower N_e_bins x N_m_bins matrix as a start
 	//
@@ -111,38 +143,13 @@ return;
 }
 
 
-void sys_fill(TMatrixT <double> & Min, bool detsys)
-{
-
-	Min.Zero();
-
-	if(Min.GetNrows()==690){
-		TFile *fm= new TFile("rootfiles/covariance_matrices_690x690.root");
-		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
-		fm->Close();
-	} else {
-	if(detsys){
-
-		TFile *fm= new TFile("rootfiles/covariance_matrices_345x345.root");
-		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
-		fm->Close();
-	} else {
-		TFile *fm= new TFile("rootfiles/covariance_matrices_nodetsys_345x345.root");
-		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
-		fm->Close();
-	}	
-
-return;
-
-	}
-}
-
-
 void contract_signal2(TMatrixT <double> & M, TMatrixT <double> & Mc){
+	// So this function takes a Matrix, which has N_detectors multiples of ( ebnum sections of eblock bins follows mbnum sections of mblock) .
+	// Contacts it down to (eblock+mblock)*N_detectors.
+	// Basically is a much more generic version of contract_signal() above
+
 
 	// take the lower N_e_bins x N_m_bins matrix as a start
-	//
-
 	//these shouldnt be hardcoded
 	int eblock = N_e_bins;
 	int mblock = N_m_bins;
@@ -290,6 +297,8 @@ return;
 
 
 void contract_signal2_anti(TMatrixT <double> & M, TMatrixT <double> & Mc){
+	//so basically takes the 4 quadrants of (N_detectors multiples of ( ebnum sections of eblock bins follows mbnum sections of mblock)) 
+	// and runs each one through the contract_signal2() function above. 
 
 
 	//these shouldnt be hardcoded

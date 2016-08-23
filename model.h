@@ -151,7 +151,7 @@ class SBN_spectrum {
 	double prob_unit(SBN_detector *);
 	double prob_3p3(double dm, SBN_detector *, int which_dm);
 
-
+	int scale_by_pot(double pot);
 };
 double sgn(double x);
 

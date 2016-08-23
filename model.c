@@ -110,7 +110,6 @@ SBN_spectrum::SBN_spectrum(struct neutrinoModel numodel){
 	fill (uboone_m_pion.begin(),uboone_m_pion.end(),0.0); 
 	fill (icarus_m_pion.begin(),icarus_m_pion.end(),0.0); 
 
-
 	sbnd_f_bar.resize(N_e_bins);
 	uboone_f_bar.resize(N_e_bins);
 	icarus_f_bar.resize(N_e_bins);
@@ -146,6 +145,22 @@ SBN_spectrum::SBN_spectrum(struct neutrinoModel numodel){
 	fill (sbnd_e_cosmo.begin(),sbnd_e_cosmo.end(),0.0); 
 	fill (uboone_e_cosmo.begin(),uboone_e_cosmo.end(),0.0); 
 	fill (icarus_e_cosmo.begin(),icarus_e_cosmo.end(),0.0); 
+
+
+	// Currenlt these are treated badly, but works
+	sbnd_e_dirt[0] = 44*4/5  ;
+	sbnd_e_dirt[1]=44*1/5;
+	uboone_e_dirt[0]= 47*4/5;
+	uboone_e_dirt[1]=47*1/5;
+	icarus_e_dirt[0]= 67*4/5;
+	icarus_e_dirt[1]=67*1/5;
+	sbnd_e_cosmo[0] = 9 ;
+	uboone_e_cosmo[0]= 11;
+	icarus_e_cosmo[0]= 10;
+	
+
+
+
 
 };
 
@@ -224,6 +239,53 @@ void SBN_spectrum::SetNuBarMode(){
 	nubarmode=true;
 
 return;
+}
+
+
+int SBN_spectrum::scale_by_pot(double pot){
+
+
+	for(int i = 0; i < N_e_bins; i++){
+
+					
+					sbnd_e[i]= sbnd_e[i]*pot;
+					sbnd_e_pho[i]= sbnd_e_pho[i]*pot;
+					sbnd_e_dirt[i]= sbnd_e_dirt[i]*pot;
+					sbnd_e_mu[i]= sbnd_e_mu[i]*pot;
+					sbnd_f[i]= sbnd_f[i]*pot;
+					sbnd_f_bar[i]= sbnd_f_bar[i]*pot;
+	
+					uboone_e[i]= uboone_e[i]*(0.5+pot);
+					uboone_e_pho[i]= uboone_e_pho[i]*(0.5+pot);
+					uboone_e_dirt[i]= uboone_e_dirt[i]*(0.5+pot);
+					uboone_e_mu[i]= uboone_e_mu[i]*(0.5+pot);
+					uboone_f[i]= uboone_f[i]*(0.5+pot);
+					uboone_f_bar[i]= uboone_f_bar[i]*(0.5+pot);			
+				
+					icarus_e[i]= icarus_e[i]*pot;
+					icarus_e_pho[i]= icarus_e_pho[i]*pot;
+					icarus_e_dirt[i]= icarus_e_dirt[i]*pot;
+					icarus_e_mu[i]= icarus_e_mu[i]*pot;
+					icarus_f[i]= icarus_f[i]*pot;
+					icarus_f_bar[i]= icarus_f_bar[i]*pot;
+				
+				}
+			
+				for(int i =0; i< N_m_bins; i++){
+
+					sbnd_m[i]= sbnd_m[i]*pot;
+					sbnd_m_pion[i]= sbnd_m_pion[i]*pot;
+
+					uboone_m[i]= uboone_m[i]*(0.5+pot);
+					uboone_m_pion[i]= uboone_m_pion[i]*(0.5+pot);
+
+					icarus_m[i]= icarus_m[i]*pot;
+					icarus_m_pion[i]= icarus_m_pion[i]*pot;
+
+				}
+
+
+return 1;
 }
 
 
