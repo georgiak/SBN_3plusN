@@ -58,8 +58,8 @@ int globInit(){
 
     using namespace std;
 
-	jobOptLoc = ""; //"/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
-	dataLoc = ""; ///Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
+	jobOptLoc = "/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/"; // /pnfs/lar1nd/scratch/users/dcianci/fits/";
+	dataLoc = "/Users/dcianci/Physics/SBN_3plusN/GlobalFits/data/"; ///pnfs/lar1nd/scratch/users/dcianci/fits/data";
 
     // read jobOption file and fill variables
     jobOpt();
@@ -118,7 +118,7 @@ int globInit(){
 
 int globChisq(int ind){
 
-	std::string outfile = "globFit.root";
+	std::string outfile = "globPhit.root";
 	std::cout << "Output File: " << outfile << std::endl;
 	TString outputFile = outfile;
 	TFile *f = new TFile(outputFile, "RECREATE");
@@ -139,22 +139,13 @@ int globChisq(int ind){
 	// We're doing a grid scan, motherfuckers
 	int nGrid = 100;
 
-	for(int im4 = 25+jobID; im4 < nGrid; im4++) for(int ium4 = 0; ium4 < nGrid; ium4++) for(int iue4 = 0; iue4 < nGrid; iue4++){
+	for(int iphi = 0; iphi < nGrid; iphi++){
 
 		nuModel.zero();
-		float mstep = TMath::Log10(100./.01)/float(nGrid);
-		float ustep = (.5-0.)/float(nGrid);
 
-		nuModel.mNu[0] = pow(pow(10,(im4/float(nGrid)*TMath::Log10(100./.01) + TMath::Log10(.01))),.5);
-		nuModel.Ue[0] = iue4/float(nGrid)*(.5);
-		nuModel.Um[0] = ium4/float(nGrid)*(.5);
-
-		if(pow(nuModel.mNu[0],2) < .2 || pow(nuModel.mNu[0],2) > 2) continue;
-		if(4*pow(nuModel.Ue[0],2)*pow(nuModel.Um[0],2) < 6e-4 || 4*pow(nuModel.Ue[0],2)*pow(nuModel.Um[0],2) > 2e-2) continue;
-		if(reject) continue;
-
-		int myrun = iue4 + ium4*100 + im4*100*100 + 1;
-		std::cout << "---------------- " << myrun << "/1000000" << std::endl;
+		nuModel.Ue[0] = .15; 	nuModel.Um[0] = .17;	nuModel.mNu[0] = sqrt(.92);
+		nuModel.Ue[1] = .069;	nuModel.Um[1] = .16; 	nuModel.mNu[1] = sqrt(17);
+		nuModel.phi[0] = iphi/float(nGrid) * 2 * TMath::Pi();
 
         chisqTotal.zero();  chisqDetector.zero();
 
@@ -251,11 +242,17 @@ int globChisq(int ind){
             chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "Gal: " << chisqDetector.chi2 << std::endl;
         }
+
+
+
 		std::cout << clock() - t << " ticks" << std::endl; t = clock();
 		if(chisqTotal.chi2 > chi2Cut) continue;
 		if(MBDISProcess == 1){
+			std::cout << " Here obvi" << std::endl;
 			chisqDetector = getChi2MBDis(nuModel, mbNuDisPack);
+			std::cout << "chisqdet: " << chisqDetector.chi2 << std::endl;
 			if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
+			std::cout << "bannaan" << std::endl;
 
 			chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "MBDis: " << chisqDetector.chi2 << std::endl;

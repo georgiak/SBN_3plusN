@@ -12,8 +12,9 @@ then outputs two final ntuples that contain all points within the 90 and 99% CL
 #include "TH3D.h"
 bool procOpt();
 
+std::string plotOutput = "plots";
 float chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56;
-float m4_min,ue4_min,um4_min,m5_min,ue5_min,um5_min,m6_min,ue6_min,um6_min,phi45_min,phi46_min,phi56_min;
+float chi2min, m4_min,ue4_min,um4_min,m5_min,ue5_min,um5_min,m6_min,ue6_min,um6_min,phi45_min,phi46_min,phi56_min;
 int steriles, nRuns, type, raster;
 std::string dataset, location, output;
 std::string procOptLoc;
@@ -43,6 +44,21 @@ int ntGridder(){
 	TNtuple *chi2_99 = (TNtuple*)inf->Get("chi2_99");
 	TNtuple *chi2_90 = (TNtuple*)inf->Get("chi2_90");
 
+	chi2_99->SetBranchAddress("chi2",&chi2);
+	chi2_99->SetBranchAddress("m4",&m4);
+	chi2_99->SetBranchAddress("ue4",&ue4);
+	chi2_99->SetBranchAddress("um4",&um4);
+	chi2_99->SetBranchAddress("m5",&m5);
+	chi2_99->SetBranchAddress("ue5",&ue5);
+	chi2_99->SetBranchAddress("um5",&um5);
+	chi2_99->SetBranchAddress("m6",&m6);
+	chi2_99->SetBranchAddress("ue6",&ue6);
+	chi2_99->SetBranchAddress("um6",&um6);
+	chi2_99->SetBranchAddress("phi45",&phi45);
+	chi2_99->SetBranchAddress("phi46",&phi46);
+	chi2_99->SetBranchAddress("phi56",&phi56);
+
+    std::cout << chi2_99->GetEntries() << std::endl;
 
 	// Make new file to fill with processed ntuples
 	jid = Form("/nt_3%i_",steriles);
@@ -444,6 +460,7 @@ int ntGridder(){
 	chi2_99_pr->Write();
 	chi2_90_pr->Write();
 	f->Close();
+
 
     return 0;
 }

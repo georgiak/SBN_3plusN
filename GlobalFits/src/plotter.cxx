@@ -10,13 +10,29 @@ int steriles, nRuns, type, raster, discretized, diag, dims;
 std::string dataset, location, output;
 std::string procOptLoc;
 std::string suffix;
+float chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56;
+float m4_min,ue4_min,um4_min,m5_min,ue5_min,um5_min,m6_min,ue6_min,um6_min,phi45_min,phi46_min,phi56_min;
+
+bool twodof = false;
 
 int globFit_plotter(){
 
 	procOptLoc = "/Users/dcianci/Physics/SBN_3plusN/GlobalFits/inputs/";
     procOpt();
 
-	std::cout << "TYPE: " << type << std::endl;
+	TH1D *h_chi2 = new TH1D("chi2","chi2;chi2",1000,200,300);
+	TH1D *h_m4 = new TH1D("m4","m4;eV",100,.1,10);
+	TH1D *h_ue4 = new TH1D("ue4","ue4;ue",100,.01,.5);
+	TH1D *h_um4 = new TH1D("um4","um4;um",100,.01,.5);
+	TH1D *h_m5 = new TH1D("m5","m5;eV",100,.1,10);
+	TH1D *h_ue5 = new TH1D("ue5","ue5;ue",100,.01,.5);
+	TH1D *h_um5 = new TH1D("um5","um5;um",100,.01,.5);
+	TH1D *h_m6 = new TH1D("m6","m6;eV",100,.1,10);
+	TH1D *h_ue6 = new TH1D("ue6","ue6;ue",100,.01,.5);
+	TH1D *h_um6 = new TH1D("um6","um6;um",100,.01,.5);
+	TH1D *h_phi45 = new TH1D("phi45","phi45;Radians",100,0,2*TMath::Pi());
+	TH1D *h_phi46 = new TH1D("phi46","phi46;Radians",100,0,2*TMath::Pi());
+	TH1D *h_phi56 = new TH1D("phi56","phi56;Radians",100,0,2*TMath::Pi());
 
     std::cout << "Loading ntuple files..." << std::endl;
 	std::string infile;
@@ -25,27 +41,93 @@ int globFit_plotter(){
 	TString inputFile = infile;
 	std::cout << "Infile: " << infile << std::endl;
 	TFile *f = new TFile(inputFile);
-	TNtuple *chi2_99;
-	TNtuple *chi2_90;
-	TNtuple *chi2_95;
+	TNtuple *chi2_99_all;
+	TNtuple *chi2_90_all;
 
 	if(discretized == 0){
-		chi2_99 = (TNtuple*)(f->Get("chi2_99"));
-		chi2_90 = (TNtuple*)(f->Get("chi2_90"));
-		chi2_95 = (TNtuple*)(f->Get("chi2_95"));
+		chi2_99_all = (TNtuple*)(f->Get("chi2_99"));
+		chi2_90_all = (TNtuple*)(f->Get("chi2_90"));
 		suffix = "";
 	}
 	if(discretized == 1){
-		chi2_99 = (TNtuple*)(f->Get("chi2_99_pr"));
-		chi2_90 = (TNtuple*)(f->Get("chi2_90_pr"));
+		chi2_99_all = (TNtuple*)(f->Get("chi2_99_pr"));
+		chi2_90_all = (TNtuple*)(f->Get("chi2_90_pr"));
 		suffix = "_disc";
 	}
 
+	// Find chi2Min
+	chi2_99_all->SetBranchAddress("chi2",&chi2);
+	chi2_99_all->SetBranchAddress("m4",&m4);
+	chi2_99_all->SetBranchAddress("ue4",&ue4);
+	chi2_99_all->SetBranchAddress("um4",&um4);
+	chi2_99_all->SetBranchAddress("m5",&m5);
+	chi2_99_all->SetBranchAddress("ue5",&ue5);
+	chi2_99_all->SetBranchAddress("um5",&um5);
+	chi2_99_all->SetBranchAddress("m6",&m6);
+	chi2_99_all->SetBranchAddress("ue6",&ue6);
+	chi2_99_all->SetBranchAddress("um6",&um6);
+	chi2_99_all->SetBranchAddress("phi45",&phi45);
+	chi2_99_all->SetBranchAddress("phi46",&phi46);
+	chi2_99_all->SetBranchAddress("phi56",&phi56);
+	float chi2min = 3000.f;
+    for(int i = 0; i < chi2_99_all->GetEntries(); i++){
+        chi2_99_all->GetEntry(i);
+		h_chi2->Fill(chi2);
+		h_m4->Fill(m4);			h_ue4->Fill(ue4);		h_um4->Fill(um4);
+		h_m5->Fill(m5);			h_ue5->Fill(ue5);		h_um5->Fill(um5);
+		h_m6->Fill(m6);			h_ue6->Fill(ue6);		h_um6->Fill(um6);
+		h_phi45->Fill(phi45);		h_phi46->Fill(phi46);		h_phi56->Fill(phi56);
+		if(chi2 < chi2min){
+			chi2min = chi2;
+        	m4_min = m4;	ue4_min = ue4;	um4_min = um4;
+			m5_min = m5;	ue5_min = ue5;	um5_min = um5;
+			m6_min = m6;	ue6_min = ue6;	um6_min = um6;
+			phi45_min = phi45;	phi46_min = phi46;	phi56_min = phi56;
+		}
+    }
+    std::cout << chi2min << std::endl;
+	std::cout << "m4_min: " << m4_min << std::endl;
+	std::cout << "ue4_min: " << ue4_min << std::endl;
+	std::cout << "um4_min: " << um4_min << std::endl;
+	std::cout << "m5_min: " << m5_min << std::endl;
+	std::cout << "ue5_min: " << ue5_min << std::endl;
+	std::cout << "um5_min: " << um5_min << std::endl;
+	std::cout << "m6_min: " << m6_min << std::endl;
+	std::cout << "ue6_min: " << ue6_min << std::endl;
+	std::cout << "um6_min: " << um6_min << std::endl;
+	std::cout << "phi45_min: " << phi45_min << std::endl;
+	std::cout << "phi46_min: " << phi46_min << std::endl;
+	std::cout << "phi56_min: " << phi56_min << std::endl;
+
+	// Now, if we want, we can switch to only two dof for the chi2, which is what we want for these plots
+	TNtuple *chi2_99 = new TNtuple("chi2Nt","chi2Nt","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
+	TNtuple *chi2_90 = new TNtuple("chi2Nt","chi2Nt","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56");
+	for(int i = 0; i < chi2_99_all->GetEntries(); i++){
+        chi2_99_all->GetEntry(i);
+		if(chi2-chi2min < 9.21){
+			chi2_99->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
+		}
+		if(chi2-chi2min < 4.61){
+			chi2_90->Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56);
+		}
+	}
+	std::cout << chi2_99->GetEntries() << " " << chi2_99_all->GetEntries() << std::endl;
+	std::cout << chi2_90->GetEntries() << " " << chi2_90_all->GetEntries() << std::endl;
+
+
 	TCanvas *c1 = new TCanvas("c1");
+	gStyle->SetFillColor(0);
+  	gStyle->SetPadLeftMargin(0.15);
+  	gStyle->SetPadBottomMargin(0.15);
+  	gStyle->SetOptFit(1);
+  	gStyle->SetOptTitle(0);
+  	gStyle->SetTitleSize(0.05);
 
 	if(dims == 2){
 		// Setup histo
     	TH2F *h = new TH2F("h","3+3 #Chi^2;U_{e 4};U_{#mu 4}",1000,0.01,100.,1000,.01,100.);
+		TH2F *h_99 = new TH2F("h99","",1000,0.0001,1.,1000,.01,100.);
+		TH2F *h_90 = new TH2F("h90","",1000,0.0001,1.,1000,.01,100.);
     	h->GetXaxis()->SetTitleOffset(1.1);
     	h->GetYaxis()->SetTitleOffset(.8);
     	h->GetXaxis()->SetTitleFont(62);
@@ -55,7 +137,7 @@ int globFit_plotter(){
     	h->GetXaxis()->SetTitleSize(0.04);
     	h->GetXaxis()->SetLabelSize(0.04);
     	h->GetXaxis()->SetLabelOffset(0.001);
-    	h->GetYaxis()->SetTitleSize(0.05);
+    	h->GetYaxis()->SetTitleSize(0.045);
     	h->GetYaxis()->SetLabelSize(0.04);
     	h->SetStats(kFALSE);
 
@@ -63,15 +145,10 @@ int globFit_plotter(){
 		c1->SetLogx();
 		chi2_99->SetMarkerStyle(7);
 		chi2_90->SetMarkerStyle(7);
-		chi2_99->SetFillColor(kBlue);
-    	chi2_90->SetFillColor(kMagenta);
-		chi2_99->SetMarkerColor(kBlue);
-		chi2_90->SetMarkerColor(kMagenta);
-		if(diag == 1){
-			chi2_95->SetMarkerStyle(7);
-			chi2_95->SetFillColor(kRed+3);
-			chi2_95->SetMarkerColor(kRed+3);
-		}
+		chi2_99->SetFillColor(62);
+    	chi2_90->SetFillColor(92);
+		chi2_99->SetMarkerColor(62);
+		chi2_90->SetMarkerColor(92);
 
 		// Make overlay of paper plots for diag
 		TGraph *overlay; Double_t x95[2100]; Double_t y95[2100];
@@ -110,22 +187,16 @@ int globFit_plotter(){
 			overlay->SetMarkerStyle(7);
 		}
 
-
-		TLegend *leg = new TLegend(0.1,0.1,0.35,0.3);
+		TLegend *leg = new TLegend(0.65,0.15,0.95,0.4);
 		leg->SetFillStyle(0);
 		leg->SetFillColor(0);
 		leg->SetBorderSize(0);
 		leg->SetTextFont(62);
-		leg->SetTextSize(0.03);
+		leg->SetTextSize(0.04);
 		if(diag == 0){
-			leg->AddEntry(chi2_99,"99%% CL","f");
-			leg->AddEntry(chi2_90,"90%% CL","f");
+			leg->AddEntry(chi2_99,"99\% CL","f");
+			leg->AddEntry(chi2_90,"90\% CL","f");
 		}
-		if(diag == 1){
-			leg->AddEntry(chi2_95,"Davio's fits","f");
-			leg->AddEntry(overlay,"Paper fits","f");
-		}
-
 
 		if(steriles == 3){
 			h->SetTitle("#chi^{2} for 3+3 Sterile Fits;#Delta m^{2}_{41};#Delta m^{2}_{51}");
@@ -135,6 +206,7 @@ int globFit_plotter(){
 
 			chi2_99->Draw("m5*m5:m4*m4","","same");
 			chi2_90->Draw("m5*m5:m4*m4","","same");
+			leg->SetHeader("(3+3) Global Fit");
 			leg->Draw();
         	c1->Print((plotOutput + "/" + dataset + "_dm251xdm241" + suffix + ".png").c_str());
 
@@ -145,6 +217,7 @@ int globFit_plotter(){
 
 			chi2_99->Draw("(m6*m6):(m4*m4)","","same");
 			chi2_90->Draw("(m6*m6):(m4*m4)","","same");
+			leg->SetHeader("(3+3) Global Fit");
 			leg->Draw();
         	c1->Print(("plots/" + dataset + "_dm261xdm241" + suffix + ".png").c_str());
 		}
@@ -157,15 +230,14 @@ int globFit_plotter(){
 
 			chi2_99->Draw("m5*m5:m4*m4","","same");
 			chi2_90->Draw("m5*m5:m4*m4","","same");
+			leg->SetHeader("(3+2) Global Fit");
 			leg->Draw();
         	c1->Print((plotOutput + "/" + dataset + "_3plus2_dm251xdm241" + suffix + ".png").c_str());
 		}
 
 		if(steriles == 1){
 			if(raster == 0){
-				if(type==0)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
-				if(type==1)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{#mu#mu});#Delta m^{2}_{41}");
-				if(type==2)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{ee});#Delta m^{2}_{41}");
+				if(type==0)	h->SetTitle("#chi^{2} for 3+1 Sterile Fits;sin^{2}(2#Theta_{#mue});#Deltam^{2}_{41}");
 				if(type==0)	h->GetXaxis()->SetLimits(.0001,.1);
 				if(type>0)	h->GetXaxis()->SetLimits(.0001,1.);
 				h->GetYaxis()->SetLimits(.01,100.);
@@ -173,7 +245,6 @@ int globFit_plotter(){
 
 				// Now, draw overlay of the old one
 				if(diag == 1){
-					chi2_95->Draw("dm2:sin22th","","same");
 					overlay->Draw("psame");
 					leg->Draw();
 				}
@@ -187,107 +258,74 @@ int globFit_plotter(){
         				chi2_90->Draw("m4*m4:4*um4*um4*(1-um4*um4)","","same");
 					}
 					else if(type == 2){
-						chi2_99->Draw("m4*m4:4*ue4*ue4*(1-ue4*ue4)","","same colz");
+						chi2_99->Draw("m4*m4:4*ue4*ue4*(1-ue4*ue4)","","same");
         				chi2_90->Draw("m4*m4:4*ue4*ue4*(1-ue4*ue4)","","same");
 					}
+					leg->SetHeader("(3+1) Global Fit");
 					leg->Draw();
 				}
         		c1->Print((plotOutput + "/" + dataset + "_3plus1_dm241xsinsq2t" + suffix + ".png").c_str());
 			}
-			if(raster == 1){
-				if(type==0)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{e#mu});#Delta m^{2}_{41}");
-				if(type==1)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{#mu#mu});#Delta m^{2}_{41}");
-				if(type==2)	h->SetTitle("95%%CL for 3+1 Sterile Fits;sin^{2}(2#Theta_{ee});#Delta m^{2}_{41}");
-				if(type==0)	h->GetXaxis()->SetLimits(.0001,.1);
-				if(type>0)	h->GetXaxis()->SetLimits(.0001,1.);
-				h->GetYaxis()->SetLimits(.01,100.);
-				h->Draw();
-
-				if(diag == 1)
-					overlay->Draw("psame");
-				chi2_95->Draw("dm2:sin22th","","same");
-				leg->Draw();
-				c1->Print((plotOutput + "/" + dataset + "_3plus1_dm241xsinsq2t_raster" + suffix + ".png").c_str());
-			}
 		}
 	}
 
-	if(dims == 3 && steriles == 1){
+	// S'more plots
+	// We'd also like to do a quick little analysis of 1d distributions, so let's throw those in as well.
+	if(dims == 1){
 
-		// Shit, so the plots we want are dm2 vs sin22thmm, vs sin22thme and dm2 vs ue4, vs um4
-		TH3F *h = new TH3F("h1","3+1 #Chi^{2};U_{#mu 4};U_{e 4};#Delta m^{2}_{41}",1000,0.0001,1.,1000,0.0001,1.,1000,0.01,100.);
-		TH3F *h3d1_99 = new TH3F("h2","",1000,0.0001,1.,1000,0.0001,1.,1000,0.01,100.);
-		TH3F *h3d1_90 = new TH3F("h3","",1000,0.0001,1.,1000,0.0001,1.,1000,0.01,100.);
-		TH3F *h3d2_99 = new TH3F("h4 ","",1000,0.,.5,1000,0.,.5,1000,0.01,100.);
-		TH3F *h3d2_90 = new TH3F("h5","",1000,0.,.5,1000,0.,.5,1000,0.01,100.);
-
-		h->GetXaxis()->SetTitleOffset(1.4);
-		h->GetYaxis()->SetTitleOffset(1.6);
-		h->GetZaxis()->SetTitleOffset(.9);
-		h->GetXaxis()->SetTitleFont(62);
-		h->GetYaxis()->SetTitleFont(62);
-		h->GetZaxis()->SetTitleFont(62);
-		h->GetYaxis()->CenterTitle();
-		h->GetXaxis()->CenterTitle();
-		h->GetZaxis()->CenterTitle();
-		h->GetXaxis()->SetTitleSize(0.04);
-		h->GetXaxis()->SetLabelSize(0.035);
-		h->GetYaxis()->SetTitleSize(0.04);
-		h->GetYaxis()->SetLabelSize(0.035);
-		h->GetYaxis()->SetTitleSize(0.04);
-		h->GetYaxis()->SetLabelSize(0.035);
-    	h->SetStats(kFALSE);
-
-		c1->SetLogz();
-		h3d1_99->SetMarkerStyle(7);			h3d2_99->SetMarkerStyle(7);
-		h3d1_90->SetMarkerStyle(7);			h3d2_90->SetMarkerStyle(7);
-		h3d1_99->SetFillColor(kBlue);		h3d2_99->SetFillColor(kBlue);
-    	h3d1_90->SetFillColor(kMagenta);	h3d2_90->SetFillColor(kMagenta);
-		h3d1_99->SetMarkerColor(kBlue);		h3d2_99->SetMarkerColor(kBlue);
-		h3d1_90->SetMarkerColor(kMagenta);	h3d2_90->SetMarkerColor(kMagenta);
-
-		// Now fill the histos:
-		// First, 99%
-		float m4, ue4, um4;
-		chi2_99->SetBranchAddress("m4",&m4);
-		chi2_99->SetBranchAddress("ue4",&ue4);
-		chi2_99->SetBranchAddress("um4",&um4);
-		float mstep = TMath::Log10(100./.01)/float(1000);
-		float ustep = (.5)/float(1000);
-		float sinstep = TMath::Log10(1./.0001)/float(1000);
-		float sinsmm, sinsme;
-		for(int i = 0; i < chi2_99->GetEntries(); i++){
-			chi2_99->GetEntry(i);
-			sinsme = 4*pow(um4,2)*pow(ue4,2); 	sinsmm = 4*pow(um4,2)*(1-pow(um4,2));
-			h3d1_99->SetBinContent(ceil(TMath::Log10(sinsme/.0001)/sinstep),ceil(TMath::Log10(sinsmm/.0001)/sinstep),ceil(TMath::Log10(pow(m4,2)/.01)/mstep),1);
-			h3d2_99->SetBinContent(ceil(um4/ustep),ceil(ue4/ustep),ceil(TMath::Log10(pow(m4,2)/.01)/mstep),1);
+		TCanvas * c2 = new TCanvas();
+		c2->SetLogy();
+		h_chi2->Draw();
+		TLine *linechi2 = new TLine(chi2min,0,chi2min,1000);	linechi2->SetLineColor(2); 	linechi2->SetLineStyle(3); linechi2->SetLineWidth(3); 	linechi2->Draw();
+		c2->Print((plotOutput + "/onedee_chi2_" + to_string(steriles) + ".png").c_str());
+		h_ue4->Draw();
+		TLine *lineue4 = new TLine(ue4_min,0,ue4_min,1000);	lineue4->SetLineColor(2); 	lineue4->SetLineStyle(3); lineue4->SetLineWidth(3); 	lineue4->Draw();
+		c2->Print((plotOutput + "/onedee_ue4_" + to_string(steriles) + ".png").c_str());
+		h_um4->Draw();
+		TLine *lineum4 = new TLine(um4_min,0,um4_min,1000);	lineum4->SetLineColor(2); 	lineum4->SetLineStyle(3); lineum4->SetLineWidth(3); 	lineum4->Draw();
+		c2->Print((plotOutput + "/onedee_um4_" + to_string(steriles) + ".png").c_str());
+		if(steriles > 1){
+			h_ue5->Draw();
+			TLine *lineue5 = new TLine(ue5_min,0,ue5_min,1000);	lineue5->SetLineColor(2); 	lineue5->SetLineStyle(3); lineue5->SetLineWidth(3); 	lineue5->Draw();
+			c2->Print((plotOutput + "/onedee_ue5_" + to_string(steriles) + ".png").c_str());
+			h_um5->Draw();
+			TLine *lineum5 = new TLine(um5_min,0,um5_min,1000);	lineum5->SetLineColor(2); 	lineum5->SetLineStyle(3); lineum5->SetLineWidth(3); 	lineum5->Draw();
+			c2->Print((plotOutput + "/onedee_um5_" + to_string(steriles) + ".png").c_str());
+			h_phi45->Draw();
+			TLine *linephi45 = new TLine(phi45_min,0,phi45_min,1000);	linephi45->SetLineColor(2); 	linephi45->SetLineStyle(3); linephi45->SetLineWidth(3); 	linephi45->Draw();
+			c2->Print((plotOutput + "/onedee_phi45_" + to_string(steriles) + ".png").c_str());
 		}
-		// now 90
-		chi2_90->SetBranchAddress("m4",&m4);
-		chi2_90->SetBranchAddress("ue4",&ue4);
-		chi2_90->SetBranchAddress("um4",&um4);
-		for(int i = 0; i < chi2_90->GetEntries(); i++){
-			chi2_90->GetEntry(i);
-			sinsme = 4*pow(um4,2)*pow(ue4,2); 	sinsmm = 4*pow(um4,2)*(1-pow(um4,2));
-			h3d1_90->SetBinContent(ceil(TMath::Log10(sinsme/.0001)/sinstep),ceil(TMath::Log10(sinsmm/.0001)/sinstep),ceil(TMath::Log10(pow(m4,2)/.01)/mstep),1);
-			h3d2_90->SetBinContent(ceil(um4/ustep),ceil(ue4/ustep),ceil(TMath::Log10(pow(m4,2)/.01)/mstep),1);
+		if(steriles > 2){
+			h_ue6->Draw();
+			TLine *lineue6 = new TLine(ue6_min,0,ue6_min,1000);	lineue6->SetLineColor(2); 	lineue6->SetLineStyle(3); lineue6->SetLineWidth(3); 	lineue6->Draw();
+			c2->Print((plotOutput + "/onedee_ue6_" + to_string(steriles) + ".png").c_str());
+			h_um6->Draw();
+			TLine *lineum6 = new TLine(um6_min,0,um6_min,1000);	lineum6->SetLineColor(2); 	lineum6->SetLineStyle(3); lineum6->SetLineWidth(3); 	lineum6->Draw();
+			c2->Print((plotOutput + "/onedee_um6_" + to_string(steriles) + ".png").c_str());
+			h_phi46->Draw();
+			TLine *linephi46 = new TLine(phi46_min,0,phi46_min,1000);	linephi46->SetLineColor(2); 	linephi46->SetLineStyle(3); linephi46->SetLineWidth(3); 	linephi46->Draw();
+			c2->Print((plotOutput + "/onedee_phi46_" + to_string(steriles) + ".png").c_str());
+			h_phi56->Draw();
+			TLine *linephi56 = new TLine(phi56_min,0,phi56_min,1000);	linephi56->SetLineColor(2); 	linephi56->SetLineStyle(3); linephi56->SetLineWidth(3); 	linephi56->Draw();
+			c2->Print((plotOutput + "/onedee_phi56_" + to_string(steriles) + ".png").c_str());
 		}
-
-		//h->Draw();
-		h3d2_99->Draw("p");
-		h3d2_90->Draw("psame");
-		c1->Print((plotOutput + "/" + dataset + "_threedee_ues" + suffix + ".png").c_str());
-
-		h->SetTitle("3+1 #Chi^{2};sin^{2}(2#Theta_{e#mu});sin^{2}(2#Theta_{#mu#mu});#Delta m^{2}_{41}");
-		c1->SetLogx();
-		c1->SetLogy();
-		h->Draw();
-		h3d1_99->Draw("psame");
-		h3d1_90->Draw("psame");
-		c1->Print((plotOutput + "/" + dataset + "_threedee_sinsqs" + suffix + ".png").c_str());
+		c2->SetLogx();
+		h_m4->Draw();
+		TLine *linem4 = new TLine(m4_min,0,m4_min,1000);	linem4->SetLineColor(2); 	linem4->SetLineStyle(3); linem4->SetLineWidth(3); 	linem4->Draw();
+		c2->Print((plotOutput + "/onedee_m4_" + to_string(steriles) + ".png").c_str());
+		if(steriles  > 1){
+			h_m5->Draw();
+			TLine *linem5 = new TLine(m5_min,0,m5_min,1000);	linem5->SetLineColor(2); 	linem5->SetLineStyle(3); linem5->SetLineWidth(3); 	linem5->Draw();
+			c2->Print((plotOutput + "/onedee_m5_" + to_string(steriles) + ".png").c_str());
+		}
+		if(steriles > 2){
+			h_m6->Draw();
+			TLine *linem6 = new TLine(m6_min,0,m6_min,1000);	linem6->SetLineColor(2); 	linem6->SetLineStyle(3); linem6->SetLineWidth(3); 	linem6->Draw();
+			c2->Print((plotOutput + "/onedee_m6_" + to_string(steriles) + ".png").c_str());
+		}
 	}
 
-    return 0;
+	return 0;
 }
 
 bool procOpt(){

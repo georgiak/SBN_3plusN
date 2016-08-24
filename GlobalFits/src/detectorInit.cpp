@@ -7,10 +7,12 @@ Jan 25th, 2016
 // Declare JobOptions Variables
 int noOfSteriles, CPConserving, scanType, gridPoints, jobID, nMCGen, rndInit, BugeyProcess, CCFRProcess, CDHSProcess, CHOOZProcess, KARMENProcess, LSNDProcess, NOMADProcess, MBProcess, MBProcessNubar, ATMOSPHERICProcess,
         NUMIProcess, MINOSProcess, MINOSNCProcess, GALLIUMProcess, ReactorAnomaly, XSECProcess, MBDISProcess, MBDISProcessNubar, nRuns;
-double chi2Cut, stepSize, temperature, UMax, UMaxSq;
+double chi2Cut, stepSize, temperature, UMax, UMaxSq, trim;
 bool usingUe = true;
 bool usingUm = true;
-std::string dataLoc, jobOptLoc;
+std::string jobOptLoc = "inputs/";
+std::string dataLoc = "data/";
+bool debug = false;
 
 // For Integral Evaluations,
 double dm2Vec[dm2VecMaxDim];
@@ -53,17 +55,17 @@ boonePackage mbNuInit(){
 
     int nBins = 11;
     int nBins_mu = 8;
-    int nFOscEvts = 17204;
+    pack.nFOscEvts = 17204;
     pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<double>(nBins + nBins + nBins_mu));
     pack.EnuQE = new double[nBins+1];
     pack.NueData = new int[nBins+nBins];
     pack.NumuData = new int[nBins_mu];
     pack.NueBgr = new double[nBins];
     pack.Numu = new double[nBins_mu];
-    pack.FOsc_EnuQE = new double[nFOscEvts];     // reconstructed neutrino energy
-    pack.FOsc_EnuTrue = new double[nFOscEvts];   // true energy of neutrino
-    pack.FOsc_LnuTrue = new double[nFOscEvts];   // distance from production and detection points
-    pack.FOsc_weight = new double[nFOscEvts];
+    pack.FOsc_EnuQE = new double[pack.nFOscEvts];     // reconstructed neutrino energy
+    pack.FOsc_EnuTrue = new double[pack.nFOscEvts];   // true energy of neutrino
+    pack.FOsc_LnuTrue = new double[pack.nFOscEvts];   // distance from production and detection points
+    pack.FOsc_weight = new double[pack.nFOscEvts];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_lowe.txt");
@@ -104,7 +106,7 @@ boonePackage mbNuInit(){
 
     // Get nFullOscEvts for full numu->nue osc events after nue cuts
     file.open(dataLoc+"miniboone_numode_fullosc_ntuple.txt");
-    for(int i = 0; i < nFOscEvts; i++){
+    for(int i = 0; i < pack.nFOscEvts; i++){
         file >> pack.FOsc_EnuQE[i];     // reconstructed neutrino energy
         file >> pack.FOsc_EnuTrue[i];   // true energy of neutrino
         file >> pack.FOsc_LnuTrue[i];   // distance from production and detection points
@@ -113,7 +115,7 @@ boonePackage mbNuInit(){
     file.close();
 
     ndf += nBins + nBins_mu - 1;
-	std::cout << "MBnu bins: " << nBins + nBins_mu - 1 << std::endl;
+	if(debug) std::cout << "MBnu initialized. Bins: " << nBins + nBins_mu - 1 << std::endl;
     return pack;
 }
 boonePackage mbNubarInit(){
@@ -121,7 +123,7 @@ boonePackage mbNubarInit(){
 
     int nBins = 11;
     int nBins_mu = 8;
-    int nFOscEvts = 86403;
+    pack.nFOscEvts = 86403;
 
     pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<double>(nBins + nBins + nBins_mu));
     pack.EnuQE = new double[nBins+1];
@@ -129,10 +131,10 @@ boonePackage mbNubarInit(){
     pack.NumuData = new int[nBins_mu];
     pack.NueBgr = new double[nBins];
     pack.Numu = new double[nBins_mu];
-    pack.FOsc_EnuQE = new double[nFOscEvts];     // reconstructed neutrino energy
-    pack.FOsc_EnuTrue = new double[nFOscEvts];   // true energy of neutrino
-    pack.FOsc_LnuTrue = new double[nFOscEvts];   // distance from production and detection points
-    pack.FOsc_weight = new double[nFOscEvts];
+    pack.FOsc_EnuQE = new double[pack.nFOscEvts];     // reconstructed neutrino energy
+    pack.FOsc_EnuTrue = new double[pack.nFOscEvts];   // true energy of neutrino
+    pack.FOsc_LnuTrue = new double[pack.nFOscEvts];   // distance from production and detection points
+    pack.FOsc_weight = new double[pack.nFOscEvts];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_lowe.txt");
@@ -173,7 +175,7 @@ boonePackage mbNubarInit(){
 
     // Get nFullOscEvts for full numu->nue osc events after nue cuts
     file.open(dataLoc+"miniboone_numubarnuebarfullosc_ntuple.txt");
-    for(int i = 0; i < nFOscEvts; i++){
+    for(int i = 0; i < pack.nFOscEvts; i++){
         file >> pack.FOsc_EnuQE[i];     // reconstructed neutrino energy
         file >> pack.FOsc_EnuTrue[i];   // true energy of neutrino
         file >> pack.FOsc_LnuTrue[i];   // distance from production and detection points
@@ -182,7 +184,7 @@ boonePackage mbNubarInit(){
     file.close();
 
     ndf += nBins + nBins_mu - 1;
-	std::cout << "MBnubar bins: " << nBins + nBins_mu - 1 << std::endl;
+	if(debug) std::cout << "MBnubar initialized. Bins: " << nBins + nBins_mu - 1 << std::endl;
     return pack;
 }
 atmPackage atmInit(){
@@ -206,6 +208,7 @@ atmPackage atmInit(){
     }
 
     ndf += 1;
+	if(debug) std::cout << "Atmospheric initialized. Bins: " << 1 << std::endl;
     return pack;
 }
 numiPackage numiInit(){
@@ -253,7 +256,7 @@ numiPackage numiInit(){
     }
 
     ndf += nBins;
-	std::cout << "Numi bins: " << nBins << std::endl;
+	if(debug) std::cout << "Numi initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 sinSqPackage lsndInit(){
@@ -337,7 +340,7 @@ sinSqPackage lsndInit(){
 	file.close();
 
     ndf += nBins;
-	std::cout << "LSND bins: " << nBins << std::endl;
+	if(debug) std::cout << "LSND initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 sinSqPackage karmenInit(){
@@ -400,7 +403,7 @@ sinSqPackage karmenInit(){
         }
     }
     ndf += nBins;
-	std::cout << "Karmen bins: " << nBins << std::endl;
+	if(debug) std::cout << "Karmen initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 galPackage galInit(){
@@ -438,10 +441,45 @@ galPackage galInit(){
     	pack.arLinesXSec[i] = temp4[i];
     }
 
+	// Here's a little experiment.
+	// so, L will go from 0 to the corner. In this way, we'll magically reduce two parameters to only one!
+	// we need three L's and their corresponding volume integrals
+	double nLength, nInt;
+	nLength = 2000; nInt = 600;
+
+	pack.volInt.resize(3, std::vector<double>(nLength));
+	for(int i = 0; i < nLength; i++){
+		pack.volInt[0][i] = 0.;	pack.volInt[1][i] = 0.;	pack.volInt[2][i] = 0.;
+	}
+	double radiusGallex = 1.9;  double heightGallex = 5.0;  double sourceHeightGallex[2] = {2.7,2.38};
+	double radiusSage = 0.7;    double heightSage = 1.47;   double sourceHeightSage = 0.72;
+
+	// Let's just start this whole mess over and make sure it works from the start.
+	double Radius[3] = {radiusGallex, radiusGallex, radiusSage};
+	double Height[3] = {heightGallex, heightGallex, heightSage};
+	double SourceHeight[3] = {sourceHeightGallex[0], sourceHeightGallex[1], sourceHeightSage};
+
+	for(int iex = 0; iex < 3; iex++){
+		double maxht = max(Height[iex]-SourceHeight[iex],SourceHeight[iex]);
+		double maxlen = sqrt(pow(Radius[iex],2) + pow(maxht,2));
+
+		double ht, dht, rad, dr;
+		for(int iHt = 0; iHt < nInt; iHt++){
+			ht = (Height[iex] / nInt) * (iHt + .5); dht = Height[iex] / nInt;
+
+			for(int iRd = 0; iRd < nInt; iRd++){
+				rad = (Radius[iex] / nInt) * iRd; dr = Radius[iex] / nInt;
+
+				int _ind = floor(sqrt(pow(rad,2) + pow(ht-SourceHeight[iex],2))/(maxlen/float(nLength)));
+				pack.volInt[iex][_ind] += dr * dht * 2*TMath::Pi()*rad;
+			}
+		}
+	}
+
     ndf += 4;
-	std::cout << "Gal bins: " << 4 << std::endl;
+	if(debug) std::cout << "Gal initialized. Bins: " << 4 << std::endl;
     return pack;
-    }
+}
 minosPackage minosInit(){
     minosPackage pack;
 
@@ -491,7 +529,7 @@ minosPackage minosInit(){
 	pack.EnuQE_ws[nBins_ws] = temp5[nBins_ws];
 
     ndf += nBins;
-	std::cout << "Minos bins: " << nBins << std::endl;
+	if(debug) std::cout << "Minos initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 minosncPackage minosncInit(){
@@ -506,65 +544,95 @@ minosncPackage minosncInit(){
 booneDisPackage mbNuDisInit(){
     booneDisPackage pack;
 
-    const int nBins = 16;
-	pack.nFOscEvts = 126700; // 1267007
+	const short nBins = 16;
+	const int nfosc = 1267007;
+	pack.nFOscEvts = nfosc;
 
-    pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
-    pack.EnuQE = new double[nBins + 1];
-    pack.NumuData = new double[nBins];
-	pack.foscData = dataLoc+"numudisap_ntuple.txt";
+    pack.full_fractCovMatrix.resize(nBins, std::vector<float>(nBins));
+    pack.EnuQE = new float[nBins + 1];
+    pack.NumuData = new float[nBins];
+	pack.FOsc_EnuQE = new float[nfosc];
+	pack.FOsc_EnuTrue = new float[nfosc];
+	pack.FOsc_LnuTrue = new float[nfosc];
+	pack.FOsc_weight = new float[nfosc];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
-    for(int i = 0; i < nBins+1; i++)
+    for(short i = 0; i < nBins+1; i++)
         file >> pack.EnuQE[i];
     file.close();
 
     file.open(dataLoc+"miniboone_numudata_disap.txt");
-    for(int i = 0; i < nBins; i++)
+    for(short i = 0; i < nBins; i++)
         file >> pack.NumuData[i];
     file.close();
 
     file.open(dataLoc+"miniboone_frac_shape_matrix_numu_disap.txt");
-    for(int i = 0; i < nBins; i++)
-        for(int j = 0; j < nBins; j++)
+    for(short i = 0; i < nBins; i++)
+        for(short j = 0; j < nBins; j++)
             file >> pack.full_fractCovMatrix[i][j];
     file.close();
 
+ 	file.open(dataLoc+"numudisap_ntuple.txt");
+	int dummy;
+    for(int iEvt = 0; iEvt < nfosc; iEvt++){
+ 		file >> dummy;
+        file >> pack.FOsc_EnuQE[iEvt];
+        file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> pack.FOsc_weight[iEvt];    // event weight
+	}
+	file.close();
+
     ndf += nBins;
-	std::cout << "MBnu Dis bins: " << nBins << std::endl;
+	if(debug) std::cout << "MBnu Dis initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 booneDisPackage mbNubarDisInit(){
     booneDisPackage pack;
 
-    const int nBins = 16;
-	pack.nFOscEvts = 126700; // 686529
+    const short nBins = 16;
+	const int nfosc = 686529;
+	pack.nFOscEvts = nfosc;
 
-    pack.full_fractCovMatrix.resize(nBins, std::vector<double>(nBins));
-    pack.EnuQE = new double[nBins + 1];
-    pack.NumuData = new double[nBins];
-	pack.foscData = dataLoc+"numubardisap_ntuple.txt";
+    pack.full_fractCovMatrix.resize(nBins, std::vector<float>(nBins));
+    pack.EnuQE = new float[nBins + 1];
+    pack.NumuData = new float[nBins];
+	pack.FOsc_EnuQE = new float[nfosc];
+	pack.FOsc_EnuTrue = new float[nfosc];
+	pack.FOsc_LnuTrue = new float[nfosc];
+	pack.FOsc_weight = new float[nfosc];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
-    for(int i = 0; i < nBins+1; i++)
+    for(short i = 0; i < nBins+1; i++)
         file >> pack.EnuQE[i];
     file.close();
 
     file.open(dataLoc+"miniboone_numubardata_disap.txt");
-    for(int i = 0; i < nBins; i++)
+    for(short i = 0; i < nBins; i++)
         file >> pack.NumuData[i];
     file.close();
 
     file.open(dataLoc+"miniboone_frac_shape_matrix_numubar_disap.txt");
-    for(int i = 0; i < nBins; i++)
-        for(int j = 0; j < nBins; j++)
+    for(short i = 0; i < nBins; i++)
+        for(short j = 0; j < nBins; j++)
             file >> pack.full_fractCovMatrix[i][j];
     file.close();
 
+	file.open(dataLoc+"numubardisap_ntuple.txt");
+ 	int dummy;
+    for(int iEvt = 0; iEvt < nfosc; iEvt++){
+ 		file >> dummy;
+        file >> pack.FOsc_EnuQE[iEvt];
+        file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> pack.FOsc_weight[iEvt];    // event weight
+	}
+	file.close();
+
     ndf += nBins;
-	std::cout << "MBnubar Dis bins: " << nBins << std::endl;
+	if(debug) std::cout << "MBnubar Dis initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 nomadPackage nomadInit(){
@@ -693,7 +761,7 @@ nomadPackage nomadInit(){
     }
 
     ndf += maxEnergyBins * maxRadialBins;
-	std::cout << "Nomad bins: " << maxEnergyBins * maxRadialBins << std::endl;
+	if(debug) std::cout << "Nomad initialized. Bins: " << maxEnergyBins * maxRadialBins << std::endl;
     return pack;
     }
 ccfrPackage ccfrInit(){
@@ -769,7 +837,7 @@ ccfrPackage ccfrInit(){
 	}
 
 	ndf += maxEnergyBins;
-	std::cout << "CCFR bins: " << maxEnergyBins << std::endl;
+	if(debug) std::cout << "CCFR initialized. Bins: " << maxEnergyBins << std::endl;
     return pack;
 }
 
@@ -854,6 +922,7 @@ cdhsPackage cdhsInit(){
 			file >> pack.dm2Vec[k];
 			file >> pack.sinSqDeltaGrid_front[k][i];
 			file >> pack.sinSqDeltaGrid_back[k][i];
+			//std::cout << pack.dm2Vec[k] << " " << pack.sinSqDeltaGrid_front[k][i] << " " << pack.sinSqDeltaGrid_back[k][i] << std::endl;
 		}
     }
     file.close();
@@ -907,7 +976,7 @@ cdhsPackage cdhsInit(){
 	*/
 
     ndf += nBins;
-	std::cout << "CDHS bins: " << nBins << std::endl;
+	if(debug) std::cout << "CDHS initialized. Bins: " << nBins << std::endl;
     return pack;
 }
 bugeyPackage bugeyInit(){
@@ -994,7 +1063,7 @@ bugeyPackage bugeyInit(){
     	}
   	}
 	ndf += 60;
-	std::cout << "Bugey bins: " << 60 << std::endl;
+	if(debug) std::cout << "Bugey initialized. Bins: " << 60 << std::endl;
   	return pack;
 }
 choozPackage choozInit(){
@@ -1140,6 +1209,6 @@ xsecPackage xsecInit(){
 
 
 	ndf += 11;
-	std::cout << "XSEC bins: " << 11 << std::endl;
+	if(debug) std::cout << "XSEC initialized. Bins: " << 11 << std::endl;
 	return pack;
 }

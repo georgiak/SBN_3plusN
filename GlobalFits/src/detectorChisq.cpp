@@ -3,6 +3,8 @@ Created by Davio Cianci and Georgia Karagiorgi
 Jan 25th, 2016
 
 ------------------------------------------// */
+#include "TStopwatch.h"
+
 
 TMatrixT <double> cov;      // inverted cov matrix
 TMatrixT <double> covMatrix;
@@ -15,6 +17,10 @@ std::vector <double> _totalError;
 TMinuit *gMinuit;
 minPack myMin;
 
+TStopwatch *watch = new TStopwatch();
+TStopwatch *mini = new TStopwatch();
+//watch->Stop(); watch->Print("m"); std::cout << "Fill cov matrix " << nBins*nBins << std::endl; watch->Start();
+
 void myMinInit(){
 	gMinuit = new TMinuit(6);
 }
@@ -23,7 +29,7 @@ chisqStruct getChi2Boone(neutrinoModel model, boonePackage pack, bool nubar){
 
     int nBins = 11;
     int nBins_mu = 8;
-    int nFOscEvts = 17204;
+    int nFOscEvts = pack.nFOscEvts;
 
     // Initialize the result!
     chisqStruct result;
@@ -146,7 +152,8 @@ chisqStruct getChi2Boone(neutrinoModel model, boonePackage pack, bool nubar){
 }
 // Gallium
 chisqStruct getChi2Gallium(neutrinoModel model, galPackage pack){
-    chisqStruct result;
+
+	chisqStruct result;
     result.zero();
 
     const int nPoints = 4; int nLinesCr = 4; int nLinesAr = 2;
@@ -156,70 +163,45 @@ chisqStruct getChi2Gallium(neutrinoModel model, galPackage pack){
     double denominator[4] = {1674.,1675.,580.8,708.4};
     double numerator[4];
 
-    // Large, arbitrary numbers for integration:
-    int nRd = 300; int nHt = 300;
+	double Radius[3] = {radiusGallex, radiusGallex, radiusSage};
+	double Height[3] = {heightGallex, heightGallex, heightSage};
+	double SourceHeight[3] = {sourceHeightGallex[0], sourceHeightGallex[1], sourceHeightSage};
 
 	oscContribution oscCon = getOscContributionsNueDis(model);
+
     for(int iG = 0; iG < nPoints; iG++){
         numerator[iG] = 0;
         if(iG < 3){
-            for(int iCr = 0; iCr < nLinesCr; iCr ++){
-                double energy = pack.crLinesE[iCr]; double xsec = pack.crLinesXSec[iCr]; double bkg = pack.crLinesBr[iCr];
-                double height, dh, radius, dr, length;
+			for(int iCr = 0; iCr < 4; iCr++){
+				double maxht = max(Height[iG]-SourceHeight[iG],SourceHeight[iG]);
+				double maxlen = sqrt(pow(Radius[iG],2) + pow(maxht,2));
 
-                for(int iHt = 0; iHt < nHt; iHt++){
-                    if(iG < 2){
-                        height = (heightGallex/nHt) * (iHt + 0.5);
-                        dh = heightGallex / nHt;
-                    }
-                    else{
-                        height = (heightSage/nHt) * (iHt + 0.5);
-                        dh = heightSage / nHt;
-                    }
-                    for(int iRd = 0; iRd < nRd; iRd++){
-                        if(iG < 2){
-                            radius = (radiusGallex/nRd) * iRd;
-                            dr = radiusGallex / nRd;
-                            length = abs(pow(pow(height - sourceHeightGallex[iG],2) + pow(radius,2),.5));
-                        }
-                        else{
-                            radius = (radiusSage/nRd) * iRd;
-                            dr = radiusSage / nRd;
-                            length = abs(pow(pow(height - sourceHeightSage,2) + pow(radius,2),.5));
-                        }
+				for(int iLen = 0; iLen < 2000; iLen++){
 
-                        double prob = 1.;
-                        for(int iContribution = 0; iContribution < 6; iContribution++){
-                            prob += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * length / energy),2);
-                        }
-                        numerator[iG] += 2. * TMath::Pi() * radius * dr * dh * (1./pow(length,2)) * prob * bkg * xsec;
-                    }
-                }
-            }
+					double prob = 1.;
+					for(int iContribution = 0; iContribution < 6; iContribution++){
+						prob += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * (iLen+1)/float(2000)*maxlen / pack.crLinesE[iCr]),2);
+					}
+					numerator[iG] += pack.volInt[iG][iLen] * (1./pow((iLen+1)/float(2000)*maxlen,2)) * prob * pack.crLinesBr[iCr] * pack.crLinesXSec[iCr];
+				}
+			}
         }
         else if(iG == 3){
-            for(int iAr = 0; iAr < nLinesAr; iAr++){
-                double energy = pack.arLinesE[iAr]; double xsec = pack.arLinesXSec[iAr]; double bkg = pack.arLinesBr[iAr];
-                double height, dh, radius, dr, length;
+			for(int iAr = 0; iAr < 2; iAr++){
+				double maxht = max(Height[2]-SourceHeight[2],SourceHeight[2]);
+				double maxlen = sqrt(pow(Radius[2],2) + pow(maxht,2));
 
-                for(int iHt = 0; iHt < nHt; iHt++){
-                    height = (heightSage / nHt) * (iHt + 0.5);
-                    dh = heightSage / nHt;
-                    for(int iRd = 0; iRd < nRd; iRd++){
-                        radius = (radiusSage / nRd) * iRd;
-                        dr = radiusSage / nRd;
-                        length = abs(pow(pow(height - sourceHeightSage,2) + pow(radius,2),.5));
+        		for(int iLen = 0; iLen < 2000; iLen++){
 
-						double prob = 1.;
-                        for(int iContribution = 0; iContribution < 6; iContribution++){
-                            prob += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * length / energy),2);
-                        }
-                        numerator[iG] += 2. * TMath::Pi() * radius * dr * dh * (1./pow(length,2)) * prob * bkg * xsec;
-                    }
-                }
-            }
-        }
-    }
+					double prob = 1.;
+					for(int iContribution = 0; iContribution < 6; iContribution++){
+						prob += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * (iLen+1)/float(2000)*maxlen / pack.arLinesE[iAr]),2);
+					}
+					numerator[iG] += pack.volInt[2][iLen] * (1./pow((iLen+1)/float(2000)*maxlen,2)) * prob * pack.arLinesBr[iAr] * pack.arLinesXSec[iAr];
+				}
+        	}
+    	}
+	}
 
     _fullData.resize(nPoints);
     _prediction.resize(nPoints);
@@ -232,6 +214,8 @@ chisqStruct getChi2Gallium(neutrinoModel model, galPackage pack){
     for(int iG = 0; iG < nPoints; iG++){
         result.chi2 += pow(_fullData[iG] - _prediction[iG],2) / pow(pack.errorGal[iG],2);
     }
+
+	std::cout << result.chi2 << std::endl;
 
     return result;
 }
@@ -283,6 +267,7 @@ chisqStruct getChi2Numi(neutrinoModel model, numiPackage pack){
     }
 
 	oscCont = getOscContributionsNueApp(model, false, true);
+
     // Loop over FOsc Events
     for(int iFOsc = 0; iFOsc < nFOscEvts; iFOsc++){
         // Loop over energy bins
@@ -320,6 +305,7 @@ chisqStruct getChi2Numi(neutrinoModel model, numiPackage pack){
 // MiniBoone disappearance
 chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
+	watch->Stop(); watch->Start();
     const int nBins = 16;
 
     // Initialize the result!
@@ -328,13 +314,15 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
 	oscContribution oscCont;
 
-    double minEBins[nBins], maxEBins[nBins];
-    double dtIntegral = 0.;     double MCIntegral = 0.;
-	double ETru, LTru;
-	double FOsc_EnuQE, FOsc_EnuTrue, FOsc_LnuTrue, FOsc_weight;
+    float minEBins[nBins], maxEBins[nBins];
+    float dtIntegral = 0.;     float MCIntegral = 0.;
+	float ETru, LTru;
+	float FOsc_EnuQE, FOsc_EnuTrue, FOsc_LnuTrue, FOsc_weight;
 
     _signal.resize(nBins);
     _prediction.resize(nBins);
+	covMatrix.ResizeTo(nBins, nBins);
+	covMatrix.Zero();
 
     for(int iB = 0; iB < nBins; iB ++){
         _signal[iB] = 0;
@@ -342,41 +330,29 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
         dtIntegral += pack.NumuData[iB];
     }
 
-    covMatrix.ResizeTo(nBins, nBins);
-    covMatrix.Zero();
-
 	oscCont = getOscContributionsNumuDis(model);
 
+	for(int iEvt = 0; iEvt < pack.nFOscEvts; iEvt++){
 
-	ifstream file;
- 	file.open(pack.foscData.c_str());
- 	int dummy;
-    for(int iEvt = 0; iEvt < pack.nFOscEvts; iEvt++){
- 		file >> dummy;
-        file >> FOsc_EnuQE;
-        file >> FOsc_EnuTrue;   // true energy of neutrino
-        file >> FOsc_LnuTrue;   // distance from production and detection points
-        file >> FOsc_weight;    // event weight
+		for(int iB = 0; iB < nBins; iB++){
+        	minEBins[iB] = pack.EnuQE[iB];
+        	maxEBins[iB] = pack.EnuQE[iB+1];
 
-        for(int iB = 0; iB < nBins; iB++){
-            minEBins[iB] = pack.EnuQE[iB];
-            maxEBins[iB] = pack.EnuQE[iB+1];
+        	if(pack.FOsc_EnuQE[iEvt] > minEBins[iB] && pack.FOsc_EnuQE[iEvt] < maxEBins[iB]){
+            	// Get predicted signal by multiplying the osc prob by the weight of each event!
+            	ETru = pack.FOsc_EnuTrue[iEvt];
+            	LTru = pack.FOsc_LnuTrue[iEvt];
 
-            if(FOsc_EnuQE > minEBins[iB] && FOsc_EnuQE < maxEBins[iB]){
-                // Get predicted signal by multiplying the osc prob by the weight of each event!
-                ETru = FOsc_EnuTrue;
-                LTru = FOsc_LnuTrue;
+            	// No-osc signal prediction
+        		_prediction[iB] += pack.FOsc_weight[iEvt];
 
-               	// No-osc signal prediction
-                _prediction[iB] += FOsc_weight;
-
-                for(int iContribution = 0; iContribution < 6; iContribution++){
-                    _signal[iB] += FOsc_weight*oscCont.aMuMu[iContribution]*pow(sin(1.267*oscCont.dm2[iContribution]*LTru / ETru),2);
-                }
-            }
-        }
-    }
-	file.close();
+        		for(int iContribution = 0; iContribution < 6; iContribution++){
+            		_signal[iB] += pack.FOsc_weight[iEvt]*oscCont.aMuMu[iContribution]*pow(sin(1.267*oscCont.dm2[iContribution]*LTru / ETru),2);
+            	}
+				break;
+			}
+		}
+	}
 
     // Normalize signal prediction to data
     for(int iB = 0; iB < nBins; iB++){
@@ -636,7 +612,8 @@ chisqStruct getLogLikelihood(neutrinoModel model, int nBins, sinSqPackage pack){
 }
 // NOMAD, I suppose
 chisqStruct getChi2Nomad(neutrinoModel model, nomadPackage pack){
-    chisqStruct result;
+
+	chisqStruct result;
     result.zero();
     oscContribution oscCont;
 
@@ -798,17 +775,21 @@ chisqStruct getChi2CDHS(neutrinoModel model, cdhsPackage pack){
 
     // Front Detector
     for(int iC = 0; iC < maxEnergyBins; iC++){
+
         for(int k = 0; k < 601; k++){
 			cdhsDm2Vec[k] = pack.dm2Vec[k];
             sinSqDeltaVec[k] = pack.sinSqDeltaGrid_front[k][iC];
         }
+
         dif.SetData(601,cdhsDm2Vec,sinSqDeltaVec);
 
         nFront[iC] = pack.noOscGrid[iC][0];
 
         for(int iContribution = 0; iContribution < 6; iContribution++){
 			if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-			else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
+			else    {
+				sinSq = dif.Eval(oscCont.dm2[iContribution]);
+			}
             nFront[iC] += oscCont.aMuMu[iContribution] * sinSq;
         }
         nFront[iC] *= pack.m_front[iC];

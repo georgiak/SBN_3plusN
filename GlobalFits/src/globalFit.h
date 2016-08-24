@@ -125,6 +125,7 @@ struct boonePackage{
     std::vector < std::vector <double> > full_fractCovMatrix;
     double *EnuQE; double *NueBgr; double *Numu; double *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight;
     int *NueData; int *NumuData;
+	int nFOscEvts;
 };
 struct atmPackage{
     double * dchi2Vec, * dmuVec;
@@ -142,6 +143,7 @@ struct sinSqPackage{
 };
 struct galPackage{
     double * obsRatioGal, * errorGal, * arLinesE, * arLinesBr, * arLinesXSec, * crLinesE, * crLinesBr, * crLinesXSec;
+	std::vector < std::vector < double > > length, volInt;
 };
 struct minosncPackage{
     double theta24_bestfit;
@@ -151,8 +153,8 @@ struct minosPackage{
     double * EnuQE, * NumubarData, * NumubarBkg, * fracError, * dataErr, * EnuQE_ws, * NumubarData_ws, * NumubarBkg_ws, * fracError_ws, * dataErr_ws;
 };
 struct booneDisPackage{
-    std::vector < std::vector <double> > full_fractCovMatrix;
-    double * EnuQE, * NumuData;
+    std::vector < std::vector <float> > full_fractCovMatrix;
+    float * EnuQE, * NumuData; float *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight, *LOverE;
 	int nFOscEvts;
 	std::string foscData;
 };

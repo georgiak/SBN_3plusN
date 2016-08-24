@@ -1,0 +1,26 @@
+So, here's a quick overview of what's going on. All the source files are in src. You can build them using make -f makefile.
+
+To run a fit, just use ./globalFit -- It gets input from inputs/jobOptions.txt, so you can modify configurations in there.
+
+Once you've run a job, you get a globFit.root file as output. If you get a bunch of these, you can combine them using ./ntupleProcess -- this guy
+gets input from inputs/processOptions.txt. It takes a bunch of globFit.root files, puts them together and splits them into 90% and 99% confidence
+level allowed regions.
+
+If you want to go further, you can use ./ntupleGridder, which takes the resulting nt_3[no. of steriles]_[dataset].root file from ntupleProcess
+and discretizes it into a 100^(3,7 or 12) grid (depending on how many steriles we're dealing with). This takes forever, but gives a nice processed
+ntuple output.
+
+./plotter just plots what we tell it to (using inputs/processOptions.txt)
+
+
+
+src/globalFit.cxx
+-----------------------------
+This code is the center of the whole operation. Its split into two functions (called by the main()): globInit() and globChisq().
+
+globInit() fills a bunch of data structures (defined in globalFit.h)--one for each experiment--and does any precalculation. globInit runs only once
+and fills up all these data packages. It outsources these calculations to functions in detectorInit.cpp.
+
+next, globChisq() begins and initializes markov parameters. It then begins a huge loop where it will go through several points in parameter space.
+At each point, it goes through each experiment one-by-one and calculates the chi-squared using a function in detectorChisq.cpp.
+At the end of each loop, it saves the point and its chi2 to a TNtuple and moves to the next point in the chain.
