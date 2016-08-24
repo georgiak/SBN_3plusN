@@ -6,6 +6,10 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <cstring>
+#include "Math/Minimizer.h"
+#include "Math/Factory.h"
+#include "Math/Functor.h"
+
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1F.h"
@@ -15,24 +19,18 @@
 #include "TMath.h"
 #include "TSystem.h"
 #include "TMatrixT.h"
-#include "model.h"
-#include "correlation.h"
 #include "TRandom.h"
-#include "prob.h"
-#include "Math/Minimizer.h"
-#include "Math/Factory.h"
-#include "Math/Functor.h"
 #include "TError.h"
 
 #include "params.h"
+#include "prob.h"
+#include "model.h"
+#include "correlation.h"
 
 
 #define no_argument 0
 #define required_argument 1
 #define optional_argument 2
-
-
-
 /*************************************************************
  *************************************************************
  *		BEGIN Main::sbnfit.cxx
@@ -205,7 +203,6 @@ if(verbose_flag)
 	std::cout<<"# N_m_spectra "<<N_m_spectra<<std::endl;
 	std::cout<<"# N_anti "<<N_anti<<std::endl;
 	std::cout<<"#*******************************************************"<<std::endl;
-
 }
 
 

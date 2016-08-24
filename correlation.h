@@ -20,4 +20,13 @@ void contract_signal2_anti(TMatrixT <double> & M, TMatrixT <double> &Mc);
 std::vector<std::vector<double >> to_vector(TMatrixT <double> McI);
 
 
+class correlation_matrix 
+{
+	
+
+
+};
+
+
+
 #endif
