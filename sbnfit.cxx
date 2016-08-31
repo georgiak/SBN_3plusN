@@ -362,7 +362,7 @@ if(unit_flag){
 
 
 
-if(fraction_flag)
+if(fraction_flag&&false)
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
@@ -371,8 +371,8 @@ if(fraction_flag)
 	        sprintf(filename,"GlobalFits/ntuples/nt_31_all.root");	
 	} else if (num_ster == 2){
 
-		//sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
-		sprintf(filename,"GlobalFits/ntuples/nt_32_all.root"); 
+		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
+	//	sprintf(filename,"GlobalFits/ntuples/nt_32_all.root"); 
 	} else if(num_ster == 3){
 		sprintf(filename,"GlobalFits/ntuples/nt_33_all_processed.root"); 
 
@@ -412,7 +412,7 @@ if(fraction_flag)
 
 
 
-if(fraction_flag&& false)
+if(fraction_flag)
 {
 	SBN_detector * ICARUS = new SBN_detector(2);
  	SBN_detector * SBND = new SBN_detector(0);
@@ -493,8 +493,8 @@ if(fraction_flag&& false)
 
 	char filename[200];
 	if(num_ster == 1){
-	//	sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
-	        sprintf(filename,"GlobalFits/ntuples/nt_31_brute.root");	
+		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
+	//        sprintf(filename,"GlobalFits/ntuples/nt_31_brute.root");	
 	} else if (num_ster == 2){
 		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
 
@@ -503,7 +503,7 @@ if(fraction_flag&& false)
 
 	}
 	char outfilename[200];
-	sprintf(outfilename,"ntuples/nt_3%d_all_processed_SBN.root",num_ster);
+	sprintf(outfilename,"ntuples/nt_3%d_all_processed_SBN2.root",num_ster);
 
 		TFile outputFile(outfilename,"RECREATE");
 //		outputFile.cd();
@@ -531,6 +531,7 @@ if(fraction_flag&& false)
          chi2_90->SetBranchAddress("phi46",&phi46);
          chi2_90->SetBranchAddress("phi56",&phi56);
 	 int nentries = chi2_90->GetEntries();
+//	 for (int i=0;i<100;i++) {
 	 for (int i=0;i<nentries;i++) {
 	        chi2_90->GetEntry(i);
 	
