@@ -6,6 +6,10 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <cstring>
+#include "Math/Minimizer.h"
+#include "Math/Factory.h"
+#include "Math/Functor.h"
+
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1F.h"
@@ -15,33 +19,18 @@
 #include "TMath.h"
 #include "TSystem.h"
 #include "TMatrixT.h"
-#include "model.h"
-#include "correlation.h"
 #include "TRandom.h"
-#include "prob.h"
-#include "Math/Minimizer.h"
-#include "Math/Factory.h"
-#include "Math/Functor.h"
 #include "TError.h"
 
+#include "params.h"
+#include "prob.h"
+#include "model.h"
+#include "correlation.h"
 
-/*************************************************************
- *************************************************************
- *Hardcoded Defines -> poor practice, will wrap intp SBN_spectrum soon
- actually no here is probably best.
- ************************************************************
- ************************************************************/
-
-#define N_m_bins 19
-#define N_e_bins 11
-#define N_dets 3
-#define N_e_spectra 7
-#define N_m_spectra 2
 
 #define no_argument 0
 #define required_argument 1
 #define optional_argument 2
-
 /*************************************************************
  *************************************************************
  *		BEGIN Main::sbnfit.cxx
@@ -67,6 +56,10 @@ bool comb_flag = false;
 bool both_flag = false;
 bool unit_flag = false;
 bool fraction_flag = false;
+bool anti_flag = false;
+
+int mode_flag = 0;
+
 
 int  sens_num=1;
 double dm41 = -1.0;
@@ -91,8 +84,10 @@ const struct option longopts[] =
 {
 	{"fit", 		no_argument, 		0, 'F'},
 	{"bkg",			no_argument,		0, 'B'},
+	{"mode",		required_argument,	0, 'M'},
 	{"test", 		no_argument, 		0, 'T'},
 	{"mass",		required_argument,	0, 'm'},
+	{"anti",		no_argument,		0, 'A'},
 	{"ue4", 		required_argument,	0, 'e'},
 	{"um4"	,		required_argument,	0, 'u'},
 	{"help",		no_argument, 		0, 'h'},
@@ -111,7 +106,7 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "d:alf:nue:m:svhS:cFTB", longopts, &index);
+	iarg = getopt_long(argc,argv, "d:alf:nuM:e:m:svhS:cFTAB", longopts, &index);
 
 	switch(iarg)
 	{
@@ -121,6 +116,12 @@ while(iarg != -1)
 			break;
 		case 'B':
 			bkg_flag = true;
+			break;
+		case 'M':
+			mode_flag = strtof(optarg,NULL);
+			break;
+		case 'A':
+			anti_flag = true;
 			break;
 		case 'n':
 			unit_flag = true;
@@ -172,7 +173,8 @@ while(iarg != -1)
 			std::cout<<"\t-u\t--um4\t\tSet 3p1 Um4 value"<<std::endl;
 			std::cout<<"\t-e\t--ue4\t\tSet 3p1 Ue4 value"<<std::endl;
 			std::cout<<"\t-T\t--test\t\trun SBN test code"<<std::endl;
-			std::cout<<"\t-S\t--sensitivity\t\trun a full sensitivity fit. Required argument, number of steriles. Run with -a -d"<<std::endl;	
+			std::cout<<"\t-S\t--sensitivity\t\trun a full sensitivity fit. Required argument, number of steriles. Run with -a -d"<<std::endl;
+			std::cout<<"\t\t\t --sensitivity 1 --app --dis 1 --mode 1,  makes 3p1_both_em.dat"<<std::endl;
 			std::cout<<"\t-f\t--fraction\t\tRun fraction analysis, takes 1 argument for 3+N"<<std::endl;
 			std::cout<<"\t-d\t--app\t\tRun app only sensitivity"<<std::endl;
 			std::cout<<"\t-a\t--dis\t\tRun dis only sensitivity, takes 1 arg 0 for e-dis 1 for mudis"<<std::endl;
@@ -183,10 +185,27 @@ while(iarg != -1)
 			std::cout<<"\t-d\t\t\tRequired Argument. Creates a sin and sin^2 frequency ntuples for a dmsq."<<std::endl;
 			std::cout<<"\t-v\t\t\tVerbose run, mostly debugging"<<std::endl;	
 			std::cout<<"\t-n\t\t\tUnitary run"<<std::endl;
+			std::cout<<"\t-A\t--anti\t\t Anti neutrino running mode"<<std::endl;
 			return 0;
 	}
 
 }
+
+
+
+if(verbose_flag)
+{
+	std::cout<<"#***************** Initial Parameters ******************"<<std::endl;
+	std::cout<<"# N_m_bins "<<N_m_bins<<std::endl;
+	std::cout<<"# N_e_bins "<<N_e_bins<<std::endl;
+	std::cout<<"# N_dets "<<N_dets<<std::endl;
+	std::cout<<"# N_e_spectra "<<N_e_spectra<<std::endl;
+	std::cout<<"# N_m_spectra "<<N_m_spectra<<std::endl;
+	std::cout<<"# N_anti "<<N_anti<<std::endl;
+	std::cout<<"#*******************************************************"<<std::endl;
+}
+
+
 
 if(app_flag&&dis_flag){both_flag = true; app_flag=false; dis_flag=false;}
 
@@ -211,14 +230,6 @@ if(unit_flag){
 	bkgspec.load_bkg(SBND);
 	bkgspec.load_bkg(UBOONE);
 			
-	bkgspec.sbnd_e_dirt[1]=44*1/5;
-	bkgspec.uboone_e_dirt[0]= 47*4/5;
-	bkgspec.uboone_e_dirt[1]=47*1/5;
-	bkgspec.icarus_e_dirt[0]= 67*4/5;
-	bkgspec.icarus_e_dirt[1]=67*1/5;
-	bkgspec.sbnd_e_cosmo[0] = 9  ;
-	bkgspec.uboone_e_cosmo[0]= 11;
-	bkgspec.icarus_e_cosmo[0]= 10;
 	
 
 	std::vector<double > back6 = bkgspec.get_sixvector();
@@ -300,18 +311,7 @@ if(unit_flag){
 				UnitSpec.load_unit(SBND);
 				UnitSpec.load_unit(UBOONE);
 
-					
-				UnitSpec.sbnd_e_dirt[1]=44*1/5;
-				UnitSpec.uboone_e_dirt[0]= 47*4/5;
-				UnitSpec.uboone_e_dirt[1]=47*1/5;
-				UnitSpec.icarus_e_dirt[0]= 67*4/5;
-				UnitSpec.icarus_e_dirt[1]=67*1/5;
-				UnitSpec.sbnd_e_cosmo[0] = 9  ;
-				UnitSpec.uboone_e_cosmo[0]= 11;
-				UnitSpec.icarus_e_cosmo[0]= 10;
-
 			
-
 
 				std::vector<double > pred6 = UnitSpec.get_sixvector();
 				std::vector<double > pred9 = UnitSpec.get_ninevector();
@@ -434,14 +434,7 @@ if(fraction_flag&& false)
 	bkgspec.load_bkg(SBND);
 	bkgspec.load_bkg(UBOONE);
 			
-	bkgspec.sbnd_e_dirt[1]=44*1/5;
-	bkgspec.uboone_e_dirt[0]= 47*4/5;
-	bkgspec.uboone_e_dirt[1]=47*1/5;
-	bkgspec.icarus_e_dirt[0]= 67*4/5;
-	bkgspec.icarus_e_dirt[1]=67*1/5;
-	bkgspec.sbnd_e_cosmo[0] = 9  ;
-	bkgspec.uboone_e_cosmo[0]= 11;
-	bkgspec.icarus_e_cosmo[0]= 10;
+
 	
 
 	std::vector<double > back6 = bkgspec.get_sixvector();
@@ -557,17 +550,7 @@ if(fraction_flag&& false)
 				AppSpec.load_freq_3p3(SBND);
 				AppSpec.load_freq_3p3(UBOONE);
 
-					
-				AppSpec.sbnd_e_dirt[1]=44*1/5;
-				AppSpec.uboone_e_dirt[0]= 47*4/5;
-				AppSpec.uboone_e_dirt[1]=47*1/5;
-				AppSpec.icarus_e_dirt[0]= 67*4/5;
-				AppSpec.icarus_e_dirt[1]=67*1/5;
-				AppSpec.sbnd_e_cosmo[0] = 9  ;
-				AppSpec.uboone_e_cosmo[0]= 11;
-				AppSpec.icarus_e_cosmo[0]= 10;
-
-			
+						
 
 
 				std::vector<double > pred6 = AppSpec.get_sixvector();
@@ -705,53 +688,9 @@ if(fraction_flag&& false)
 	bkgspec.load_bkg(SBND);
 	bkgspec.load_bkg(UBOONE);
 			
-	bkgspec.sbnd_e_dirt[1]=44*1/5;
-	bkgspec.uboone_e_dirt[0]= 47*4/5;
-	bkgspec.uboone_e_dirt[1]=47*1/5;
-	bkgspec.icarus_e_dirt[0]= 67*4/5;
-	bkgspec.icarus_e_dirt[1]=67*1/5;
-	bkgspec.sbnd_e_cosmo[0] = 9  ;
-	bkgspec.uboone_e_cosmo[0]= 11;
-	bkgspec.icarus_e_cosmo[0]= 10;
-	
-				for(int i = 0; i < N_e_bins; i++){
+	bkgspec.scale_by_pot(pot);
 
-					
-					bkgspec.sbnd_e[i]= bkgspec.sbnd_e[i]*pot;
-					bkgspec.sbnd_e_pho[i]= bkgspec.sbnd_e_pho[i]*pot;
-					bkgspec.sbnd_e_dirt[i]= bkgspec.sbnd_e_dirt[i]*pot;
-					bkgspec.sbnd_e_mu[i]= bkgspec.sbnd_e_mu[i]*pot;
-					bkgspec.sbnd_f[i]= bkgspec.sbnd_f[i]*pot;
-					bkgspec.sbnd_f_bar[i]= bkgspec.sbnd_f_bar[i]*pot;
-	
-					bkgspec.uboone_e[i]= bkgspec.uboone_e[i]*(0.5+pot);
-					bkgspec.uboone_e_pho[i]= bkgspec.uboone_e_pho[i]*(0.5+pot);
-					bkgspec.uboone_e_dirt[i]= bkgspec.uboone_e_dirt[i]*(0.5+pot);
-					bkgspec.uboone_e_mu[i]= bkgspec.uboone_e_mu[i]*(0.5+pot);
-					bkgspec.uboone_f[i]= bkgspec.uboone_f[i]*(0.5+pot);
-					bkgspec.uboone_f_bar[i]= bkgspec.uboone_f_bar[i]*(0.5+pot);			
-				
-					bkgspec.icarus_e[i]= bkgspec.icarus_e[i]*pot;
-					bkgspec.icarus_e_pho[i]= bkgspec.icarus_e_pho[i]*pot;
-					bkgspec.icarus_e_dirt[i]= bkgspec.icarus_e_dirt[i]*pot;
-					bkgspec.icarus_e_mu[i]= bkgspec.icarus_e_mu[i]*pot;
-					bkgspec.icarus_f[i]= bkgspec.icarus_f[i]*pot;
-					bkgspec.icarus_f_bar[i]= bkgspec.icarus_f_bar[i]*pot;
-				
-				}
-			
-				for(int i =0; i< N_m_bins; i++){
 
-					bkgspec.sbnd_m[i]= bkgspec.sbnd_m[i]*pot;
-					bkgspec.sbnd_m_pion[i]= bkgspec.sbnd_m_pion[i]*pot;
-
-					bkgspec.uboone_m[i]= bkgspec.uboone_m[i]*(0.5+pot);
-					bkgspec.uboone_m_pion[i]= bkgspec.uboone_m_pion[i]*(0.5+pot);
-
-					bkgspec.icarus_m[i]= bkgspec.icarus_m[i]*pot;
-					bkgspec.icarus_m_pion[i]= bkgspec.icarus_m_pion[i]*pot;
-
-				}
 	std::vector<double > back6 = bkgspec.get_sixvector();
 	std::vector<double > back9 = bkgspec.get_ninevector();
 	std::vector<double > back  = bkgspec.get_vector();
@@ -830,59 +769,11 @@ if(fraction_flag&& false)
 				AppSpec.load_freq_3p3(SBND);
 				AppSpec.load_freq_3p3(UBOONE);
 
-					
-				AppSpec.sbnd_e_dirt[1]=44*1/5;
-				AppSpec.uboone_e_dirt[0]= 47*4/5;
-				AppSpec.uboone_e_dirt[1]=47*1/5;
-				AppSpec.icarus_e_dirt[0]= 67*4/5;
-				AppSpec.icarus_e_dirt[1]=67*1/5;
-				AppSpec.sbnd_e_cosmo[0] = 9  ;
-				AppSpec.uboone_e_cosmo[0]= 11;
-				AppSpec.icarus_e_cosmo[0]= 10;
+
 
 		
 				// Change PoT!!
-
-				for(int i = 0; i < N_e_bins; i++){
-
-					
-					AppSpec.sbnd_e[i]= AppSpec.sbnd_e[i]*pot;
-					AppSpec.sbnd_e_pho[i]= AppSpec.sbnd_e_pho[i]*pot;
-					AppSpec.sbnd_e_dirt[i]= AppSpec.sbnd_e_dirt[i]*pot;
-					AppSpec.sbnd_e_mu[i]= AppSpec.sbnd_e_mu[i]*pot;
-					AppSpec.sbnd_f[i]= AppSpec.sbnd_f[i]*pot;
-					AppSpec.sbnd_f_bar[i]= AppSpec.sbnd_f_bar[i]*pot;
-	
-					AppSpec.uboone_e[i]= AppSpec.uboone_e[i]*(0.5+pot);
-					AppSpec.uboone_e_pho[i]= AppSpec.uboone_e_pho[i]*(0.5+pot);
-					AppSpec.uboone_e_dirt[i]= AppSpec.uboone_e_dirt[i]*(0.5+pot);
-					AppSpec.uboone_e_mu[i]= AppSpec.uboone_e_mu[i]*(0.5+pot);
-					AppSpec.uboone_f[i]= AppSpec.uboone_f[i]*(0.5+pot);
-					AppSpec.uboone_f_bar[i]= AppSpec.uboone_f_bar[i]*(0.5+pot);			
-				
-					AppSpec.icarus_e[i]= AppSpec.icarus_e[i]*pot;
-					AppSpec.icarus_e_pho[i]= AppSpec.icarus_e_pho[i]*pot;
-					AppSpec.icarus_e_dirt[i]= AppSpec.icarus_e_dirt[i]*pot;
-					AppSpec.icarus_e_mu[i]= AppSpec.icarus_e_mu[i]*pot;
-					AppSpec.icarus_f[i]= AppSpec.icarus_f[i]*pot;
-					AppSpec.icarus_f_bar[i]= AppSpec.icarus_f_bar[i]*pot;
-				
-				}
-			
-				for(int i =0; i< N_m_bins; i++){
-
-					AppSpec.sbnd_m[i]= AppSpec.sbnd_m[i]*pot;
-					AppSpec.sbnd_m_pion[i]= AppSpec.sbnd_m_pion[i]*pot;
-
-					AppSpec.uboone_m[i]= AppSpec.uboone_m[i]*(0.5+pot);
-					AppSpec.uboone_m_pion[i]= AppSpec.uboone_m_pion[i]*(0.5+pot);
-
-					AppSpec.icarus_m[i]= AppSpec.icarus_m[i]*pot;
-					AppSpec.icarus_m_pion[i]= AppSpec.icarus_m_pion[i]*pot;
-
-				}
-
-
+				AppSpec.scale_by_pot(pot);
 
 
 				std::vector<double > pred6 = AppSpec.get_sixvector();
@@ -971,13 +862,6 @@ if(fit_flag){
 	bkgspec.load_bkg(SBND);
 	bkgspec.load_bkg(UBOONE);
 
-	bkgspec.sbnd_e_dirt[0] = 44  ;
-	bkgspec.uboone_e_dirt[0]= 47;
-	bkgspec.icarus_e_dirt[0]= 67;
-
-	bkgspec.sbnd_e_cosmo[0] = 9  ;
-	bkgspec.uboone_e_cosmo[0]= 11;
-	bkgspec.icarus_e_cosmo[0]= 10;
 
 
 	std::vector<double > back6 = bkgspec.get_sixvector();
@@ -995,13 +879,6 @@ if(fit_flag){
 				wrkSpec.load_freq_3p3(ICARUS);	
 				wrkSpec.load_freq_3p3(UBOONE);	
 				wrkSpec.load_freq_3p3(SBND);
-
-				wrkSpec.sbnd_e_dirt[0] = 44  ;
-				wrkSpec.uboone_e_dirt[0]= 47;
-				wrkSpec.icarus_e_dirt[0]= 67;
-				wrkSpec.sbnd_e_cosmo[0] = 9;
-				wrkSpec.uboone_e_cosmo[0]= 11;
-				wrkSpec.icarus_e_cosmo[0]= 10;
 
 				std::vector<double > pred6 = wrkSpec.get_sixvector();
 				std::vector<double > pred9 = wrkSpec.get_ninevector();
@@ -1055,7 +932,7 @@ if(fit_flag){
 					
 				//bit o inverting, root tmatrix seems perfectly fast	
 				McI = Mctotal.Invert(&invdet);
-
+	std::vector<std::vector<double >> vMcI = to_vector(McI);
 				//check for previous known bug!
 				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
 				{
@@ -1072,7 +949,7 @@ if(fit_flag){
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						chi2 += mod*(back6[i]-pred6[i])*McI(i,j)*(back6[j]-pred6[j]);
+						chi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
 					}
 				}
 
@@ -1195,10 +1072,6 @@ if(sample_flag)
 if(cov_flag){
 
 
-
-
-
-
 }
 
 if(sens_flag)
@@ -1224,16 +1097,7 @@ if(sens_flag)
 	bkgspec.load_bkg(SBND);
 	bkgspec.load_bkg(UBOONE);
 			
-	bkgspec.sbnd_e_dirt[1]=44*1/5;
-	bkgspec.uboone_e_dirt[0]= 47*4/5;
-	bkgspec.uboone_e_dirt[1]=47*1/5;
-	bkgspec.icarus_e_dirt[0]= 67*4/5;
-	bkgspec.icarus_e_dirt[1]=67*1/5;
-	bkgspec.sbnd_e_cosmo[0] = 9  ;
-	bkgspec.uboone_e_cosmo[0]= 11;
-	bkgspec.icarus_e_cosmo[0]= 10;
-
-			if(true){
+			if(false){
 				double modd= 0.5;	
 				for(int i = 0; i < N_e_bins; i++){
 
@@ -1356,14 +1220,6 @@ if(sens_flag)
 				AppSpec.load_freq_3p3(UBOONE);
 
 					
-				AppSpec.sbnd_e_dirt[1]=44*1/5;
-				AppSpec.uboone_e_dirt[0]= 47*4/5;
-				AppSpec.uboone_e_dirt[1]=47*1/5;
-				AppSpec.icarus_e_dirt[0]= 67*4/5;
-				AppSpec.icarus_e_dirt[1]=67*1/5;
-				AppSpec.sbnd_e_cosmo[0] = 9  ;
-				AppSpec.uboone_e_cosmo[0]= 11;
-				AppSpec.icarus_e_cosmo[0]= 10;
 
 				for(int i = 0; i < N_e_bins; i++){
 				double modd = 0.5;
@@ -1475,16 +1331,6 @@ if(sens_flag)
 			//	DisSpec.load_bkg(SBND);
 
 
-				DisSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				DisSpec.sbnd_e_dirt[1]=44*1/5;
-				DisSpec.uboone_e_dirt[0]= 47*4/5;
-				DisSpec.uboone_e_dirt[1]=47*1/5;
-				DisSpec.icarus_e_dirt[0]= 67*4/5;
-				DisSpec.icarus_e_dirt[1]=67*1/5;
-				DisSpec.sbnd_e_cosmo[0] = 9  ;
-				DisSpec.uboone_e_cosmo[0]= 11;
-				DisSpec.icarus_e_cosmo[0]= 10;
-
 				for(int i = 0; i < N_e_bins; i++){
 				double modd = 0.5;
 				double pot =1e-12;	
@@ -1581,15 +1427,6 @@ if(sens_flag)
 				DisSpec.load_freq_3p3(SBND);
 				DisSpec.load_freq_3p3(UBOONE);
 
-				DisSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				DisSpec.sbnd_e_dirt[1]=44*1/5;
-				DisSpec.uboone_e_dirt[0]= 47*4/5;
-				DisSpec.uboone_e_dirt[1]=47*1/5;
-				DisSpec.icarus_e_dirt[0]= 67*4/5;
-				DisSpec.icarus_e_dirt[1]=67*1/5;
-				DisSpec.sbnd_e_cosmo[0] = 9  ;
-				DisSpec.uboone_e_cosmo[0]= 11;
-				DisSpec.icarus_e_cosmo[0]= 10;
 
 				std::vector<double > pred = DisSpec.get_vector();
 				std::vector<double > pred6= DisSpec.get_sixvector();
@@ -1630,9 +1467,9 @@ if(sens_flag)
 
 
 
-	if(sens_num == 1 && both_flag)
+	if(sens_num == 1 && both_flag && mode_flag == 1)
 	{
-	std::cout<<"Begining N=1, dual appearance and dissapearance"<<std::endl;
+	std::cout<<"Begining N=1, dual appearance and dissapearance, optimised for sin^2them   : 3p1_both_em.dat"<<std::endl;
 
 		std::cout<<"Initialising output files"<<std::endl;
 		TFile outputFile("hmm.root","RECREATE");
@@ -1651,11 +1488,15 @@ if(sens_flag)
                                   ntuple->Branch("Chi",&nCHI);*/
      
 
-		for(double m = -2.00; m <=2.04; m=m+0.08){
-			for(double umi = log10(0.5); umi >= -3.0; umi = umi - 0.075){
-			for(double uei = log10(0.5); uei >= -3.0; uei = uei - 0.075){
+		for(double m = -2.00; m <=2.04; m=m+0.04){
+			for(double sins2 = log10(0.25) ; sins2 > -5; sins2 = sins2 - 0.2){
+			for(double uei2 = log10(0.4) ; uei2 > -3; uei2 = uei2 - 0.05){
+				double uei = pow(10,uei2);
 				
-				neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				double umi = sqrt(pow(10,sins2))/(2*uei);
+				if(umi > 0.4){continue;};
+
+				neutrinoModel bothModel(sqrt(pow(10,m)), uei , umi);
 				bothModel.dm41Sq = pow(10,m);
 			
 				
@@ -1669,21 +1510,13 @@ if(sens_flag)
 
 
 				SBN_spectrum BothSpec(bothModel);
-				
+				BothSpec.which_mode = 2;
+
 				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
-				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				BothSpec.sbnd_e_dirt[1]=44*1/5;
-				BothSpec.uboone_e_dirt[0]= 47*4/5;
-				BothSpec.uboone_e_dirt[1]=47*1/5;
-				BothSpec.icarus_e_dirt[0]= 67*4/5;
-				BothSpec.icarus_e_dirt[1]=67*1/5;
-				BothSpec.sbnd_e_cosmo[0] = 9 ;
-				BothSpec.uboone_e_cosmo[0]= 11;
-				BothSpec.icarus_e_cosmo[0]= 10;
-
+	
 
 				std::vector<double > pred6 = BothSpec.get_sixvector();
 				std::vector<double > pred9 = BothSpec.get_ninevector();
@@ -1717,7 +1550,7 @@ if(sens_flag)
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						chi2 += mod*(back6[i]-pred6[i])*McI(i,j)*(back6[j]-pred6[j]);
+						chi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
 					}
 				}
 
@@ -1729,9 +1562,9 @@ if(sens_flag)
 				nDM4 = bothModel.dm41Sq;*/
 
 				ntuple.Fill(bothModel.dm41Sq,bothModel.Ue[0],bothModel.Um[0],chi2);
-				std::cout<<bothModel.dm41Sq<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<std::endl;
+				std::cout<<bothModel.dm41Sq<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<pow(10,sins2)<<std::endl;
 			}//end um4
-			std::cout<<"#Finished m: "<<m<<" "<<umi<<std::endl;
+			std::cout<<"#Finished m: "<<m<<" "<<sins2<<std::endl;
 			}//end ue4
 		}//end m for loop
 
@@ -1744,6 +1577,8 @@ if(sens_flag)
    		outputFile.Close();
 		std::cout<<"end all"<<std::endl;
 	} //end 3p1 sensitivity both analysis
+
+
 
 
 if(sens_num == 2&& false)
@@ -1811,15 +1646,6 @@ if(sens_num == 2&& false)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
-				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				BothSpec.sbnd_e_dirt[1]=44*1/5;
-				BothSpec.uboone_e_dirt[0]= 47*4/5;
-				BothSpec.uboone_e_dirt[1]=47*1/5;
-				BothSpec.icarus_e_dirt[0]= 67*4/5;
-				BothSpec.icarus_e_dirt[1]=67*1/5;
-				BothSpec.sbnd_e_cosmo[0] = 9 ;
-				BothSpec.uboone_e_cosmo[0]= 11;
-				BothSpec.icarus_e_cosmo[0]= 10;
 
 
 				std::vector<double > pred6 = BothSpec.get_sixvector();
@@ -1957,16 +1783,6 @@ if(sens_num == 2&& false)   // This is the m41 m51 fixed phi case for best fit
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
-				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				BothSpec.sbnd_e_dirt[1]=44*1/5;
-				BothSpec.uboone_e_dirt[0]= 47*4/5;
-				BothSpec.uboone_e_dirt[1]=47*1/5;
-				BothSpec.icarus_e_dirt[0]= 67*4/5;
-				BothSpec.icarus_e_dirt[1]=67*1/5;
-				BothSpec.sbnd_e_cosmo[0] = 9 ;
-				BothSpec.uboone_e_cosmo[0]= 11;
-				BothSpec.icarus_e_cosmo[0]= 10;
-
 
 				std::vector<double > pred6 = BothSpec.get_sixvector();
 				std::vector<double > pred9 = BothSpec.get_ninevector();
@@ -2097,17 +1913,6 @@ if(sens_num == 2)   // Fix everything global, vary phi
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
-				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				BothSpec.sbnd_e_dirt[1]=44*1/5;
-				BothSpec.uboone_e_dirt[0]= 47*4/5;
-				BothSpec.uboone_e_dirt[1]=47*1/5;
-				BothSpec.icarus_e_dirt[0]= 67*4/5;
-				BothSpec.icarus_e_dirt[1]=67*1/5;
-				BothSpec.sbnd_e_cosmo[0] = 9 ;
-				BothSpec.uboone_e_cosmo[0]= 11;
-				BothSpec.icarus_e_cosmo[0]= 10;
-
-
 				std::vector<double > pred6 = BothSpec.get_sixvector();
 				std::vector<double > pred9 = BothSpec.get_ninevector();
 
@@ -2233,17 +2038,6 @@ if(sens_num == 2&& false )   // This is the m41 m51 margined phi case for best f
 				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
-
-				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				BothSpec.sbnd_e_dirt[1]=44*1/5;
-				BothSpec.uboone_e_dirt[0]= 47*4/5;
-				BothSpec.uboone_e_dirt[1]=47*1/5;
-				BothSpec.icarus_e_dirt[0]= 67*4/5;
-				BothSpec.icarus_e_dirt[1]=67*1/5;
-				BothSpec.sbnd_e_cosmo[0] = 9 ;
-				BothSpec.uboone_e_cosmo[0]= 11;
-				BothSpec.icarus_e_cosmo[0]= 10;
-
 
 				std::vector<double > pred6 = BothSpec.get_sixvector();
 				std::vector<double > pred9 = BothSpec.get_ninevector();
@@ -2394,16 +2188,6 @@ if(sens_num == 2&& false)   // This is the m51 and phi plot for averaged else
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
-				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				BothSpec.sbnd_e_dirt[1]=44*1/5;
-				BothSpec.uboone_e_dirt[0]= 47*4/5;
-				BothSpec.uboone_e_dirt[1]=47*1/5;
-				BothSpec.icarus_e_dirt[0]= 67*4/5;
-				BothSpec.icarus_e_dirt[1]=67*1/5;
-				BothSpec.sbnd_e_cosmo[0] = 9 ;
-				BothSpec.uboone_e_cosmo[0]= 11;
-				BothSpec.icarus_e_cosmo[0]= 10;
-
 
 				std::vector<double > pred6 = BothSpec.get_sixvector();
 				std::vector<double > pred9 = BothSpec.get_ninevector();
@@ -2550,16 +2334,6 @@ if(sens_num == 2&&false)   // This is the m51 and phi plot for averaged else
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
-				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				BothSpec.sbnd_e_dirt[1]=44*1/5;
-				BothSpec.uboone_e_dirt[0]= 47*4/5;
-				BothSpec.uboone_e_dirt[1]=47*1/5;
-				BothSpec.icarus_e_dirt[0]= 67*4/5;
-				BothSpec.icarus_e_dirt[1]=67*1/5;
-				BothSpec.sbnd_e_cosmo[0] = 9 ;
-				BothSpec.uboone_e_cosmo[0]= 11;
-				BothSpec.icarus_e_cosmo[0]= 10;
-
 
 				std::vector<double > pred6 = BothSpec.get_sixvector();
 				std::vector<double > pred9 = BothSpec.get_ninevector();
@@ -2696,16 +2470,6 @@ if(sens_num == 3)
 				BothSpec.load_freq_3p3(SBND);
 				BothSpec.load_freq_3p3(UBOONE);
 
-				BothSpec.sbnd_e_dirt[0] = 44*4/5  ;
-				BothSpec.sbnd_e_dirt[1]=44*1/5;
-				BothSpec.uboone_e_dirt[0]= 47*4/5;
-				BothSpec.uboone_e_dirt[1]=47*1/5;
-				BothSpec.icarus_e_dirt[0]= 67*4/5;
-				BothSpec.icarus_e_dirt[1]=67*1/5;
-				BothSpec.sbnd_e_cosmo[0] = 9 ;
-				BothSpec.uboone_e_cosmo[0]= 11;
-				BothSpec.icarus_e_cosmo[0]= 10;
-
 
 				std::vector<double > pred6 = BothSpec.get_sixvector();
 				std::vector<double > pred9 = BothSpec.get_ninevector();
@@ -2787,6 +2551,204 @@ if(sens_num == 3)
 	
 
 
+if(anti_flag){
+
+	if(verbose_flag) std::cout<<"#**********Begining nu+nubar mode analysis**********"<<std::endl;
+	SBN_detector * ICARUS = new SBN_detector(2);
+ 	SBN_detector * SBND = new SBN_detector(0);
+ 	SBN_detector * UBOONE = new SBN_detector(1);
+
+	//SBN_detector * ICARUS_mu = new SBN_detector(2,true);
+ 	//SBN_detector * SBND_mu = new SBN_detector(0,true);
+ 	//SBN_detector * UBOONE_mu = new SBN_detector(1,true);
+	bool usedetsys = true;
+
+	if(dis_flag && !app_flag){
+		usedetsys=false;
+	}
+
+	neutrinoModel nullModel;
+
+
+	if(verbose_flag) std::cout<<"# Initialising nu+nubar mode backgrrounds"<<std::endl;
+	SBN_spectrum bkgspec(nullModel);
+	SBN_spectrum bkgbarspec(nullModel);
+	bkgbarspec.SetNuBarMode();
+
+	bkgspec.load_bkg(ICARUS);
+	bkgspec.load_bkg(SBND);
+	bkgspec.load_bkg(UBOONE);
+			
+	bkgbarspec.load_bkg(ICARUS);
+	bkgbarspec.load_bkg(SBND);
+	bkgbarspec.load_bkg(UBOONE);
+	
+	std::vector<double > back6 = bkgspec.get_sixvector();
+	std::vector<double > back9 = bkgspec.get_ninevector();
+	std::vector<double > back  = bkgspec.get_vector();
+
+	std::vector<double > backbar6 = bkgbarspec.get_sixvector();
+	std::vector<double > backbar9 = bkgbarspec.get_ninevector();
+	std::vector<double > backbar  = bkgbarspec.get_vector();
+
+	std::vector<double> back_all = back;
+	back_all.insert(back_all.end(), backbar.begin(), backbar.end() );
+
+	std::vector<double> back_all_12 =back6;
+       	back_all_12.insert(back_all_12.end(), backbar6.begin(), backbar6.end() );
+
+
+	TRandom *rangen    = new TRandom();
+
+
+		int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti;
+		int contMsize = (N_e_bins+N_m_bins)*N_dets*N_anti;
+
+		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
+		 * */
+
+		TMatrixT <double> McI(contMsize, contMsize);
+		TMatrixT <double> McIbar(contMsize, contMsize);
+
+		if(verbose_flag) std::cout<<"# Filling up Systematics correlation matrix, size: "<<bigMsize <<std::endl;
+		// Fill systematics from pre-computed files
+		TMatrixT <double> Msys(bigMsize,bigMsize);
+		sys_fill(Msys,usedetsys);
+
+		// systematics per scaled event
+		for(int i =0; i<Msys.GetNcols(); i++)
+		{
+			for(int j =0; j<Msys.GetNrows(); j++)
+			{
+				Msys(i,j)=Msys(i,j)*back_all[i]*back_all[j];
+			}
+		}
+
+
+
+
+		if(verbose_flag) std::cout<<"# Filling up Statistics correlation matrix, size: "<<bigMsize <<std::endl;
+		// Fill stats from the back ground vector
+		TMatrixT <double> Mstat(bigMsize,bigMsize);
+		stats_fill(Mstat, back_all);
+
+		//And then define the total covariance matrix in all its glory
+		TMatrixT <double > Mtotal(bigMsize,bigMsize);
+		if(stat_only){
+			Mtotal =  Mstat;
+		} else {
+			Mtotal = Msys+Mstat;
+		}
+
+		// Now contract back the larger antimatrix
+		TMatrixT<double > Mctotal(contMsize,contMsize);
+
+		if(verbose_flag) std::cout<<"# Begin nu+nubar mode matrix contraction: contract_signal2()"<<std::endl;
+		contract_signal2_anti(Mtotal,Mctotal);
+	
+		if(verbose_flag) std::cout<<"# Finished contraction, matrix size reduced from: "<<Mtotal.GetNcols()<<" to: "<<Mctotal.GetNcols()<<std::endl;
+
+		// just to hold determinant
+		double invdet=0; 
+
+		// Bit o inverting, root tmatrix seems perfectly and sufficiently fast for this, even with anti_mode
+		McI = Mctotal.Invert(&invdet);
+
+
+		// There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
+		std::vector<std::vector<double >> vMcI = to_vector(McI);
+
+
+				double m4 = 0.04;
+				double m5 = -0.04;			
+
+				//neutrinoModel bothModel(sqrt(pow(10,m)), pow(10,uei),pow(10,umi));
+				//bothModel.dm41Sq = pow(10,m);
+			
+				double iphi = 1.58;	
+				
+				double imn[3] = {sqrt(pow(10,m4)),sqrt(pow(10,m5)),0.0};
+				double iue[3] = {0.15,0.13,0};  // These are best fit!
+				double ium[3] = {0.069,0.16, 0.0};
+				//double iue[3] = {0.2,0.2,0};  // generic ones
+				//double ium[3] = {0.2,0.2,0.0};
+
+
+				double iph[3] = {iphi*3.14159, 0.0, 0.0};
+				
+				
+				neutrinoModel bothModel(imn,iue,ium,iph);
+				bothModel.numsterile =2;
+
+				double round54 = round(log10(fabs(bothModel.dm54Sq))/0.04)*0.04;
+
+			//	if(fabs(bothModel.dm54Sq) >= 100){ 
+				//	std::cout<<"skipping this one 1:"<<std::endl;
+			//			continue;
+			//	}
+			//	if(round54 > 2 ){ 
+			//		std::cout<<"skipping this one 1: round54 "<<round54<<std::endl;
+			//			continue;
+			//	}
+
+//				std::cout<<"dm54: "<<bothModel.dm54Sq<<" "<<bothModel.dm64Sq<<" "<<bothModel.dm65Sq<<std::endl;
+				SBN_spectrum BothSpec(bothModel);
+				SBN_spectrum BothBarSpec(bothModel);
+				BothBarSpec.SetNuBarMode();
+
+				BothSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothSpec.load_freq_3p3(SBND);
+				BothSpec.load_freq_3p3(UBOONE);
+
+				BothBarSpec.load_freq_3p3(ICARUS);//1 is stupid dis flag (temp)
+				BothBarSpec.load_freq_3p3(SBND);
+				BothBarSpec.load_freq_3p3(UBOONE);
+			
+		
+		
+				std::vector<double > pred6 = BothSpec.get_sixvector();
+				std::vector<double > predbar6 = BothBarSpec.get_sixvector();
+		
+				std::vector<double> pred_all_12 = pred6;	
+			     	pred_all_12.insert( pred_all_12.end(), predbar6.begin(), predbar6.end() );
+		
+				double chi2=0;
+		
+			
+				//Calculate the answer, ie chi square! will functionise
+				// should be matrix_size_c for full app+dis
+
+				int whatsize = McI.GetNcols();
+
+
+
+				if( McI.GetNcols() != McI.GetNrows() && back_all_12.size() != pred_all_12.size() && back_all_12.size() != McI.GetNcols() )
+				{
+					std::cout<<"ERROR: Something is wrong. In Chi^2 calc matrix != vector length "<<std::endl;
+				}
+
+
+
+				if(verbose_flag) std::cout<<"# calculate chi^2 value using contracted matrix!"<<std::endl;
+
+				for(int i =0; i<whatsize; i++){
+					for(int j =0; j<whatsize; j++){
+						chi2 += (back_all_12[i]-pred_all_12[i])*vMcI[i][j]*(back_all_12[j]-pred_all_12[j]);
+					}
+				}
+			
+			
+
+				//std::cout<<m<<" "<<bothModel.Ue[0]<<" "<<bothModel.Um[0]<<" "<<chi2<<" "<<std::endl;
+				/*nCHI = chi2;
+				nUM4 = bothModel.Um[0];
+				nUE4 = bothModel.Ue[0];
+				nDM4 = bothModel.dm41Sq;*/
+//				ntuple.Fill(pow(10,m4),pow(10,m5),pow(10,ueiMin),pow(10,umiMin),chiMin);
+				std::cout<<pow(10,m4)<<" "<<pow(10,m5)<<" "<<chi2<<std::endl;
+
+
+}
 
 
 
@@ -2812,23 +2774,14 @@ if(test_flag){
 	SBN_spectrum bkgspec(nullModel);
 
 	bkgspec.neutral_test(SBND);
-	bkgspec.neutral_test(SBND);
-	bkgspec.neutral_test(SBND);
+//	bkgspec.neutral_test(SBND);
+//	bkgspec.neutral_test(SBND);
 
 
 return 0;	
 	bkgspec.load_bkg(ICARUS);
 	bkgspec.load_bkg(SBND);
 	bkgspec.load_bkg(UBOONE);
-
-
-	bkgspec.sbnd_e_dirt[0] = 44  ;
-	bkgspec.uboone_e_dirt[0]= 47;
-	bkgspec.icarus_e_dirt[0]= 67;
-
-	bkgspec.sbnd_e_cosmo[0] = 9  ;
-	bkgspec.uboone_e_cosmo[0]= 11;
-	bkgspec.icarus_e_cosmo[0]= 10;
 
 
 	std::vector<double > back6 = bkgspec.get_sixvector();
