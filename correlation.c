@@ -4,11 +4,6 @@
 #include <ctime>
 #include <TFile.h>
 
-#define N_m_bins 19
-#define N_e_bins 11
-#define N_dets 3
-
-
 
 void fake_fill(TMatrixT <double> &M){
 
@@ -60,7 +55,6 @@ void stats_fill(TMatrixT <double> &M, std::vector<double> diag){
 	int matrix_size = M.GetNrows();
 	
 
-
 	if(matrix_size != diag.size()){std::cout<<"#ERROR: stats_fill, matrix not equal to diagonal"<<std::endl;}
 	if(M.GetNrows()!=M.GetNcols()){std::cout<<"#ERROR: not a square matrix!"<<std::endl;}
 
@@ -78,7 +72,39 @@ void stats_fill(TMatrixT <double> &M, std::vector<double> diag){
  return ;
 }
 
+void sys_fill(TMatrixT <double> & Min, bool detsys)
+{
+
+	Min.Zero();
+
+	if(Min.GetNrows()==   (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti  ){
+		TFile *fm= new TFile("rootfiles/covariance_matrices_690x690.root");
+		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+		fm->Close();
+	} else {
+	if(detsys){
+
+		TFile *fm= new TFile("rootfiles/covariance_matrices_345x345.root");
+		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+		fm->Close();
+	} else {
+		TFile *fm= new TFile("rootfiles/covariance_matrices_nodetsys_345x345.root");
+		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+		fm->Close();
+	}	
+
+return;
+
+	}
+}
+
+
+
+
 void contract_signal(TMatrixT <double> & M, TMatrixT <double> & Mc){
+	/******************************************************
+	 * REDUNDANT/OBSOLETE see contracr_signal2() below
+	 *****************************************************/
 
 	// take the lower N_e_bins x N_m_bins matrix as a start
 	//
@@ -108,51 +134,33 @@ void contract_signal(TMatrixT <double> & M, TMatrixT <double> & Mc){
 	}
 
 
-
-return;
-}
-
-
-void sys_fill(TMatrixT <double> & Min, bool detsys)
-{
-	Min.Zero();
-	if(detsys){
-
-		TFile *fm= new TFile("rootfiles/covariance_matrices_345x345.root");
-		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
-		fm->Close();
-	} else {
-		TFile *fm= new TFile("rootfiles/covariance_matrices_nodetsys_345x345.root");
-		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
-		fm->Close();
-
-	}	
-
 return;
 }
 
 
 void contract_signal2(TMatrixT <double> & M, TMatrixT <double> & Mc){
+	// So this function takes a Matrix, which has N_detectors multiples of ( ebnum sections of eblock bins follows mbnum sections of mblock) .
+	// Contacts it down to (eblock+mblock)*N_detectors.
+	// Basically is a much more generic version of contract_signal() above
+
 
 	// take the lower N_e_bins x N_m_bins matrix as a start
-	//
-
 	//these shouldnt be hardcoded
 	int eblock = N_e_bins;
 	int mblock = N_m_bins;
 	
-	int ebnum = 7;	
-	int mbnum = 2;
+	int ebnum = N_e_spectra;	
+	int mbnum = N_m_spectra;
 
 	int bblock = eblock*ebnum+mblock*mbnum;//big block 
 	int cblock = eblock+mblock; //size of each contracted matrix
 
 
-	std::vector<std::vector< TMatrixT<double>  >> mtot(3, std::vector<TMatrixT<double> >(3));	
+	std::vector<std::vector< TMatrixT<double>  >> mtot(N_dets, std::vector<TMatrixT<double> >(3));	
 		
-	for(int i = 0; i < 3; i++)
+	for(int i = 0; i < N_dets; i++)
 	{
-	for(int j = 0; j < 3; j++)
+	for(int j = 0; j < N_dets; j++)
 	{
 		mtot[i][j].ResizeTo(eblock+mblock,eblock+mblock);
 
@@ -268,8 +276,8 @@ void contract_signal2(TMatrixT <double> & M, TMatrixT <double> & Mc){
 	}//i for
 
 
-	for(int i =0; i<3; i++){
-		for(int k =0; k<3; k++){
+	for(int i =0; i<N_dets; i++){
+		for(int k =0; k<N_dets; k++){
 			Mc.SetSub(cblock*i,cblock*k,mtot[i][k]);	
 		}
 	}
@@ -282,6 +290,60 @@ void contract_signal2(TMatrixT <double> & M, TMatrixT <double> & Mc){
 return;
 }
 
+
+void contract_signal2_anti(TMatrixT <double> & M, TMatrixT <double> & Mc){
+	//so basically takes the 4 quadrants of (N_detectors multiples of ( ebnum sections of eblock bins follows mbnum sections of mblock)) 
+	// and runs each one through the contract_signal2() function above. 
+
+
+	//these shouldnt be hardcoded
+	int eblock = N_e_bins;
+	int mblock = N_m_bins;
+	
+	int ebnum = N_e_spectra;	
+	int mbnum = N_m_spectra;
+
+	int bblock = (eblock*ebnum+mblock*mbnum)*N_dets;		//big block 
+	int cblock = (eblock+mblock)*N_dets; 			//size of each contracted matrix
+
+	int antibblock =bblock*N_anti;
+	int anticblock = cblock*N_anti;
+		// tr is top right, bl is bottem left
+
+	//std::cout<<M.GetNRows()<<" "<<M.GetNCols()<<" "<<Mc.GetNRows()<<" "<<Mc.GetNCols()<<std::endl;
+	//std::cout<<"usual : "<<bblock<<" "<<cblock<<" "<<" anti: "<<antibblock<<" "<<anticblock<<std::endl;
+
+	TMatrixT <double > Mnu(bblock,bblock); 
+	Mnu = M.GetSub(0,bblock-1,0,bblock-1);
+
+	TMatrixT <double > MnuBar(bblock,bblock); 	
+	MnuBar = M.GetSub(bblock,antibblock-1,bblock,antibblock-1);
+
+	TMatrixT <double > Mtr(bblock,bblock); 	
+	Mtr = M.GetSub(0,bblock-1,bblock,antibblock-1);
+
+	TMatrixT <double > Mbl(bblock,bblock); 	
+	Mbl = M.GetSub(bblock,antibblock-1,0,bblock-1);
+
+	TMatrixT <double > MnuC(cblock,cblock); 
+	TMatrixT <double > MnuBarC(cblock,cblock); 	
+	TMatrixT <double > MtrC(cblock,cblock); 	
+	TMatrixT <double > MblC(cblock,cblock); 
+
+	contract_signal2(Mnu,MnuC);	
+	contract_signal2(MnuBar,MnuBarC);	
+	contract_signal2(Mtr,MtrC);	
+	contract_signal2(Mbl,MblC);
+
+	Mc.Zero();
+	Mc.SetSub(0,0,MnuC);
+	Mc.SetSub(cblock,cblock,MnuBarC);
+	Mc.SetSub(0,cblock,MtrC);
+	Mc.SetSub(cblock,0,MblC);
+
+
+return;
+}
 
 
 std::vector<double > calc_signal_events(struct neutrinoModel &nuModel){

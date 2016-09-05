@@ -51,7 +51,7 @@ std::vector<double > SBN_spectrum::add_SBN_spectrum(SBN_spectrum other)
 
 
 	//First 3*N_e_bins are the SBND, muboone and icaraus e appearance bins so they are added to the background
-	for(int k=0; k<3*(N_e_bins);k++)
+	for(int k=0; k<N_dets*(N_e_bins);k++)
 	{
 		ans.push_back(vbkg[k]+vsignal[k]);
 
@@ -60,7 +60,7 @@ std::vector<double > SBN_spectrum::add_SBN_spectrum(SBN_spectrum other)
 
 
 	//Last 3*N_m_bins are the SBND, muboone and icaraus mu appearance bins so they are just the oscillated away ones.
-	for(int k=3*(N_e_bins); k < 3*(N_e_bins+N_m_bins);k++)
+	for(int k=N_dets*(N_e_bins); k < N_dets*(N_e_bins+N_m_bins);k++)
 	{
 
 		ans.push_back(vsignal[k]);
@@ -77,6 +77,9 @@ SBN_spectrum::SBN_spectrum(struct neutrinoModel numodel){
 	nullModel.zero();
 	workingModel=numodel;	
 
+	numode = true;
+	nubarmode = false;
+	which_mode = BOTH_ONLY;
 
 	//Bit overboard in initilising these to be fair	
 	sbnd_e.resize(N_e_bins);
@@ -106,7 +109,6 @@ SBN_spectrum::SBN_spectrum(struct neutrinoModel numodel){
 	fill (sbnd_m_pion.begin(),sbnd_m_pion.end(),0.0); 
 	fill (uboone_m_pion.begin(),uboone_m_pion.end(),0.0); 
 	fill (icarus_m_pion.begin(),icarus_m_pion.end(),0.0); 
-
 
 	sbnd_f_bar.resize(N_e_bins);
 	uboone_f_bar.resize(N_e_bins);
@@ -144,12 +146,32 @@ SBN_spectrum::SBN_spectrum(struct neutrinoModel numodel){
 	fill (uboone_e_cosmo.begin(),uboone_e_cosmo.end(),0.0); 
 	fill (icarus_e_cosmo.begin(),icarus_e_cosmo.end(),0.0); 
 
+
+	// Currenlt these are treated badly, but works
+	sbnd_e_dirt[0] = 44*4/5  ;
+	sbnd_e_dirt[1]=44*1/5;
+	uboone_e_dirt[0]= 47*4/5;
+	uboone_e_dirt[1]=47*1/5;
+	icarus_e_dirt[0]= 67*4/5;
+	icarus_e_dirt[1]=67*1/5;
+	sbnd_e_cosmo[0] = 9 ;
+	uboone_e_cosmo[0]= 11;
+	icarus_e_cosmo[0]= 10;
+	
+
+
+
+
 };
 
-SBN_spectrum::SBN_spectrum(){
+SBN_spectrum::SBN_spectrum(){		//definitely obsolete
 	nullModel.zero();
 	workingModel=nullModel;
-	
+
+	numode = true;
+	nubarmode = false;
+	which_mode=BOTH_ONLY;
+
 	sbnd_e.resize(N_e_bins);
 	uboone_e.resize(N_e_bins);
 	icarus_e.resize(N_e_bins);
@@ -211,6 +233,62 @@ SBN_spectrum::SBN_spectrum(){
 
 }
 
+
+void SBN_spectrum::SetNuBarMode(){
+	numode=false;
+	nubarmode=true;
+
+return;
+}
+
+
+int SBN_spectrum::scale_by_pot(double pot){
+
+
+	for(int i = 0; i < N_e_bins; i++){
+
+					
+					sbnd_e[i]= sbnd_e[i]*pot;
+					sbnd_e_pho[i]= sbnd_e_pho[i]*pot;
+					sbnd_e_dirt[i]= sbnd_e_dirt[i]*pot;
+					sbnd_e_mu[i]= sbnd_e_mu[i]*pot;
+					sbnd_f[i]= sbnd_f[i]*pot;
+					sbnd_f_bar[i]= sbnd_f_bar[i]*pot;
+	
+					uboone_e[i]= uboone_e[i]*(0.5+pot);
+					uboone_e_pho[i]= uboone_e_pho[i]*(0.5+pot);
+					uboone_e_dirt[i]= uboone_e_dirt[i]*(0.5+pot);
+					uboone_e_mu[i]= uboone_e_mu[i]*(0.5+pot);
+					uboone_f[i]= uboone_f[i]*(0.5+pot);
+					uboone_f_bar[i]= uboone_f_bar[i]*(0.5+pot);			
+				
+					icarus_e[i]= icarus_e[i]*pot;
+					icarus_e_pho[i]= icarus_e_pho[i]*pot;
+					icarus_e_dirt[i]= icarus_e_dirt[i]*pot;
+					icarus_e_mu[i]= icarus_e_mu[i]*pot;
+					icarus_f[i]= icarus_f[i]*pot;
+					icarus_f_bar[i]= icarus_f_bar[i]*pot;
+				
+				}
+			
+				for(int i =0; i< N_m_bins; i++){
+
+					sbnd_m[i]= sbnd_m[i]*pot;
+					sbnd_m_pion[i]= sbnd_m_pion[i]*pot;
+
+					uboone_m[i]= uboone_m[i]*(0.5+pot);
+					uboone_m_pion[i]= uboone_m_pion[i]*(0.5+pot);
+
+					icarus_m[i]= icarus_m[i]*pot;
+					icarus_m_pion[i]= icarus_m_pion[i]*pot;
+
+				}
+
+
+return 1;
+}
+
+
 void SBN_spectrum::vec_print(){
 	std::cout<<"# bin_low  SBND   uBooNE   ICARUS "<<std::endl;
 	std::cout<<"#******************** Oscillated nu_e ****************"<<std::endl;
@@ -238,8 +316,8 @@ void SBN_spectrum::vec_print(){
 }
 
 
-const int SBN_spectrum::N_e_bins;
-const int SBN_spectrum::N_m_bins;
+//const int SBN_spectrum::N_e_bins;
+//const int SBN_spectrum::N_m_bins;
 
 constexpr double SBN_spectrum::mu_bins[N_m_bins+1];
 constexpr double SBN_spectrum::e_bins[N_e_bins+1];
@@ -340,6 +418,8 @@ void SBN_spectrum::update_model(struct neutrinoModel numodel){
 };
 
 void SBN_spectrum::oscillate(){
+
+	std::cout<<"OBSOLETE oscillate"<<std::endl;
 //	uboone_e = BKG+ProbOscillate(MUBOONE_FLAG,E_FLAG);	
 	//Will load the FULL_OSC, nu_E and nu_mu and eight them appropiately for each 
 	//detector and each true L/E_v and so forth
@@ -402,6 +482,9 @@ void SBN_spectrum::oscillate_sample(){
 
 // REDUNDANT
 void SBN_spectrum::fill_hists(){
+
+
+	std::cout<<"OBSOLETE fill_hists"<<std::endl;
 	for(int i =0; i<uboone_e.size(); i++)
 	{
 		THuboone_e->SetBinContent(i+1,uboone_e[i]);
@@ -420,6 +503,8 @@ void SBN_spectrum::fill_hists(){
 
 // REDUNDANT
 void SBN_spectrum::fill_vectors(){
+
+	std::cout<<"OBSOLETE fill_vectors"<<std::endl;
 	for(int i =0; i<THuboone_e->GetSize()-1; i++)
 	{
 		uboone_e.push_back( THuboone_e->GetBinContent(i+1));
@@ -443,6 +528,9 @@ int SBN_spectrum::fill_dis(SBN_detector * detector )
 
 //	double DMSQ = workingModel.dm41Sq;
 //	double S2TH = 1.0-4*pow(workingModel.Um[0],2)*(1- pow(workingModel.Um[0],2));
+
+
+	std::cout<<"OBSOLETE fill_dis"<<std::endl;
 
 
 	TFile *fnudetector = new TFile(detector->fname);
@@ -765,6 +853,7 @@ std::cout<<"done"<<std::endl;
 int SBN_spectrum::fill_app(SBN_detector * detector )
 {
 
+	std::cout<<"OBSOLETE fill_app"<<std::endl;
  //	SBN_detector SBND(400,400,500,2*183.5,370,405,110);
 			
 	//std::cout<<muon_track_length(1.2)<<" "<<muon_track_length(0.12)<<std::endl;
@@ -1003,6 +1092,7 @@ return 1;
 int SBN_spectrum::fill_intrin(SBN_detector * detector )
 {
 
+	std::cout<<"OBSOLETE fill_intrin"<<std::endl;
 
 	TRandom *rangen    = new TRandom();//initialize random generator	
 	rangen->SetSeed(3268.94);	
@@ -1589,9 +1679,9 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 //	double DMSQ = workingModel.dm41Sq;
 //	double S2TH = 1.0-4*pow(workingModel.Um[0],2)*(1- pow(workingModel.Um[0],2));
 
-
-	TFile *fnudetector = new TFile(detector->fname);
-	TTree *tnudetector = (TTree*)fnudetector->Get("mainTree");
+	TFile *fnudetector;
+	if(numode){ fnudetector= new TFile(detector->foscname);}
+	else if(nubarmode) {fnudetector= new TFile(detector->fbaroscname);}	TTree *tnudetector = (TTree*)fnudetector->Get("mainTree");
 
 
 	TH1D H1nue_muon_sin("dis_muon_sin","Backgroun",N_m_bins,mu_bins);
@@ -1878,7 +1968,11 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 		}//End NC pi + loop
 	} //end event loop
 	char namei[200];
-	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+	if(numode){
+		sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+	} else if (nubarmode){
+		sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+	}
 
 	TFile f(namei,"UPDATE");
 
@@ -1938,7 +2032,10 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 {
 
 
-	TFile *fnudetector = new TFile(detector->foscname);
+	TFile *fnudetector;
+	if(numode){ fnudetector= new TFile(detector->foscname);}
+	else if(nubarmode) {fnudetector= new TFile(detector->fbaroscname);}
+
 	TTree *tnudetector = (TTree*)fnudetector->Get("mainTree");
 	
 
@@ -2170,8 +2267,11 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 
 
 	char namei[200];
-	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name, log10(workingModel.dm41Sq));
-
+	if(numode){
+		sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+	} else if (nubarmode){
+		sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+	}
 	TFile f(namei,"UPDATE");
 	H_nue_sin.Write();
 	H_nue_sinsq.Write();
@@ -2217,7 +2317,10 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 	TRandom *rangen    = new TRandom();//initialize random generator	
 	rangen->SetSeed(9842516);//326894);	
 
-	TFile *fnudetector = new TFile(detector->fname);
+	TFile *fnudetector;
+	if(numode){ fnudetector= new TFile(detector->fname);}
+	else if(nubarmode) {fnudetector= new TFile(detector->fbarname);}
+
 	TTree *tnudetector = (TTree*)fnudetector->Get("mainTree");
 
 	TH1D THcc_El("detector_cc_el","",N_e_bins,e_bins);
@@ -2792,8 +2895,12 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 
 	}
 	char namei[200];
-	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
-
+	
+	if(numode){
+		sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+	} else if (nubarmode){
+		sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+	}
 	TFile f(namei,"UPDATE");
 
 	H1nue_reco_intrinsic_sin.Write();
@@ -2834,9 +2941,10 @@ return 1;
 
 
 
-int SBN_spectrum::load_freq(SBN_detector * detector, int whi)
+int SBN_spectrum::load_freq(SBN_detector * detector, int whi)// OBSOLETE
 {
 
+	std::cout<<"OBSOLETE load_freq"<<std::endl;
 	char namei[200];
 	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name, log10(workingModel.dm41Sq));
 	TFile f(namei);
@@ -2986,7 +3094,12 @@ int SBN_spectrum::load_bkg(SBN_detector * detector)
 {
 
 	char namej[200];
-	sprintf(namej, "bkg_data/%s_bkg.root",detector->name);
+
+	if(numode){
+		sprintf(namej, "bkg_data/%s_bkg.root",detector->name);
+	}else if(nubarmode){
+		sprintf(namej, "bkg_data/NUBAR_MODE/%s_bkg.root",detector->name);
+	}
 	TFile f(namej);
 
 
@@ -3144,7 +3257,11 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 
 
 	char namei[200];
-	sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name, dm);
+	if(numode){
+		sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name, dm);
+	}else if(nubarmode){
+		sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name, dm);
+	}
 	TFile f(namei);
 
 
@@ -3158,7 +3275,6 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 	TH1D  h_nue_intrin_sinsq=*((TH1D*)f.Get("nue_intrin_sinsq")); 
 	TH1D  h_nue_muon_sinsq=*((TH1D*)f.Get("nue_muon_sinsq"));
 
-	int which_mode = APP_ONLY;
 	
 	double prob_mumu = 0;
 	double prob_ee = 0;
@@ -3511,9 +3627,13 @@ int SBN_spectrum::neutral_test(SBN_detector * detector )
 
 
 	TH1D H1neut_obs("neut_obs","Observable vertex  energy",N_m_bins,mu_bins);
-
 	TH1D H1neut_all("neut_all","All energy",N_m_bins,mu_bins);
 	TH1D H1neut_1pi0("neut_1pi0","1pi0 energy",N_m_bins,mu_bins);
+
+	TH1D H1neut_THsepSmear("thsmear","thsmear",100,0,360);
+	TH1D H1neut_E1("E1","1st photon energy",100,0,2);
+	TH1D H1neut_E2("E2","2ndt photon energy",100,0,2);
+	TH1D H1neut_Minvar("Minvar","1st photon energy",100,0,0.6);
 
 
 	TRandom *rangen  = new TRandom();//initialize random generator	
@@ -3567,6 +3687,8 @@ int SBN_spectrum::neutral_test(SBN_detector * detector )
 	double Eph[5];
 	double Epi0dph[10];
 	double pl[3];
+	double ppi0dph[100][3];
+
 
 	tnudetector->SetBranchAddress("Enu",&Enu);
 	tnudetector->SetBranchAddress("El",&El_true);
@@ -3589,6 +3711,7 @@ int SBN_spectrum::neutral_test(SBN_detector * detector )
 	tnudetector->SetBranchAddress("Eo",Eo);
 	tnudetector->SetBranchAddress("pdgo",pdgo);
 	tnudetector->SetBranchAddress("pl",pl);
+	tnudetector->SetBranchAddress("ppi0dph",ppi0dph);
 
 	double vertex_pos[3] = {0,0,0};
 
@@ -3705,11 +3828,69 @@ int SBN_spectrum::neutral_test(SBN_detector * detector )
 			if(vis_vertex){
 				H1neut_obs.Fill(Ehad, weight);
 		
-				if(Npi0dph ==2){
-					H1neut_1pi0.Fill(Ehad, weight);
-				}
-		
 			}
+			// First off actual pi^0
+			if(Npi0dph == 2) //double pion photons
+			{
+				double E1 = 0;	
+				double E2 = 0;	
+				double L1 = 0.0; 
+				double L2 = 0.0;	
+				double p1norm = 0;
+				double p2norm = 0;
+				double conv1[3] = {vertex_pos[0],vertex_pos[1],vertex_pos[2]};
+				double conv2[3] = {vertex_pos[0],vertex_pos[1],vertex_pos[2]};
+
+
+			
+					E1 = smear_energy(Epi0dph[0],EMsmear,rangen);
+					E2 = smear_energy(Epi0dph[1],EMsmear,rangen);
+					L1 =  photon_conversion_length(Epi0dph[0],rangen);
+			        	L2 =  photon_conversion_length(Epi0dph[1],rangen);
+				       	p1norm = sqrt(pow(ppi0dph[0][0],2)+pow(ppi0dph[0][1],2)+pow(ppi0dph[0][2],2));
+				        p2norm = sqrt(pow(ppi0dph[1][0],2)+pow(ppi0dph[1][1],2)+pow(ppi0dph[1][2],2));
+				
+					 conv1[0] += L1*ppi0dph[0][0]/p1norm;
+					 conv1[1] += L1*ppi0dph[0][1]/p1norm;
+					 conv1[2] += L1*ppi0dph[0][2]/p1norm;
+					 
+					 conv2[0] += L1*ppi0dph[1][0]/p2norm;
+					 conv2[1] += L1*ppi0dph[1][1]/p2norm;
+					 conv2[2] += L1*ppi0dph[1][2]/p2norm;
+			double osclen = detector->osc_length(rangen);	
+		
+			 double prob = workingModel.oscProbSin(Enu,0.001*(osclen+(vertex_pos[2]/1000.0)));
+			double probsq = workingModel.oscProbSinSq(Enu,0.001*(osclen+(vertex_pos[2]/1000.0)));
+		
+
+			double THsep = acos(ppi0dph[0][0]*ppi0dph[1][0]+ppi0dph[0][1]*ppi0dph[1][1]+ppi0dph[0][2]*ppi0dph[1][2])/(p1norm*p2norm);
+	
+			double THsepSmear = 	smear_angle(THsep,1,rangen);
+			double		Minvar = sqrt(2*(E1*E2-E1*E2*cos(THsepSmear*3.14159/180.0)));
+
+				//want to collect only pions that both convert in fiducial	
+				if( detector->is_fiducial(conv1) && detector->is_fiducial(conv2))
+				{
+
+					if(E1 >= 0.06 && E2 >= 0.06)
+					{
+							H1neut_THsepSmear.Fill(THsepSmear,weight);
+							H1neut_E1.Fill(E1,weight);
+							H1neut_E2.Fill(E2,weight);
+							H1neut_Minvar.Fill(Minvar,weight);
+						  //	H1nue_reco_photon_sin.Fill(E1 + Ehad ,weight*Eff_ph*prob);
+						  //	H1nue_reco_photon_sinsq.Fill(E1 + Ehad ,weight*Eff_ph*probsq);
+					}
+				} 
+			
+		
+				
+
+
+			}//end single pion 
+
+
+
 				
 
 		}//end nu_mu cc cut
@@ -3725,6 +3906,11 @@ int SBN_spectrum::neutral_test(SBN_detector * detector )
 	H1neut_obs.Write();	
 	H1neut_all.Write();	
 	H1neut_1pi0.Write();
+	H1neut_THsepSmear.Write();
+	H1neut_E1.Write();
+	H1neut_E2.Write();
+	H1neut_Minvar.Write();
+
 	f.Close();
 
 fnudetector->Close();

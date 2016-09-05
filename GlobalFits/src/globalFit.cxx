@@ -44,9 +44,10 @@ float chi2, dof, step, temp, gof, m4, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi4
 
 boonePackage mbNuPack, mbNubarPack; atmPackage atmPack; numiPackage numiPack; sinSqPackage lsndPack, karmenPack; galPackage galPack; cdhsPackage cdhsPack;
 minosPackage minosPack; minosncPackage minosncPack; booneDisPackage mbNuDisPack, mbNubarDisPack; nomadPackage nomadPack; ccfrPackage ccfrPack;
-bugeyPackage bugeyPack; choozPackage choozPack; xsecPackage xsecPack;
+bugeyPackage bugeyPack; choozPackage choozPack; xsecPackage xsecPack; booneDisPlusPackage mbNuDisPlusPack, mbNubarDisPlusPack; boonePlusPackage mbNuPlusPack, mbNubarPlusPack;
 
 double ntupleFinish = 3.;
+bool plusmode = false;
 
 int globInit(){
 
@@ -60,8 +61,14 @@ int globInit(){
 	std::cout << "Start initializations!" << std::endl;
 
     dm2VecInit(.01, 100.);
-	if(MBProcess) mbNuPack = mbNuInit();
-	if(MBProcessNubar) mbNubarPack = mbNubarInit();
+	if(MBProcess){
+		if(!plusmode)	mbNuPack = mbNuInit();
+		else	mbNuPlusPack = mbNuInitPlus();
+	}
+	if(MBProcessNubar){
+		if(!plusmode)	mbNubarPack = mbNubarInit();
+		else 	mbNubarPlusPack = mbNubarInitPlus();
+	}
 	if(ATMOSPHERICProcess) atmPack = atmInit();
 	if(NUMIProcess) numiPack = numiInit();
 	if(LSNDProcess) lsndPack = lsndInit();
@@ -69,8 +76,14 @@ int globInit(){
 	if(GALLIUMProcess) galPack = galInit();
 	if(MINOSProcess) minosPack = minosInit();
 	if(MINOSNCProcess) minosncPack = minosncInit();
-	if(MBDISProcess) mbNuDisPack = mbNuDisInit();
-	if(MBDISProcessNubar) mbNubarDisPack = mbNubarDisInit();
+	if(MBDISProcess){
+		if(!plusmode)	mbNuDisPack = mbNuDisInit();
+		else mbNuDisPlusPack = mbNuDisInitPlus();
+	}
+	if(MBDISProcessNubar){
+		if(!plusmode)	mbNubarDisPack = mbNubarDisInit();
+		else mbNubarDisPlusPack = mbNubarDisInitPlus();
+	}
 	if(NOMADProcess) nomadPack = nomadInit();
 	if(CCFRProcess) ccfrPack = ccfrInit();
 	if(CDHSProcess) cdhsPack = cdhsInit();
@@ -199,7 +212,8 @@ int globChisq(int ind){
 			if(debug) std::cout << "Nomad: " << chisqDetector.chi2 << std::endl;
         }
         if(MBProcess == 1){
-            chisqDetector = getChi2Boone(nuModel, mbNuPack, false);
+			if(!plusmode)	chisqDetector = getChi2Boone(nuModel, mbNuPack, false);
+			else chisqDetector = getChi2BoonePlus(nuModel, mbNuPlusPack, false);
             if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 			chisqTotal.chi2 += chisqDetector.chi2;
             chisqTotal.chi2_det += chisqDetector.chi2_det;
@@ -212,7 +226,8 @@ int globChisq(int ind){
 			if(debug) std::cout << "Gal: " << chisqDetector.chi2 << std::endl;
 		}
         if(MBProcessNubar == 1){
-            chisqDetector = getChi2Boone(nuModel, mbNubarPack, true);
+			if(!plusmode)	chisqDetector = getChi2Boone(nuModel, mbNubarPack, true);
+			else chisqDetector = getChi2BoonePlus(nuModel, mbNubarPlusPack, true);
             if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
             chisqTotal.chi2 += chisqDetector.chi2;
             chisqTotal.chi2_det += chisqDetector.chi2_det;
@@ -233,15 +248,18 @@ int globChisq(int ind){
 			if(debug) std::cout << "Xsec: " << chisqDetector.chi2 << std::endl;
         }
 		if(chisqTotal.chi2 > chi2Cut) continue;
+
 		if(MBDISProcessNubar == 1){
-			chisqDetector = getChi2MBDis(nuModel, mbNubarDisPack);
+			if(!plusmode)	chisqDetector = getChi2MBDis(nuModel, mbNubarDisPack);
+			else chisqDetector = getChi2MBDisPlus(nuModel, mbNubarDisPlusPack);
 			if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 			chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "MBDisNubar: " << chisqDetector.chi2 << std::endl;
 		}
 		if(chisqTotal.chi2 > chi2Cut) continue;
         if(MBDISProcess == 1){
-            chisqDetector = getChi2MBDis(nuModel, mbNuDisPack);
+            if(!plusmode)	chisqDetector = getChi2MBDis(nuModel, mbNuDisPack);
+			else chisqDetector = getChi2MBDisPlus(nuModel, mbNuDisPlusPack);
             if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
             chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "MBDis: " << chisqDetector.chi2 << std::endl;
@@ -540,11 +558,12 @@ int main(int argc, char* argv[])
 	{"debug",	 		no_argument, 		0, 'D'},
 	{"singlepoint",	 	no_argument, 		0, 's'},
 	{"grid",	 		no_argument, 		0, 'g'},
+	{"plus",			no_argument,		0, 'P'},
 	};
 
 
 	while(iarg != -1){
-		iarg = getopt_long(argc,argv, "Dsg", longopts, &index);
+		iarg = getopt_long(argc,argv, "DsgP", longopts, &index);
 
 		switch(iarg)
 		{
@@ -554,6 +573,9 @@ int main(int argc, char* argv[])
 			case 'g':
 				jobOptLoc = "";
 				dataLoc = "";
+				break;
+			case 'P':
+				plusmode = true;
 				break;
 		}
 	}

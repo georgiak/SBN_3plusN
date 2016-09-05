@@ -122,8 +122,14 @@ struct nuVecs{
 };
 
 struct boonePackage{
-    std::vector < std::vector <double> > full_fractCovMatrix;
-    double *EnuQE; double *NueBgr; double *Numu; double *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight;
+    std::vector < std::vector <float> > full_fractCovMatrix;
+    float *EnuQE; float *NueBgr; float *Numu; float *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight;
+    int *NueData; int *NumuData;
+	int nFOscEvts;
+};
+struct boonePlusPackage{
+	std::vector < std::vector <float> > full_fractCovMatrix, lib_sin, lib_sinsq;
+    float *NueBgr; float *Numu;
     int *NueData; int *NumuData;
 	int nFOscEvts;
 };
@@ -156,7 +162,11 @@ struct booneDisPackage{
     std::vector < std::vector <float> > full_fractCovMatrix;
     float * EnuQE, * NumuData; float *FOsc_EnuQE, *FOsc_EnuTrue, *FOsc_LnuTrue, *FOsc_weight, *LOverE;
 	int nFOscEvts;
-	std::string foscData;
+};
+struct booneDisPlusPackage{
+	std::vector < std::vector <float> > full_fractCovMatrix, libdis_sinsq;
+	std::vector <float> libdis_noosc;
+    float * NumuData;
 };
 struct nomadPackage{
 	std::vector < std::vector <double> > sigmaRemu;
@@ -205,7 +215,6 @@ struct xsecPackage{
 
 	double ESigma, lsnd_sys, karmen_sys, correl_sys;
 };
-
 
 struct minPack{
   // Here's a shitty little struct to store vars needed for minuit fit functions so I don't need to pass them in some other irritating way.
