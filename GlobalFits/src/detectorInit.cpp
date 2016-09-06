@@ -849,7 +849,9 @@ booneDisPlusPackage mbNuDisInitPlus(){
 					float ETru = nu_FOsc_EnuTrue[iFOsc];
 					float LTru = nu_FOsc_LnuTrue[iFOsc];
 
-					pack.libdis_sinsq[mi][iB] += nu_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru*.01/ETru),2);
+					pack.libdis_sinsq[mi][iB] += nu_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru/ETru),2);
+
+
 					if(mi == 0)
 						pack.libdis_noosc[iB] += nu_FOsc_weight[iFOsc];
 	            }
@@ -970,7 +972,7 @@ booneDisPlusPackage mbNubarDisInitPlus(){
 					float ETru = nubar_FOsc_EnuTrue[iFOsc];
 					float LTru = nubar_FOsc_LnuTrue[iFOsc];
 
-					pack.libdis_sinsq[mi][iB] += nubar_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru*.01/ETru),2);
+					pack.libdis_sinsq[mi][iB] += nubar_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru/ETru),2);
 					if(mi == 0)
 						pack.libdis_noosc[iB] += nubar_FOsc_weight[iFOsc];
 	            }

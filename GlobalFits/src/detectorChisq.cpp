@@ -186,10 +186,14 @@ chisqStruct getChi2BoonePlus(neutrinoModel model, boonePlusPackage pack, bool nu
 	oscCont = getOscContributionsNueApp(model, nubar, true);
 
 	float mstep = TMath::Log10(100./.01)/float(100);
+	int dm2;
 	for(int iB = 0; iB < nBins; iB++){
 		for(int iContribution = 0; iContribution < 6; iContribution++){
-			int dm2 = floor(TMath::Log10(oscCont.dm2[iContribution]/.01)/mstep);
-			_signal[iB] += oscCont.aMuE[iContribution]*pack.lib_sinsq[dm2][iB] + oscCont.aMuE_CPV[iContribution]*pack.lib_sin[dm2][iB];
+			if(oscCont.dm2[iContribution] == 0)	_signal[iB] += 0;
+			else{
+				dm2 = floor(TMath::Log10(oscCont.dm2[iContribution]/.01)/mstep);
+				_signal[iB] += oscCont.aMuE[iContribution]*pack.lib_sinsq[dm2][iB] + oscCont.aMuE_CPV[iContribution]*pack.lib_sin[dm2][iB];
+			}
 		}
 	}
 
@@ -465,7 +469,7 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
     // Normalize signal prediction to data
     for(int iB = 0; iB < nBins; iB++){
         MCIntegral += (_prediction[iB] + _signal[iB]);
-    }
+	}
     for(int iB = 0; iB < nBins; iB++){
         _prediction[iB] = (_prediction[iB] + _signal[iB]) * dtIntegral/MCIntegral;
     }
@@ -522,10 +526,14 @@ chisqStruct getChi2MBDisPlus(neutrinoModel model, booneDisPlusPackage pack){
 	oscCont = getOscContributionsNumuDis(model);
 
 	float mstep = TMath::Log10(100./.01)/float(100);
+	int dm2;
 	for(int iB = 0; iB < nBins; iB++){
 		for(int iContribution = 0; iContribution < 6; iContribution++){
-			int dm2 = floor(TMath::Log10(oscCont.dm2[iContribution]/.01)/mstep);
-			_signal[iB] += oscCont.aMuMu[iContribution]*pack.libdis_sinsq[dm2][iB];
+			if(oscCont.dm2[iContribution] == 0)	_signal[iB] += 0;
+			else{
+				dm2 = floor(TMath::Log10(oscCont.dm2[iContribution]/.01)/mstep);
+				_signal[iB] += oscCont.aMuMu[iContribution]*pack.libdis_sinsq[dm2][iB];
+			}
 		}
 	}
 
@@ -546,7 +554,6 @@ chisqStruct getChi2MBDisPlus(neutrinoModel model, booneDisPlusPackage pack){
 			}
 		}
 	}
-
 	// Now, let's invert this bad boy
 	cov.ResizeTo(nBins,nBins);
 	cov = covMatrix.Invert();
@@ -557,7 +564,6 @@ chisqStruct getChi2MBDisPlus(neutrinoModel model, booneDisPlusPackage pack){
 			result.chi2 += (pack.NumuData[iB] - _prediction[iB]) * cov[iB][jB] * (pack.NumuData[jB] - _prediction[jB]);
 		}
 	}
-
 	return result;
 }
 
