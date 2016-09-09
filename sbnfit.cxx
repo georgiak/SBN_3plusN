@@ -53,10 +53,11 @@ bool sens_flag=false;
 bool dis_flag = false;
 bool app_flag = false;
 bool comb_flag = false;
-bool both_flag = false;
+bool both_flag = true;
 bool unit_flag = false;
 bool fraction_flag = false;
 bool anti_flag = false;
+bool pot_flag = false;
 
 int mode_flag = 0;
 
@@ -67,6 +68,8 @@ double dm41 = -1.0;
 double in_dm = 0;
 double in_ue4 = 0;
 double in_um4=0;
+
+double pot_num =1;
 
 bool stat_only = false;
 int dis_which = 1;
@@ -98,7 +101,9 @@ const struct option longopts[] =
 	{"cov",			no_argument, 		0, 'c'},
 	{"dis",			required_argument, 	0, 'd'},
 	{"unitary",		no_argument,		0, 'n'},
+	{"num",			required_argument,	0, 'N'},
 	{"fraction",		required_argument,	0, 'f'},
+	{"pot",			required_argument,	0, 'p'},
 	{"app",			no_argument,		0, 'a'},
 	{0,			no_argument, 		0,  0},
 };
@@ -106,7 +111,7 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "d:alf:nuM:e:m:svhS:cFTAB", longopts, &index);
+	iarg = getopt_long(argc,argv, "d:alf:nuM:e:m:svp:hS:cFTABN:", longopts, &index);
 
 	switch(iarg)
 	{
@@ -131,6 +136,13 @@ while(iarg != -1)
 			break;	
 		case 'v':
 			verbose_flag = true;
+			break;
+		case 'p':
+			pot_flag = true;
+			pot_num = strtof(optarg,NULL);
+			break;
+		case 'N':
+			num_ster = strtof(optarg,NULL);
 			break;
 		case 's':
 			sample_flag = true;
@@ -208,6 +220,8 @@ if(verbose_flag)
 
 
 if(app_flag&&dis_flag){both_flag = true; app_flag=false; dis_flag=false;}
+else if(app_flag){both_flag =false;} 
+else if(dis_flag){both_flag = false;}
 
 
 
@@ -362,7 +376,7 @@ if(unit_flag){
 
 
 
-if(fraction_flag&&false)
+if(fraction_flag)
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
@@ -412,7 +426,7 @@ if(fraction_flag&&false)
 
 
 
-if(fraction_flag)
+if(fraction_flag&& false) //this i smain!!
 {
 	SBN_detector * ICARUS = new SBN_detector(2);
  	SBN_detector * SBND = new SBN_detector(0);
@@ -422,6 +436,9 @@ if(fraction_flag)
  	SBN_detector * SBND_mu = new SBN_detector(0,true);
  	SBN_detector * UBOONE_mu = new SBN_detector(1,true);
 	bool usedetsys = true;
+	int which_mode =-1;
+
+	if(app_flag){which_mode =APP_ONLY ;}else if(dis_flag){which_mode = DIS_ONLY;}else if(both_flag){which_mode =BOTH_ONLY;};
 
 	if(dis_flag && !app_flag){
 		usedetsys=false;
@@ -546,6 +563,7 @@ if(fraction_flag)
 				
 				SBN_spectrum AppSpec(appearanceModel);
 				//std::cout<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<std::endl;
+				AppSpec.which_mode = which_mode;
 
 				AppSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
 				AppSpec.load_freq_3p3(SBND);
@@ -586,18 +604,15 @@ if(fraction_flag)
 					}
 				}
 
-
-			std::cout<<i<<" mn: "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
-			ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+			//old output
+			//std::cout<<i<<" mn: "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
+		//	ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
+			std::cout<<"#"<<i<<" "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" "<<ue4<<" "<<ue5<<" "<<ue6<<" "<<um4<<" "<<um5<<" "<<um6<<" "<<phi45<<" "<<phi46<<" "<<phi56<<" "<<1.0<<" "<<which_mode<<" "<<chi2<<" "<<mychi2<<" "<<std::endl;
+			std::cout<<pred6[0];
+			for(int u=1;u< pred6.size(); u++){
+				std::cout<<" "<<pred6[u];
+			}	
+			std::cout<<std::endl;
 	
 	
 	
@@ -835,9 +850,263 @@ if(fraction_flag&& false)
 
 }
 
+if(pot_flag){
+
+
+//load up background
+	SBN_detector * ICARUS = new SBN_detector(2);
+ 	SBN_detector * SBND = new SBN_detector(0);
+ 	SBN_detector * UBOONE = new SBN_detector(1);
+
+	int which_mode =-1;
+
+	if(app_flag){which_mode = 0;}else if(dis_flag){which_mode = 1;}else if(both_flag){which_mode =2;};
+	bool usedetsys = true;
+
+	if(dis_flag && !app_flag){
+		usedetsys=false;
+	}
+
+	double ipot = pow(10,pot_num);
 
 
 
+	neutrinoModel nullModel;
+	SBN_spectrum bkgspec(nullModel);
+	
+	bkgspec.load_bkg(ICARUS);
+	bkgspec.load_bkg(SBND);
+	bkgspec.load_bkg(UBOONE);
+			
+	bkgspec.scale_by_pot(ipot);
+
+
+	std::vector<double > back6 = bkgspec.get_sixvector();
+	std::vector<double > back9 = bkgspec.get_ninevector();
+	std::vector<double > back  = bkgspec.get_vector();
+	TRandom *rangen    = new TRandom();
+
+		int matrix_size =(N_e_bins + N_e_bins + N_m_bins)*N_dets;
+		int matrix_size_c = (N_e_bins + N_m_bins) * N_dets;
+
+		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
+		 * */
+		TMatrixT <double> M(matrix_size,matrix_size);
+		TMatrixT <double> Mc(matrix_size_c,matrix_size_c);
+		TMatrixT <double> McI(matrix_size_c, matrix_size_c);
+
+
+		int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets;
+		int contMsize = (N_e_bins+N_m_bins)*N_dets;
+
+		TMatrixT <double> Msys(bigMsize,bigMsize);
+		sys_fill(Msys,usedetsys);
+
+		for(int i =0; i<Msys.GetNcols(); i++)
+		{
+			for(int j =0; j<Msys.GetNrows(); j++)
+			{
+				Msys(i,j)=Msys(i,j)*back[i]*back[j];
+			}
+		}
+
+
+
+
+		TMatrixT <double> Mstat(bigMsize,bigMsize);
+		stats_fill(Mstat, back);
+
+		TMatrixT <double > Mtotal(bigMsize,bigMsize);
+		if(stat_only){
+			Mtotal =  Mstat;
+		} else {
+			Mtotal = Msys+Mstat;
+		}
+		//Mtotal = Mstat;
+
+		TMatrixT<double > Mctotal(contMsize,contMsize);
+		contract_signal2(Mtotal,Mctotal);
+
+
+		double invdet=0; // just to hold determinant
+
+		//	bit o inverting, root tmatrix seems perfectly fast	
+		McI = Mctotal.Invert(&invdet);
+
+		std::vector<std::vector<double >> vMcI = to_vector(McI);
+
+		int whatsize = McI.GetNcols();
+
+
+		//now load file with all other vectors.
+	std::string filename = "fractiondata/new_3p1_redo.dat";
+
+	if(num_ster == 1){
+		filename = "fractiondata/new_3p1_redo.dat";
+	} else if (num_ster == 2){
+		filename = "fractiondata/new_3p2_redo.dat";
+
+	} else if(num_ster == 3){
+		filename = "fractiondata/new_3p3_redo.dat";
+
+	}
+
+
+if(filename != "none"){
+
+	int k = 0;
+	std::string num;
+	std::string m4;
+	std::string m5;
+	std::string m6;
+
+	std::string ue4;
+	std::string ue5;
+	std::string ue6;
+
+	std::string um4;
+	std::string um5;
+	std::string um6;
+
+	std::string ut4;
+	std::string ut5;
+	std::string ut6;
+
+
+	std::string phi45;
+	std::string phi46;
+	std::string phi56;
+
+	std::string whicho;
+
+	std::string pot;
+	std::string oldchi;
+	std::string newchi;
+
+	std::string tempVec;	
+
+	std::vector<double > pred6in;
+
+	double mn[3];
+	double ue[3];
+	double um[3];
+	double phi[3];
+
+	double potin;
+	double oldchiin;
+	double newchiin;
+
+	int whichflagin = -1;
+
+	std::ifstream myfile (filename);
+	if (!myfile.is_open())
+	{
+		std::cout<<"#ERROR: Passed POT file does not exist"<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+		while(!myfile.eof()){
+			
+			myfile >> num;
+			//std::cout<<num<<std::endl;	
+		
+			myfile >> m4;
+			myfile >> m5;
+			myfile >> m6;
+			
+			mn[0]= atof(m4.c_str());
+			mn[1]= atof(m5.c_str());
+			mn[2]= atof(m6.c_str());
+
+			myfile >>ue4;
+			myfile >>ue5;
+			myfile >>ue6;
+
+			ue[0]= atof(ue4.c_str());
+			ue[1]= atof(ue5.c_str());
+			ue[2]= atof(ue6.c_str());
+
+			myfile >>um4;
+			myfile >>um5;
+			myfile >>um6;
+
+			um[0]= atof(um4.c_str());
+			um[1]= atof(um5.c_str());
+			um[2]= atof(um6.c_str());
+		
+			myfile >> phi45;
+			myfile >> phi46;
+			myfile >> phi56;
+
+			phi[0]= atof(phi45.c_str());
+			phi[1]= atof(phi46.c_str());
+			phi[2]= atof(phi45.c_str());
+
+			myfile >>pot;
+			myfile >>whicho;
+			myfile >>oldchi;
+			myfile >>newchi;
+
+			potin= atof(pot.c_str());
+			oldchiin= atof(oldchi.c_str());
+			newchiin= atof(newchi.c_str());
+			whichflagin = atof(whicho.c_str());
+
+			//if(whichflagin != which_mode){
+			//	std::cout<<"#ERROR: Passed POT whichfile does not equal whichin"<<std::endl;
+			//	exit(EXIT_FAILURE);
+			//}
+
+
+	   		//std::cout<<"mn: "<<mn[0]<<" "<<mn[1]<<" "<<mn[2]<<" "<<ue[0]<<" "<<ue[1]<<" "<<ue[2]<<" "<<um[0]<<" "<<um[1]<<" "<<um[2]<<" "<<phi[0]<<" "<<phi[1]<<" "<<phi[2]<<" pot1: "<<potin<<" "<<oldchiin<<" "<<newchiin<<std::endl;
+
+			for(int i=0;i<(N_e_bins+N_m_bins)*N_dets; i++){
+				myfile >> tempVec;
+				pred6in.push_back(atof(tempVec.c_str()));
+				//std::cout<<" "<<atof(tempVec.c_str());
+			}
+				//std::cout<<std::endl;
+			
+				// PUT CHI SQUARE CODE IN HERE!!
+			
+				double chipot = 0;
+
+				std::vector<double> mod (N_dets*(N_e_bins+N_m_bins), 1.0);
+				for(int i =0; i<N_e_bins+N_m_bins; i++){
+					mod[i]=ipot;
+					mod[i+N_e_bins+N_m_bins]= ipot+0.5;
+					mod[i+2*(N_e_bins+N_m_bins)]=ipot;
+				}
+
+
+				for(int i =0; i<whatsize; i++){
+					for(int j =0; j<whatsize; j++){
+						chipot += (back6[i]-mod[i]*pred6in[i])*vMcI[i][j]*(back6[j]-mod[j]*pred6in[j]);
+					}
+				}
+
+			std::cout<<num<<" "<<mn[0]<<" "<<mn[1]<<" "<<mn[2]<<" "<<ue[0]<<" "<<ue[1]<<" "<<ue[2]<<" "<<um[0]<<" "<<um[1]<<" "<<um[2]<<" "<<phi[0]<<" "<<phi[1]<<" "<<phi[2]<<" "<<ipot<<" "<<oldchiin<<" "<<newchiin<<" "<<chipot<<std::endl;
+		
+			//FAR too much data, dont output this?
+			/*
+			std::cout<<pred6in[0]*mod[0];
+			for(int u=1;u< pred6in.size(); u++){
+				std::cout<<" "<<pred6in[u]*mod[u];
+			}	
+			std::cout<<std::endl;
+			*/
+
+			
+			pred6in.clear();
+		}//end of file	
+
+
+	myfile.close();
+
+	}
+
+
+}//end of POT flag
 
 //Begin program flow control
 if(fit_flag){

@@ -47,7 +47,8 @@ class SBN_spectrum {
 
 	bool numode;
 	bool nubarmode;
-	int which_mode;
+	int which_mode; //app, dis or both
+
 	std::vector<double >	uboone_e ;
 	std::vector<double > 	sbnd_e ;
 	std::vector<double >    icarus_e ;
