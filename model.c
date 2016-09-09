@@ -586,7 +586,7 @@ int SBN_spectrum::fill_dis(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];
@@ -915,7 +915,7 @@ int SBN_spectrum::fill_app(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];
@@ -1735,7 +1735,7 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];
@@ -2091,7 +2091,7 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];
@@ -3682,7 +3682,7 @@ int SBN_spectrum::neutral_test(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];
