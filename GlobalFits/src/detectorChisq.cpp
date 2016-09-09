@@ -150,6 +150,119 @@ chisqStruct getChi2Boone(neutrinoModel model, boonePackage pack, bool nubar){
     result.chi2_det = result.chi2_det + cov_det;
     return result;
 }
+chisqStruct getChi2BoonePlus(neutrinoModel model, boonePlusPackage pack, bool nubar){
+
+	int nBins = 11;
+	int nBins_mu = 8;
+	int nFOscEvts = pack.nFOscEvts;
+
+	// Initialize the result!
+	chisqStruct result;
+	result.zero();
+
+	// Initialize contributions from the oscillation probability
+	oscContribution oscCont;
+
+	_signal.resize(nBins);
+	_fullData.resize(nBins + nBins_mu);
+	_prediction.resize(nBins + nBins_mu);
+
+	// Initialize vars
+	for(int iB = 0; iB < nBins; iB++){
+		_signal[iB] = 0.;
+		_fullData[iB] = pack.NueData[iB];
+		_prediction[iB] = pack.NueBgr[iB];
+	}
+	for(int iB = 0; iB < nBins_mu; iB++){
+		_fullData[iB + nBins] = pack.NumuData[iB];
+		_prediction[iB + nBins] = pack.Numu[iB];
+	}
+	full_covMatrix.ResizeTo(nBins + nBins + nBins_mu, nBins + nBins + nBins_mu);
+	full_covMatrix.Zero();
+	covMatrix.ResizeTo(nBins + nBins_mu, nBins + nBins_mu);
+	covMatrix.Zero();
+
+	// Get oscillation probability contributions
+	oscCont = getOscContributionsNueApp(model, nubar, true);
+
+	float mstep = TMath::Log10(100./.01)/float(100);
+	int dm2;
+	for(int iB = 0; iB < nBins; iB++){
+		for(int iContribution = 0; iContribution < 6; iContribution++){
+			if(oscCont.dm2[iContribution] == 0)	_signal[iB] += 0;
+			else{
+				dm2 = floor(TMath::Log10(oscCont.dm2[iContribution]/.01)/mstep);
+				_signal[iB] += oscCont.aMuE[iContribution]*pack.lib_sinsq[dm2][iB] + oscCont.aMuE_CPV[iContribution]*pack.lib_sin[dm2][iB];
+			}
+		}
+	}
+
+	// Divide signal prediction by the number of fullosc events
+	for(int iB = 0; iB < nBins; iB++){
+		_signal[iB] /= float(nFOscEvts);
+	}
+
+	// Now, scale the fractional cov matrix to our signal and prediction vectors
+	for(int iB = 0; iB < nBins + nBins + nBins_mu; iB++){
+		for(int jB = 0; jB < nBins + nBins + nBins_mu; jB++){
+			if(iB < nBins && jB < nBins){
+				full_covMatrix(iB,jB) = pack.full_fractCovMatrix[iB][jB]*_signal[iB]*_signal[jB];
+				// Add Stat error of signal prediction
+				if(iB == jB){
+					full_covMatrix(iB,jB) += _signal[iB];
+				}
+			}
+			else if(iB < nBins && jB >= nBins){
+				full_covMatrix(iB,jB) = pack.full_fractCovMatrix[iB][jB]*_signal[iB]*_prediction[jB-nBins];
+			}
+			else if(iB >= nBins && jB < nBins){
+				full_covMatrix(iB,jB)= pack.full_fractCovMatrix[iB][jB]*_prediction[iB-nBins]*_signal[jB];
+			}
+			else if(iB >= nBins && jB >= nBins){
+				full_covMatrix(iB,jB) = pack.full_fractCovMatrix[iB][jB]*_prediction[iB-nBins]*_prediction[jB-nBins];
+			}
+		}
+	}
+
+	// Now, collapse our 3x3 matrix to a 2x2
+	for(int iB = 0; iB < nBins + nBins_mu; iB++){
+		for(int jB = 0; jB < nBins + nBins_mu; jB++){
+			if(iB < nBins && jB < nBins){
+				covMatrix(iB,jB) = full_covMatrix[iB][jB] + full_covMatrix[iB + nBins][jB] + full_covMatrix[iB][jB + nBins] + full_covMatrix[iB + nBins][jB + nBins];
+			}
+			else if(iB < nBins && jB >= nBins){
+				covMatrix(iB,jB) = full_covMatrix[iB][jB + nBins] + full_covMatrix[iB + nBins][jB + nBins];
+			}
+			else if(iB >= nBins && jB < nBins){
+				covMatrix(iB,jB) = full_covMatrix[iB + nBins][jB] + full_covMatrix[iB + nBins][jB + nBins];
+			}
+			else if(iB >= nBins && jB >= nBins){
+				covMatrix(iB,jB) = full_covMatrix[iB + nBins][jB + nBins];
+			}
+		}
+	}
+
+	// Now, let's invert the covariance matrix
+	cov.ResizeTo(nBins + nBins_mu, nBins + nBins_mu);
+	cov = covMatrix.Invert();
+
+	for(int iB = 0; iB < nBins; iB++){
+		_prediction[iB] += _signal[iB];
+	}
+
+	// Now, let's calculate the determinant of the cov matrix
+	cov_det = cov.Determinant();
+
+	// Finally, let's put everything together and calculate the chisq
+	for(int iB = 0; iB < nBins + nBins_mu; iB++){
+		for(int jB = 0; jB < nBins + nBins_mu; jB++){
+			result.chi2 += (_fullData[iB]-_prediction[iB])*cov(iB,jB)*(_fullData[jB]-_prediction[jB]);
+		}
+	}
+
+	result.chi2_det = result.chi2_det + cov_det;
+	return result;
+}
 // Gallium
 chisqStruct getChi2Gallium(neutrinoModel model, galPackage pack){
 
@@ -305,7 +418,6 @@ chisqStruct getChi2Numi(neutrinoModel model, numiPackage pack){
 // MiniBoone disappearance
 chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
-	watch->Stop(); watch->Start();
     const int nBins = 16;
 
     // Initialize the result!
@@ -357,7 +469,7 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
     // Normalize signal prediction to data
     for(int iB = 0; iB < nBins; iB++){
         MCIntegral += (_prediction[iB] + _signal[iB]);
-    }
+	}
     for(int iB = 0; iB < nBins; iB++){
         _prediction[iB] = (_prediction[iB] + _signal[iB]) * dtIntegral/MCIntegral;
     }
@@ -385,6 +497,76 @@ chisqStruct getChi2MBDis(neutrinoModel model, booneDisPackage pack){
 
     return result;
 }
+chisqStruct getChi2MBDisPlus(neutrinoModel model, booneDisPlusPackage pack){
+
+	const int nBins = 16;
+
+	// Initialize the result!
+	chisqStruct result;
+	result.zero();
+
+	oscContribution oscCont;
+
+	float minEBins[nBins], maxEBins[nBins];
+	float dtIntegral = 0.;     float MCIntegral = 0.;
+	float ETru, LTru;
+	float FOsc_EnuQE, FOsc_EnuTrue, FOsc_LnuTrue, FOsc_weight;
+
+	_signal.resize(nBins);
+	_prediction.resize(nBins);
+	covMatrix.ResizeTo(nBins, nBins);
+	covMatrix.Zero();
+
+	for(int iB = 0; iB < nBins; iB ++){
+		_signal[iB] = 0;
+		_prediction[iB] = pack.libdis_noosc[iB];
+		dtIntegral += pack.NumuData[iB];
+	}
+
+	oscCont = getOscContributionsNumuDis(model);
+
+	float mstep = TMath::Log10(100./.01)/float(100);
+	int dm2;
+	for(int iB = 0; iB < nBins; iB++){
+		for(int iContribution = 0; iContribution < 6; iContribution++){
+			if(oscCont.dm2[iContribution] == 0)	_signal[iB] += 0;
+			else{
+				dm2 = floor(TMath::Log10(oscCont.dm2[iContribution]/.01)/mstep);
+				_signal[iB] += oscCont.aMuMu[iContribution]*pack.libdis_sinsq[dm2][iB];
+			}
+		}
+	}
+
+	// Normalize signal prediction to data
+	for(int iB = 0; iB < nBins; iB++){
+		MCIntegral += (_prediction[iB] + _signal[iB]);
+	}
+	for(int iB = 0; iB < nBins; iB++){
+		_prediction[iB] = (_prediction[iB] + _signal[iB]) * dtIntegral/MCIntegral;
+	}
+
+	for(int iB = 0; iB < nBins; iB++){
+		for(int jB = 0; jB < nBins; jB++){
+			covMatrix[iB][jB] = pack.full_fractCovMatrix[iB][jB] * _prediction[iB] * _prediction[jB];
+			// Add statistical error of signal prediction
+			if(iB == jB){
+				covMatrix[iB][jB] += _prediction[iB];
+			}
+		}
+	}
+	// Now, let's invert this bad boy
+	cov.ResizeTo(nBins,nBins);
+	cov = covMatrix.Invert();
+
+	// Finally, let's put everything together and calculate the chisq
+	for(int iB = 0; iB < nBins; iB++){
+		for(int jB = 0; jB < nBins; jB++){
+			result.chi2 += (pack.NumuData[iB] - _prediction[iB]) * cov[iB][jB] * (pack.NumuData[jB] - _prediction[jB]);
+		}
+	}
+	return result;
+}
+
 // Minos CC
 double getChi2MinosSign(neutrinoModel model, const int nBins, double * EnuQE, double * NumubarData, double * NumubarBkg, double * fracError, double * dataErr){
 
@@ -1070,6 +1252,8 @@ chisqStruct getChi2Xsec(neutrinoModel model, xsecPackage pack){
 	gMinuit->mnstat(chisq,disttomin,errdef,npari,nparx,istat);
 	result.chi2 = chisq;
 
+	std::cout << "XSEC TIMER: " << std::endl;
+
 	return result;
 }
 
@@ -1097,7 +1281,7 @@ void fcnBugey(int &npar, double *gin, double &fval, double  *xval, int iflag){
   	chisq = 0.;
 
   	for(int j = 0; j < 3; j++){ // loop over baselines
-    	for(int i = 0; i < nBins[j]; i++){  // loop over energy bins
+		for(int i = 0; i < nBins[j]; i++){  // loop over energy bins
       		for(int k = 0; k < dm2VecMaxDim; k++){
         		sinSq[k] = myMin.bPack.sinSqDeltaGrid[k][i][j];
       		}
@@ -1120,6 +1304,7 @@ void fcnBugey(int &npar, double *gin, double &fval, double  *xval, int iflag){
 
     	chisq += pow((smallA[j] - 1.)/myMin.bPack.sigmaSmallA,2);
   	}
+
 
   	chisq += pow((bigA - 1.)/myMin.bPack.sigmaBigA,2) + pow(b/myMin.bPack.sigmaB,2);
   	fval = chisq;

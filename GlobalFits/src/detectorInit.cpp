@@ -56,16 +56,16 @@ boonePackage mbNuInit(){
     int nBins = 11;
     int nBins_mu = 8;
     pack.nFOscEvts = 17204;
-    pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<double>(nBins + nBins + nBins_mu));
-    pack.EnuQE = new double[nBins+1];
+    pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<float>(nBins + nBins + nBins_mu));
+    pack.EnuQE = new float[nBins+1];
     pack.NueData = new int[nBins+nBins];
     pack.NumuData = new int[nBins_mu];
-    pack.NueBgr = new double[nBins];
-    pack.Numu = new double[nBins_mu];
-    pack.FOsc_EnuQE = new double[pack.nFOscEvts];     // reconstructed neutrino energy
-    pack.FOsc_EnuTrue = new double[pack.nFOscEvts];   // true energy of neutrino
-    pack.FOsc_LnuTrue = new double[pack.nFOscEvts];   // distance from production and detection points
-    pack.FOsc_weight = new double[pack.nFOscEvts];
+    pack.NueBgr = new float[nBins];
+    pack.Numu = new float[nBins_mu];
+    pack.FOsc_EnuQE = new float[pack.nFOscEvts];     // reconstructed neutrino energy
+    pack.FOsc_EnuTrue = new float[pack.nFOscEvts];   // true energy of neutrino
+    pack.FOsc_LnuTrue = new float[pack.nFOscEvts];   // distance from production and detection points
+    pack.FOsc_weight = new float[pack.nFOscEvts];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_lowe.txt");
@@ -118,6 +118,104 @@ boonePackage mbNuInit(){
 	if(debug) std::cout << "MBnu initialized. Bins: " << nBins + nBins_mu - 1 << std::endl;
     return pack;
 }
+boonePlusPackage mbNuInitPlus(){
+	boonePlusPackage pack;
+
+	const short nBins = 11;
+	const short nBins_mu = 8;
+	const int nu_nfosc = 17204;
+	pack.nFOscEvts = nu_nfosc;
+	pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<float>(nBins + nBins + nBins_mu));
+	pack.NueData = new int[nBins+nBins];
+	pack.NumuData = new int[nBins_mu];
+	pack.NueBgr = new float[nBins];
+	pack.Numu = new float[nBins_mu];
+	float *nu_EnuQE = new float[nBins + 1];
+	float *nu_FOsc_EnuQE = new float[nu_nfosc];
+	float *nu_FOsc_EnuTrue = new float[nu_nfosc];
+	float *nu_FOsc_LnuTrue = new float[nu_nfosc];
+	float *nu_FOsc_weight = new float[nu_nfosc];
+
+	ifstream file;
+	// Get measured Nue events per reconstructed electron neutrino energy bin (enuqe)
+	file.open(dataLoc+"miniboone_nuedata_lowe.txt");
+	for(int i = 0; i < nBins; i++)
+		file >> pack.NueData[i];
+	file.close();
+
+	// Get measured Numu ccqe events per enuqe bin
+	file.open(dataLoc+"miniboone_numudata.txt");
+	for(int i = 0; i < nBins_mu; i++)
+		file >> pack.NumuData[i];
+	file.close();
+
+	// Get predicted nue background events per enuqe bin
+	file.open(dataLoc+"miniboone_nuebgr_lowe.txt");
+	for(int i = 0; i < nBins; i++)
+		file >> pack.NueBgr[i];
+	file.close();
+
+	// Get predicted numu ccqe events per enuqe bin
+	file.open(dataLoc+"miniboone_numu.txt");
+	for(int i = 0; i < nBins_mu; i++)
+		file >> pack.Numu[i];
+	file.close();
+
+	// Get fractional cov matrix for full numu->nue oscillation events
+	file.open(dataLoc+"neutrino_frac_error_matrix.txt");
+	for(int i = 0; i < nBins + nBins + nBins_mu; i++)
+		for(int j = 0; j < nBins + nBins + nBins_mu; j++)
+			file >> pack.full_fractCovMatrix[i][j];
+	file.close();
+
+	file.open(dataLoc+"miniboone_binboundaries_lowe.txt");
+	for(int i = 0; i < nBins+1; i++)
+		file >> nu_EnuQE[i];
+	file.close();
+
+	// Get nFullOscEvts for full numu->nue osc events after nue cuts
+	file.open(dataLoc+"miniboone_numode_fullosc_ntuple.txt");
+	for(int iEvt = 0; iEvt < nu_nfosc; iEvt++){
+        file >> nu_FOsc_EnuQE[iEvt];
+        file >> nu_FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> nu_FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> nu_FOsc_weight[iEvt];    // event weight
+	}
+	file.close();
+
+	float dmmax = 100.;
+	float dmmin = 0.01;
+	float mstep = TMath::Log10(dmmax/dmmin)/float(gridPoints);
+	pack.lib_sinsq.resize(100, std::vector<float>(nBins));
+	pack.lib_sin.resize(100, std::vector<float>(nBins));
+
+	for(int mi = 0; mi < 100; mi++){
+		std::cout << "mass numbah: " << mi << std::endl;
+
+		float dm2 = pow(10,((mi+1.)/100.*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
+		for(int iB = 0; iB < nBins; iB++){
+			pack.lib_sinsq[mi][iB] = 0;
+			pack.lib_sin[mi][iB] = 0;
+		}
+
+		for(int iFOsc = 0; iFOsc < nu_nfosc; iFOsc++){   // Loop over full oscillation events
+	        for(int iB = 0; iB < nBins; iB++){    // Loop over energy bins to fill the prediction vector pred
+
+	            if(nu_FOsc_EnuQE[iFOsc] > nu_EnuQE[iB] && nu_FOsc_EnuQE[iFOsc] < nu_EnuQE[iB+1]){
+					float ETru = nu_FOsc_EnuTrue[iFOsc];
+					float LTru = nu_FOsc_LnuTrue[iFOsc];
+
+					pack.lib_sinsq[mi][iB] += nu_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru*.01/ETru),2);
+					pack.lib_sin[mi][iB] += nu_FOsc_weight[iFOsc]*sin(1.267*2*dm2*LTru*.01/ETru);
+	            }
+	        }
+	    }
+	}
+
+	ndf += nBins + nBins_mu - 1;
+	if(debug) std::cout << "MBnu initialized. Bins: " << nBins + nBins_mu - 1 << std::endl;
+	return pack;
+}
 boonePackage mbNubarInit(){
     boonePackage pack;
 
@@ -125,16 +223,16 @@ boonePackage mbNubarInit(){
     int nBins_mu = 8;
     pack.nFOscEvts = 86403;
 
-    pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<double>(nBins + nBins + nBins_mu));
-    pack.EnuQE = new double[nBins+1];
+    pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<float>(nBins + nBins + nBins_mu));
+    pack.EnuQE = new float[nBins+1];
     pack.NueData = new int[nBins+nBins];
     pack.NumuData = new int[nBins_mu];
-    pack.NueBgr = new double[nBins];
-    pack.Numu = new double[nBins_mu];
-    pack.FOsc_EnuQE = new double[pack.nFOscEvts];     // reconstructed neutrino energy
-    pack.FOsc_EnuTrue = new double[pack.nFOscEvts];   // true energy of neutrino
-    pack.FOsc_LnuTrue = new double[pack.nFOscEvts];   // distance from production and detection points
-    pack.FOsc_weight = new double[pack.nFOscEvts];
+    pack.NueBgr = new float[nBins];
+    pack.Numu = new float[nBins_mu];
+    pack.FOsc_EnuQE = new float[pack.nFOscEvts];     // reconstructed neutrino energy
+    pack.FOsc_EnuTrue = new float[pack.nFOscEvts];   // true energy of neutrino
+    pack.FOsc_LnuTrue = new float[pack.nFOscEvts];   // distance from production and detection points
+    pack.FOsc_weight = new float[pack.nFOscEvts];
 
     ifstream file;
     file.open(dataLoc+"miniboone_binboundaries_lowe.txt");
@@ -186,6 +284,104 @@ boonePackage mbNubarInit(){
     ndf += nBins + nBins_mu - 1;
 	if(debug) std::cout << "MBnubar initialized. Bins: " << nBins + nBins_mu - 1 << std::endl;
     return pack;
+}
+boonePlusPackage mbNubarInitPlus(){
+	boonePlusPackage pack;
+
+	const short nBins = 11;
+	const short nBins_mu = 8;
+	const int nubar_nfosc = 86403;
+	pack.nFOscEvts = nubar_nfosc;
+	pack.full_fractCovMatrix.resize(nBins + nBins + nBins_mu, std::vector<float>(nBins + nBins + nBins_mu));
+	pack.NueData = new int[nBins+nBins];
+	pack.NumuData = new int[nBins_mu];
+	pack.NueBgr = new float[nBins];
+	pack.Numu = new float[nBins_mu];
+	float *nubar_EnuQE = new float[nBins + 1];
+	float *nubar_FOsc_EnuQE = new float[nubar_nfosc];
+	float *nubar_FOsc_EnuTrue = new float[nubar_nfosc];
+	float *nubar_FOsc_LnuTrue = new float[nubar_nfosc];
+	float *nubar_FOsc_weight = new float[nubar_nfosc];
+
+	ifstream file;
+	// Get measured Nue events per reconstructed electron neutrino energy bin (enuqe)
+	file.open(dataLoc+"miniboone_nuebardata_lowe.txt");
+	for(int i = 0; i < nBins; i++)
+		file >> pack.NueData[i];
+	file.close();
+
+	// Get measured Numu ccqe events per enuqe bin
+	file.open(dataLoc+"miniboone_numubardata.txt");
+	for(int i = 0; i < nBins_mu; i++)
+		file >> pack.NumuData[i];
+	file.close();
+
+	// Get predicted nue background events per enuqe bin
+	file.open(dataLoc+"miniboone_nuebarbgr_lowe.txt");
+	for(int i = 0; i < nBins; i++)
+		file >> pack.NueBgr[i];
+	file.close();
+
+	// Get predicted numu ccqe events per enuqe bin
+	file.open(dataLoc+"miniboone_numubar.txt");
+	for(int i = 0; i < nBins_mu; i++)
+		file >> pack.Numu[i];
+	file.close();
+
+	// Get fractional cov matrix for full numu->nue oscillation events
+	file.open(dataLoc+"miniboone_full_fractcovmatrix_nubar_lowe.txt");
+	for(int i = 0; i < nBins + nBins + nBins_mu; i++)
+		for(int j = 0; j < nBins + nBins + nBins_mu; j++)
+			file >> pack.full_fractCovMatrix[i][j];
+	file.close();
+
+	file.open(dataLoc+"miniboone_binboundaries_lowe.txt");
+	for(int i = 0; i < nBins+1; i++)
+		file >> nubar_EnuQE[i];
+	file.close();
+
+	// Get nFullOscEvts for full numu->nue osc events after nue cuts
+	file.open(dataLoc+"miniboone_numubarnuebarfullosc_ntuple.txt");
+	for(int iEvt = 0; iEvt < nubar_nfosc; iEvt++){
+        file >> nubar_FOsc_EnuQE[iEvt];
+        file >> nubar_FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> nubar_FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> nubar_FOsc_weight[iEvt];    // event weight
+	}
+	file.close();
+
+	float dmmax = 100.;
+	float dmmin = 0.01;
+	float mstep = TMath::Log10(dmmax/dmmin)/float(gridPoints);
+	pack.lib_sinsq.resize(100, std::vector<float>(nBins));
+	pack.lib_sin.resize(100, std::vector<float>(nBins));
+
+	for(int mi = 0; mi < 100; mi++){
+		std::cout << "mass numbah: " << mi << std::endl;
+
+		float dm2 = pow(10,((mi+1.)/100.*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
+		for(int iB = 0; iB < nBins; iB++){
+			pack.lib_sinsq[mi][iB] = 0;
+			pack.lib_sin[mi][iB] = 0;
+		}
+
+		for(int iFOsc = 0; iFOsc < nubar_nfosc; iFOsc++){   // Loop over full oscillation events
+	        for(int iB = 0; iB < nBins; iB++){    // Loop over energy bins to fill the prediction vector pred
+
+	            if(nubar_FOsc_EnuQE[iFOsc] > nubar_EnuQE[iB] && nubar_FOsc_EnuQE[iFOsc] < nubar_EnuQE[iB+1]){
+					float ETru = nubar_FOsc_EnuTrue[iFOsc];
+					float LTru = nubar_FOsc_LnuTrue[iFOsc];
+
+					pack.lib_sinsq[mi][iB] += nubar_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru*.01/ETru),2);
+					pack.lib_sin[mi][iB] += nubar_FOsc_weight[iFOsc]*sin(1.267*2*dm2*LTru*.01/ETru);
+	            }
+	        }
+	    }
+	}
+
+	ndf += nBins + nBins_mu - 1;
+	if(debug) std::cout << "MBnubar initialized. Bins: " << nBins + nBins_mu - 1 << std::endl;
+	return pack;
 }
 atmPackage atmInit(){
     atmPackage pack;
@@ -548,45 +744,121 @@ booneDisPackage mbNuDisInit(){
 	const int nfosc = 1267007;
 	pack.nFOscEvts = nfosc;
 
-    pack.full_fractCovMatrix.resize(nBins, std::vector<float>(nBins));
-    pack.EnuQE = new float[nBins + 1];
-    pack.NumuData = new float[nBins];
+	pack.full_fractCovMatrix.resize(nBins, std::vector<float>(nBins));
+	pack.EnuQE = new float[nBins + 1];
+	pack.NumuData = new float[nBins];
 	pack.FOsc_EnuQE = new float[nfosc];
 	pack.FOsc_EnuTrue = new float[nfosc];
 	pack.FOsc_LnuTrue = new float[nfosc];
 	pack.FOsc_weight = new float[nfosc];
 
-    ifstream file;
+	ifstream file;
+	file.open(dataLoc+"miniboone_binboundaries_disap.txt");
+	for(short i = 0; i < nBins+1; i++)
+	    file >> pack.EnuQE[i];
+	file.close();
+
+	file.open(dataLoc+"miniboone_numudata_disap.txt");
+	for(short i = 0; i < nBins; i++)
+	    file >> pack.NumuData[i];
+	file.close();
+
+	file.open(dataLoc+"miniboone_frac_shape_matrix_numu_disap.txt");
+	for(short i = 0; i < nBins; i++)
+	    for(short j = 0; j < nBins; j++)
+	        file >> pack.full_fractCovMatrix[i][j];
+	file.close();
+
+	file.open(dataLoc+"numudisap_ntuple.txt");
+	int dummy;
+	for(int iEvt = 0; iEvt < nfosc; iEvt++){
+		file >> dummy;
+	    file >> pack.FOsc_EnuQE[iEvt];
+	    file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
+	    file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
+	    file >> pack.FOsc_weight[iEvt];    // event weight
+	}
+	file.close();
+
+	ndf += nBins;
+	if(debug) std::cout << "MBnu Dis initialized. Bins: " << nBins << std::endl;
+	return pack;
+}
+booneDisPlusPackage mbNuDisInitPlus(){
+	booneDisPlusPackage pack;
+
+	const short nBins = 16;
+	const int nu_nfosc = 1267007;
+
+	pack.full_fractCovMatrix.resize(nBins, std::vector<float>(nBins));
+	pack.NumuData = new float[nBins];
+    float *nu_EnuQE = new float[nBins + 1];
+	float *nu_FOsc_EnuQE = new float[nu_nfosc];
+	float *nu_FOsc_EnuTrue = new float[nu_nfosc];
+	float *nu_FOsc_LnuTrue = new float[nu_nfosc];
+	float *nu_FOsc_weight = new float[nu_nfosc];
+
+	ifstream file;
+	file.open(dataLoc+"miniboone_numudata_disap.txt");
+	for(short i = 0; i < nBins; i++)
+		file >> pack.NumuData[i];
+	file.close();
+	file.open(dataLoc+"miniboone_frac_shape_matrix_numu_disap.txt");
+	for(short i = 0; i < nBins; i++)
+		for(short j = 0; j < nBins; j++)
+			file >> pack.full_fractCovMatrix[i][j];
+	file.close();
+
     file.open(dataLoc+"miniboone_binboundaries_disap.txt");
     for(short i = 0; i < nBins+1; i++)
-        file >> pack.EnuQE[i];
-    file.close();
-
-    file.open(dataLoc+"miniboone_numudata_disap.txt");
-    for(short i = 0; i < nBins; i++)
-        file >> pack.NumuData[i];
-    file.close();
-
-    file.open(dataLoc+"miniboone_frac_shape_matrix_numu_disap.txt");
-    for(short i = 0; i < nBins; i++)
-        for(short j = 0; j < nBins; j++)
-            file >> pack.full_fractCovMatrix[i][j];
+        file >> nu_EnuQE[i];
     file.close();
 
  	file.open(dataLoc+"numudisap_ntuple.txt");
 	int dummy;
-    for(int iEvt = 0; iEvt < nfosc; iEvt++){
+    for(int iEvt = 0; iEvt < nu_nfosc; iEvt++){
  		file >> dummy;
-        file >> pack.FOsc_EnuQE[iEvt];
-        file >> pack.FOsc_EnuTrue[iEvt];   // true energy of neutrino
-        file >> pack.FOsc_LnuTrue[iEvt];   // distance from production and detection points
-        file >> pack.FOsc_weight[iEvt];    // event weight
+        file >> nu_FOsc_EnuQE[iEvt];
+        file >> nu_FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> nu_FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> nu_FOsc_weight[iEvt];    // event weight
 	}
 	file.close();
 
-    ndf += nBins;
-	if(debug) std::cout << "MBnu Dis initialized. Bins: " << nBins << std::endl;
-    return pack;
+	float dmmax = 100.;
+	float dmmin = 0.01;
+	float mstep = TMath::Log10(dmmax/dmmin)/float(gridPoints);
+	pack.libdis_sinsq.resize(100, std::vector<float>(nBins));
+	pack.libdis_noosc.resize(nBins);
+
+	for(int mi = 0; mi < 100; mi++){
+		std::cout << "mass numbah: " << mi << std::endl;
+
+		float dm2 = pow(10,((mi+1.)/100.*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
+		for(int iB = 0; iB < nBins; iB++){
+			pack.libdis_sinsq[mi][iB] = 0;
+			if(mi == 0)
+				pack.libdis_noosc[iB] = 0;
+		}
+
+		for(int iFOsc = 0; iFOsc < nu_nfosc; iFOsc++){   // Loop over full oscillation events
+	        for(int iB = 0; iB < nBins; iB++){    // Loop over energy bins to fill the prediction vector pred
+
+	            if(nu_FOsc_EnuQE[iFOsc] > nu_EnuQE[iB] && nu_FOsc_EnuQE[iFOsc] < nu_EnuQE[iB+1]){
+
+					float ETru = nu_FOsc_EnuTrue[iFOsc];
+					float LTru = nu_FOsc_LnuTrue[iFOsc];
+
+					pack.libdis_sinsq[mi][iB] += nu_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru/ETru),2);
+
+
+					if(mi == 0)
+						pack.libdis_noosc[iB] += nu_FOsc_weight[iFOsc];
+	            }
+	        }
+	    }
+	}
+	return pack;
 }
 booneDisPackage mbNubarDisInit(){
     booneDisPackage pack;
@@ -634,6 +906,80 @@ booneDisPackage mbNubarDisInit(){
     ndf += nBins;
 	if(debug) std::cout << "MBnubar Dis initialized. Bins: " << nBins << std::endl;
     return pack;
+}
+booneDisPlusPackage mbNubarDisInitPlus(){
+	booneDisPlusPackage pack;
+
+	const short nBins = 16;
+	const int nfosc = 686529;
+
+	pack.full_fractCovMatrix.resize(nBins, std::vector<float>(nBins));
+	pack.NumuData = new float[nBins];
+    float *nubar_EnuQE = new float[nBins + 1];
+	float *nubar_FOsc_EnuQE = new float[nfosc];
+	float *nubar_FOsc_EnuTrue = new float[nfosc];
+	float *nubar_FOsc_LnuTrue = new float[nfosc];
+	float *nubar_FOsc_weight = new float[nfosc];
+
+	ifstream file;
+	file.open(dataLoc+"miniboone_numubardata_disap.txt");
+	for(short i = 0; i < nBins; i++)
+		file >> pack.NumuData[i];
+	file.close();
+	file.open(dataLoc+"miniboone_frac_shape_matrix_numubar_disap.txt");
+	for(short i = 0; i < nBins; i++)
+		for(short j = 0; j < nBins; j++)
+			file >> pack.full_fractCovMatrix[i][j];
+	file.close();
+
+    file.open(dataLoc+"miniboone_binboundaries_disap.txt");
+    for(short i = 0; i < nBins+1; i++)
+        file >> nubar_EnuQE[i];
+    file.close();
+
+ 	file.open(dataLoc+"numubardisap_ntuple.txt");
+	int dummy;
+    for(int iEvt = 0; iEvt < nfosc; iEvt++){
+ 		file >> dummy;
+        file >> nubar_FOsc_EnuQE[iEvt];
+        file >> nubar_FOsc_EnuTrue[iEvt];   // true energy of neutrino
+        file >> nubar_FOsc_LnuTrue[iEvt];   // distance from production and detection points
+        file >> nubar_FOsc_weight[iEvt];    // event weight
+	}
+	file.close();
+
+	float dmmax = 100.;
+	float dmmin = 0.01;
+	float mstep = TMath::Log10(dmmax/dmmin)/float(gridPoints);
+	pack.libdis_sinsq.resize(100, std::vector<float>(nBins));
+	pack.libdis_noosc.resize(nBins);
+
+	for(int mi = 0; mi < 100; mi++){
+		std::cout << "mass numbah: " << mi << std::endl;
+
+		float dm2 = pow(10,((mi+1.)/100.*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
+		for(int iB = 0; iB < nBins; iB++){
+			pack.libdis_sinsq[mi][iB] = 0;
+			if(mi == 0)
+				pack.libdis_noosc[iB] = 0;
+		}
+
+		for(int iFOsc = 0; iFOsc < nfosc; iFOsc++){   // Loop over full oscillation events
+	        for(int iB = 0; iB < nBins; iB++){    // Loop over energy bins to fill the prediction vector pred
+
+	            if(nubar_FOsc_EnuQE[iFOsc] > nubar_EnuQE[iB] && nubar_FOsc_EnuQE[iFOsc] < nubar_EnuQE[iB+1]){
+
+					float ETru = nubar_FOsc_EnuTrue[iFOsc];
+					float LTru = nubar_FOsc_LnuTrue[iFOsc];
+
+					pack.libdis_sinsq[mi][iB] += nubar_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru/ETru),2);
+					if(mi == 0)
+						pack.libdis_noosc[iB] += nubar_FOsc_weight[iFOsc];
+	            }
+	        }
+	    }
+	}
+	return pack;
 }
 nomadPackage nomadInit(){
 	nomadPackage pack;
