@@ -1,17 +1,44 @@
 #!/bin/bash
-
+mkdir -p fractiondata/pot3p1
 cd ..
+
 rm fractiondata/pot3p1/analysed_3p1_both.dat
-for ip in `seq -3.0 0.1 0.0`
+rm fractiondata/pot3p1/analysed_3p1_dis.dat
+rm fractiondata/pot3p1/analysed_3p1_app.dat
+
+CHI3=16.2513
+CHI5=34.555
+
+for ip in `seq -4.0 0.25 0.0`
 do
 	TOTAL=$(wc -l < fractiondata/pot3p1/"3p1_pot_"$ip"_both.dat" )
-	echo "On POT"$ip
-	for chi in `seq 1 2 100`
-	do
-		ANS=$(awk -v mychi="$chi" '{ if ($17 <= mychi) count++}  END {print count}' fractiondata/pot3p1/"3p1_pot_"$ip"_both.dat")
-		PERCENT=$(calc $ANS/$TOTAL)
-		echo 3p1 $ip $chi $ANS $TOTAL $PERCENT >> fractiondata/pot3p1/analysed_3p1_both.dat
-	done
+	echo "On Both POT"$ip
+		ANS3=$(awk -v mychi="$CHI3" -v count=0 '{ if ($17 >= mychi) count++}  END {print count}' fractiondata/pot3p1/"3p1_pot_"$ip"_both.dat")
+		ANS5=$(awk -v mychi="$CHI5" -v count=0 '{ if ($17 >= mychi) count++}  END {print count}' fractiondata/pot3p1/"3p1_pot_"$ip"_both.dat")
+		echo 3p1 $ip $CHI3 $ANS3 $CHI5 $ANS5 $TOTAL  >> fractiondata/pot3p1/analysed_3p1_both.dat
 
 done
+
+for ip in `seq -4.0 0.25 0.0`
+do
+	TOTAL=$(wc -l < fractiondata/pot3p1/"3p1_pot_"$ip"_app.dat" )
+	echo "On App POT"$ip
+		ANS3=$(awk -v mychi="$CHI3" -v count=0 '{ if ($17 >= mychi) count++}  END {print count}' fractiondata/pot3p1/"3p1_pot_"$ip"_app.dat")
+		ANS5=$(awk -v mychi="$CHI5" -v count=0 '{ if ($17 >= mychi) count++}  END {print count}' fractiondata/pot3p1/"3p1_pot_"$ip"_app.dat")
+		echo 3p1 $ip $CHI3 $ANS3 $CHI5 $ANS5 $TOTAL  >> fractiondata/pot3p1/analysed_3p1_app.dat
+	done
+
+
+for ip in `seq -4.0 0.25 0.0`
+do
+	TOTAL=$(wc -l < fractiondata/pot3p1/"3p1_pot_"$ip"_dis.dat" )
+	echo "On Dis POT"$ip
+		ANS3=$(awk -v mychi="$CHI3" -v count=0 '{ if ($17 >= mychi) count++}  END {print count}' fractiondata/pot3p1/"3p1_pot_"$ip"_dis.dat")
+		ANS5=$(awk -v mychi="$CHI5" -v count=0 '{ if ($17 >= mychi) count++}  END {print count}' fractiondata/pot3p1/"3p1_pot_"$ip"_dis.dat")
+		echo 3p1 $ip $CHI3 $ANS3 $CHI5 $ANS5 $TOTAL  >> fractiondata/pot3p1/analysed_3p1_dis.dat
+	done
+
+
+
+
 cd analysis_scripts
