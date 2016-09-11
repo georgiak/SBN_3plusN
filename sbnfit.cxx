@@ -387,7 +387,7 @@ const struct option longopts[] =
 	{"dis",			required_argument, 	0, 'd'},
 	{"unitary",		no_argument,		0, 'n'},
 	{"num",			required_argument,	0, 'N'},
-	{"fraction",		required_argument,	0, 'f'},
+	{"fraction",		no_argument,		0, 'f'},
 	{"pot",			required_argument,	0, 'p'},
 	{"app",			no_argument,		0, 'a'},
 	{0,			no_argument, 		0,  0},
@@ -396,7 +396,7 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "d:alf:nuM:e:m:svp:hS:cFTABN:", longopts, &index);
+	iarg = getopt_long(argc,argv, "d:alfnuM:e:m:svp:hS:cFTABN:", longopts, &index);
 
 	switch(iarg)
 	{
@@ -447,7 +447,6 @@ while(iarg != -1)
 			break;
 		case 'f':
 			fraction_flag = true;
-			num_ster = strtof(optarg,NULL);
 			break;
 		case 'u':
 			in_um4  = strtof(optarg,NULL);
@@ -667,7 +666,7 @@ if(fraction_flag && false)
 	char filename[200];
 	if(num_ster == 1){
 //		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
-	        sprintf(filename,"GlobalFits/ntuples/nt_31_all.root");	
+	        sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");	
 	} else if (num_ster == 2){
 
 		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
@@ -720,14 +719,12 @@ if(fraction_flag) //this i smain!!
 	SBN_detector * ICARUS_mu = new SBN_detector(2,true);
  	SBN_detector * SBND_mu = new SBN_detector(0,true);
  	SBN_detector * UBOONE_mu = new SBN_detector(1,true);
+
 	bool usedetsys = true;
 	int which_mode =-1;
 
 	if(app_flag){which_mode =APP_ONLY ;}else if(dis_flag){which_mode = DIS_ONLY;}else if(both_flag){which_mode =BOTH_ONLY;};
 
-	if(dis_flag && !app_flag){
-		usedetsys=false;
-	}
 
 	neutrinoModel nullModel;
 	SBN_spectrum bkgspec(nullModel);
@@ -1144,13 +1141,13 @@ if(pot_flag){
  	SBN_detector * UBOONE = new SBN_detector(1);
 
 	int which_mode =-1;
+	if(app_flag && !dis_flag ){which_mode =APP_ONLY ;}else if(dis_flag && !app_flag){which_mode = DIS_ONLY;}else if(both_flag){which_mode =BOTH_ONLY;};
 
-	if(app_flag){which_mode = 0;}else if(dis_flag){which_mode = 1;}else if(both_flag){which_mode =2;};
 	bool usedetsys = true;
 
-	if(dis_flag && !app_flag){
-		usedetsys=false;
-	}
+//	if(dis_flag && !app_flag){
+//		usedetsys=false;
+//	}
 
 	double ipot = pow(10,pot_num);
 
@@ -1224,12 +1221,26 @@ if(pot_flag){
 
 
 		//now load file with all other vectors.
-	std::string filename = "fractiondata/new_3p1_redo.dat";
+	std::string filename = "fractiondata/3p1_both.dat";
 
 	if(num_ster == 1){
-		filename = "fractiondata/new_3p1_redo.dat";
+		switch(which_mode){
+			case APP_ONLY:
+				filename = "fractiondata/3p1_app.dat";
+				break;
+			case DIS_ONLY:
+				filename = "fractiondata/3p1_dis.dat";
+				break;
+			case BOTH_ONLY:
+				filename = "fractiondata/3p1_both.dat";
+				break;
+		}
+
+
+
+
 	} else if (num_ster == 2){
-		filename = "fractiondata/new_3p2_redo.dat";
+		filename = "fractiondata/3p2_dis.dat";
 
 	} else if(num_ster == 3){
 		filename = "fractiondata/new_3p3_redo.dat";
@@ -1286,7 +1297,8 @@ if(filename != "none"){
 	std::ifstream myfile (filename);
 	if (!myfile.is_open())
 	{
-		std::cout<<"#ERROR: Passed POT file does not exist"<<std::endl;
+		std::cout<<"#ERROR: Passed POT file does not exist: "<<filename<<std::endl;
+		std::cout<<" which_mode "<<which_mode<<" numster "<<num_ster<<std::endl;
 		exit(EXIT_FAILURE);
 	}
 
