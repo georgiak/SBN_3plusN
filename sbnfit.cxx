@@ -69,8 +69,8 @@ class wrkInstance {
 	neutrinoModel nullModel;
 	neutrinoModel workingModel;
 
-	SBN_spectrum bkgspec;
-	SBN_spectrum SigSpec;
+	SBN_spectrum * bkgspec;
+	SBN_spectrum * SigSpec;
 
 	std::vector<double > back6 ;
 	std::vector<double > back9 ;
@@ -84,62 +84,67 @@ class wrkInstance {
 
 	std::vector<std::vector<double >> vMcI;
 
-	wrkInstance(neutrinoModel signalModel, int channel_mode, int beam_mode );
+	wrkInstance(int channel_mode, int beam_mode );
 
-	double calc_chi(neutrinomodel signalmodel);
+	double calc_chi(neutrinoModel signalModel);
 	int clear_all();
 };
 
-wrkinstance::wrkinstance(neutrinomodel signalmodel int channel_mode, int beam_mode){
-
+wrkInstance::wrkInstance(int channel_mode, int beam_mode){
 	which_mode = channel_mode;
 
-	workingmodel=signalmodel;	
 	double chi2 = 0; //old chi to be passed in
 	int i = 1; //some number identification
 
-	rangen = new trandom();
-	bkgspec =sbn_spectrum(nullmodel);
+	rangen = new TRandom();
 
-	uboone_mu = new sbn_detector(1,true);
-	sbnd_mu = new sbn_detector(0,true);
-	icarus_mu = new sbn_detector(2,true);
+	nullModel = neutrinoModel();
+	nullModel.zero();
+	workingModel= neutrinoModel();
+	workingModel.zero();
 
-	uboone = new sbn_detector(1);
-	sbnd = new sbn_detector(0);
-	icarus = new sbn_detector(2);
+	bkgspec = new SBN_spectrum(nullModel);
 
-	bkgspec.load_bkg(icarus);
-	bkgspec.load_bkg(sbnd);
-	bkgspec.load_bkg(uboone);
+	UBOONE_mu = new SBN_detector(1,true);
+	SBND_mu = new SBN_detector(0,true);
+	ICARUS_mu = new SBN_detector(2,true);
+
+	UBOONE = new SBN_detector(1);
+	SBND = new SBN_detector(0);
+	ICARUS = new SBN_detector(2);
+
+	std::cout<<"beging load_bkg"<<std::endl;
+	bkgspec->load_bkg(ICARUS);
+	bkgspec->load_bkg(SBND);
+	bkgspec->load_bkg(UBOONE);
 
 	bool usedetsys = true;	
 	bool stat_only = false;
 
-	back6 = bkgspec.get_sixvector();
-	back9 = bkgspec.get_ninevector();
-	back  = bkgspec.get_vector();
+	back6 = bkgspec->get_sixvector();
+	back9 = bkgspec->get_ninevector();
+	back  = bkgspec->get_vector();
 
-		matrix_size =(n_e_bins + n_e_bins + n_m_bins)*n_dets;
-		matrix_size_c = (n_e_bins + n_m_bins) * n_dets;
+		matrix_size =(N_e_bins + N_e_bins + N_m_bins)*N_dets;
+		matrix_size_c = (N_e_bins + N_m_bins) * N_dets;
 		
-		bigmsize = (n_e_bins*n_e_spectra+n_m_bins*n_m_spectra)*n_dets;
-		contmsize = (n_e_bins+n_m_bins)*n_dets;
+		bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets;
+		contMsize = (N_e_bins+N_m_bins)*N_dets;
 
 		/* create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
 		 * */
 
-		 tmatrixt <double> m(matrix_size,matrix_size);
-		 tmatrixt <double>  mc(matrix_size_c,matrix_size_c);
-		 tmatrixt <double>  mci(matrix_size_c, matrix_size_c);
-		 tmatrixt <double>  msys(bigmsize,bigmsize);
+		 TMatrixT <double> m(matrix_size,matrix_size);
+		 TMatrixT <double>  mc(matrix_size_c,matrix_size_c);
+		 TMatrixT <double>  mci(matrix_size_c, matrix_size_c);
+		 TMatrixT <double>  msys(bigMsize,bigMsize);
 
 		
 		 sys_fill(msys,usedetsys);
 
-		for(int i =0; i<msys.getncols(); i++)
+		for(int i =0; i<msys.GetNcols(); i++)
 		{
-			for(int j =0; j<msys.getnrows(); j++)
+			for(int j =0; j<msys.GetNrows(); j++)
 			{
 				msys(i,j)=msys(i,j)*back[i]*back[j];
 			}
@@ -148,10 +153,10 @@ wrkinstance::wrkinstance(neutrinomodel signalmodel int channel_mode, int beam_mo
 
 
 
-		tmatrixt <double> mstat(bigmsize,bigmsize);
+		TMatrixT <double> mstat(bigMsize,bigMsize);
 		stats_fill(mstat, back);
 
-		tmatrixt <double > mtotal(bigmsize,bigmsize);
+		TMatrixT <double > mtotal(bigMsize,bigMsize);
 
 		if(stat_only){
 			mtotal =  mstat;
@@ -160,75 +165,21 @@ wrkinstance::wrkinstance(neutrinomodel signalmodel int channel_mode, int beam_mo
 		}
 		//mtotal = mstat;
 
-		tmatrixt <double> mctotal(contmsize,contmsize);
+		TMatrixT <double> mctotal(contMsize,contMsize);
 		contract_signal2(mtotal,mctotal);
 
 
 		double invdet=0; // just to hold determinant
 
 		//	bit o inverting, root tmatrix seems perfectly fast	
-		mci = mctotal.invert(&invdet);
+		mci = mctotal.Invert(&invdet);
 
-		vmci = to_vector(mci);
+		vMcI = to_vector(mci);
 
 	
 	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
 
-				sigspec=sbn_spectrum(workingmodel);
-				
-				sigspec.which_mode = which_mode;
-
-				sigspec.load_freq_3p3(icarus);//0 is silly app flag (get rid of this)
-				sigspec.load_freq_3p3(sbnd);
-				sigspec.load_freq_3p3(uboone);
-
-				pred6 = sigspec.get_sixvector();
-				pred9 = sigspec.get_ninevector();
-				pred = sigspec.get_vector();
-
-			
-
-				if(pred6.size()!=mctotal.getncols()){std::cout<<"error"<<std::endl;}
-
-
-	
-				double mychi2=0;
-			
-				//check for previous known bug!
-				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
-				{
-					std::cout<<"#error, soemthing wrong lengthwise"<<std::endl;
-					std::cout<<"#error, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
-				}
-
-				//calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
-
-				int whatsize = mci.getncols();
-
-				double mod = 1.0;
-
-				for(int i =0; i<whatsize; i++){
-					for(int j =0; j<whatsize; j++){
-						mychi2 += mod*(back6[i]-pred6[i])*vmci[i][j]*(back6[j]-pred6[j]);
-					}
-				}
-
-			//old output
-			//std::cout<<i<<" mn: "<<appspec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
-		
-		//	ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
-			std::cout<<"#"<<i<<" "<<SigSpec.workingModel.mNu[0]<<" "<<SigSpec.workingModel.mNu[1]<<" "<<SigSpec.workingModel.mNu[2]<<" "<<SigSpec.workingModel.Ue[0]<<" "<<SigSpec.workingModel.Ue[1]<<" "<<SigSpec.workingModel.Ue[2]<<" "<<SigSpec.workingModel.Um[0]<<" "<<SigSpec.workingModel.Um[1]<<" "<<SigSpec.workingModel.Um[2]<<" "<<SigSpec.workingModel.phi[0]<<" "<<SigSpec.workingModel.phi[1]<<" "<<SigSpec.workingModel.phi[2]<<" "<<SigSpec.pot_scaling<<" "<<which_mode<<" "<<chi2<<" "<<mychi2<<" "<<std::endl;
-			std::cout<<pred6[0];
-			for(int u=1;u< pred6.size(); u++){
-				std::cout<<" "<<pred6[u];
-			}	
-			std::cout<<std::endl;
-	
-		       Current_Chi = mychi2;	
-
-
-}//end wrkInstance constructor;
+	}//end wrkInstance constructor;
 
 int wrkInstance::clear_all(){
 
@@ -254,21 +205,17 @@ double wrkInstance::calc_chi(neutrinoModel newModel){
 				int i = 1;
 
 				workingModel=newModel;	
-				SigSpec = SBN_spectrum(workingModel);
+				SigSpec = new SBN_spectrum(workingModel);
 				
-				SigSpec.which_mode = which_mode;
+				SigSpec->which_mode = which_mode;
 
-				SigSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
-				SigSpec.load_freq_3p3(SBND);
-				SigSpec.load_freq_3p3(UBOONE);
+				SigSpec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+				SigSpec->load_freq_3p3(SBND);
+				SigSpec->load_freq_3p3(UBOONE);
 
-				pred6 = SigSpec.get_sixvector();
-				pred9 = SigSpec.get_ninevector();
-				pred = SigSpec.get_vector();
-
-			
-
-
+				pred6 = SigSpec->get_sixvector();
+				pred9 = SigSpec->get_ninevector();
+				pred = SigSpec->get_vector();
 
 	
 				double mychi2=0;
@@ -296,7 +243,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel){
 			//old output
 			//std::cout<<i<<" mn: "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
 		//	ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
-			std::cout<<"#"<<i<<" "<<SigSpec.workingModel.mNu[0]<<" "<<SigSpec.workingModel.mNu[1]<<" "<<SigSpec.workingModel.mNu[2]<<" "<<SigSpec.workingModel.Ue[0]<<" "<<SigSpec.workingModel.Ue[1]<<" "<<SigSpec.workingModel.Ue[2]<<" "<<SigSpec.workingModel.Um[0]<<" "<<SigSpec.workingModel.Um[1]<<" "<<SigSpec.workingModel.Um[2]<<" "<<SigSpec.workingModel.phi[0]<<" "<<SigSpec.workingModel.phi[1]<<" "<<SigSpec.workingModel.phi[2]<<" "<<SigSpec.pot_scaling<<" "<<which_mode<<" "<<chi2<<" "<<mychi2<<" "<<std::endl;
+			std::cout<<"#"<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel.mNu[1]<<" "<<SigSpec->workingModel.mNu[2]<<" "<<SigSpec->workingModel.Ue[0]<<" "<<SigSpec->workingModel.Ue[1]<<" "<<SigSpec->workingModel.Ue[2]<<" "<<SigSpec->workingModel.Um[0]<<" "<<SigSpec->workingModel.Um[1]<<" "<<SigSpec->workingModel.Um[2]<<" "<<SigSpec->workingModel.phi[0]<<" "<<SigSpec->workingModel.phi[1]<<" "<<SigSpec->workingModel.phi[2]<<" "<<SigSpec->pot_scaling<<" "<<which_mode<<" "<<chi2<<" "<<mychi2<<" "<<std::endl;
 
 			std::cout<<pred6[0];
 			for(int u=1;u< pred6.size(); u++){
@@ -335,10 +282,13 @@ bool bkg_flag= false;
 bool sample_flag = false;
 bool cov_flag = false;
 bool sens_flag=false;
+bool comb_flag = false;
+
+bool both_flag = true;
 bool dis_flag = false;
 bool app_flag = false;
-bool comb_flag = false;
-bool both_flag = true;
+int which_channel = BOTH_ONLY;
+
 bool unit_flag = false;
 bool fraction_flag = false;
 bool anti_flag = false;
@@ -384,7 +334,8 @@ const struct option longopts[] =
 	{"stat-only",		no_argument,		0, 'l'},
 	{"sample",		no_argument,		0, 's'},
 	{"cov",			no_argument, 		0, 'c'},
-	{"dis",			required_argument, 	0, 'd'},
+	{"dis",			no_argument,	 	0, 'd'},
+	{"both",		no_argument,		0, 'b'},
 	{"unitary",		no_argument,		0, 'n'},
 	{"num",			required_argument,	0, 'N'},
 	{"fraction",		no_argument,		0, 'f'},
@@ -396,7 +347,7 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "d:alfnuM:e:m:svp:hS:cFTABN:", longopts, &index);
+	iarg = getopt_long(argc,argv, "dalfnuM:e:m:svp:hS:cFTABN:b", longopts, &index);
 
 	switch(iarg)
 	{
@@ -437,10 +388,16 @@ while(iarg != -1)
 			break;
 		case 'd':
 			dis_flag = true;
-			dis_which =strtof(optarg,NULL);
+			//	dis_which =strtof(optarg,NULL); //obsolete!
+			which_channel = DIS_ONLY;
 			break;
 		case 'a':
 			app_flag = true;
+			which_channel = APP_ONLY;
+			break;
+		case 'b':
+			both_flag = true;
+			which_channel = BOTH_ONLY;
 			break;
 		case 'm':
 			in_dm  = strtof(optarg,NULL);
@@ -501,11 +458,6 @@ if(verbose_flag)
 	std::cout<<"#*******************************************************"<<std::endl;
 }
 
-
-
-if(app_flag&&dis_flag){both_flag = true; app_flag=false; dis_flag=false;}
-else if(app_flag){both_flag =false;} 
-else if(dis_flag){both_flag = false;}
 
 
 
@@ -660,7 +612,7 @@ if(unit_flag){
 
 
 
-if(fraction_flag && false)
+if(fraction_flag && false) // This is just an obsolete old one for reading it in and doing noting
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
@@ -712,83 +664,9 @@ if(fraction_flag && false)
 
 if(fraction_flag) //this i smain!!
 {
-	SBN_detector * ICARUS = new SBN_detector(2);
- 	SBN_detector * SBND = new SBN_detector(0);
- 	SBN_detector * UBOONE = new SBN_detector(1);
 
-	SBN_detector * ICARUS_mu = new SBN_detector(2,true);
- 	SBN_detector * SBND_mu = new SBN_detector(0,true);
- 	SBN_detector * UBOONE_mu = new SBN_detector(1,true);
+	wrkInstance fractionInstance(which_channel , 0);
 
-	bool usedetsys = true;
-	int which_mode =-1;
-
-	if(app_flag){which_mode =APP_ONLY ;}else if(dis_flag){which_mode = DIS_ONLY;}else if(both_flag){which_mode =BOTH_ONLY;};
-
-
-	neutrinoModel nullModel;
-	SBN_spectrum bkgspec(nullModel);
-	
-	bkgspec.load_bkg(ICARUS);
-	bkgspec.load_bkg(SBND);
-	bkgspec.load_bkg(UBOONE);
-			
-
-	
-
-	std::vector<double > back6 = bkgspec.get_sixvector();
-	std::vector<double > back9 = bkgspec.get_ninevector();
-	std::vector<double > back  = bkgspec.get_vector();
-	TRandom *rangen    = new TRandom();
-
-		int matrix_size =(N_e_bins + N_e_bins + N_m_bins)*N_dets;
-		int matrix_size_c = (N_e_bins + N_m_bins) * N_dets;
-
-		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
-		 * */
-		TMatrixT <double> M(matrix_size,matrix_size);
-		TMatrixT <double> Mc(matrix_size_c,matrix_size_c);
-		TMatrixT <double> McI(matrix_size_c, matrix_size_c);
-
-
-		int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets;
-		int contMsize = (N_e_bins+N_m_bins)*N_dets;
-
-		TMatrixT <double> Msys(bigMsize,bigMsize);
-		sys_fill(Msys,usedetsys);
-
-		for(int i =0; i<Msys.GetNcols(); i++)
-		{
-			for(int j =0; j<Msys.GetNrows(); j++)
-			{
-				Msys(i,j)=Msys(i,j)*back[i]*back[j];
-			}
-		}
-
-
-
-
-		TMatrixT <double> Mstat(bigMsize,bigMsize);
-		stats_fill(Mstat, back);
-
-		TMatrixT <double > Mtotal(bigMsize,bigMsize);
-		if(stat_only){
-			Mtotal =  Mstat;
-		} else {
-			Mtotal = Msys+Mstat;
-		}
-		//Mtotal = Mstat;
-
-		TMatrixT<double > Mctotal(contMsize,contMsize);
-		contract_signal2(Mtotal,Mctotal);
-
-
-		double invdet=0; // just to hold determinant
-
-		//	bit o inverting, root tmatrix seems perfectly fast	
-		McI = Mctotal.Invert(&invdet);
-
-		std::vector<std::vector<double >> vMcI = to_vector(McI);
 
 	char filename[200];
 	if(num_ster == 1){
@@ -801,108 +679,56 @@ if(fraction_flag) //this i smain!!
 		sprintf(filename,"GlobalFits/ntuples/nt_33_all_processed.root"); 
 
 	}
-	char outfilename[200];
+
+/*	char outfilename[200];
 	sprintf(outfilename,"ntuples/nt_3%d_all_processed_SBN2.root",num_ster);
 
 		TFile outputFile(outfilename,"RECREATE");
 //		outputFile.cd();
 		TNtuple ntuple("SBN1_99","SBN1_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56:mychi2");
+*/
 
-
-
-	//std::cout<<filename<<std::endl;
 	TFile *fm= new TFile(filename);
-//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
-	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
+	TTree *chi2_99 =(TTree*)fm->Get("chi2_99_pr");
 	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
 	 Float_t m4 = 0;
-         chi2_90->SetBranchAddress("chi2",&chi2);
-         chi2_90->SetBranchAddress("m4",&m4);
-         chi2_90->SetBranchAddress("ue4",&ue4);
-         chi2_90->SetBranchAddress("um4",&um4);
-         chi2_90->SetBranchAddress("m5",&m5);
-         chi2_90->SetBranchAddress("ue5",&ue5);
-         chi2_90->SetBranchAddress("um5",&um5);
-         chi2_90->SetBranchAddress("m6",&m6);
-         chi2_90->SetBranchAddress("ue6",&ue6);
-         chi2_90->SetBranchAddress("um6",&um6);
-         chi2_90->SetBranchAddress("phi45",&phi45);
-         chi2_90->SetBranchAddress("phi46",&phi46);
-         chi2_90->SetBranchAddress("phi56",&phi56);
-	 int nentries = chi2_90->GetEntries();
-//	 for (int i=0;i<100;i++) {
+         chi2_99->SetBranchAddress("chi2",&chi2);
+         chi2_99->SetBranchAddress("m4",&m4);
+         chi2_99->SetBranchAddress("ue4",&ue4);
+         chi2_99->SetBranchAddress("um4",&um4);
+         chi2_99->SetBranchAddress("m5",&m5);
+         chi2_99->SetBranchAddress("ue5",&ue5);
+         chi2_99->SetBranchAddress("um5",&um5);
+         chi2_99->SetBranchAddress("m6",&m6);
+         chi2_99->SetBranchAddress("ue6",&ue6);
+         chi2_99->SetBranchAddress("um6",&um6);
+         chi2_99->SetBranchAddress("phi45",&phi45);
+         chi2_99->SetBranchAddress("phi46",&phi46);
+         chi2_99->SetBranchAddress("phi56",&phi56);
+	 int nentries = chi2_99->GetEntries();
 	 for (int i=0;i<nentries;i++) {
-	        chi2_90->GetEntry(i);
+	        chi2_99->GetEntry(i);
 	
-	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
-
 				double imn[3] = {(double)m4,(double)m5,(double)m6};
 				double iue[3] = {ue4,ue5,ue6};
 				double ium[3] = {um4, um5, um6};
 				double iph[3] = {phi45,phi46, phi45};
 
-				neutrinoModel appearanceModel(imn,iue,ium,iph);
-				
-				SBN_spectrum AppSpec(appearanceModel);
-				//std::cout<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<std::endl;
-				AppSpec.which_mode = which_mode;
+				neutrinoModel signalModel(imn,iue,ium,iph);
 
-				AppSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
-				AppSpec.load_freq_3p3(SBND);
-				AppSpec.load_freq_3p3(UBOONE);
-
-						
-
-
-				std::vector<double > pred6 = AppSpec.get_sixvector();
-				std::vector<double > pred9 = AppSpec.get_ninevector();
-				std::vector<double > pred = AppSpec.get_vector();
-
+				std::cout<<"starting calchi: "<<i<<std::endl;
+				fractionInstance.calc_chi(signalModel);
 			
-
-				if(pred6.size()!=Mctotal.GetNcols()){std::cout<<"ERROR"<<std::endl;}
-
-
-	
-				double mychi2=0;
-			
-				//check for previous known bug!
-				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
-				{
-					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
-					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
-				}
-
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
-
-				int whatsize = McI.GetNcols();
-
-				double mod = 1.0;
-
-				for(int i =0; i<whatsize; i++){
-					for(int j =0; j<whatsize; j++){
-						mychi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
-					}
-				}
-
-			//old output
-			//std::cout<<i<<" mn: "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
-		//	ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
-			std::cout<<"#"<<i<<" "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" "<<ue4<<" "<<ue5<<" "<<ue6<<" "<<um4<<" "<<um5<<" "<<um6<<" "<<phi45<<" "<<phi46<<" "<<phi56<<" "<<1.0<<" "<<which_mode<<" "<<chi2<<" "<<mychi2<<" "<<std::endl;
-			std::cout<<pred6[0];
-			for(int u=1;u< pred6.size(); u++){
-				std::cout<<" "<<pred6[u];
-			}	
-			std::cout<<std::endl;
-	
-	
+				std::cout<<"ending calchi: "<<i<<std::endl;
 	
 	 }
+
+
 	fm->Close();
-		outputFile.cd();
+	/*	outputFile.cd();
 		ntuple.Write();
    		outputFile.Close();
+	*/
 
 }
 

@@ -167,6 +167,8 @@ SBN_spectrum::SBN_spectrum(struct neutrinoModel numodel){
 };
 
 SBN_spectrum::SBN_spectrum(){		//definitely obsolete
+	
+	std::cout<<"THIS SHOUDL NEVER BE CALLED"<<std::endl;
 	nullModel.zero();
 	workingModel=nullModel;
 
