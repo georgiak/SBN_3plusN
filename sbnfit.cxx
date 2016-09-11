@@ -84,17 +84,18 @@ class wrkInstance {
 
 	std::vector<std::vector<double >> vMcI;
 
-	wrkInstance(int channel_mode, int beam_mode );
+	wrkInstance(int channel_mode, int beam_mode , double pot_scale); //for pot analysis
 
-	double calc_chi(neutrinoModel signalModel);
+	double calc_chi(neutrinoModel signalModel, int runnumber);
+	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin);
 	int clear_all();
 };
 
-wrkInstance::wrkInstance(int channel_mode, int beam_mode){
+
+wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 	which_mode = channel_mode;
 
 	double chi2 = 0; //old chi to be passed in
-	int i = 1; //some number identification
 
 	rangen = new TRandom();
 
@@ -117,6 +118,10 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode){
 	bkgspec->load_bkg(ICARUS);
 	bkgspec->load_bkg(SBND);
 	bkgspec->load_bkg(UBOONE);
+
+	if(pot_scale !=1.0){
+		bkgspec->scale_by_pot(pot_scale);
+	}
 
 	bool usedetsys = true;	
 	bool stat_only = false;
@@ -181,6 +186,7 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode){
 
 	}//end wrkInstance constructor;
 
+
 int wrkInstance::clear_all(){
 
 
@@ -195,14 +201,14 @@ return 1;
 
 
 
-double wrkInstance::calc_chi(neutrinoModel newModel){
+double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
 
 
 
 				this->clear_all();
 
 				double chi2 = 0;
-				int i = 1;
+				int i = runnumber;
 
 				workingModel=newModel;	
 				SigSpec = new SBN_spectrum(workingModel);
@@ -251,6 +257,65 @@ double wrkInstance::calc_chi(neutrinoModel newModel){
 			}	
 			std::cout<<std::endl;
 
+
+			Current_Chi = mychi2;
+
+	return Current_Chi;
+
+}
+
+double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin, int runnumber , double potin){
+
+
+
+				this->clear_all();
+
+				double chi2 = 0;
+				int i = runnumber;
+
+				workingModel=newModel;	
+				SigSpec = new SBN_spectrum(workingModel);
+				
+				SigSpec->which_mode = which_mode;
+
+				SigSpec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+				SigSpec->load_freq_3p3(SBND);
+				SigSpec->load_freq_3p3(UBOONE);
+
+				pred6 = SigSpec->get_sixvector();
+				pred9 = SigSpec->get_ninevector();
+				pred = SigSpec->get_vector();
+
+	
+				double mychi2=0;
+			
+				//check for previous known bug!
+				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
+				{
+					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
+					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
+				}
+
+				//Calculate the answer, ie chi square! will functionise
+				// should be matrix_size_c for full app+dis
+
+				int whatsize = vMcI[0].size();
+
+				double mod = 1.0;
+
+				for(int i =0; i<whatsize; i++){
+					for(int j =0; j<whatsize; j++){
+						mychi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
+					}
+				}
+	std::cout<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel.mNu[1]<<" "<<SigSpec->workingModel.mNu[2]<<" "<<SigSpec->workingModel.Ue[0]<<" "<<SigSpec->workingModel.Ue[1]<<" "<<SigSpec->workingModel.Ue[2]<<" "<<SigSpec->workingModel.Um[0]<<" "<<SigSpec->workingModel.Um[1]<<" "<<SigSpec->workingModel.Um[2]<<" "<<SigSpec->workingModel.phi[0]<<" "<<SigSpec->workingModel.phi[1]<<" "<<SigSpec->workingModel.phi[2]<<" "<<potin<<" "<<0.0<<" "<<0.0<<" "<<mychi2<<std::endl;
+
+		/*	std::cout<<pred6[0];
+			for(int u=1;u< pred6.size(); u++){
+				std::cout<<" "<<pred6[u];
+			}	
+			std::cout<<std::endl;
+		*/
 
 			Current_Chi = mychi2;
 
@@ -665,7 +730,7 @@ if(fraction_flag && false) // This is just an obsolete old one for reading it in
 if(fraction_flag) //this i smain!!
 {
 
-	wrkInstance fractionInstance(which_channel , 0);
+	wrkInstance fractionInstance(which_channel , 0, 1.0);
 
 
 	char filename[200];
@@ -715,11 +780,10 @@ if(fraction_flag) //this i smain!!
 				double iph[3] = {phi45,phi46, phi45};
 
 				neutrinoModel signalModel(imn,iue,ium,iph);
+				signalModel.numsterile=num_ster;
 
-				std::cout<<"starting calchi: "<<i<<std::endl;
-				fractionInstance.calc_chi(signalModel);
+				fractionInstance.calc_chi(signalModel, i);
 			
-				std::cout<<"ending calchi: "<<i<<std::endl;
 	
 	 }
 
@@ -960,97 +1024,16 @@ if(fraction_flag&& false)
 
 if(pot_flag){
 
-
-//load up background
-	SBN_detector * ICARUS = new SBN_detector(2);
- 	SBN_detector * SBND = new SBN_detector(0);
- 	SBN_detector * UBOONE = new SBN_detector(1);
-
-	int which_mode =-1;
-	if(app_flag && !dis_flag ){which_mode =APP_ONLY ;}else if(dis_flag && !app_flag){which_mode = DIS_ONLY;}else if(both_flag){which_mode =BOTH_ONLY;};
-
-	bool usedetsys = true;
-
-//	if(dis_flag && !app_flag){
-//		usedetsys=false;
-//	}
-
 	double ipot = pow(10,pot_num);
 
+	wrkInstance potInstance(which_channel, 0, ipot);
 
 
-	neutrinoModel nullModel;
-	SBN_spectrum bkgspec(nullModel);
-	
-	bkgspec.load_bkg(ICARUS);
-	bkgspec.load_bkg(SBND);
-	bkgspec.load_bkg(UBOONE);
-			
-	bkgspec.scale_by_pot(ipot);
-
-
-	std::vector<double > back6 = bkgspec.get_sixvector();
-	std::vector<double > back9 = bkgspec.get_ninevector();
-	std::vector<double > back  = bkgspec.get_vector();
-	TRandom *rangen    = new TRandom();
-
-		int matrix_size =(N_e_bins + N_e_bins + N_m_bins)*N_dets;
-		int matrix_size_c = (N_e_bins + N_m_bins) * N_dets;
-
-		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
-		 * */
-		TMatrixT <double> M(matrix_size,matrix_size);
-		TMatrixT <double> Mc(matrix_size_c,matrix_size_c);
-		TMatrixT <double> McI(matrix_size_c, matrix_size_c);
-
-
-		int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets;
-		int contMsize = (N_e_bins+N_m_bins)*N_dets;
-
-		TMatrixT <double> Msys(bigMsize,bigMsize);
-		sys_fill(Msys,usedetsys);
-
-		for(int i =0; i<Msys.GetNcols(); i++)
-		{
-			for(int j =0; j<Msys.GetNrows(); j++)
-			{
-				Msys(i,j)=Msys(i,j)*back[i]*back[j];
-			}
-		}
-
-
-
-
-		TMatrixT <double> Mstat(bigMsize,bigMsize);
-		stats_fill(Mstat, back);
-
-		TMatrixT <double > Mtotal(bigMsize,bigMsize);
-		if(stat_only){
-			Mtotal =  Mstat;
-		} else {
-			Mtotal = Msys+Mstat;
-		}
-		//Mtotal = Mstat;
-
-		TMatrixT<double > Mctotal(contMsize,contMsize);
-		contract_signal2(Mtotal,Mctotal);
-
-
-		double invdet=0; // just to hold determinant
-
-		//	bit o inverting, root tmatrix seems perfectly fast	
-		McI = Mctotal.Invert(&invdet);
-
-		std::vector<std::vector<double >> vMcI = to_vector(McI);
-
-		int whatsize = McI.GetNcols();
-
-
-		//now load file with all other vectors.
+	//now load file with all other vectors.
 	std::string filename = "fractiondata/3p1_both.dat";
 
 	if(num_ster == 1){
-		switch(which_mode){
+		switch(which_channel){
 			case APP_ONLY:
 				filename = "fractiondata/3p1_app.dat";
 				break;
@@ -1062,14 +1045,30 @@ if(pot_flag){
 				break;
 		}
 
-
-
-
 	} else if (num_ster == 2){
-		filename = "fractiondata/3p2_dis.dat";
-
+			switch(which_channel){
+			case APP_ONLY:
+				filename = "fractiondata/3p2_app.dat";
+				break;
+			case DIS_ONLY:
+				filename = "fractiondata/3p2_dis.dat";
+				break;
+			case BOTH_ONLY:
+				filename = "fractiondata/3p2_both.dat";
+				break;
+		}
 	} else if(num_ster == 3){
-		filename = "fractiondata/new_3p3_redo.dat";
+			switch(which_channel){
+			case APP_ONLY:
+				filename = "fractiondata/3p3_app.dat";
+				break;
+			case DIS_ONLY:
+				filename = "fractiondata/3p3_dis.dat";
+				break;
+			case BOTH_ONLY:
+				filename = "fractiondata/3p3_both.dat";
+				break;
+		}
 
 	}
 
@@ -1120,16 +1119,19 @@ if(filename != "none"){
 
 	int whichflagin = -1;
 
+	int count = 0;
+
 	std::ifstream myfile (filename);
 	if (!myfile.is_open())
 	{
 		std::cout<<"#ERROR: Passed POT file does not exist: "<<filename<<std::endl;
-		std::cout<<" which_mode "<<which_mode<<" numster "<<num_ster<<std::endl;
+		std::cout<<" which_channel "<<which_channel<<" numster "<<num_ster<<std::endl;
 		exit(EXIT_FAILURE);
 	}
 
 		while(!myfile.eof()){
-			
+		
+			count++;	
 			myfile >> num;
 			//std::cout<<num<<std::endl;	
 		
@@ -1170,46 +1172,54 @@ if(filename != "none"){
 			myfile >>oldchi;
 			myfile >>newchi;
 
+
 			potin= atof(pot.c_str());
 			oldchiin= atof(oldchi.c_str());
 			newchiin= atof(newchi.c_str());
 			whichflagin = atof(whicho.c_str());
 
-			//if(whichflagin != which_mode){
-			//	std::cout<<"#ERROR: Passed POT whichfile does not equal whichin"<<std::endl;
-			//	exit(EXIT_FAILURE);
-			//}
-
-
-	   		//std::cout<<"mn: "<<mn[0]<<" "<<mn[1]<<" "<<mn[2]<<" "<<ue[0]<<" "<<ue[1]<<" "<<ue[2]<<" "<<um[0]<<" "<<um[1]<<" "<<um[2]<<" "<<phi[0]<<" "<<phi[1]<<" "<<phi[2]<<" pot1: "<<potin<<" "<<oldchiin<<" "<<newchiin<<std::endl;
+	
+			neutrinoModel sigModel(mn,ue,um,phi );
+			sigModel.numsterile=num_ster;
 
 			for(int i=0;i<(N_e_bins+N_m_bins)*N_dets; i++){
 				myfile >> tempVec;
 				pred6in.push_back(atof(tempVec.c_str()));
-				//std::cout<<" "<<atof(tempVec.c_str());
 			}
-				//std::cout<<std::endl;
-			
+
+
+				if(myfile.eof()){break;}
+
 				// PUT CHI SQUARE CODE IN HERE!!
 			
 				double chipot = 0;
 
+				//subrract off cosmo
+
+				pred6in[0]=pred6in[0]-9;
+				pred6in[N_e_bins+N_m_bins]=pred6in[N_e_bins+N_m_bins]-11;
+				pred6in[(N_e_bins+N_m_bins)*2]=pred6in[(N_e_bins+N_m_bins)*2]-10;
+
 				std::vector<double> mod (N_dets*(N_e_bins+N_m_bins), 1.0);
 				for(int i =0; i<N_e_bins+N_m_bins; i++){
 					mod[i]=ipot;
-					mod[i+N_e_bins+N_m_bins]= ipot+0.5;
+					mod[i+N_e_bins+N_m_bins]= ipot*0.5+0.5;
 					mod[i+2*(N_e_bins+N_m_bins)]=ipot;
 				}
 
-
-				for(int i =0; i<whatsize; i++){
-					for(int j =0; j<whatsize; j++){
-						chipot += (back6[i]-mod[i]*pred6in[i])*vMcI[i][j]*(back6[j]-mod[j]*pred6in[j]);
-					}
+				for(int i=0; i<pred6in.size(); i++){
+					pred6in[i]=mod[i]*pred6in[i];
+		
 				}
 
-			std::cout<<num<<" "<<mn[0]<<" "<<mn[1]<<" "<<mn[2]<<" "<<ue[0]<<" "<<ue[1]<<" "<<ue[2]<<" "<<um[0]<<" "<<um[1]<<" "<<um[2]<<" "<<phi[0]<<" "<<phi[1]<<" "<<phi[2]<<" "<<ipot<<" "<<oldchiin<<" "<<newchiin<<" "<<chipot<<std::endl;
-		
+				pred6in[0]=pred6in[0]+9;
+				pred6in[N_e_bins+N_m_bins]=pred6in[N_e_bins+N_m_bins]+11;
+				pred6in[(N_e_bins+N_m_bins)*2]=pred6in[(N_e_bins+N_m_bins)*2]+10;
+
+
+
+			potInstance.calc_chi_POT_vector(sigModel, pred6in, count, ipot); //count and ipot are just there for records
+					
 			//FAR too much data, dont output this?
 			/*
 			std::cout<<pred6in[0]*mod[0];
