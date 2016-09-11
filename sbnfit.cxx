@@ -114,7 +114,6 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 	SBND = new SBN_detector(0);
 	ICARUS = new SBN_detector(2);
 
-	std::cout<<"beging load_bkg"<<std::endl;
 	bkgspec->load_bkg(ICARUS);
 	bkgspec->load_bkg(SBND);
 	bkgspec->load_bkg(UBOONE);
@@ -273,49 +272,36 @@ double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<doub
 				double chi2 = 0;
 				int i = runnumber;
 
-				workingModel=newModel;	
-				SigSpec = new SBN_spectrum(workingModel);
-				
-				SigSpec->which_mode = which_mode;
-
-				SigSpec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
-				SigSpec->load_freq_3p3(SBND);
-				SigSpec->load_freq_3p3(UBOONE);
-
-				pred6 = SigSpec->get_sixvector();
-				pred9 = SigSpec->get_ninevector();
-				pred = SigSpec->get_vector();
 
 	
 				double mychi2=0;
 			
 				//check for previous known bug!
-				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
+				if(false && matrix_size_c != vecin.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
-					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
+					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<vecin.size()<<" back: "<<back6.size()<<std::endl;	
 				}
 
 				//Calculate the answer, ie chi square! will functionise
 				// should be matrix_size_c for full app+dis
 
-				int whatsize = vMcI[0].size();
+				int whatsize = back6.size();
 
-				double mod = 1.0;
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						mychi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
+						mychi2 += (back6[i]-vecin[i])*vMcI[i][j]*(back6[j]-vecin[j]);
 					}
 				}
-	std::cout<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel.mNu[1]<<" "<<SigSpec->workingModel.mNu[2]<<" "<<SigSpec->workingModel.Ue[0]<<" "<<SigSpec->workingModel.Ue[1]<<" "<<SigSpec->workingModel.Ue[2]<<" "<<SigSpec->workingModel.Um[0]<<" "<<SigSpec->workingModel.Um[1]<<" "<<SigSpec->workingModel.Um[2]<<" "<<SigSpec->workingModel.phi[0]<<" "<<SigSpec->workingModel.phi[1]<<" "<<SigSpec->workingModel.phi[2]<<" "<<potin<<" "<<0.0<<" "<<0.0<<" "<<mychi2<<std::endl;
-
-		/*	std::cout<<pred6[0];
-			for(int u=1;u< pred6.size(); u++){
-				std::cout<<" "<<pred6[u];
+	std::cout<<i<<" "<<newModel.mNu[0]<<" "<<newModel.mNu[1]<<" "<<newModel.mNu[2]<<" "<<newModel.Ue[0]<<" "<<newModel.Ue[1]<<" "<<newModel.Ue[2]<<" "<<newModel.Um[0]<<" "<<newModel.Um[1]<<" "<<newModel.Um[2]<<" "<<newModel.phi[0]<<" "<<newModel.phi[1]<<" "<<newModel.phi[2]<<" "<<potin<<" "<<0.0<<" "<<0.0<<" "<<mychi2<<std::endl;
+/*
+			std::cout<<vecin[0];
+			for(int u=1;u< vecin.size(); u++){
+				std::cout<<" "<<vecin[u];
 			}	
 			std::cout<<std::endl;
-		*/
+	*/	
 
 			Current_Chi = mychi2;
 
