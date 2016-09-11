@@ -77,6 +77,8 @@ SBN_spectrum::SBN_spectrum(struct neutrinoModel numodel){
 	nullModel.zero();
 	workingModel=numodel;	
 
+	pot_scaling = 1.0;
+
 	numode = true;
 	nubarmode = false;
 	which_mode = BOTH_ONLY;
@@ -243,7 +245,7 @@ return;
 
 
 int SBN_spectrum::scale_by_pot(double pot){
-
+	pot_scaling = pot;
 
 	for(int i = 0; i < N_e_bins; i++){
 
@@ -283,6 +285,7 @@ int SBN_spectrum::scale_by_pot(double pot){
 					icarus_m_pion[i]= icarus_m_pion[i]*pot;
 
 				}
+
 
 
 return 1;

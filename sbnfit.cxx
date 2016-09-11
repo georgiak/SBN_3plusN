@@ -31,6 +31,291 @@
 #define no_argument 0
 #define required_argument 1
 #define optional_argument 2
+
+
+/*************************************************************
+ *************************************************************
+ *		Define a working instance class as I'm sick
+ *		of re-nitialising and doing chi^2 every time
+ ************************************************************
+ ************************************************************/
+
+
+class wrkInstance {
+	
+		int matrix_size ;
+		int matrix_size_c ;
+		int bigMsize;
+		int contMsize;
+
+	public:
+
+
+
+	bool numode;
+	bool nubarmode;
+	int which_mode; //app, dis or both
+
+	SBN_detector * ICARUS;
+ 	SBN_detector * SBND;
+ 	SBN_detector * UBOONE;
+
+	SBN_detector * ICARUS_mu; 
+ 	SBN_detector * SBND_mu;
+ 	SBN_detector * UBOONE_mu;
+	
+	TRandom *rangen;
+
+	neutrinoModel nullModel;
+	neutrinoModel workingModel;
+
+	SBN_spectrum bkgspec;
+	SBN_spectrum SigSpec;
+
+	std::vector<double > back6 ;
+	std::vector<double > back9 ;
+	std::vector<double > back  ;
+	std::vector<double > pred6;
+	std::vector<double > pred9;
+	std::vector<double > pred;
+
+
+	double Current_Chi;
+
+	std::vector<std::vector<double >> vMcI;
+
+	wrkInstance(neutrinoModel signalModel, int channel_mode, int beam_mode );
+
+	double calc_chi(neutrinomodel signalmodel);
+	int clear_all();
+};
+
+wrkinstance::wrkinstance(neutrinomodel signalmodel int channel_mode, int beam_mode){
+
+	which_mode = channel_mode;
+
+	workingmodel=signalmodel;	
+	double chi2 = 0; //old chi to be passed in
+	int i = 1; //some number identification
+
+	rangen = new trandom();
+	bkgspec =sbn_spectrum(nullmodel);
+
+	uboone_mu = new sbn_detector(1,true);
+	sbnd_mu = new sbn_detector(0,true);
+	icarus_mu = new sbn_detector(2,true);
+
+	uboone = new sbn_detector(1);
+	sbnd = new sbn_detector(0);
+	icarus = new sbn_detector(2);
+
+	bkgspec.load_bkg(icarus);
+	bkgspec.load_bkg(sbnd);
+	bkgspec.load_bkg(uboone);
+
+	bool usedetsys = true;	
+	bool stat_only = false;
+
+	back6 = bkgspec.get_sixvector();
+	back9 = bkgspec.get_ninevector();
+	back  = bkgspec.get_vector();
+
+		matrix_size =(n_e_bins + n_e_bins + n_m_bins)*n_dets;
+		matrix_size_c = (n_e_bins + n_m_bins) * n_dets;
+		
+		bigmsize = (n_e_bins*n_e_spectra+n_m_bins*n_m_spectra)*n_dets;
+		contmsize = (n_e_bins+n_m_bins)*n_dets;
+
+		/* create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
+		 * */
+
+		 tmatrixt <double> m(matrix_size,matrix_size);
+		 tmatrixt <double>  mc(matrix_size_c,matrix_size_c);
+		 tmatrixt <double>  mci(matrix_size_c, matrix_size_c);
+		 tmatrixt <double>  msys(bigmsize,bigmsize);
+
+		
+		 sys_fill(msys,usedetsys);
+
+		for(int i =0; i<msys.getncols(); i++)
+		{
+			for(int j =0; j<msys.getnrows(); j++)
+			{
+				msys(i,j)=msys(i,j)*back[i]*back[j];
+			}
+		}
+
+
+
+
+		tmatrixt <double> mstat(bigmsize,bigmsize);
+		stats_fill(mstat, back);
+
+		tmatrixt <double > mtotal(bigmsize,bigmsize);
+
+		if(stat_only){
+			mtotal =  mstat;
+		} else {
+			mtotal = msys+mstat;
+		}
+		//mtotal = mstat;
+
+		tmatrixt <double> mctotal(contmsize,contmsize);
+		contract_signal2(mtotal,mctotal);
+
+
+		double invdet=0; // just to hold determinant
+
+		//	bit o inverting, root tmatrix seems perfectly fast	
+		mci = mctotal.invert(&invdet);
+
+		vmci = to_vector(mci);
+
+	
+	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
+
+				sigspec=sbn_spectrum(workingmodel);
+				
+				sigspec.which_mode = which_mode;
+
+				sigspec.load_freq_3p3(icarus);//0 is silly app flag (get rid of this)
+				sigspec.load_freq_3p3(sbnd);
+				sigspec.load_freq_3p3(uboone);
+
+				pred6 = sigspec.get_sixvector();
+				pred9 = sigspec.get_ninevector();
+				pred = sigspec.get_vector();
+
+			
+
+				if(pred6.size()!=mctotal.getncols()){std::cout<<"error"<<std::endl;}
+
+
+	
+				double mychi2=0;
+			
+				//check for previous known bug!
+				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
+				{
+					std::cout<<"#error, soemthing wrong lengthwise"<<std::endl;
+					std::cout<<"#error, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
+				}
+
+				//calculate the answer, ie chi square! will functionise
+				// should be matrix_size_c for full app+dis
+
+				int whatsize = mci.getncols();
+
+				double mod = 1.0;
+
+				for(int i =0; i<whatsize; i++){
+					for(int j =0; j<whatsize; j++){
+						mychi2 += mod*(back6[i]-pred6[i])*vmci[i][j]*(back6[j]-pred6[j]);
+					}
+				}
+
+			//old output
+			//std::cout<<i<<" mn: "<<appspec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
+		
+		//	ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
+			std::cout<<"#"<<i<<" "<<SigSpec.workingModel.mNu[0]<<" "<<SigSpec.workingModel.mNu[1]<<" "<<SigSpec.workingModel.mNu[2]<<" "<<SigSpec.workingModel.Ue[0]<<" "<<SigSpec.workingModel.Ue[1]<<" "<<SigSpec.workingModel.Ue[2]<<" "<<SigSpec.workingModel.Um[0]<<" "<<SigSpec.workingModel.Um[1]<<" "<<SigSpec.workingModel.Um[2]<<" "<<SigSpec.workingModel.phi[0]<<" "<<SigSpec.workingModel.phi[1]<<" "<<SigSpec.workingModel.phi[2]<<" "<<SigSpec.pot_scaling<<" "<<which_mode<<" "<<chi2<<" "<<mychi2<<" "<<std::endl;
+			std::cout<<pred6[0];
+			for(int u=1;u< pred6.size(); u++){
+				std::cout<<" "<<pred6[u];
+			}	
+			std::cout<<std::endl;
+	
+		       Current_Chi = mychi2;	
+
+
+}//end wrkInstance constructor;
+
+int wrkInstance::clear_all(){
+
+
+	//	~SigSpec(); //make a destructor
+		pred.clear();
+		pred6.clear();
+		pred9.clear();
+		Current_Chi = -9999;
+
+return 1;
+}
+
+
+
+double wrkInstance::calc_chi(neutrinoModel newModel){
+
+
+
+				this->clear_all();
+
+				double chi2 = 0;
+				int i = 1;
+
+				workingModel=newModel;	
+				SigSpec = SBN_spectrum(workingModel);
+				
+				SigSpec.which_mode = which_mode;
+
+				SigSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+				SigSpec.load_freq_3p3(SBND);
+				SigSpec.load_freq_3p3(UBOONE);
+
+				pred6 = SigSpec.get_sixvector();
+				pred9 = SigSpec.get_ninevector();
+				pred = SigSpec.get_vector();
+
+			
+
+
+
+	
+				double mychi2=0;
+			
+				//check for previous known bug!
+				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
+				{
+					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
+					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
+				}
+
+				//Calculate the answer, ie chi square! will functionise
+				// should be matrix_size_c for full app+dis
+
+				int whatsize = vMcI[0].size();
+
+				double mod = 1.0;
+
+				for(int i =0; i<whatsize; i++){
+					for(int j =0; j<whatsize; j++){
+						mychi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
+					}
+				}
+
+			//old output
+			//std::cout<<i<<" mn: "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
+		//	ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
+			std::cout<<"#"<<i<<" "<<SigSpec.workingModel.mNu[0]<<" "<<SigSpec.workingModel.mNu[1]<<" "<<SigSpec.workingModel.mNu[2]<<" "<<SigSpec.workingModel.Ue[0]<<" "<<SigSpec.workingModel.Ue[1]<<" "<<SigSpec.workingModel.Ue[2]<<" "<<SigSpec.workingModel.Um[0]<<" "<<SigSpec.workingModel.Um[1]<<" "<<SigSpec.workingModel.Um[2]<<" "<<SigSpec.workingModel.phi[0]<<" "<<SigSpec.workingModel.phi[1]<<" "<<SigSpec.workingModel.phi[2]<<" "<<SigSpec.pot_scaling<<" "<<which_mode<<" "<<chi2<<" "<<mychi2<<" "<<std::endl;
+
+			std::cout<<pred6[0];
+			for(int u=1;u< pred6.size(); u++){
+				std::cout<<" "<<pred6[u];
+			}	
+			std::cout<<std::endl;
+
+
+			Current_Chi = mychi2;
+
+	return Current_Chi;
+
+}
+
+
+
+
+
+
 /*************************************************************
  *************************************************************
  *		BEGIN Main::sbnfit.cxx
@@ -376,7 +661,7 @@ if(unit_flag){
 
 
 
-if(fraction_flag)
+if(fraction_flag && false)
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
@@ -426,7 +711,7 @@ if(fraction_flag)
 
 
 
-if(fraction_flag&& false) //this i smain!!
+if(fraction_flag) //this i smain!!
 {
 	SBN_detector * ICARUS = new SBN_detector(2);
  	SBN_detector * SBND = new SBN_detector(0);

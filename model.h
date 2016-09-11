@@ -44,7 +44,8 @@ class SBN_spectrum {
 
 
 	public:
-
+	double pot_scaling;
+	
 	bool numode;
 	bool nubarmode;
 	int which_mode; //app, dis or both
