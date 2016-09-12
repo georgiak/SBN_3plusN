@@ -64,8 +64,6 @@ class wrkInstance {
  	SBN_detector * SBND_mu;
  	SBN_detector * UBOONE_mu;
 	
-	TRandom *rangen;
-
 	neutrinoModel nullModel;
 	neutrinoModel workingModel;
 
@@ -96,8 +94,6 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 	which_mode = channel_mode;
 
 	double chi2 = 0; //old chi to be passed in
-
-	rangen = new TRandom();
 
 	nullModel = neutrinoModel();
 	nullModel.zero();
@@ -180,6 +176,15 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 
 		vMcI = to_vector(mci);
 
+		delete bkgspec;
+		delete UBOONE_mu;
+		delete SBND_mu;
+		delete ICARUS_mu;
+
+		delete UBOONE;
+		delete SBND;
+		delete ICARUS;
+
 	
 	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
 
@@ -256,6 +261,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
 			}	
 			std::cout<<std::endl;
 
+			delete SigSpec;
 
 			Current_Chi = mychi2;
 
@@ -761,7 +767,7 @@ if(fraction_flag) //this i smain!!
 	 int nentries = chi2_99->GetEntries();
 
 	 double imin=0;
-	 double imax=nentries;
+	 double imax=10;//nentries;
 
 
 	//Rudamentary parallalisation scheme
