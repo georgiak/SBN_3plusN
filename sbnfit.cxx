@@ -347,6 +347,7 @@ bool pot_flag = false;
 
 int mode_flag = 0;
 
+int parallel_split=0;
 
 int  sens_num=1;
 double dm41 = -1.0;
@@ -389,7 +390,7 @@ const struct option longopts[] =
 	{"both",		no_argument,		0, 'b'},
 	{"unitary",		no_argument,		0, 'n'},
 	{"num",			required_argument,	0, 'N'},
-	{"fraction",		no_argument,		0, 'f'},
+	{"fraction",		required_argument,	0, 'f'},
 	{"pot",			required_argument,	0, 'p'},
 	{"app",			no_argument,		0, 'a'},
 	{0,			no_argument, 		0,  0},
@@ -398,7 +399,7 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "dalfnuM:e:m:svp:hS:cFTABN:b", longopts, &index);
+	iarg = getopt_long(argc,argv, "dalf:nuM:e:m:svp:hS:cFTABN:b", longopts, &index);
 
 	switch(iarg)
 	{
@@ -455,6 +456,7 @@ while(iarg != -1)
 			break;
 		case 'f':
 			fraction_flag = true;
+			parallel_split  = strtof(optarg,NULL);
 			break;
 		case 'u':
 			in_um4  = strtof(optarg,NULL);
@@ -757,7 +759,40 @@ if(fraction_flag) //this i smain!!
          chi2_99->SetBranchAddress("phi46",&phi46);
          chi2_99->SetBranchAddress("phi56",&phi56);
 	 int nentries = chi2_99->GetEntries();
-	 for (int i=0;i<nentries;i++) {
+
+	 double imin=0;
+	 double imax=nentries;
+
+
+	//Rudamentary parallalisation scheme
+	 int pfrac=nentries/5;
+	 if(parallel_split!=0){
+		switch(parallel_split){
+			case 1:
+				imin=0;
+				imax=pfrac;
+				break;
+			case 2:
+				imin=pfrac;
+				imax=2*pfrac;
+				break;
+			case 3:
+				imin=2*pfrac;
+				imax=3*pfrac;
+				break;
+			case 4:
+				imin=3*pfrac;
+				imax=4*pfrac;
+				break;
+			case 5:
+				imin=4*pfrac;
+				imax=nentries;
+				break;
+		}
+	}
+
+
+	 for (int i=imin;i<imax;i++) {
 	        chi2_99->GetEntry(i);
 	
 				double imn[3] = {(double)m4,(double)m5,(double)m6};
