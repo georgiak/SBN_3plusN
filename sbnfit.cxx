@@ -767,7 +767,7 @@ if(fraction_flag) //this i smain!!
 	 int nentries = chi2_99->GetEntries();
 
 	 double imin=0;
-	 double imax=10;//nentries;
+	 double imax=nentries;
 
 
 	//Rudamentary parallalisation scheme
