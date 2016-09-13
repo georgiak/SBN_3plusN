@@ -83,12 +83,25 @@ class wrkInstance {
 	std::vector<std::vector<double >> vMcI;
 
 	wrkInstance(int channel_mode, int beam_mode , double pot_scale); //for pot analysis
+	~wrkInstance();
 
 	double calc_chi(neutrinoModel signalModel, int runnumber);
 	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin);
 	int clear_all();
 };
 
+wrkInstance::~wrkInstance(){
+
+		delete bkgspec;
+		delete UBOONE_mu;
+		delete SBND_mu;
+		delete ICARUS_mu;
+
+		delete UBOONE;
+		delete SBND;
+		delete ICARUS;
+
+}
 
 wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 	which_mode = channel_mode;
@@ -103,12 +116,12 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 	bkgspec = new SBN_spectrum(nullModel);
 
 	UBOONE_mu = new SBN_detector(1,true);
-	SBND_mu = new SBN_detector(0,true);
+	SBND_mu =  new SBN_detector(0,true);
 	ICARUS_mu = new SBN_detector(2,true);
 
 	UBOONE = new SBN_detector(1);
-	SBND = new SBN_detector(0);
-	ICARUS = new SBN_detector(2);
+	SBND =  new SBN_detector(0);
+	ICARUS =  new SBN_detector(2);
 
 	bkgspec->load_bkg(ICARUS);
 	bkgspec->load_bkg(SBND);
@@ -140,7 +153,7 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 		 TMatrixT <double>  msys(bigMsize,bigMsize);
 
 		
-		 sys_fill(msys,usedetsys);
+		sys_fill(msys,usedetsys);
 
 		for(int i =0; i<msys.GetNcols(); i++)
 		{
@@ -176,15 +189,7 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 
 		vMcI = to_vector(mci);
 
-		delete bkgspec;
-		delete UBOONE_mu;
-		delete SBND_mu;
-		delete ICARUS_mu;
-
-		delete UBOONE;
-		delete SBND;
-		delete ICARUS;
-
+	/*	*/
 	
 	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
 
