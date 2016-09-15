@@ -1976,7 +1976,7 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 	if(numode){
 		sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
 	} else if (nubarmode){
-		sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+		sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
 	}
 
 	TFile f(namei,"UPDATE");
@@ -2916,7 +2916,7 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 	H1nue_reco_photon_sinsq.Write();
 	f.Close();
 
-	std::cout<<"n11: "<<n11<<" "<<n11*66.0<<" "<<n11*66.0*0.9<<std::endl;
+	//std::cout<<"n11: "<<n11<<" "<<n11*66.0<<" "<<n11*66.0*0.9<<std::endl;
 
 
 /*	

@@ -52,31 +52,34 @@ class wrkInstance {
 
 
 
-	bool numode;
-	bool nubarmode;
+	int beam_mode; // 0 is nu only 1 is nubar+nu
 	int which_mode; //app, dis or both
 
 	SBN_detector * ICARUS;
  	SBN_detector * SBND;
  	SBN_detector * UBOONE;
 
-	SBN_detector * ICARUS_mu; 
- 	SBN_detector * SBND_mu;
- 	SBN_detector * UBOONE_mu;
-	
 	neutrinoModel nullModel;
 	neutrinoModel workingModel;
 
 	SBN_spectrum * bkgspec;
 	SBN_spectrum * SigSpec;
 
-	std::vector<double > back6 ;
-	std::vector<double > back9 ;
-	std::vector<double > back  ;
-	std::vector<double > pred6;
-	std::vector<double > pred9;
-	std::vector<double > pred;
+	SBN_spectrum * bkgbarspec;
+	SBN_spectrum * SigBarSpec;
 
+	std::vector<double > back6 ;
+	std::vector<double > back  ;
+
+	std::vector<double > backbar6 ;
+	std::vector<double > backbar  ;
+
+	std::vector<double > pred6;
+	std::vector<double > predbar6;
+	std::vector<double >  pred_all_12;
+
+	std::vector<double> back_all;
+	std::vector<double> back_all_12;
 
 	double Current_Chi;
 
@@ -93,9 +96,7 @@ class wrkInstance {
 wrkInstance::~wrkInstance(){
 
 		delete bkgspec;
-		delete UBOONE_mu;
-		delete SBND_mu;
-		delete ICARUS_mu;
+		delete bkgbarspec;
 
 		delete UBOONE;
 		delete SBND;
@@ -103,9 +104,10 @@ wrkInstance::~wrkInstance(){
 
 }
 
-wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
+wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale){
 	which_mode = channel_mode;
-
+	beam_mode = fbeam_mode;
+	
 	double chi2 = 0; //old chi to be passed in
 
 	nullModel = neutrinoModel();
@@ -113,30 +115,31 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 	workingModel= neutrinoModel();
 	workingModel.zero();
 
-	bkgspec = new SBN_spectrum(nullModel);
-
-	UBOONE_mu = new SBN_detector(1,true);
-	SBND_mu =  new SBN_detector(0,true);
-	ICARUS_mu = new SBN_detector(2,true);
-
 	UBOONE = new SBN_detector(1);
 	SBND =  new SBN_detector(0);
 	ICARUS =  new SBN_detector(2);
 
-	bkgspec->load_bkg(ICARUS);
-	bkgspec->load_bkg(SBND);
-	bkgspec->load_bkg(UBOONE);
+	bkgspec = new SBN_spectrum(nullModel);
+	bkgbarspec = new SBN_spectrum(nullModel);
+	bkgbarspec->SetNuBarMode();
 
-	if(pot_scale !=1.0){
-		bkgspec->scale_by_pot(pot_scale);
-	}
+		bkgspec->load_bkg(ICARUS);
+		bkgspec->load_bkg(SBND);
+		bkgspec->load_bkg(UBOONE);
+	
+		if(pot_scale !=1.0){
+			bkgspec->scale_by_pot(pot_scale);
+		}
 
-	bool usedetsys = true;	
-	bool stat_only = false;
+			back6 = bkgspec->get_sixvector();
+			back  = bkgspec->get_vector();
 
-	back6 = bkgspec->get_sixvector();
-	back9 = bkgspec->get_ninevector();
-	back  = bkgspec->get_vector();
+		bool usedetsys = true;	
+		bool stat_only = false;
+	
+	if (beam_mode == 0){
+
+	
 
 		matrix_size =(N_e_bins + N_e_bins + N_m_bins)*N_dets;
 		matrix_size_c = (N_e_bins + N_m_bins) * N_dets;
@@ -193,16 +196,87 @@ wrkInstance::wrkInstance(int channel_mode, int beam_mode, double pot_scale){
 	
 	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
 
-	}//end wrkInstance constructor;
+	} else if(beam_mode == 1)
+	{
+		bkgbarspec->load_bkg(ICARUS);
+		bkgbarspec->load_bkg(SBND);
+		bkgbarspec->load_bkg(UBOONE);
+
+		if(pot_scale !=1.0){
+			bkgbarspec->scale_by_pot(pot_scale);
+		}
+
+		backbar6 = bkgbarspec->get_sixvector();
+		backbar  = bkgbarspec->get_vector();
+
+		back_all = back;
+		back_all.insert(back_all.end(), backbar.begin(), backbar.end() );
+
+		back_all_12 =back6;
+		back_all_12.insert(back_all_12.end(), backbar6.begin(), backbar6.end() );
+	
+
+		bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti;
+		contMsize = (N_e_bins+N_m_bins)*N_dets*N_anti;
+
+		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
+		 * */
+
+		TMatrixT <double> McI(contMsize, contMsize);
+		TMatrixT <double> McIbar(contMsize, contMsize);
+
+		// Fill systematics from pre-computed files
+		TMatrixT <double> Msys(bigMsize,bigMsize);
+		sys_fill(Msys,usedetsys);
+
+		// systematics per scaled event
+		for(int i =0; i<Msys.GetNcols(); i++)
+		{
+			for(int j =0; j<Msys.GetNrows(); j++)
+			{
+				Msys(i,j)=Msys(i,j)*back_all[i]*back_all[j];
+			}
+		}
+
+		// Fill stats from the back ground vector
+		TMatrixT <double> Mstat(bigMsize,bigMsize);
+		stats_fill(Mstat, back_all);
+
+		//And then define the total covariance matrix in all its glory
+		TMatrixT <double > Mtotal(bigMsize,bigMsize);
+		if(stat_only){
+			Mtotal =  Mstat;
+		} else {
+			Mtotal = Msys+Mstat;
+		}
+
+		// Now contract back the larger antimatrix
+		TMatrixT<double > Mctotal(contMsize,contMsize);
+
+		contract_signal2_anti(Mtotal,Mctotal);
+	
+
+		// just to hold determinant
+		double invdet=0; 
+
+		// Bit o inverting, root tmatrix seems perfectly and sufficiently fast for this, even with anti_mode
+		McI = Mctotal.Invert(&invdet);
+
+
+		// There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
+		vMcI = to_vector(McI);
+	} //end anti_initialiser
+
+}//end wrkInstance constructor;
 
 
 int wrkInstance::clear_all(){
 
 
 	//	~SigSpec(); //make a destructor
-		pred.clear();
 		pred6.clear();
-		pred9.clear();
+		predbar6.clear();
+		pred_all_12.clear();
 		Current_Chi = -9999;
 
 return 1;
@@ -216,59 +290,78 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
 
 				this->clear_all();
 
+
+
 				double chi2 = 0;
 				int i = runnumber;
-
+		
 				workingModel=newModel;	
 				SigSpec = new SBN_spectrum(workingModel);
-				
 				SigSpec->which_mode = which_mode;
+				
+				SigBarSpec =new SBN_spectrum(workingModel);
+				SigSpec->which_mode=which_mode;
+				SigBarSpec->SetNuBarMode();
+
 
 				SigSpec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
 				SigSpec->load_freq_3p3(SBND);
 				SigSpec->load_freq_3p3(UBOONE);
 
 				pred6 = SigSpec->get_sixvector();
-				pred9 = SigSpec->get_ninevector();
-				pred = SigSpec->get_vector();
-
-	
-				double mychi2=0;
-			
-				//check for previous known bug!
-				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
-				{
-					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
-					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
-				}
-
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
 
 				int whatsize = vMcI[0].size();
 
-				double mod = 1.0;
+
+				double mychi2=0;
+		if(beam_mode ==0){
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						mychi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
+						mychi2 += (back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
 					}
 				}
 
-			//old output
-			//std::cout<<i<<" mn: "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
-		//	ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
-			std::cout<<"#"<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel.mNu[1]<<" "<<SigSpec->workingModel.mNu[2]<<" "<<SigSpec->workingModel.Ue[0]<<" "<<SigSpec->workingModel.Ue[1]<<" "<<SigSpec->workingModel.Ue[2]<<" "<<SigSpec->workingModel.Um[0]<<" "<<SigSpec->workingModel.Um[1]<<" "<<SigSpec->workingModel.Um[2]<<" "<<SigSpec->workingModel.phi[0]<<" "<<SigSpec->workingModel.phi[1]<<" "<<SigSpec->workingModel.phi[2]<<" "<<SigSpec->pot_scaling<<" "<<which_mode<<" "<<chi2<<" "<<mychi2<<" "<<std::endl;
 
-			std::cout<<pred6[0];
-			for(int u=1;u< pred6.size(); u++){
-				std::cout<<" "<<pred6[u];
+		}else if(beam_mode == 1)
+		{
+			
+				SigBarSpec->load_freq_3p3(ICARUS);
+				SigBarSpec->load_freq_3p3(SBND);
+				SigBarSpec->load_freq_3p3(UBOONE);
+		
+				predbar6 = SigBarSpec->get_sixvector();
+
+				pred_all_12 = pred6;	
+			     	pred_all_12.insert( pred_all_12.end(), predbar6.begin(), predbar6.end() );
+		
+		
+				for(int i =0; i<whatsize; i++){
+					for(int j =0; j<whatsize; j++){
+						mychi2 += (back_all_12[i]-pred_all_12[i])*vMcI[i][j]*(back_all_12[j]-pred_all_12[j]);
+					}
+				}
+			
+		
+		}// end anti-mode
+
+
+			Current_Chi = mychi2;
+
+std::cout<<"#"<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel.mNu[1]<<" "<<SigSpec->workingModel.mNu[2]<<" "<<SigSpec->workingModel.Ue[0]<<" "<<SigSpec->workingModel.Ue[1]<<" "<<SigSpec->workingModel.Ue[2]<<" "<<SigSpec->workingModel.Um[0]<<" "<<SigSpec->workingModel.Um[1]<<" "<<SigSpec->workingModel.Um[2]<<" "<<SigSpec->workingModel.phi[0]<<" "<<SigSpec->workingModel.phi[1]<<" "<<SigSpec->workingModel.phi[2]<<" "<<SigSpec->pot_scaling<<" "<<which_mode<<" "<<chi2<<" "<<Current_Chi<<" "<<std::endl;
+			std::vector< double > printvec;
+			if(beam_mode==1){ printvec = pred_all_12;} else {printvec = pred6;}
+
+			std::cout<<printvec[0];
+			for(int u=1;u< printvec.size(); u++){
+				std::cout<<" "<<printvec[u];
 			}	
 			std::cout<<std::endl;
 
-			delete SigSpec;
 
-			Current_Chi = mychi2;
+
+	delete SigBarSpec;
+	delete SigSpec;
 
 	return Current_Chi;
 
@@ -354,6 +447,8 @@ int which_channel = BOTH_ONLY;
 bool unit_flag = false;
 bool fraction_flag = false;
 bool anti_flag = false;
+int anti_mode = 0;
+
 bool pot_flag = false;
 
 int mode_flag = 0;
@@ -426,6 +521,7 @@ while(iarg != -1)
 			break;
 		case 'A':
 			anti_flag = true;
+			anti_mode = 1;
 			break;
 		case 'n':
 			unit_flag = true;
@@ -729,7 +825,8 @@ if(fraction_flag && false) // This is just an obsolete old one for reading it in
 if(fraction_flag) //this i smain!!
 {
 
-	wrkInstance fractionInstance(which_channel , 0, 1.0);
+	double norm_pot = 1.0;
+	wrkInstance fractionInstance(which_channel , anti_mode , norm_pot);
 
 
 	char filename[200];
@@ -2970,7 +3067,7 @@ if(sens_num == 3)
 	
 		}//end m5 loop
 				//std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
-		}//end m for loop
+		}//en  for loop
 
  
 		
@@ -2986,7 +3083,7 @@ if(sens_num == 3)
 	
 
 
-if(anti_flag){
+if(anti_flag && false){ //depriciated, now include in wrkInstance
 
 	if(verbose_flag) std::cout<<"#**********Begining nu+nubar mode analysis**********"<<std::endl;
 	SBN_detector * ICARUS = new SBN_detector(2);
@@ -3006,6 +3103,7 @@ if(anti_flag){
 
 
 	if(verbose_flag) std::cout<<"# Initialising nu+nubar mode backgrrounds"<<std::endl;
+	
 	SBN_spectrum bkgspec(nullModel);
 	SBN_spectrum bkgbarspec(nullModel);
 	bkgbarspec.SetNuBarMode();
