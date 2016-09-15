@@ -462,7 +462,9 @@ double in_dm = 0;
 double in_ue4 = 0;
 double in_um4=0;
 
+
 double pot_num =1;
+double pot_num_bar =1;
 
 bool stat_only = false;
 int dis_which = 1;
@@ -533,8 +535,17 @@ while(iarg != -1)
 			verbose_flag = true;
 			break;
 		case 'p':
+			{
 			pot_flag = true;
-			pot_num = strtof(optarg,NULL);
+			std::string s = optarg;
+			std::string delimiter = ":";
+			//std::cout<<s.find(delimiter)<<std::endl;
+			std::string spot = s.substr(0, s.find(delimiter));	
+			std::string spotbar = s.substr(s.find(delimiter)+1);
+
+			pot_num= atof(spot.c_str());
+			pot_num_bar = atof(spotbar.c_str());
+			}
 			break;
 		case 'N':
 			num_ster = strtof(optarg,NULL);
@@ -604,7 +615,8 @@ while(iarg != -1)
 
 }
 
-
+std::cout<<pot_num<<" "<<pot_num_bar<<std::endl;
+return 0;
 
 if(verbose_flag)
 {
