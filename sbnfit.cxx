@@ -55,6 +55,9 @@ class wrkInstance {
 	int beam_mode; // 0 is nu only 1 is nubar+nu
 	int which_mode; //app, dis or both
 
+	double pot;
+	double pot_bar;
+
 	SBN_detector * ICARUS;
  	SBN_detector * SBND;
  	SBN_detector * UBOONE;
@@ -85,6 +88,7 @@ class wrkInstance {
 
 	std::vector<std::vector<double >> vMcI;
 
+	wrkInstance(int channel_mode, int beam_mode);
 	wrkInstance(int channel_mode, int beam_mode , double pot_scale); //for pot analysis
 	~wrkInstance();
 
@@ -103,6 +107,8 @@ wrkInstance::~wrkInstance(){
 		delete ICARUS;
 
 }
+
+wrkInstance::wrkInstance(int channel_mode, int fbeam_mode) : wrkInstance(channel_mode,fbeam_mode,1.0) {}
 
 wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale){
 	which_mode = channel_mode;
@@ -615,8 +621,6 @@ while(iarg != -1)
 
 }
 
-std::cout<<pot_num<<" "<<pot_num_bar<<std::endl;
-return 0;
 
 if(verbose_flag)
 {
