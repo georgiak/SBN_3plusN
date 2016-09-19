@@ -88,12 +88,12 @@ class wrkInstance {
 
 	std::vector<std::vector<double >> vMcI;
 
-	wrkInstance(int channel_mode, int beam_mode , double pot_scale, double pot_scale_bar); //for pot analysis
-	wrkInstance(int channel_mode, int beam_mode);
+	wrkInstance(int channel_mode, int fbeam_mode , double pot_scale, double pot_scale_bar); //for pot analysis
+	wrkInstance(int channel_mode, int fbeam_mode);
 	~wrkInstance();
 
 	double calc_chi(neutrinoModel signalModel, int runnumber);
-	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin);
+	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin, double potinbar);
 	int clear_all();
 };
 
@@ -373,7 +373,7 @@ std::cout<<"#"<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel
 
 }
 
-double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin, int runnumber , double potin){
+double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin, int runnumber , double potin, double potinbar){
 
 
 
@@ -382,29 +382,40 @@ double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<doub
 				double chi2 = 0;
 				int i = runnumber;
 
+				int whatsize = vMcI[0].size();
 
-	
 				double mychi2=0;
 			
 				//check for previous known bug!
-				if(false && matrix_size_c != vecin.size() && matrix_size_c != back6.size())
+			/*	if(false && matrix_size_c != vecin.size() && matrix_size_c != back6.size())
 				{
 					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
 					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<vecin.size()<<" back: "<<back6.size()<<std::endl;	
 				}
-
+			*/
 				//Calculate the answer, ie chi square! will functionise
 				// should be matrix_size_c for full app+dis
 
-				int whatsize = back6.size();
-
-
+			if(beam_mode==0){
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
 						mychi2 += (back6[i]-vecin[i])*vMcI[i][j]*(back6[j]-vecin[j]);
 					}
 				}
-	std::cout<<i<<" "<<newModel.mNu[0]<<" "<<newModel.mNu[1]<<" "<<newModel.mNu[2]<<" "<<newModel.Ue[0]<<" "<<newModel.Ue[1]<<" "<<newModel.Ue[2]<<" "<<newModel.Um[0]<<" "<<newModel.Um[1]<<" "<<newModel.Um[2]<<" "<<newModel.phi[0]<<" "<<newModel.phi[1]<<" "<<newModel.phi[2]<<" "<<potin<<" "<<0.0<<" "<<0.0<<" "<<mychi2<<std::endl;
+
+			}else if(beam_mode ==1){
+				for(int i =0; i<whatsize; i++){
+					for(int j =0; j<whatsize; j++){
+						mychi2 += (back_all_12[i]-vecin[i])*vMcI[i][j]*(back_all_12[j]-vecin[j]);
+					}
+				}
+			}
+			
+
+
+
+
+	std::cout<<i<<" "<<newModel.mNu[0]<<" "<<newModel.mNu[1]<<" "<<newModel.mNu[2]<<" "<<newModel.Ue[0]<<" "<<newModel.Ue[1]<<" "<<newModel.Ue[2]<<" "<<newModel.Um[0]<<" "<<newModel.Um[1]<<" "<<newModel.Um[2]<<" "<<newModel.phi[0]<<" "<<newModel.phi[1]<<" "<<newModel.phi[2]<<" "<<potin<<" "<<potinbar<<" "<<0.0<<" "<<mychi2<<std::endl;
 /*
 			std::cout<<vecin[0];
 			for(int u=1;u< vecin.size(); u++){
@@ -842,7 +853,7 @@ if(fraction_flag) //this i smain!!
 {
 
 	double norm_pot = 1.0;
-	wrkInstance fractionInstance(which_channel , anti_mode , norm_pot);
+	wrkInstance fractionInstance(which_channel , anti_mode);
 
 
 	char filename[200];
@@ -1170,52 +1181,72 @@ if(fraction_flag&& false)
 if(pot_flag){
 
 	double ipot = pow(10,pot_num);
+	double ipotbar = pow(10,pot_num_bar);
 
-	wrkInstance potInstance(which_channel, 0, ipot);
+
+
+	wrkInstance potInstance(which_channel, anti_mode, ipot, ipotbar);
+
+	int vector_modifier = 1;
+	
+	if(anti_mode == 1){
+		vector_modifier =2;
+	}
 
 
 	//now load file with all other vectors.
-	std::string filename = "fractiondata/3p1_both.dat";
+	std::string filename = "3p1_both";
 
 	if(num_ster == 1){
 		switch(which_channel){
 			case APP_ONLY:
-				filename = "fractiondata/3p1_app.dat";
+				filename = "3p1_app";
 				break;
 			case DIS_ONLY:
-				filename = "fractiondata/3p1_dis.dat";
+				filename = "3p1_dis";
 				break;
 			case BOTH_ONLY:
-				filename = "fractiondata/3p1_both.dat";
+				filename = "3p1_both";
 				break;
 		}
 
 	} else if (num_ster == 2){
 			switch(which_channel){
 			case APP_ONLY:
-				filename = "fractiondata/3p2_app.dat";
+				filename = "3p2_app";
 				break;
 			case DIS_ONLY:
-				filename = "fractiondata/3p2_dis.dat";
+				filename = "3p2_dis";
 				break;
 			case BOTH_ONLY:
-				filename = "fractiondata/3p2_both.dat";
+				filename = "3p2_both";
 				break;
 		}
 	} else if(num_ster == 3){
 			switch(which_channel){
 			case APP_ONLY:
-				filename = "fractiondata/3p3_app.dat";
+				filename = "3p3_app";
 				break;
 			case DIS_ONLY:
-				filename = "fractiondata/3p3_dis.dat";
+				filename = "3p3_dis";
 				break;
 			case BOTH_ONLY:
-				filename = "fractiondata/3p3_both.dat";
+				filename = "3p3_both";
 				break;
 		}
 
 	}
+
+	std::string pre =  "fractiondata/";
+	std::string post = ".dat";
+
+	if(anti_mode==1){
+		pre = "fractiondata/NUBAR_MODE/";	
+		post = ".bar.dat";
+	}
+	pre.append(filename);
+	pre.append(post);
+	filename=pre;
 
 
 if(filename != "none"){
@@ -1238,7 +1269,6 @@ if(filename != "none"){
 	std::string ut5;
 	std::string ut6;
 
-
 	std::string phi45;
 	std::string phi46;
 	std::string phi56;
@@ -1251,6 +1281,7 @@ if(filename != "none"){
 
 	std::string tempVec;	
 
+	//no longer the pred6in, sometimes pred12 all or whatever bull
 	std::vector<double > pred6in;
 
 	double mn[3];
@@ -1327,7 +1358,7 @@ if(filename != "none"){
 			neutrinoModel sigModel(mn,ue,um,phi );
 			sigModel.numsterile=num_ster;
 
-			for(int i=0;i<(N_e_bins+N_m_bins)*N_dets; i++){
+			for(int i=0;i<(N_e_bins+N_m_bins)*N_dets*vector_modifier; i++){
 				myfile >> tempVec;
 				pred6in.push_back(atof(tempVec.c_str()));
 			}
@@ -1335,35 +1366,58 @@ if(filename != "none"){
 
 				if(myfile.eof()){break;}
 
-				// PUT CHI SQUARE CODE IN HERE!!
 			
 				double chipot = 0;
 
 				//subrract off cosmo
-
 				pred6in[0]=pred6in[0]-9;
 				pred6in[N_e_bins+N_m_bins]=pred6in[N_e_bins+N_m_bins]-11;
 				pred6in[(N_e_bins+N_m_bins)*2]=pred6in[(N_e_bins+N_m_bins)*2]-10;
 
-				std::vector<double> mod (N_dets*(N_e_bins+N_m_bins), 1.0);
+				//second position for anti-mode, got to code this better when i have time
+				int second = (N_e_bins+N_m_bins)*N_dets;
+				
+				// subtract off cosmo of anti
+				if(anti_mode == 1){
+					pred6in[second]=pred6in[second*N_dets]-9;
+					pred6in[second+N_e_bins+N_m_bins]=pred6in[second+N_e_bins+N_m_bins]-11;
+					pred6in[second+(N_e_bins+N_m_bins)*2]=pred6in[second+(N_e_bins+N_m_bins)*2]-10;
+				}
+
+				// now make a mod file, that increases muboone differently
+				std::vector<double> mod (N_dets*(N_e_bins+N_m_bins)*vector_modifier, 1.0);
 				for(int i =0; i<N_e_bins+N_m_bins; i++){
 					mod[i]=ipot;
 					mod[i+N_e_bins+N_m_bins]= ipot*0.5+0.5;
 					mod[i+2*(N_e_bins+N_m_bins)]=ipot;
 				}
 
+				if(anti_mode==1){
+					for(int i =0; i<N_e_bins+N_m_bins; i++){
+						mod[second+i]=ipot;
+						mod[second+N_e_bins+N_m_bins] = ipot*0.5;
+						mod[second+i+2*(N_e_bins+N_m_bins)]=ipot;
+					}
+				}
+
+
+				// and modift the prediction
 				for(int i=0; i<pred6in.size(); i++){
 					pred6in[i]=mod[i]*pred6in[i];
 		
 				}
-
+				//now add back cosmo
 				pred6in[0]=pred6in[0]+9;
 				pred6in[N_e_bins+N_m_bins]=pred6in[N_e_bins+N_m_bins]+11;
 				pred6in[(N_e_bins+N_m_bins)*2]=pred6in[(N_e_bins+N_m_bins)*2]+10;
+				
+				if(anti_mode == 1){
+					pred6in[second+0]=pred6in[second+0]+9;
+					pred6in[second+N_e_bins+N_m_bins]=pred6in[second+N_e_bins+N_m_bins]+11;
+					pred6in[second+(N_e_bins+N_m_bins)*2]=pred6in[second+(N_e_bins+N_m_bins)*2]+10;
+				}
 
-
-
-			potInstance.calc_chi_POT_vector(sigModel, pred6in, count, ipot); //count and ipot are just there for records
+			potInstance.calc_chi_POT_vector(sigModel, pred6in, count, ipot, ipotbar); //count and ipot are just there for records
 					
 			//FAR too much data, dont output this?
 			/*

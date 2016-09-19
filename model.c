@@ -249,8 +249,6 @@ return;
 int SBN_spectrum::scale_by_pot(double pot){
 	
 	pot_scaling = pot;
-	double muboone_scaling
-
 
 	double muboonescaling=(0.5+0.5*pot);
 	if(nubarmode){
