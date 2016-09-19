@@ -252,6 +252,12 @@ int SBN_spectrum::scale_by_pot(double pot){
 	double muboone_scaling
 
 
+	double muboonescaling=(0.5+0.5*pot);
+	if(nubarmode){
+		muboonescaling=0.5*pot;
+	}	
+
+
 	for(int i = 0; i < N_e_bins; i++){
 
 					
@@ -262,12 +268,12 @@ int SBN_spectrum::scale_by_pot(double pot){
 					sbnd_f[i]= sbnd_f[i]*pot;
 					sbnd_f_bar[i]= sbnd_f_bar[i]*pot;
 	
-					uboone_e[i]= uboone_e[i]*(0.5+pot*0.5);
-					uboone_e_pho[i]= uboone_e_pho[i]*(0.5+pot*0.5);
-					uboone_e_dirt[i]= uboone_e_dirt[i]*(0.5+pot*0.5);
-					uboone_e_mu[i]= uboone_e_mu[i]*(0.5+pot*0.5);
-					uboone_f[i]= uboone_f[i]*(0.5+pot*0.5);
-					uboone_f_bar[i]= uboone_f_bar[i]*(0.5+pot*0.5);			
+					uboone_e[i]= uboone_e[i]*muboonescaling;
+					uboone_e_pho[i]= uboone_e_pho[i]*muboonescaling;
+					uboone_e_dirt[i]= uboone_e_dirt[i]*muboonescaling;
+					uboone_e_mu[i]= uboone_e_mu[i]*muboonescaling;
+					uboone_f[i]= uboone_f[i]*muboonescaling;
+					uboone_f_bar[i]= uboone_f_bar[i]*muboonescaling;			
 				
 					icarus_e[i]= icarus_e[i]*pot;
 					icarus_e_pho[i]= icarus_e_pho[i]*pot;
@@ -283,8 +289,8 @@ int SBN_spectrum::scale_by_pot(double pot){
 					sbnd_m[i]= sbnd_m[i]*pot;
 					sbnd_m_pion[i]= sbnd_m_pion[i]*pot;
 
-					uboone_m[i]= uboone_m[i]*(0.5+pot*0.5);
-					uboone_m_pion[i]= uboone_m_pion[i]*(0.5+pot*0.5);
+					uboone_m[i]= uboone_m[i]*muboonescaling;
+					uboone_m_pion[i]= uboone_m_pion[i]*muboonescaling;
 
 					icarus_m[i]= icarus_m[i]*pot;
 					icarus_m_pion[i]= icarus_m_pion[i]*pot;

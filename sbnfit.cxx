@@ -55,6 +55,9 @@ class wrkInstance {
 	int beam_mode; // 0 is nu only 1 is nubar+nu
 	int which_mode; //app, dis or both
 
+	double pot;
+	double pot_bar;
+
 	SBN_detector * ICARUS;
  	SBN_detector * SBND;
  	SBN_detector * UBOONE;
@@ -86,6 +89,7 @@ class wrkInstance {
 	std::vector<std::vector<double >> vMcI;
 
 	wrkInstance(int channel_mode, int beam_mode , double pot_scale, double pot_scale_bar); //for pot analysis
+	wrkInstance(int channel_mode, int beam_mode);
 	~wrkInstance();
 
 	double calc_chi(neutrinoModel signalModel, int runnumber);
@@ -103,6 +107,8 @@ wrkInstance::~wrkInstance(){
 		delete ICARUS;
 
 }
+
+wrkInstance::wrkInstance(int channel_mode, int fbeam_mode) : wrkInstance(channel_mode,fbeam_mode,1.0,1.0) {}
 
 wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, double pot_scale_bar){
 	which_mode = channel_mode;
@@ -462,7 +468,9 @@ double in_dm = 0;
 double in_ue4 = 0;
 double in_um4=0;
 
+
 double pot_num =1;
+double pot_num_bar =1;
 
 bool stat_only = false;
 int dis_which = 1;
@@ -533,8 +541,17 @@ while(iarg != -1)
 			verbose_flag = true;
 			break;
 		case 'p':
+			{
 			pot_flag = true;
-			pot_num = strtof(optarg,NULL);
+			std::string s = optarg;
+			std::string delimiter = ":";
+			//std::cout<<s.find(delimiter)<<std::endl;
+			std::string spot = s.substr(0, s.find(delimiter));	
+			std::string spotbar = s.substr(s.find(delimiter)+1);
+
+			pot_num= atof(spot.c_str());
+			pot_num_bar = atof(spotbar.c_str());
+			}
 			break;
 		case 'N':
 			num_ster = strtof(optarg,NULL);
@@ -603,7 +620,6 @@ while(iarg != -1)
 	}
 
 }
-
 
 
 if(verbose_flag)
