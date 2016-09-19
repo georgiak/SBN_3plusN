@@ -85,7 +85,7 @@ class wrkInstance {
 
 	std::vector<std::vector<double >> vMcI;
 
-	wrkInstance(int channel_mode, int beam_mode , double pot_scale); //for pot analysis
+	wrkInstance(int channel_mode, int beam_mode , double pot_scale, double pot_scale_bar); //for pot analysis
 	~wrkInstance();
 
 	double calc_chi(neutrinoModel signalModel, int runnumber);
@@ -104,7 +104,7 @@ wrkInstance::~wrkInstance(){
 
 }
 
-wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale){
+wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, double pot_scale_bar){
 	which_mode = channel_mode;
 	beam_mode = fbeam_mode;
 	
@@ -202,8 +202,8 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale){
 		bkgbarspec->load_bkg(SBND);
 		bkgbarspec->load_bkg(UBOONE);
 
-		if(pot_scale !=1.0){
-			bkgbarspec->scale_by_pot(pot_scale);
+		if(pot_scale_bar !=1.0){
+			bkgbarspec->scale_by_pot(pot_scale_bar);
 		}
 
 		backbar6 = bkgbarspec->get_sixvector();

@@ -247,7 +247,10 @@ return;
 
 
 int SBN_spectrum::scale_by_pot(double pot){
+	
 	pot_scaling = pot;
+	double muboone_scaling
+
 
 	for(int i = 0; i < N_e_bins; i++){
 
