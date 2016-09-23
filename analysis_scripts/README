@@ -1,0 +1,4 @@
+the pot3px_app.sh generates the pot files in fixed stepsizes
+the pot  analysis scripts use the fasted thing i sould think of, awk , for counting file numbers!
+the analysis basic script generates the non-pot things
+
