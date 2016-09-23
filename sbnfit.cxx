@@ -129,6 +129,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 	bkgbarspec = new SBN_spectrum(nullModel);
 	bkgbarspec->SetNuBarMode();
 
+
 		bkgspec->load_bkg(ICARUS);
 		bkgspec->load_bkg(SBND);
 		bkgspec->load_bkg(UBOONE);
@@ -208,9 +209,10 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		bkgbarspec->load_bkg(SBND);
 		bkgbarspec->load_bkg(UBOONE);
 
-		if(pot_scale_bar !=1.0){
-			bkgbarspec->scale_by_pot(pot_scale_bar);
-		}
+		//if(pot_scale_bar !=1.0){
+		//just scale it as muboone isnt right
+		bkgbarspec->scale_by_pot(pot_scale_bar);
+		//}
 
 		backbar6 = bkgbarspec->get_sixvector();
 		backbar  = bkgbarspec->get_vector();
@@ -416,13 +418,13 @@ double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<doub
 
 
 	std::cout<<i<<" "<<newModel.mNu[0]<<" "<<newModel.mNu[1]<<" "<<newModel.mNu[2]<<" "<<newModel.Ue[0]<<" "<<newModel.Ue[1]<<" "<<newModel.Ue[2]<<" "<<newModel.Um[0]<<" "<<newModel.Um[1]<<" "<<newModel.Um[2]<<" "<<newModel.phi[0]<<" "<<newModel.phi[1]<<" "<<newModel.phi[2]<<" "<<potin<<" "<<potinbar<<" "<<0.0<<" "<<mychi2<<std::endl;
-/*
+
 			std::cout<<vecin[0];
 			for(int u=1;u< vecin.size(); u++){
 				std::cout<<" "<<vecin[u];
 			}	
 			std::cout<<std::endl;
-	*/	
+		
 
 			Current_Chi = mychi2;
 
@@ -1184,7 +1186,6 @@ if(pot_flag){
 	double ipotbar = pow(10,pot_num_bar);
 
 
-
 	wrkInstance potInstance(which_channel, anti_mode, ipot, ipotbar);
 
 	int vector_modifier = 1;
@@ -1366,22 +1367,24 @@ if(filename != "none"){
 
 				if(myfile.eof()){break;}
 
-			
+						
 				double chipot = 0;
+				
+
 
 				//subrract off cosmo
-				pred6in[0]=pred6in[0]-9;
-				pred6in[N_e_bins+N_m_bins]=pred6in[N_e_bins+N_m_bins]-11;
-				pred6in[(N_e_bins+N_m_bins)*2]=pred6in[(N_e_bins+N_m_bins)*2]-10;
+				pred6in[0] += -9;
+				pred6in[N_e_bins+N_m_bins] +=-11;
+				pred6in[(N_e_bins+N_m_bins)*2] += -10;
 
 				//second position for anti-mode, got to code this better when i have time
 				int second = (N_e_bins+N_m_bins)*N_dets;
 				
 				// subtract off cosmo of anti
 				if(anti_mode == 1){
-					pred6in[second]=pred6in[second*N_dets]-9;
-					pred6in[second+N_e_bins+N_m_bins]=pred6in[second+N_e_bins+N_m_bins]-11;
-					pred6in[second+(N_e_bins+N_m_bins)*2]=pred6in[second+(N_e_bins+N_m_bins)*2]-10;
+					pred6in[second] += -9;
+					pred6in[second+N_e_bins+N_m_bins] += -11;
+					pred6in[second+(N_e_bins+N_m_bins)*2] += -10;
 				}
 
 				// now make a mod file, that increases muboone differently
@@ -1394,9 +1397,9 @@ if(filename != "none"){
 
 				if(anti_mode==1){
 					for(int i =0; i<N_e_bins+N_m_bins; i++){
-						mod[second+i]=ipot;
-						mod[second+N_e_bins+N_m_bins] = ipot*0.5;
-						mod[second+i+2*(N_e_bins+N_m_bins)]=ipot;
+						mod[i+second]=ipotbar;
+						mod[i+second+N_e_bins+N_m_bins] = ipotbar*0.5;
+						mod[i+second+2*(N_e_bins+N_m_bins)]=ipotbar;
 					}
 				}
 
@@ -1407,14 +1410,14 @@ if(filename != "none"){
 		
 				}
 				//now add back cosmo
-				pred6in[0]=pred6in[0]+9;
-				pred6in[N_e_bins+N_m_bins]=pred6in[N_e_bins+N_m_bins]+11;
-				pred6in[(N_e_bins+N_m_bins)*2]=pred6in[(N_e_bins+N_m_bins)*2]+10;
+				pred6in[0]+=9;
+				pred6in[N_e_bins+N_m_bins]+= 11;
+				pred6in[(N_e_bins+N_m_bins)*2]+= 10;
 				
 				if(anti_mode == 1){
-					pred6in[second+0]=pred6in[second+0]+9;
-					pred6in[second+N_e_bins+N_m_bins]=pred6in[second+N_e_bins+N_m_bins]+11;
-					pred6in[second+(N_e_bins+N_m_bins)*2]=pred6in[second+(N_e_bins+N_m_bins)*2]+10;
+					pred6in[second] +=9;
+					pred6in[second+N_e_bins+N_m_bins]+=11;
+					pred6in[second+(N_e_bins+N_m_bins)*2]+=10;
 				}
 
 			potInstance.calc_chi_POT_vector(sigModel, pred6in, count, ipot, ipotbar); //count and ipot are just there for records
