@@ -799,13 +799,13 @@ if(unit_flag){
 
 
 
-if(fraction_flag && false) // This is just an obsolete old one for reading it in and doing noting
+if(fraction_flag) // This is just an obsolete old one for reading it in and doing noting
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
 	if(num_ster == 1){
 //		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
-	        sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");	
+	        sprintf(filename,"GlobalFits/ntuples/nt_31_all.root");	
 	} else if (num_ster == 2){
 
 		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
@@ -817,10 +817,10 @@ if(fraction_flag && false) // This is just an obsolete old one for reading it in
 
 
 	std::cout<<"read in`"<<std::endl;
-	//std::cout<<filename<<std::endl;
+	std::cout<<filename<<std::endl;
 	TFile *fm= new TFile(filename);
-//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	TTree *chi2_90 =(TTree*)fm->Get("chi2_99");
+//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
 	 Float_t m4 = 0;
          chi2_90->SetBranchAddress("chi2",&chi2);
@@ -849,7 +849,7 @@ if(fraction_flag && false) // This is just an obsolete old one for reading it in
 
 
 
-if(fraction_flag) //this i smain!!
+if(fraction_flag&& false) //this i smain!!
 {
 
 	double norm_pot = 1.0;
@@ -933,7 +933,7 @@ if(fraction_flag) //this i smain!!
 				double imn[3] = {(double)m4,(double)m5,(double)m6};
 				double iue[3] = {ue4,ue5,ue6};
 				double ium[3] = {um4, um5, um6};
-				double iph[3] = {phi45,phi46, phi45};
+				double iph[3] = {phi45,phi46, phi56};
 
 				neutrinoModel signalModel(imn,iue,ium,iph);
 				signalModel.numsterile=num_ster;
@@ -1676,7 +1676,30 @@ if(cov_flag){
 
 }
 
-if(sens_flag)
+if(sens_flag){
+
+	double norm_pot = 1.0;
+	wrkInstance signalInstance(which_channel , anti_mode);
+
+
+				for(double phi45=0; phi45<2*3.14159; phi45+=0.1){
+	
+					double imn[3] = {1,10,0};
+					double iue[3] = {0.1,0.1,0};
+					double ium[3] = {0.1,0.1, 0};
+					double iph[3] ={phi45,0,1.0};
+
+					neutrinoModel signalModel(imn,iue,ium,iph);
+					signalModel.numsterile= 2;
+
+					signalInstance.calc_chi(signalModel, 0);
+
+				}
+
+}
+
+
+if(sens_flag && false)
 {
 
  	SBN_detector * ICARUS = new SBN_detector(2);
