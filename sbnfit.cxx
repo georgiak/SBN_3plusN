@@ -111,6 +111,7 @@ wrkInstance::~wrkInstance(){
 wrkInstance::wrkInstance(int channel_mode, int fbeam_mode) : wrkInstance(channel_mode,fbeam_mode,1.0,1.0) {}
 
 wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, double pot_scale_bar){
+
 	which_mode = channel_mode;
 	beam_mode = fbeam_mode;
 	
@@ -134,9 +135,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		bkgspec->load_bkg(SBND);
 		bkgspec->load_bkg(UBOONE);
 	
-		if(pot_scale !=1.0){
 			bkgspec->scale_by_pot(pot_scale);
-		}
 
 			back6 = bkgspec->get_sixvector();
 			back  = bkgspec->get_vector();
@@ -145,7 +144,6 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		bool stat_only = false;
 	
 	if (beam_mode == 0){
-
 	
 
 		matrix_size =(N_e_bins + N_e_bins + N_m_bins)*N_dets;
@@ -211,7 +209,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 
 		//if(pot_scale_bar !=1.0){
 		//just scale it as muboone isnt right
-		bkgbarspec->scale_by_pot(pot_scale_bar);
+		   bkgbarspec->scale_by_pot(pot_scale_bar);
 		//}
 
 		backbar6 = bkgbarspec->get_sixvector();
@@ -220,7 +218,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		back_all = back;
 		back_all.insert(back_all.end(), backbar.begin(), backbar.end() );
 
-		back_all_12 =back6;
+		back_all_12 = back6;
 		back_all_12.insert(back_all_12.end(), backbar6.begin(), backbar6.end() );
 	
 
@@ -299,7 +297,6 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
 				this->clear_all();
 
 
-
 				double chi2 = 0;
 				int i = runnumber;
 		
@@ -308,7 +305,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
 				SigSpec->which_mode = which_mode;
 				
 				SigBarSpec =new SBN_spectrum(workingModel);
-				SigSpec->which_mode=which_mode;
+				SigBarSpec->which_mode=which_mode;   //AHAHAHAHAHAHA!!!!
 				SigBarSpec->SetNuBarMode();
 
 
@@ -338,6 +335,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
 				SigBarSpec->load_freq_3p3(SBND);
 				SigBarSpec->load_freq_3p3(UBOONE);
 				SigBarSpec->scale_by_pot(1.0); // THIS IS SUPER NECESSARY, to scale muboone out.	
+				
 				predbar6 = SigBarSpec->get_sixvector();
 
 				pred_all_12 = pred6;	
@@ -902,7 +900,7 @@ if(fraction_flag) //this i smain!!
 
 
 	//Rudamentary parallalisation scheme
-	 int pfrac=nentries/5;
+	 int pfrac=nentries/8;
 	 if(parallel_split!=0){
 		switch(parallel_split){
 			case 1:
@@ -923,9 +921,21 @@ if(fraction_flag) //this i smain!!
 				break;
 			case 5:
 				imin=4*pfrac;
+				imax=5*pfrac;
+				break;
+			case 6:
+				imin=5*pfrac;
+				imax=6*pfrac;
+				break;
+			case 7:
+				imin=6*pfrac;
+				imax=7*pfrac;
+				break;
+			case 8:
+				imin=7*pfrac;
 				imax=nentries;
 				break;
-		}
+			}
 	}
 
 

@@ -6,8 +6,8 @@ rm fractiondata/NUBAR_MODE/pot3p1/analysed_3p1_both.bar.dat
 rm fractiondata/NUBAR_MODE/pot3p1/analysed_3p1_dis.bar.dat
 rm fractiondata/NUBAR_MODE/pot3p1/analysed_3p1_app.bar.dat
 
-CHI3=16.2513
-CHI5=34.555
+CHI3=14.1564
+CHI5=31.8121
 
 for ip in `seq -2.00 0.25 0.50`
 do

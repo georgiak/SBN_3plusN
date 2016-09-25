@@ -3300,7 +3300,7 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 
 		case APP_ONLY:
 			prob_mumu =0;//  workingModel.oscAmp(2,2,which_dm,2);
-			prob_ee =0;// workingModel.oscAmp(1,1,which_dm,2);
+			prob_ee =0;  // workingModel.oscAmp(1,1,which_dm,2);
 			prob_mue = workingModel.oscAmp(2,1,which_dm,1);
 			prob_mue_sq = workingModel.oscAmp(2,1,which_dm,2);
 			prob_muebar = workingModel.oscAmp(-2,-1,which_dm,1);	
@@ -3332,7 +3332,7 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 
 	h_dis_muon_sinsq.Scale(		prob_mumu	);
 	h_fullosc_nue_sin.Scale( 	prob_mue	);
-	h_fullosc_nue_sinsq.Scale(	prob_mue_sq ); 
+	h_fullosc_nue_sinsq.Scale(	prob_mue_sq); 
 	h_fullosc_nuebar_sin.Scale(	prob_muebar); 
 	h_fullosc_nuebar_sinsq.Scale(	prob_muebar_sq);
 	
