@@ -337,7 +337,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
 				SigBarSpec->load_freq_3p3(ICARUS);
 				SigBarSpec->load_freq_3p3(SBND);
 				SigBarSpec->load_freq_3p3(UBOONE);
-		
+				SigBarSpec->scale_by_pot(1.0); // THIS IS SUPER NECESSARY, to scale muboone out.	
 				predbar6 = SigBarSpec->get_sixvector();
 
 				pred_all_12 = pred6;	
@@ -801,7 +801,7 @@ if(unit_flag){
 
 
 
-if(fraction_flag) // This is just an obsolete old one for reading it in and doing noting
+if(fraction_flag && false) // This is just an obsolete old one for reading it in and doing noting
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
@@ -851,11 +851,11 @@ if(fraction_flag) // This is just an obsolete old one for reading it in and doin
 
 
 
-if(fraction_flag&& false) //this i smain!!
+if(fraction_flag) //this i smain!!
 {
 
 	double norm_pot = 1.0;
-	wrkInstance fractionInstance(which_channel , anti_mode);
+	wrkInstance fractionInstance(which_channel, anti_mode);
 
 
 	char filename[200];
@@ -1190,7 +1190,7 @@ if(pot_flag){
 
 	int vector_modifier = 1;
 	
-	if(anti_mode == 1){
+	if(anti_flag){
 		vector_modifier =2;
 	}
 
@@ -1241,7 +1241,7 @@ if(pot_flag){
 	std::string pre =  "fractiondata/";
 	std::string post = ".dat";
 
-	if(anti_mode==1){
+	if(anti_flag){
 		pre = "fractiondata/NUBAR_MODE/";	
 		post = ".bar.dat";
 	}
@@ -1283,7 +1283,7 @@ if(filename != "none"){
 	std::string tempVec;	
 
 	//no longer the pred6in, sometimes pred12 all or whatever bull
-	std::vector<double > pred6in;
+	std::vector<double > vectorin;
 
 	double mn[3];
 	double ue[3];
@@ -1361,7 +1361,7 @@ if(filename != "none"){
 
 			for(int i=0;i<(N_e_bins+N_m_bins)*N_dets*vector_modifier; i++){
 				myfile >> tempVec;
-				pred6in.push_back(atof(tempVec.c_str()));
+				vectorin.push_back(atof(tempVec.c_str()));
 			}
 
 
@@ -1369,22 +1369,21 @@ if(filename != "none"){
 
 						
 				double chipot = 0;
-				
 
 
 				//subrract off cosmo
-				pred6in[0] += -9;
-				pred6in[N_e_bins+N_m_bins] +=-11;
-				pred6in[(N_e_bins+N_m_bins)*2] += -10;
+				vectorin[0] += -9;
+				vectorin[N_e_bins+N_m_bins] +=-11;
+				vectorin[(N_e_bins+N_m_bins)*2] += -10;
 
 				//second position for anti-mode, got to code this better when i have time
 				int second = (N_e_bins+N_m_bins)*N_dets;
 				
 				// subtract off cosmo of anti
-				if(anti_mode == 1){
-					pred6in[second] += -9;
-					pred6in[second+N_e_bins+N_m_bins] += -11;
-					pred6in[second+(N_e_bins+N_m_bins)*2] += -10;
+				if(anti_flag){
+					vectorin[second] += -9;
+					vectorin[second+N_e_bins+N_m_bins] += -11;
+					vectorin[second+(N_e_bins+N_m_bins)*2] += -10;
 				}
 
 				// now make a mod file, that increases muboone differently
@@ -1395,32 +1394,33 @@ if(filename != "none"){
 					mod[i+2*(N_e_bins+N_m_bins)]=ipot;
 				}
 
-				if(anti_mode==1){
+
+				if(anti_flag){
 					for(int i =0; i<N_e_bins+N_m_bins; i++){
 						mod[i+second]=ipotbar;
-						mod[i+second+N_e_bins+N_m_bins] = ipotbar*0.5;
+						mod[i+second+N_e_bins+N_m_bins] = ipotbar;
 						mod[i+second+2*(N_e_bins+N_m_bins)]=ipotbar;
 					}
 				}
 
 
 				// and modift the prediction
-				for(int i=0; i<pred6in.size(); i++){
-					pred6in[i]=mod[i]*pred6in[i];
+				for(int i=0; i<vectorin.size(); i++){
+					vectorin[i]=mod[i]*vectorin[i];
 		
 				}
 				//now add back cosmo
-				pred6in[0]+=9;
-				pred6in[N_e_bins+N_m_bins]+= 11;
-				pred6in[(N_e_bins+N_m_bins)*2]+= 10;
+				vectorin[0]+=9;
+				vectorin[N_e_bins+N_m_bins]+= 11;
+				vectorin[(N_e_bins+N_m_bins)*2]+= 10;
 				
 				if(anti_mode == 1){
-					pred6in[second] +=9;
-					pred6in[second+N_e_bins+N_m_bins]+=11;
-					pred6in[second+(N_e_bins+N_m_bins)*2]+=10;
+					vectorin[second] +=9;
+					vectorin[second+N_e_bins+N_m_bins]+=11;
+					vectorin[second+(N_e_bins+N_m_bins)*2]+=10;
 				}
 
-			potInstance.calc_chi_POT_vector(sigModel, pred6in, count, ipot, ipotbar); //count and ipot are just there for records
+			potInstance.calc_chi_POT_vector(sigModel, vectorin, count, ipot, ipotbar); //count and ipot are just there for records
 					
 			//FAR too much data, dont output this?
 			/*
@@ -1432,7 +1432,7 @@ if(filename != "none"){
 			*/
 
 			
-			pred6in.clear();
+			vectorin.clear();
 		}//end of file	
 
 
