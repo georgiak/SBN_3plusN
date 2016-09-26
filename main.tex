@@ -807,7 +807,7 @@ baseline dependence becomes significant, \ie\ when sufficient sterile neutrino
 beam attenuation occurs en route to the detector. It is instructive now to
 explore how to scale the bounds presented here, or indeed any preexisting
 beam dump experimental bounds, from the minimal model to an extended model
-which has a enhancement in one or more channels.\marcom{PB}{S.'s comments added up to here.}
+which has a enhancement in one or more channels.
 
 To compute how the enhancement of a single channel would alter the bounds, we
 assume the conventional sterile neutrino production mechanism, but allow the
@@ -842,7 +842,7 @@ form
 Note that this is completely independent of total decay rate, being a function
 of the enhanced channel only. These can be used to map any prior published
 bounds, and the bounds presented below, to any non-minimal sterile model in
-which a specific channel is enhanced by a factor $(1+\alpha)$.
+which a specific channel is enhanced by a factor $(1+\alpha)$.\marcom{PB}{See S.'s comment.}
 
 Although peak searches and beam dumps set some of the most stringent upper
 limits on mixing, non-terrestrial measurements may also place bounds on such
@@ -850,7 +850,7 @@ long lived sterile neutrinos due to their effect on the evolution of the early
 universe. Heavy steriles can have a strong impact on the success of Big-Bang
 Nucleosynthesis (BBN) by both speeding up the expansion of the universe with
 their additional energy as well as potentially modifying the spectra of active
-neutrinos via their subsequent decays. If, however, the sterile has
+neutrinos via their subsequent decays\marcom{PB}{See S.'s comment}. If, however, the sterile has
 sufficiently short lifetime then their effect on BBN is mitigated as the bulk
 of thermally produced steriles have decayed long before $T_\text{BBN} \approx
 10$ MeV \cite{Fields:2006ga}. The strength of these bounds have been estimated
@@ -884,22 +884,23 @@ possible, to best identify new physics.
 
 %\subsection{Simulation details}
 
-We simulate the event numbers and distributions at each detector site using a custom
-Monte Carlo program which allows efficiencies to be taken into account arising from to
-experimental details such as energy and timing resolution in a fully correlated
-way between observables, and provides us with event level variables for use in
-a cut-based analysis. We compute the total number of accepted events in
-channel ``$\text{c}$'' via the following summation,
+We simulate\marcom{PB}{S. suggests adding some description of beam etc.} the
+event numbers and distributions at each detector site using a custom Monte
+Carlo program which allows efficiencies to be taken into account arising from
+to experimental details such as energy and timing resolution in a fully
+correlated way between observables, and provides us with event level variables
+for use in a cut-based analysis. We compute the total number of accepted events
+in channel ``$\text{c}$'' via the following summation,
 %
 \[ \ster_\text{c} = \sum_{i} \left .
 \frac{\mathrm{d}\phi}{\mathrm{d}E}\right|_{E_i} P_\text{D}\left(E_i\right)
 W_\text{c}\left(E_i\right),  \]
 %
-where $P_\text{D}(E)$ is the probability for a sterile neutrino of energy $E_i$ to survive propagating the baseline
-and then subsequently decay inside the detector labelled $\text{D}$. The simplest
-approximation is to ignore all geometric effects, so that every particle
-travels exactly along the direction of the beam line, which gives the following
-probability 
+where $P_\text{D}(E)$ is the probability for a sterile neutrino of energy $E_i$
+to travel the baseline distance and then decay inside the
+detector labelled $\text{D}$. The simplest approximation is to ignore all
+geometric effects, so that every particle travels exactly along the direction
+of the beam line, which gives the following probability 
 %
 \[ P_\text{D}\left(E\right) = e^{-\frac{\Gamma_\text{T}L}{\gamma\beta}}\left(
 1-
@@ -957,10 +958,10 @@ e^{-\frac{\Gamma_\text{T}L}{\gamma\beta}}\frac{\Gamma_\text{c}}{\Gamma_\text{T}}
 \end{align}
 %
 where the rate for slowly decaying particles can be seen to grow with detector
-size until a width of $\lambda\sim\gamma\beta\Gamma_\text{T}^{-1}$ where longer detectors
-make no difference, as most sterile neutrinos decay within a few decay lengths and
-therefore we see a fixed fraction of the total events in our channel of
-interest. 
+size until a width of $\lambda\sim\gamma\beta\Gamma_\text{T}^{-1}$.
+\newtext{PB}{For detectors longer than this scale, the event rate becomes
+independent of detector size, as most sterile neutrinos decay within a few
+decay lengths.} 
 
 The spectral flux of sterile neutrinos impinging on a SBN detector,
 $\mathrm{d}\phi/\mathrm{d}E$, is estimated as described in \refsec{sec:prod}.
@@ -1361,14 +1362,14 @@ considers the phenomenological potential of energy and timing spectral informati
 experiment if an potential signal is observed. 
 
 It must be pointed out that although \muboone\ contributes the least to the raw
-numbers of sterile neutrino events expected, the MicroBooNE experiment is significantly
-more advanced than its two SBN counterparts. At the time of writing, \muboone\
-has already collected close to $50$\% of its planned POT (around $3.5\times
-10^{20}$ POT) and has already presented its first results on $\nu_\mu$ CC
-inclusive and $\nu_\mu$ CC$\pi^0$ \cite{mubooneneutrino}. As such \muboone\ is
-in a unique position in that it has the potential to observe any excess in
-advance of SBND or ICARUS and thus to inform a possible search using the full
-SBN programme.
+number of sterile neutrino events expected, the MicroBooNE experiment is
+significantly more advanced than its two SBN counterparts. At the time of
+writing, \muboone\ has already collected close to $50$\% of its planned POT
+(around $3.5\times 10^{20}$ POT) and has already presented its first results on
+$\nu_\mu$ CC inclusive and $\nu_\mu$ CC$\pi^0$ \cite{mubooneneutrino}. As such
+\muboone\ is in a unique position in that it has the potential to observe any
+excess in advance of SBND or ICARUS and thus to inform a possible search using
+the full SBN programme.
 %
 %While any observation of $\approx$100 events in \muboone consistent with a 300
 %MeV sterile decaying $\nu_\ster \rightarrow \nu_\mu \pi^0$ (corresponding to
@@ -1377,31 +1378,37 @@ SBN programme.
 %signal several years before SBND.
 %
 Non-observation of any excess at MicroBooNE would not negatively effect the
-program for a subsequent search at SBND or ICARUS as a large amount of their
-probable parameter space is not available to MicroBooNE.
+program for a subsequent search at SBND or ICARUS \newtext{PB}{as a large
+fraction of the testable parameter space is not accessible to MicroBooNE.}
 
 \subsection{SBN upper limits on sterile neutrino mixing}
 %
 \reffig{fig:band_sbn} presents the results of this analysis for the combined
 $6.6\times 10^{20}$ POT exposure at SBND and ICARUS, and $13.2\times10^{20}$
-POT at \muboone. Shown is the predicted upper limits on sterile neutrino mixing for the
-leptonic channels $\ster \rightarrow \nu_\alpha e^+e^-$, $\ster \rightarrow
-\nu_\alpha \mu^+ \mu^- $ and $\ster \rightarrow \nu_\alpha \mu^+ \mu^- $ as
-well as the semi-leptonic and photonic channels $\ster \rightarrow \alpha^\mp
-\pi^\pm$,  $\ster \rightarrow \nu_\alpha \pi^0$ and $\ster \rightarrow
-\nu_\alpha \gamma$, for $|U_{\mu 4}|$ driven mixing in the right column, and
-$|U_{e4}|$ driven mixing  in the left column.  The lower solid coloured lines
-are the background-less 90\% C.L upper limit contours defined as 2.44 events
-following the procedure of \refref{Feldman:1997qc} designed for background-less
-searches for rare events. This represents the best expected sensitivity at the
-SBN program, assuming perfect signal efficiency.  We also present the results
-of the cut based background analysis discussed in
-\refsec{sec:backgroundestimate} (upper solid coloured lines).  
+POT at \muboone. The figure shows the predicted upper limits on sterile
+neutrino mixing for the leptonic decay channels $\ster \rightarrow \nu_\alpha
+e^+e^-$, $\ster \rightarrow \nu_\alpha \mu^+ \mu^- $ and $\ster \rightarrow
+\nu_\alpha \mu^+ \mu^- $ as well as the semi-leptonic and photonic channels
+$\ster \rightarrow \alpha^\mp \pi^\pm$,  $\ster \rightarrow \nu_\alpha \pi^0$
+and $\ster \rightarrow \nu_\alpha \gamma$. \newtext{PB}{The plot on the right
+assumes mixing with muon neutrinos and that on the left with electron
+neutrinos.}
+%
+%for $|U_{\mu 4}|$ driven mixing in the right column, and $|U_{e4}|$ driven
+%mixing  in the left column.  
+%
+The lower solid coloured lines are the background-less 90\% C.L upper limit
+contours defined as 2.44 events following the procedure of
+\refref{Feldman:1997qc} designed for background-less searches for rare events.
+This represents the best expected sensitivity at the SBN program, assuming
+perfect signal efficiency.  We also present the results of the cut based
+background analysis discussed in \refsec{sec:backgroundestimate} (upper solid
+coloured lines).  
 %
 Depending on the optimisation of the analysis, including the possibility of
 using improved timing information, we expect the ultimate sensitivity to be
 within the solid-shaded region, lying between the proven cut-based sensitivity
-and the backgroundless one.
+and the backgroundless one. \marcom{PB}{Added S.'s comments up to here.}
 
 We see that the increased event rates at the SBN program compared to PS-191
 allows an improvement of the bounds on $|U_{e4}|^2$ and $|U_{\mu 4}|^2$ in all
@@ -1677,10 +1684,10 @@ work, and also to Jonathan Asaadi for helpful discussions and encouragement at
 the start of this project.
 
 This work has been supported by the European Research Council under ERC Grant
-``NuMass'' (FP7-IDEAS-ERC ENC-CG 617143), by the European Union FP7
+``NuMass'' (FP7-IDEAS-ERC ENC-CG 617143), \newtext{PB}{by the European Union FP7
 ITN-INVISIBLES (Marie Curie Actions, PITN-GA-2011-289442), as well as from the
 H2020 funded ELUSIVES ITN (H2020-MSCA-ITN-2015, GA- 2015-674896-ELUSIVES) and 
-InvisiblePlus (H2020-MSCA-RISE-2015, GA-2015-690575-InvisiblesPlus).
+InvisiblePlus (H2020-MSCA-RISE-2015, GA-2015-690575-InvisiblesPlus).}
 
 \appendix
 
