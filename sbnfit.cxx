@@ -365,7 +365,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber, double pot_s
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
 						mychi2 += (back_all_12[i]-pred_all_12[i])*vMcI[i][j]*(back_all_12[j]-pred_all_12[j]);
-						std::cout<<i<<" "<<j<<" "<<vMcI[i][j]<<" "<<vMc[i][j]<<" "<<vMc[i][j]/(back_all_12[i]*back_all_12[j])<<std::endl;
+					//	std::cout<<i<<" "<<j<<" "<<vMcI[i][j]<<" "<<vMc[i][j]<<" "<<vMc[i][j]/(back_all_12[i]*back_all_12[j])<<std::endl;
 					}
 				}
 			
@@ -886,7 +886,7 @@ if(fraction_flag ) //this i smain!!
 {
 
 	double norm_pot = 1.0;
-	double norm_pot_bar =100;
+	double norm_pot_bar =1.0;
 	 
         wrkInstance fractionInstance(which_channel, anti_mode, norm_pot, norm_pot_bar);
 
@@ -987,7 +987,7 @@ if(fraction_flag ) //this i smain!!
 
 				fractionInstance.calc_chi(signalModel, i, norm_pot, norm_pot_bar);
 			
-				exit(EXIT_FAILURE);	
+				//exit(EXIT_FAILURE);	
 	 }
 
 
@@ -1707,12 +1707,12 @@ if(sample_flag)
 
 		neutrinoModel sModel(sqrt(pow(10,m)),1.0,1.0);
 		sModel.dm41Sq = pow(10,m);
-
+		
 		SBN_spectrum samplespectrum(sModel);
-
+//		samplespectrum.SetNuBarMode();
 
 		samplespectrum.oscillate_sample();
-
+		break;
 	}
 
 	

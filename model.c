@@ -1695,8 +1695,8 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 //	double S2TH = 1.0-4*pow(workingModel.Um[0],2)*(1- pow(workingModel.Um[0],2));
 
 	TFile *fnudetector;
-	if(numode){ fnudetector= new TFile(detector->foscname);}
-	else if(nubarmode) {fnudetector= new TFile(detector->fbaroscname);}	TTree *tnudetector = (TTree*)fnudetector->Get("mainTree");
+	if(numode){ fnudetector= new TFile(detector->fname);}
+	else if(nubarmode) {fnudetector= new TFile(detector->fbarname);}	TTree *tnudetector = (TTree*)fnudetector->Get("mainTree");
 
 
 	TH1D H1nue_muon_sin("dis_muon_sin","Backgroun",N_m_bins,mu_bins);
@@ -1882,12 +1882,13 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 		 * CC Intrinsic Nu_mu
 		 * ****************************************************************/		
 				
-			
+	//	std::cout<<"PDGnu: "<<PDGnu<<" CC "<<CC<<" "<<NC<<" "<<El_true<<std::endl	;	
+	
 		if((PDGnu==14 || PDGnu==-14 ) && CC == 1 )//&& Nph==0 && Npi0dph==0)
 
 		{
 			El_smear = smear_energy(El_true, MUsmear, rangen);
-
+			
 		
 			Nsignal++;
 
@@ -1916,12 +1917,13 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 			double probsq = workingModel.oscProbSinSq(Enu,0.001*(osclen+(vertex_pos[2]/1000.0)));
 
 			Ncontained1++;
+	//		std::cout<<"Lmu: "<<Lmu<<" osclen: "<<osclen<<" weight: "<<weight<<" Eff_em: "<<Eff_em<<" endpos: "<<endpos[0]<<" "<<endpos[1]<<" "<<endpos[2]<<std::endl;
 			if(detector->is_fully_contained(vertex_pos, endpos)){
 					observable_L = Lmu;
-					Ncontained2++;	
+					Ncontained2++;
 					if(observable_L > 50.0)
 					{
-				
+					
 						H1nue_muon_sin.Fill(Enu_reco ,weight*Eff_em*prob);
 						H1nue_muon_sinsq.Fill(Enu_reco ,weight*Eff_em*probsq);
 					}
@@ -1933,7 +1935,6 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 				observable_L = detector->track_length_escape(vertex_pos,endpos);
 				if(observable_L > 100.0)
 				{
-					
 					H1nue_muon_sin.Fill(Enu_reco ,weight*Eff_em*prob);
 					H1nue_muon_sinsq.Fill(Enu_reco ,weight*Eff_em*probsq);
 
