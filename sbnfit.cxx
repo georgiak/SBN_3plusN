@@ -87,12 +87,15 @@ class wrkInstance {
 	double Current_Chi;
 
 	std::vector<std::vector<double >> vMcI;
+	std::vector<std::vector<double >> vMc;
 
 	wrkInstance(int channel_mode, int fbeam_mode , double pot_scale, double pot_scale_bar); //for pot analysis
 	wrkInstance(int channel_mode, int fbeam_mode);
 	~wrkInstance();
 
 	double calc_chi(neutrinoModel signalModel, int runnumber);
+	double calc_chi(neutrinoModel signalModel, int runnumber, double pot_scale, double pot_scale_bar);
+
 	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin, double potinbar);
 	int clear_all();
 };
@@ -135,7 +138,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		bkgspec->load_bkg(SBND);
 		bkgspec->load_bkg(UBOONE);
 	
-			bkgspec->scale_by_pot(pot_scale);
+		bkgspec->scale_by_pot(pot_scale);
 
 			back6 = bkgspec->get_sixvector();
 			back  = bkgspec->get_vector();
@@ -184,7 +187,6 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		} else {
 			mtotal = msys+mstat;
 		}
-		//mtotal = mstat;
 
 		TMatrixT <double> mctotal(contMsize,contMsize);
 		contract_signal2(mtotal,mctotal);
@@ -203,9 +205,11 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 
 	} else if(beam_mode == 1)
 	{
+		
 		bkgbarspec->load_bkg(ICARUS);
 		bkgbarspec->load_bkg(SBND);
 		bkgbarspec->load_bkg(UBOONE);
+		bkgbarspec->SetNuBarMode();
 
 		//if(pot_scale_bar !=1.0){
 		//just scale it as muboone isnt right
@@ -235,6 +239,13 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		TMatrixT <double> Msys(bigMsize,bigMsize);
 		sys_fill(Msys,usedetsys);
 
+		/*for(int i =0; i< Msys.GetNcols(); i++){
+		for(int j =0; j< Msys.GetNcols(); j++){
+		std::cout<<i<<" "<<j<<" "<<Msys(i,j)<<" "<<Msys(i,j)<<std::endl;
+		}}
+		exit(EXIT_FAILURE);
+		*/
+
 		// systematics per scaled event
 		for(int i =0; i<Msys.GetNcols(); i++)
 		{
@@ -255,12 +266,20 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		} else {
 			Mtotal = Msys+Mstat;
 		}
-
+		
+		
 		// Now contract back the larger antimatrix
 		TMatrixT<double > Mctotal(contMsize,contMsize);
 
 		contract_signal2_anti(Mtotal,Mctotal);
-	
+
+		/*for(int i =0; i< Mtotal.GetNcols(); i++){
+		for(int j =0; j< Mtotal.GetNcols(); j++){
+		std::cout<<i<<" "<<j<<" "<<Mtotal(i,j)<<" "<<Msys(i,j)<<std::endl;
+		}}
+		exit(EXIT_FAILURE);
+*/
+		vMc = to_vector(Mctotal);
 
 		// just to hold determinant
 		double invdet=0; 
@@ -290,9 +309,9 @@ return 1;
 
 
 
-double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
+double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){ return calc_chi(newModel, runnumber, 1.0, 1.0);}
 
-
+double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber, double pot_scale, double pot_scale_bar){
 
 				this->clear_all();
 
@@ -312,6 +331,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
 				SigSpec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
 				SigSpec->load_freq_3p3(SBND);
 				SigSpec->load_freq_3p3(UBOONE);
+				SigSpec->scale_by_pot(pot_scale);
 
 				pred6 = SigSpec->get_sixvector();
 
@@ -334,17 +354,18 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){
 				SigBarSpec->load_freq_3p3(ICARUS);
 				SigBarSpec->load_freq_3p3(SBND);
 				SigBarSpec->load_freq_3p3(UBOONE);
-				SigBarSpec->scale_by_pot(1.0); // THIS IS SUPER NECESSARY, to scale muboone out.	
+				SigBarSpec->scale_by_pot(pot_scale_bar); // THIS IS SUPER NECESSARY, to scale muboone out.	
 				
 				predbar6 = SigBarSpec->get_sixvector();
 
 				pred_all_12 = pred6;	
 			     	pred_all_12.insert( pred_all_12.end(), predbar6.begin(), predbar6.end() );
-		
+				whatsize=pred_all_12.size();	
 		
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
 						mychi2 += (back_all_12[i]-pred_all_12[i])*vMcI[i][j]*(back_all_12[j]-pred_all_12[j]);
+						std::cout<<i<<" "<<j<<" "<<vMcI[i][j]<<" "<<vMc[i][j]<<" "<<vMc[i][j]/(back_all_12[i]*back_all_12[j])<<std::endl;
 					}
 				}
 			
@@ -382,7 +403,7 @@ double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<doub
 				double chi2 = 0;
 				int i = runnumber;
 
-				int whatsize = vMcI[0].size();
+				int whatsize = vecin.size();
 
 				double mychi2=0;
 			
@@ -399,14 +420,18 @@ double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<doub
 			if(beam_mode==0){
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						mychi2 += (back6[i]-vecin[i])*vMcI[i][j]*(back6[j]-vecin[j]);
+					double tmp = (back6[i]-vecin[i])*vMcI[i][j]*(back6[j]-vecin[j]);
+					//std::cout<<i<<" "<<j<<" "<<back6[i]<<" "<<vecin[i]<<" "<<back6[j]<<" "<<vecin[j]<<" "<<mychi2<<" "<<tmp<<" "<<vMcI[i][j]<<std::endl;						
+						mychi2+= tmp;
 					}
 				}
 
 			}else if(beam_mode ==1){
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
-						mychi2 += (back_all_12[i]-vecin[i])*vMcI[i][j]*(back_all_12[j]-vecin[j]);
+						double tmp = (back_all_12[i]-vecin[i])*vMcI[i][j]*(back_all_12[j]-vecin[j]);
+				//			std::cout<<i<<" "<<j<<" "<<back_all_12[i]<<" "<<vecin[i]<<" "<<back_all_12[j]<<" "<<vecin[j]<<" "<<mychi2<<" "<<tmp<<" "<<vMcI[i][j]<<" "<<vMc[i][j]<<std::endl;						
+							mychi2 +=tmp;
 					}
 				}
 			}
@@ -416,14 +441,22 @@ double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<doub
 
 
 	std::cout<<i<<" "<<newModel.mNu[0]<<" "<<newModel.mNu[1]<<" "<<newModel.mNu[2]<<" "<<newModel.Ue[0]<<" "<<newModel.Ue[1]<<" "<<newModel.Ue[2]<<" "<<newModel.Um[0]<<" "<<newModel.Um[1]<<" "<<newModel.Um[2]<<" "<<newModel.phi[0]<<" "<<newModel.phi[1]<<" "<<newModel.phi[2]<<" "<<potin<<" "<<potinbar<<" "<<0.0<<" "<<mychi2<<std::endl;
-
+/*
 			std::cout<<vecin[0];
 			for(int u=1;u< vecin.size(); u++){
 				std::cout<<" "<<vecin[u];
 			}	
 			std::cout<<std::endl;
 		
+			std::cout<<back_all_12[0];
+			for(int u=1;u< back_all_12.size(); u++){
+				std::cout<<" "<<back_all_12[u];
+			}	
+			std::cout<<std::endl;
+	
 
+			exit(EXIT_FAILURE);
+*/
 			Current_Chi = mychi2;
 
 	return Current_Chi;
@@ -819,8 +852,8 @@ if(fraction_flag && false) // This is just an obsolete old one for reading it in
 	std::cout<<"read in`"<<std::endl;
 	std::cout<<filename<<std::endl;
 	TFile *fm= new TFile(filename);
-	TTree *chi2_90 =(TTree*)fm->Get("chi2_99");
-//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
+//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99");
+	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
 	 Float_t m4 = 0;
          chi2_90->SetBranchAddress("chi2",&chi2);
@@ -849,11 +882,13 @@ if(fraction_flag && false) // This is just an obsolete old one for reading it in
 
 
 
-if(fraction_flag) //this i smain!!
+if(fraction_flag ) //this i smain!!
 {
 
 	double norm_pot = 1.0;
-	wrkInstance fractionInstance(which_channel, anti_mode);
+	double norm_pot_bar =100;
+	 
+        wrkInstance fractionInstance(which_channel, anti_mode, norm_pot, norm_pot_bar);
 
 
 	char filename[200];
@@ -950,9 +985,9 @@ if(fraction_flag) //this i smain!!
 				neutrinoModel signalModel(imn,iue,ium,iph);
 				signalModel.numsterile=num_ster;
 
-				fractionInstance.calc_chi(signalModel, i);
+				fractionInstance.calc_chi(signalModel, i, norm_pot, norm_pot_bar);
 			
-	
+				exit(EXIT_FAILURE);	
 	 }
 
 
@@ -1352,7 +1387,7 @@ if(filename != "none"){
 
 			phi[0]= atof(phi45.c_str());
 			phi[1]= atof(phi46.c_str());
-			phi[2]= atof(phi45.c_str());
+			phi[2]= atof(phi56.c_str());
 
 			myfile >>pot;
 			myfile >>whicho;
@@ -1382,19 +1417,19 @@ if(filename != "none"){
 
 
 				//subrract off cosmo
-				vectorin[0] += -9;
-				vectorin[N_e_bins+N_m_bins] +=-11;
-				vectorin[(N_e_bins+N_m_bins)*2] += -10;
+			//	vectorin[0] += -9;
+			//	vectorin[N_e_bins+N_m_bins] +=-11;
+			//	vectorin[(N_e_bins+N_m_bins)*2] += -10;
 
 				//second position for anti-mode, got to code this better when i have time
 				int second = (N_e_bins+N_m_bins)*N_dets;
 				
 				// subtract off cosmo of anti
-				if(anti_flag){
-					vectorin[second] += -9;
-					vectorin[second+N_e_bins+N_m_bins] += -11;
-					vectorin[second+(N_e_bins+N_m_bins)*2] += -10;
-				}
+			//	if(anti_flag){
+			//		vectorin[second] += -9;
+			//		vectorin[second+N_e_bins+N_m_bins] += -11;
+			//		vectorin[second+(N_e_bins+N_m_bins)*2] += -10;
+			//	}
 
 				// now make a mod file, that increases muboone differently
 				std::vector<double> mod (N_dets*(N_e_bins+N_m_bins)*vector_modifier, 1.0);
@@ -1420,15 +1455,15 @@ if(filename != "none"){
 		
 				}
 				//now add back cosmo
-				vectorin[0]+=9;
-				vectorin[N_e_bins+N_m_bins]+= 11;
-				vectorin[(N_e_bins+N_m_bins)*2]+= 10;
+			//	vectorin[0]+=9;
+			//	vectorin[N_e_bins+N_m_bins]+= 11;
+			//	vectorin[(N_e_bins+N_m_bins)*2]+= 10;
 				
-				if(anti_mode == 1){
-					vectorin[second] +=9;
-					vectorin[second+N_e_bins+N_m_bins]+=11;
-					vectorin[second+(N_e_bins+N_m_bins)*2]+=10;
-				}
+			//	if(anti_mode == 1){
+			//		vectorin[second] +=9;
+			//		vectorin[second+N_e_bins+N_m_bins]+=11;
+			//		vectorin[second+(N_e_bins+N_m_bins)*2]+=10;
+			//	}
 
 			potInstance.calc_chi_POT_vector(sigModel, vectorin, count, ipot, ipotbar); //count and ipot are just there for records
 					

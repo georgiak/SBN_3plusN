@@ -299,15 +299,8 @@ void contract_signal2_anti(TMatrixT <double> & M, TMatrixT <double> & Mc){
 	// and runs each one through the contract_signal2() function above. 
 
 
-	//these shouldnt be hardcoded
-	int eblock = N_e_bins;
-	int mblock = N_m_bins;
-	
-	int ebnum = N_e_spectra;	
-	int mbnum = N_m_spectra;
-
-	int bblock = (eblock*ebnum+mblock*mbnum)*N_dets;		//big block 
-	int cblock = (eblock+mblock)*N_dets; 			//size of each contracted matrix
+	int bblock = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets;		//big block 
+	int cblock = (N_e_bins+N_m_bins)*N_dets; 			//size of each contracted block matrix
 
 	int antibblock =bblock*N_anti;
 	int anticblock = cblock*N_anti;
@@ -316,17 +309,17 @@ void contract_signal2_anti(TMatrixT <double> & M, TMatrixT <double> & Mc){
 	//std::cout<<M.GetNRows()<<" "<<M.GetNCols()<<" "<<Mc.GetNRows()<<" "<<Mc.GetNCols()<<std::endl;
 	//std::cout<<"usual : "<<bblock<<" "<<cblock<<" "<<" anti: "<<antibblock<<" "<<anticblock<<std::endl;
 
+	//Ok make four sub-matricies
 	TMatrixT <double > Mnu(bblock,bblock); 
-	Mnu = M.GetSub(0,bblock-1,0,bblock-1);
-
 	TMatrixT <double > MnuBar(bblock,bblock); 	
-	MnuBar = M.GetSub(bblock,antibblock-1,bblock,antibblock-1);
-
 	TMatrixT <double > Mtr(bblock,bblock); 	
-	Mtr = M.GetSub(0,bblock-1,bblock,antibblock-1);
-
 	TMatrixT <double > Mbl(bblock,bblock); 	
-	Mbl = M.GetSub(bblock,antibblock-1,0,bblock-1);
+
+	//And select them	
+	Mnu = 	 M.GetSub(0,bblock-1,0,bblock-1); //checked
+	MnuBar = M.GetSub(bblock,antibblock-1,bblock,antibblock-1);// checked
+	Mbl =    M.GetSub(0,bblock-1,bblock,antibblock-1);// checked
+	Mtr =    M.GetSub(bblock,antibblock-1,0,bblock-1);//checked
 
 	TMatrixT <double > MnuC(cblock,cblock); 
 	TMatrixT <double > MnuBarC(cblock,cblock); 	
@@ -338,11 +331,11 @@ void contract_signal2_anti(TMatrixT <double> & M, TMatrixT <double> & Mc){
 	contract_signal2(Mtr,MtrC);	
 	contract_signal2(Mbl,MblC);
 
-	Mc.Zero();
-	Mc.SetSub(0,0,MnuC);
-	Mc.SetSub(cblock,cblock,MnuBarC);
-	Mc.SetSub(0,cblock,MtrC);
-	Mc.SetSub(cblock,0,MblC);
+	Mc.Zero(); 
+	Mc.SetSub(0,0,MnuC); //checked
+	Mc.SetSub(cblock,cblock,MnuBarC); //checked
+	Mc.SetSub(cblock,0,MtrC); //hdecked
+	Mc.SetSub(0,cblock,MblC);//checkded
 
 
 return;

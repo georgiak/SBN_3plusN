@@ -265,6 +265,7 @@ int SBN_spectrum::scale_by_pot(double pot){
 					sbnd_e_mu[i]= sbnd_e_mu[i]*pot;
 					sbnd_f[i]= sbnd_f[i]*pot;
 					sbnd_f_bar[i]= sbnd_f_bar[i]*pot;
+					sbnd_e_cosmo[i]=sbnd_e_cosmo[i]*pot;
 	
 					uboone_e[i]= uboone_e[i]*muboonescaling;
 					uboone_e_pho[i]= uboone_e_pho[i]*muboonescaling;
@@ -272,14 +273,16 @@ int SBN_spectrum::scale_by_pot(double pot){
 					uboone_e_mu[i]= uboone_e_mu[i]*muboonescaling;
 					uboone_f[i]= uboone_f[i]*muboonescaling;
 					uboone_f_bar[i]= uboone_f_bar[i]*muboonescaling;			
-				
+					uboone_e_cosmo[i]=uboone_e_cosmo[i]*muboonescaling;
+			
 					icarus_e[i]= icarus_e[i]*pot;
 					icarus_e_pho[i]= icarus_e_pho[i]*pot;
 					icarus_e_dirt[i]= icarus_e_dirt[i]*pot;
 					icarus_e_mu[i]= icarus_e_mu[i]*pot;
 					icarus_f[i]= icarus_f[i]*pot;
 					icarus_f_bar[i]= icarus_f_bar[i]*pot;
-				
+					icarus_e_cosmo[i]=icarus_e_cosmo[i]*pot;
+
 				}
 			
 				for(int i =0; i< N_m_bins; i++){
