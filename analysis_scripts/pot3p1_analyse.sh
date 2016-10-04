@@ -6,8 +6,8 @@ rm fractiondata/pot3p1/analysed_3p1_both.dat
 rm fractiondata/pot3p1/analysed_3p1_dis.dat
 rm fractiondata/pot3p1/analysed_3p1_app.dat
 
-CHI3=16.2513
-CHI5=34.555
+CHI3=14.1564
+CHI5=31.8121
 
 for ip in `seq -4.0 0.1 0.0`
 do
