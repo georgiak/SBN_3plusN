@@ -285,7 +285,7 @@ int SBN_spectrum::scale_by_pot(double pot){
 
 				}
 			
-				for(int i =0; i< N_m_bins; i++){
+		for(int i =0; i< N_m_bins; i++){
 
 					sbnd_m[i]= sbnd_m[i]*pot;
 					sbnd_m_pion[i]= sbnd_m_pion[i]*pot;
@@ -3121,7 +3121,7 @@ int SBN_spectrum::load_bkg(SBN_detector * detector)
 
 	TH1D  h_dis_muon_sin=*((TH1D*)f.Get("dis_muon_sin")); 
 	TH1D  h_dis_ncpion_sin=*((TH1D*)f.Get("dis_ncpion_sin")); 
-	h_dis_muon_sin.Add(&h_dis_ncpion_sin); //Not Included for Now
+	h_dis_muon_sin.Add(&h_dis_ncpion_sin); 
 
 	TH1D  h_fullosc_nue_sin=*((TH1D*)f.Get("fullosc_nue_sin")); 
 	TH1D  h_fullosc_nuebar_sin=*((TH1D*)f.Get("fullosc_nuebar_sin"));
@@ -3225,8 +3225,8 @@ int SBN_spectrum::load_freq_3p3(SBN_detector * detector)
 	if(workingModel.numsterile == 1)
 	{
 	prob_3p3(log10(workingModel.dm41Sq), detector,41);
-	prob_3p3(round54, detector,54);
-	prob_3p3(round64, detector,64);
+	//prob_3p3(round54, detector,54);
+	//prob_3p3(round64, detector,64);
 
 	}
        	else if(workingModel.numsterile ==2)
@@ -3236,8 +3236,8 @@ int SBN_spectrum::load_freq_3p3(SBN_detector * detector)
 	prob_3p3(fix41, detector, 41);
 	prob_3p3(fix51, detector, 51);
 	prob_3p3(round54, detector,54);
-	prob_3p3(round65, detector,65);
-	prob_3p3(round64, detector,64);
+	//prob_3p3(round65, detector,65);
+	//prob_3p3(round64, detector,64);
 
 	}	
 	else if(workingModel.numsterile ==3)
@@ -3298,6 +3298,8 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 	double prob_muebar = 0;
 	double prob_mue_sq = 0;
 	double prob_muebar_sq = 0;
+
+
 
 	switch (which_mode)
 	{

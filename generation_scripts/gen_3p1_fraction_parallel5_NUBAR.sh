@@ -1,5 +1,6 @@
 #!/bin/bash
 cd ..
+rm fractiondata/NUBAR_MODE/3p1*
 
 ./sbnfit --fraction 0 --num 1 --dis --anti >> fractiondata/NUBAR_MODE/3p1_dis.bar.dat &
 

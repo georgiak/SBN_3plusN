@@ -264,16 +264,20 @@ double neutrinoModel::oscAmp_app(int a, int b, int which_dm, int sqornot)
 		nubarmod = -1.0;
 	}
 
+
+
 	double Ua4=0,Ua5=0,Ua6=0,Ub4=0,Ub5=0,Ub6=0;
 
 	switch(a)
 	{
 		case 1:
+		case -1:
 			Ua4 = Ue[0];
 			Ua5 = Ue[1];
 			Ua6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ua4 = Um[0];
 			Ua5 = Um[1];
 			Ua6 = Um[2];
@@ -286,11 +290,13 @@ double neutrinoModel::oscAmp_app(int a, int b, int which_dm, int sqornot)
 	switch(b)
 	{
 		case 1:
+		case -1:
 			Ub4 = Ue[0];
 			Ub5 = Ue[1];
 			Ub6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ub4 = Um[0];
 			Ub5 = Um[1];
 			Ub6 = Um[2];

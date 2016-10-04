@@ -213,7 +213,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 
 		//if(pot_scale_bar !=1.0){
 		//just scale it as muboone isnt right
-		   bkgbarspec->scale_by_pot(pot_scale_bar);
+		bkgbarspec->scale_by_pot(pot_scale_bar);
 		//}
 
 		backbar6 = bkgbarspec->get_sixvector();
@@ -278,7 +278,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		std::cout<<i<<" "<<j<<" "<<Mtotal(i,j)<<" "<<Msys(i,j)<<std::endl;
 		}}
 		exit(EXIT_FAILURE);
-*/
+		*/
 		vMc = to_vector(Mctotal);
 
 		// just to hold determinant
@@ -331,7 +331,9 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber, double pot_s
 				SigSpec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
 				SigSpec->load_freq_3p3(SBND);
 				SigSpec->load_freq_3p3(UBOONE);
-				SigSpec->scale_by_pot(pot_scale);
+				if(pot_scale!=1){
+					SigSpec->scale_by_pot(pot_scale);
+				}
 
 				pred6 = SigSpec->get_sixvector();
 
@@ -339,7 +341,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber, double pot_s
 
 
 				double mychi2=0;
-		if(beam_mode ==0){
+		if(beam_mode == NU_MODE){
 
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
@@ -348,7 +350,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber, double pot_s
 				}
 
 
-		}else if(beam_mode == 1)
+		}else if(beam_mode == NU_NUBAR_MODE)
 		{
 			
 				SigBarSpec->load_freq_3p3(ICARUS);
@@ -384,7 +386,6 @@ std::cout<<"#"<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel
 				std::cout<<" "<<printvec[u];
 			}	
 			std::cout<<std::endl;
-
 
 
 	delete SigBarSpec;
@@ -917,7 +918,7 @@ if(fraction_flag ) //this i smain!!
 	double norm_pot = 1.0;
 	double norm_pot_bar =1.0;
 	 
-        wrkInstance fractionInstance(which_channel, anti_mode, norm_pot, norm_pot_bar);
+        wrkInstance fractionInstance(which_channel, anti_mode);
 
 	exit(EXIT_FAILURE);
 
@@ -1010,12 +1011,12 @@ if(fraction_flag ) //this i smain!!
 				double imn[3] = {(double)m4,(double)m5,(double)m6};
 				double iue[3] = {ue4,ue5,ue6};
 				double ium[3] = {um4, um5, um6};
-				double iph[3] = {phi45,phi46, phi56};
+				double iph[3] = {phi45,phi46,phi56};
 
 				neutrinoModel signalModel(imn,iue,ium,iph);
 				signalModel.numsterile=num_ster;
 
-				fractionInstance.calc_chi(signalModel, i, norm_pot, norm_pot_bar);
+				fractionInstance.calc_chi(signalModel, i);
 			
 				//exit(EXIT_FAILURE);	
 	 }
@@ -1341,10 +1342,6 @@ if(filename != "none"){
 	std::string um5;
 	std::string um6;
 
-	std::string ut4;
-	std::string ut5;
-	std::string ut6;
-
 	std::string phi45;
 	std::string phi46;
 	std::string phi56;
@@ -1479,7 +1476,9 @@ if(filename != "none"){
 				}
 
 
+				if(mod.size()!= vectorin.size()){ std::cout<<"WOW big problem"<<std::endl;exit(EXIT_FAILURE);}
 				// and modift the prediction
+				
 				for(int i=0; i<vectorin.size(); i++){
 					vectorin[i]=mod[i]*vectorin[i];
 		
@@ -1496,7 +1495,8 @@ if(filename != "none"){
 			//	}
 
 			potInstance.calc_chi_POT_vector(sigModel, vectorin, count, ipot, ipotbar); //count and ipot are just there for records
-					
+
+								
 			//FAR too much data, dont output this?
 			/*
 			std::cout<<pred6in[0]*mod[0];
@@ -1506,7 +1506,6 @@ if(filename != "none"){
 			std::cout<<std::endl;
 			*/
 
-			
 			vectorin.clear();
 		}//end of file	
 
