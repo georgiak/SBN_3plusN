@@ -170,10 +170,10 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		{
 			for(int j =0; j<msys.GetNrows(); j++)
 			{
+				std::cout<<i<<" "<<j<<" "<<msys(i,j)<<std::endl;
 				msys(i,j)=msys(i,j)*back[i]*back[j];
 			}
 		}
-
 
 
 
@@ -233,7 +233,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		 * */
 
 		TMatrixT <double> McI(contMsize, contMsize);
-		TMatrixT <double> McIbar(contMsize, contMsize);
+		//TMatrixT <double> McIbar(contMsize, contMsize);
 
 		// Fill systematics from pre-computed files
 		TMatrixT <double> Msys(bigMsize,bigMsize);
@@ -254,7 +254,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 				Msys(i,j)=Msys(i,j)*back_all[i]*back_all[j];
 			}
 		}
-
+			
 		// Fill stats from the back ground vector
 		TMatrixT <double> Mstat(bigMsize,bigMsize);
 		stats_fill(Mstat, back_all);
@@ -475,6 +475,35 @@ double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<doub
  ************************************************************/
 int main(int argc, char* argv[])
 {
+
+
+	/*	int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti;
+		int contMsize = (N_e_bins+N_m_bins)*N_dets*N_anti;
+		
+		TMatrixT <double> Msys(bigMsize,bigMsize);
+		TMatrixT <double> MsysC(contMsize,contMsize);
+
+		for(int i =0; i< Msys.GetNcols(); i++){
+		for(int j =0; j< Msys.GetNcols(); j++){
+		Msys(i,j) = 1;
+		}}
+
+		contract_signal2_anti(Msys,MsysC);
+		
+	for(int i =0; i< MsysC.GetNcols(); i++){
+		for(int j =0; j< MsysC.GetNcols(); j++){
+			std::cout<<i<<" "<<j<<" "<<MsysC(i,j)<<std::endl;
+		}}
+exit(EXIT_FAILURE);
+*/
+
+
+
+
+
+
+
+
 
 gSystem->Load("libTree");
 
@@ -890,6 +919,7 @@ if(fraction_flag ) //this i smain!!
 	 
         wrkInstance fractionInstance(which_channel, anti_mode, norm_pot, norm_pot_bar);
 
+	exit(EXIT_FAILURE);
 
 	char filename[200];
 	if(num_ster == 1){

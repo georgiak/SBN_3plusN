@@ -168,23 +168,26 @@ void contract_signal2(TMatrixT <double> & M, TMatrixT <double> & Mc){
 		mtot[i][j].ResizeTo(eblock+mblock,eblock+mblock);
 
 		TMatrixT <double > Mtemp(bblock,bblock);
+		//First get the one of 9 subblocks to contract
 		Mtemp = M.GetSub(i*bblock,i*bblock+bblock-1,j*bblock,j*bblock+bblock-1);
 
 		//std::cout<<"Gotten first subblock"<<std::endl;
 
-		std::vector< TMatrixT<double> > ve(ebnum);
-		std::vector< TMatrixT<double> > vm(mbnum);
 
+		std::vector< TMatrixT<double> > ve(ebnum);// will keep the electronlike submatricies (whole horizontal rows)
+		std::vector< TMatrixT<double> > vm(mbnum);//will keep the muonlike submatricies
+
+		//So for each of the (7) electron like spectra
 		for(int k = 0; k<ebnum; k++)
 		{
-		//	std::cout<<k<<" starting!"<<std::endl;
+			// resize it to a eblock deep and whole bblock wide thing
 			ve[k].ResizeTo(0,eblock-1,0,bblock-1);	
-		//	std::cout<<k<<" resized!"<<std::endl;
+			//And get the lots of horizontal rows 
 			ve[k] = Mtemp.GetSub(k*eblock,k*eblock+eblock-1,0,bblock-1);
 		//	std::cout<<k<<" done!"<<std::endl;
 		}
 
-		
+		// Going to use the ve[0] one to store the collapsed ones
 		for(int k =1; k<ebnum; k++)
 		{
 			ve[0]=ve[0]+ve[k];		
@@ -194,8 +197,7 @@ void contract_signal2(TMatrixT <double> & M, TMatrixT <double> & Mc){
 
 
 
-	//	std::cout<<"Gotten ve[0]"<<std::endl;
-
+		// Do the same for muon row
 		for(int k = 0; k<mbnum; k++)
 		{
 			vm[k].ResizeTo(0,mblock-1,0,bblock-1);
@@ -285,8 +287,6 @@ void contract_signal2(TMatrixT <double> & M, TMatrixT <double> & Mc){
 		}
 	}
 	
-
-
 
 	
 
