@@ -93,10 +93,15 @@ class wrkInstance {
 	wrkInstance(int channel_mode, int fbeam_mode);
 	~wrkInstance();
 
+	double inject_signal(neutrinoModel signalModel, int channel_mode, int fbeam_mode , double pot_scale, double pot_scale_bar);
+
 	double calc_chi(neutrinoModel signalModel, int runnumber);
 	double calc_chi(neutrinoModel signalModel, int runnumber, double pot_scale, double pot_scale_bar);
 
 	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin, double potinbar);
+
+
+
 	int clear_all();
 };
 
@@ -465,6 +470,195 @@ double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<doub
 }
 
 
+double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, int fbeam_mode, double pot_scale, double pot_scale_bar ){
+
+	back6.clear();
+	this->clear_all();
+	vMcI.clear();
+
+
+
+	which_mode = channel_mode;
+	beam_mode = fbeam_mode;
+	
+	double chi2 = 0; //old chi to be passed in
+
+	nullModel = neutrinoModel();
+	nullModel.zero();
+	workingModel= neutrinoModel();
+	workingModel.zero();
+	workingModel= signalModel;
+
+	UBOONE = new SBN_detector(1);
+	SBND =  new SBN_detector(0);
+	ICARUS =  new SBN_detector(2);
+
+	//background is NOW my signal, dont be confused
+	bkgspec = new SBN_spectrum(signalModel);
+	bkgbarspec = new SBN_spectrum(signalModel);
+	
+	bkgspec->which_mode=which_mode;
+	bkgbarspec->which_mode=which_mode;
+	bkgbarspec->SetNuBarMode();
+				
+
+	bkgspec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+	bkgspec->load_freq_3p3(SBND);
+	bkgspec->load_freq_3p3(UBOONE);
+	
+	bkgspec->scale_by_pot(pot_scale);
+
+
+	back6 = bkgspec->get_sixvector();
+	back  = bkgspec->get_vector();
+
+		bool usedetsys = true;	
+		bool stat_only = false;
+	
+	if (beam_mode == 0){
+	
+
+		matrix_size =(N_e_bins + N_e_bins + N_m_bins)*N_dets;
+		matrix_size_c = (N_e_bins + N_m_bins) * N_dets;
+		
+		bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets;
+		contMsize = (N_e_bins+N_m_bins)*N_dets;
+
+		/* create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
+		 * */
+
+		 TMatrixT <double> m(matrix_size,matrix_size);
+		 TMatrixT <double>  mc(matrix_size_c,matrix_size_c);
+		 TMatrixT <double>  mci(matrix_size_c, matrix_size_c);
+		 TMatrixT <double>  msys(bigMsize,bigMsize);
+
+		
+		sys_fill(msys,usedetsys);
+
+		for(int i =0; i<msys.GetNcols(); i++)
+		{
+			for(int j =0; j<msys.GetNrows(); j++)
+			{
+				std::cout<<i<<" "<<j<<" "<<msys(i,j)<<std::endl;
+				msys(i,j)=msys(i,j)*back[i]*back[j];
+			}
+		}
+
+
+
+		TMatrixT <double> mstat(bigMsize,bigMsize);
+		stats_fill(mstat, back);
+
+		TMatrixT <double > mtotal(bigMsize,bigMsize);
+
+		if(stat_only){
+			mtotal =  mstat;
+		} else {
+			mtotal = msys+mstat;
+		}
+
+		TMatrixT <double> mctotal(contMsize,contMsize);
+		contract_signal2(mtotal,mctotal);
+
+
+		double invdet=0; // just to hold determinant
+
+		//	bit o inverting, root tmatrix seems perfectly fast	
+		mci = mctotal.Invert(&invdet);
+
+		vMcI = to_vector(mci);
+
+	/*	*/
+	
+	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
+
+	} else if(beam_mode == 1)
+	{
+		bkgbarspec->SetNuBarMode();
+		bkgspec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+		bkgspec->load_freq_3p3(SBND);
+		bkgspec->load_freq_3p3(UBOONE);
+		
+		bkgbarspec->scale_by_pot(pot_scale_bar);
+
+		backbar6 = bkgbarspec->get_sixvector();
+		backbar  = bkgbarspec->get_vector();
+
+		back_all = back;
+		back_all.insert(back_all.end(), backbar.begin(), backbar.end() );
+
+		back_all_12 = back6;
+		back_all_12.insert(back_all_12.end(), backbar6.begin(), backbar6.end() );
+	
+
+		bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti;
+		contMsize = (N_e_bins+N_m_bins)*N_dets*N_anti;
+
+		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
+		 * */
+
+		TMatrixT <double> McI(contMsize, contMsize);
+		//TMatrixT <double> McIbar(contMsize, contMsize);
+
+		// Fill systematics from pre-computed files
+		TMatrixT <double> Msys(bigMsize,bigMsize);
+		sys_fill(Msys,usedetsys);
+
+		/*for(int i =0; i< Msys.GetNcols(); i++){
+		for(int j =0; j< Msys.GetNcols(); j++){
+		std::cout<<i<<" "<<j<<" "<<Msys(i,j)<<" "<<Msys(i,j)<<std::endl;
+		}}
+		exit(EXIT_FAILURE);
+		*/
+
+		// systematics per scaled event
+		for(int i =0; i<Msys.GetNcols(); i++)
+		{
+			for(int j =0; j<Msys.GetNrows(); j++)
+			{
+				Msys(i,j)=Msys(i,j)*back_all[i]*back_all[j];
+			}
+		}
+			
+		// Fill stats from the back ground vector
+		TMatrixT <double> Mstat(bigMsize,bigMsize);
+		stats_fill(Mstat, back_all);
+
+		//And then define the total covariance matrix in all its glory
+		TMatrixT <double > Mtotal(bigMsize,bigMsize);
+		if(stat_only){
+			Mtotal =  Mstat;
+		} else {
+			Mtotal = Msys+Mstat;
+		}
+		
+		
+		// Now contract back the larger antimatrix
+		TMatrixT<double > Mctotal(contMsize,contMsize);
+
+		contract_signal2_anti(Mtotal,Mctotal);
+
+		/*for(int i =0; i< Mtotal.GetNcols(); i++){
+		for(int j =0; j< Mtotal.GetNcols(); j++){
+		std::cout<<i<<" "<<j<<" "<<Mtotal(i,j)<<" "<<Msys(i,j)<<std::endl;
+		}}
+		exit(EXIT_FAILURE);
+		*/
+		vMc = to_vector(Mctotal);
+
+		// just to hold determinant
+		double invdet=0; 
+
+		// Bit o inverting, root tmatrix seems perfectly and sufficiently fast for this, even with anti_mode
+		McI = Mctotal.Invert(&invdet);
+
+
+		// There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
+		vMcI = to_vector(McI);
+	} //end anti_initialiser
+
+}//end the inject_signal;
+
 
 
 
@@ -528,6 +722,8 @@ bool unit_flag = false;
 bool fraction_flag = false;
 bool anti_flag = false;
 int anti_mode = 0;
+bool inject_flag = true;
+
 
 bool pot_flag = false;
 
@@ -567,8 +763,9 @@ const struct option longopts[] =
 	{"mass",		required_argument,	0, 'm'},
 	{"anti",		no_argument,		0, 'A'},
 	{"ue4", 		required_argument,	0, 'e'},
-	{"um4"	,		required_argument,	0, 'u'},
 	{"help",		no_argument, 		0, 'h'},
+	{"um4"	,		required_argument,	0, 'u'},
+	{"inject"	,	no_argument,	0, 'I'},
 	{"verbose",		no_argument, 		0, 'v'},
 	{"sensitivity",		required_argument,	0, 'S'},
 	{"stat-only",		no_argument,		0, 'l'},
@@ -587,10 +784,13 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "dalf:nuM:e:m:svp:hS:cFTABN:b", longopts, &index);
+	iarg = getopt_long(argc,argv, "Idalf:nuM:e:m:svp:hS:cFTABN:b", longopts, &index);
 
 	switch(iarg)
 	{
+		case 'I':
+			inject_flag = true;
+			break;
 		case 'F':
 			fit_flag = true;
 			//mS = strtof(optarg,NULL);
@@ -1516,6 +1716,283 @@ if(filename != "none"){
 
 
 }//end of POT flag
+
+
+
+if(inject_flag){
+
+	double ipot =1.0; //pow(10,pot_num);
+	double ipotbar =1.0;// pow(10,pot_num_bar);
+
+	double Imn[3] = {1,0.0,0};
+	double Iue[3] = {0.1,0.0,0};
+	double Ium[3] = {0.1,0.0,0};
+	double Iphi[3] = {0.0,0,0.0};
+
+	neutrinoModel injectModel(Imn,Iue,Ium,Iphi);
+	injectModel.numsterile=num_ster;
+
+	wrkInstance injectInstance(which_channel, anti_mode, ipot, ipotbar); // anoyingly it has alredy loaded the background model;
+	injectInstance.inject_signal(injectModel, which_channel, anti_mode, ipot, ipotbar);
+
+
+	int vector_modifier = 1;
+	
+	if(anti_flag){
+		vector_modifier =2;
+	}
+
+
+	//now load file with all other vectors.
+	std::string filename = "3p1_both";
+
+	if(num_ster == 1){
+		switch(which_channel){
+			case APP_ONLY:
+				filename = "3p1_app";
+				break;
+			case DIS_ONLY:
+				filename = "3p1_dis";
+				break;
+			case BOTH_ONLY:
+				filename = "3p1_both";
+				break;
+		}
+
+	} else if (num_ster == 2){
+			switch(which_channel){
+			case APP_ONLY:
+				filename = "3p2_app";
+				break;
+			case DIS_ONLY:
+				filename = "3p2_dis";
+				break;
+			case BOTH_ONLY:
+				filename = "3p2_both";
+				break;
+		}
+	} else if(num_ster == 3){
+			switch(which_channel){
+			case APP_ONLY:
+				filename = "3p3_app";
+				break;
+			case DIS_ONLY:
+				filename = "3p3_dis";
+				break;
+			case BOTH_ONLY:
+				filename = "3p3_both";
+				break;
+		}
+
+	}
+
+	std::string pre =  "fractiondata/";
+	std::string post = ".dat";
+
+	if(anti_flag){
+		pre = "fractiondata/NUBAR_MODE/";	
+		post = ".bar.dat";
+	}
+	pre.append(filename);
+	pre.append(post);
+	filename=pre;
+
+
+if(filename != "none"){
+
+	int k = 0;
+	std::string num;
+	std::string m4;
+	std::string m5;
+	std::string m6;
+
+	std::string ue4;
+	std::string ue5;
+	std::string ue6;
+
+	std::string um4;
+	std::string um5;
+	std::string um6;
+
+	std::string phi45;
+	std::string phi46;
+	std::string phi56;
+
+	std::string whicho;
+
+	std::string pot;
+	std::string oldchi;
+	std::string newchi;
+
+	std::string tempVec;	
+
+	//no longer the pred6in, sometimes pred12 all or whatever bull
+	std::vector<double > vectorin;
+
+	double mn[3];
+	double ue[3];
+	double um[3];
+	double phi[3];
+
+	double potin;
+	double oldchiin;
+	double newchiin;
+
+	int whichflagin = -1;
+
+	int count = 0;
+
+	std::ifstream myfile (filename);
+	if (!myfile.is_open())
+	{
+		std::cout<<"#ERROR: Passed POT file does not exist: "<<filename<<std::endl;
+		std::cout<<" which_channel "<<which_channel<<" numster "<<num_ster<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+		while(!myfile.eof()){
+		
+			count++;	
+			myfile >> num;
+			//std::cout<<num<<std::endl;	
+		
+			myfile >> m4;
+			myfile >> m5;
+			myfile >> m6;
+			
+			mn[0]= atof(m4.c_str());
+			mn[1]= atof(m5.c_str());
+			mn[2]= atof(m6.c_str());
+
+			myfile >>ue4;
+			myfile >>ue5;
+			myfile >>ue6;
+
+			ue[0]= atof(ue4.c_str());
+			ue[1]= atof(ue5.c_str());
+			ue[2]= atof(ue6.c_str());
+
+			myfile >>um4;
+			myfile >>um5;
+			myfile >>um6;
+
+			um[0]= atof(um4.c_str());
+			um[1]= atof(um5.c_str());
+			um[2]= atof(um6.c_str());
+		
+			myfile >> phi45;
+			myfile >> phi46;
+			myfile >> phi56;
+
+			phi[0]= atof(phi45.c_str());
+			phi[1]= atof(phi46.c_str());
+			phi[2]= atof(phi56.c_str());
+
+			myfile >>pot;
+			myfile >>whicho;
+			myfile >>oldchi;
+			myfile >>newchi;
+
+
+			potin= atof(pot.c_str());
+			oldchiin= atof(oldchi.c_str());
+			newchiin= atof(newchi.c_str());
+			whichflagin = atof(whicho.c_str());
+
+	
+			neutrinoModel sigModel(mn,ue,um,phi );
+			sigModel.numsterile=num_ster;
+
+			for(int i=0;i<(N_e_bins+N_m_bins)*N_dets*vector_modifier; i++){
+				myfile >> tempVec;
+				vectorin.push_back(atof(tempVec.c_str()));
+			}
+
+
+				if(myfile.eof()){break;}
+
+						
+				double chipot = 0;
+
+
+				//subrract off cosmo
+			//	vectorin[0] += -9;
+			//	vectorin[N_e_bins+N_m_bins] +=-11;
+			//	vectorin[(N_e_bins+N_m_bins)*2] += -10;
+
+				//second position for anti-mode, got to code this better when i have time
+				int second = (N_e_bins+N_m_bins)*N_dets;
+				
+				// subtract off cosmo of anti
+			//	if(anti_flag){
+			//		vectorin[second] += -9;
+			//		vectorin[second+N_e_bins+N_m_bins] += -11;
+			//		vectorin[second+(N_e_bins+N_m_bins)*2] += -10;
+			//	}
+
+				// now make a mod file, that increases muboone differently
+				std::vector<double> mod (N_dets*(N_e_bins+N_m_bins)*vector_modifier, 1.0);
+				for(int i =0; i<N_e_bins+N_m_bins; i++){
+					mod[i]=ipot;
+					mod[i+N_e_bins+N_m_bins]= ipot*0.5+0.5;
+					mod[i+2*(N_e_bins+N_m_bins)]=ipot;
+				}
+
+
+				if(anti_flag){
+					for(int i =0; i<N_e_bins+N_m_bins; i++){
+						mod[i+second]=ipotbar;
+						mod[i+second+N_e_bins+N_m_bins] = ipotbar;
+						mod[i+second+2*(N_e_bins+N_m_bins)]=ipotbar;
+					}
+				}
+
+
+				if(mod.size()!= vectorin.size()){ std::cout<<"WOW big problem"<<std::endl;exit(EXIT_FAILURE);}
+				// and modift the prediction
+				
+				for(int i=0; i<vectorin.size(); i++){
+					vectorin[i]=mod[i]*vectorin[i];
+		
+				}
+				//now add back cosmo
+			//	vectorin[0]+=9;
+			//	vectorin[N_e_bins+N_m_bins]+= 11;
+			//	vectorin[(N_e_bins+N_m_bins)*2]+= 10;
+				
+			//	if(anti_mode == 1){
+			//		vectorin[second] +=9;
+			//		vectorin[second+N_e_bins+N_m_bins]+=11;
+			//		vectorin[second+(N_e_bins+N_m_bins)*2]+=10;
+			//	}
+
+			injectInstance.calc_chi_POT_vector(sigModel, vectorin, count, ipot, ipotbar); //count and ipot are just there for records
+
+								
+			//FAR too much data, dont output this?
+			/*
+			std::cout<<pred6in[0]*mod[0];
+			for(int u=1;u< pred6in.size(); u++){
+				std::cout<<" "<<pred6in[u]*mod[u];
+			}	
+			std::cout<<std::endl;
+			*/
+
+			vectorin.clear();
+		}//end of file	
+
+
+	myfile.close();
+
+	}
+
+
+}//end of injection flag
+
+
+
+
+
 
 //Begin program flow control
 if(fit_flag){
