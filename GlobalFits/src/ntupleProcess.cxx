@@ -25,7 +25,7 @@ double cl90, cl99;
 
 int ntProcess(){
 
-	procOptLoc = "/sbnd/app/users/dcianci/SBN_3plusN/GlobalFits/inputs/";
+	procOptLoc = "inputs/";
 	procOpt();
 
 	rasterPoints = 500;
@@ -35,15 +35,24 @@ int ntProcess(){
     std::cout << "Loading ntuple files..." << std::endl;
 	float chi2min = 3000.;
     TChain * in_chain = new TChain("chi2Nt");
+	TFile *zombtest;
 
 	for(int i = 0; i < nRuns; i++){
-        std::string jid = Form("%i",i);
-        //std::string infile = "/pnfs/lar1nd/scratch/users/dcianci/" + location + "/globFit_" + jid + ".root";
-		std::string infile = "globPhit.root";
+		std::cout << "Progress: " << float(i+1)*100./float(nRuns) << "\% \r";
+        //std::string jid = Form("%i",i+4000);
+        //std::string infile = "/pnfs/sbnd/scratch/users/dcianci/" + location + "/globFit_" + jid + ".root";
+		std::string infile = "globFit.root";
 		//std::cout << "Output File 1: " << infile << std::endl;
         TString inputFile = infile;
-        in_chain->Add(inputFile);
+        zombtest = new TFile(inputFile);
+		if(zombtest->IsZombie()){
+			zombtest->Close();
+			continue;
+		}
+		in_chain->Add(inputFile);
     }
+	zombtest->Close();
+	std::cout << "\n\n";
 
     in_chain->SetBranchAddress("chi2",&chi2);
 	in_chain->SetBranchAddress("step",&step);
@@ -144,6 +153,7 @@ int ntProcess(){
 
 		std::cout << "90CL has " << chi2_90->GetEntries() << " entries" << std::endl;
 		std::cout << "99CL has " << chi2_99->GetEntries() << " entries" << std::endl;
+		std::cout << "95CL has " << chi2_95->GetEntries() << " entries" << std::endl;
 
 		// 90% (2dof) 		4.605
 		// 99% (2dof)		9.201

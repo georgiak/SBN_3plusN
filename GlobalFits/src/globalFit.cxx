@@ -157,10 +157,10 @@ int globChisq(int ind){
         chisqTotal.zero();  chisqDetector.zero();
 
 		// For testing, we settin' our own parameters!
-		//nuModel.zero();
-		//nuModel.Ue[0] = .11; 	nuModel.Um[0] = .12;	nuModel.mNu[0] = sqrt(.9);
-		//nuModel.Ue[1] = .11;	nuModel.Um[1] = .17; 	nuModel.mNu[1] = sqrt(17); 	nuModel.phi[0] = 1.6*TMath::Pi();
-		//nuModel.Ue[2] = .11;	nuModel.Um[2] = .14;	nuModel.mNu[2] = sqrt(22);	nuModel.phi[1] = .28*TMath::Pi(); nuModel.phi[2] = 1.4*TMath::Pi();
+		nuModel.zero();
+		nuModel.Ue[0] = .11; 	nuModel.Um[0] = .12;	nuModel.mNu[0] = sqrt(.9);
+		nuModel.Ue[1] = .11;	nuModel.Um[1] = .17; 	nuModel.mNu[1] = sqrt(17); 	nuModel.phi[0] = 1.6*TMath::Pi();
+		nuModel.Ue[2] = .11;	nuModel.Um[2] = .14;	nuModel.mNu[2] = sqrt(22);	nuModel.phi[1] = .28*TMath::Pi(); nuModel.phi[2] = 1.4*TMath::Pi();
 
 		// Now, let's actually start calculating the chisq
 		if(ATMOSPHERICProcess == 1){
@@ -211,6 +211,7 @@ int globChisq(int ind){
             chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "Nomad: " << chisqDetector.chi2 << std::endl;
         }
+		watch->Stop(); watch->Start();
         if(MBProcess == 1){
 			if(!plusmode)	chisqDetector = getChi2Boone(nuModel, mbNuPack, false);
 			else chisqDetector = getChi2BoonePlus(nuModel, mbNuPlusPack, false);
@@ -219,12 +220,14 @@ int globChisq(int ind){
             chisqTotal.chi2_det += chisqDetector.chi2_det;
 			if(debug) std::cout << "MB: " << chisqDetector.chi2 << std::endl;
         }
+		watch->Stop();	watch->Print("u");	watch->Start();
 		if(GALLIUMProcess == 1){
 			chisqDetector = getChi2Gallium(nuModel, galPack);
 			if(chisqDetector.chi2 > chi2Cut || chisqDetector.chi2 < 0) continue;
 			chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "Gal: " << chisqDetector.chi2 << std::endl;
 		}
+		watch->Stop();	watch->Print("u");	watch->Start();
         if(MBProcessNubar == 1){
 			if(!plusmode)	chisqDetector = getChi2Boone(nuModel, mbNubarPack, true);
 			else chisqDetector = getChi2BoonePlus(nuModel, mbNubarPlusPack, true);
@@ -233,6 +236,7 @@ int globChisq(int ind){
             chisqTotal.chi2_det += chisqDetector.chi2_det;
 			if(debug) std::cout << "MBNubar: " << chisqDetector.chi2 << std::endl;
         }
+		watch->Stop();	watch->Print("u");	watch->Start();
 		if(chisqTotal.chi2 > chi2Cut) continue;
 		if(BugeyProcess == 1){
             chisqDetector = getChi2Bugey(nuModel, bugeyPack);
@@ -240,6 +244,7 @@ int globChisq(int ind){
             chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "Bugey: " << chisqDetector.chi2 << std::endl;
         }
+		watch->Stop();	watch->Print("u");	watch->Start();
 		if(chisqTotal.chi2 > chi2Cut) continue;
 		if(XSECProcess == 1){
             chisqDetector = getChi2Xsec(nuModel, xsecPack);
@@ -247,8 +252,8 @@ int globChisq(int ind){
             chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "Xsec: " << chisqDetector.chi2 << std::endl;
         }
+		watch->Stop();	watch->Print("u");	watch->Start();
 		if(chisqTotal.chi2 > chi2Cut) continue;
-
 		if(MBDISProcessNubar == 1){
 			if(!plusmode)	chisqDetector = getChi2MBDis(nuModel, mbNubarDisPack);
 			else chisqDetector = getChi2MBDisPlus(nuModel, mbNubarDisPlusPack);
@@ -256,6 +261,7 @@ int globChisq(int ind){
 			chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "MBDisNubar: " << chisqDetector.chi2 << std::endl;
 		}
+		watch->Stop();	watch->Print("u");	watch->Start();
 		if(chisqTotal.chi2 > chi2Cut) continue;
         if(MBDISProcess == 1){
             if(!plusmode)	chisqDetector = getChi2MBDis(nuModel, mbNuDisPack);
@@ -264,7 +270,7 @@ int globChisq(int ind){
             chisqTotal.chi2 += chisqDetector.chi2;
 			if(debug) std::cout << "MBDis: " << chisqDetector.chi2 << std::endl;
         }
-
+		watch->Stop();	watch->Print("u");	watch->Start();
 		if(chisqTotal.chi2 > chi2Cut) continue;
 
 		chi2Log = abs(chisqTotal.chi2-trim);
