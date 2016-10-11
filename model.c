@@ -2149,6 +2149,7 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 		if(i%1000000==0){std::cout<<"App-Det: "<<detector->identifier<<" #: "<<i<<std::endl;}
 
 
+
 		//Is there a visible vertex and how much energy is there!
 			
 		
@@ -3221,6 +3222,8 @@ int SBN_spectrum::load_freq_3p3(SBN_detector * detector)
 	double round54 = round(log10(fabs(workingModel.dm54Sq))/0.04)*0.04;
 	double round64 = round(log10(fabs(workingModel.dm64Sq))/0.04)*0.04;
 	double round65 = round(log10(fabs(workingModel.dm65Sq))/0.04)*0.04;
+
+	//std::cout<<" 41 "<<fix41<<" 51 "<<fix51<<" 54 "<<round54<<std::endl;
 
 	if(workingModel.numsterile == 1)
 	{

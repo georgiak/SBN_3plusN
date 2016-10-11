@@ -135,16 +135,19 @@ double neutrinoModel::oscProb_app(int a, int b, double Ev, double L){
 	switch(a)
 	{
 		case 1:
+		case -1:
 			Ua4 = Ue[0];
 			Ua5 = Ue[1];
 			Ua6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ua4 = Um[0];
 			Ua5 = Um[1];
 			Ua6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;
@@ -152,16 +155,19 @@ double neutrinoModel::oscProb_app(int a, int b, double Ev, double L){
 	switch(b)
 	{
 		case 1:
+		case -1:
 			Ub4 = Ue[0];
 			Ub5 = Ue[1];
 			Ub6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ub4 = Um[0];
 			Ub5 = Um[1];
 			Ub6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;
@@ -283,6 +289,7 @@ double neutrinoModel::oscAmp_app(int a, int b, int which_dm, int sqornot)
 			Ua6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;
@@ -302,6 +309,7 @@ double neutrinoModel::oscAmp_app(int a, int b, int which_dm, int sqornot)
 			Ub6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;
@@ -402,16 +410,19 @@ double neutrinoModel::oscAmp_dis(int a, int which_dm){
 	switch(a)
 	{
 		case 1:
+		case -1:
 			Ua4 = Ue[0];
 			Ua5 = Ue[1];
 			Ua6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ua4 = Um[0];
 			Ua5 = Um[1];
 			Ua6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;

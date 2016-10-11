@@ -9,6 +9,7 @@
 #include "Math/Minimizer.h"
 #include "Math/Factory.h"
 #include "Math/Functor.h"
+#include "Math/GSLMinimizer.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -175,7 +176,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		{
 			for(int j =0; j<msys.GetNrows(); j++)
 			{
-				std::cout<<i<<" "<<j<<" "<<msys(i,j)<<std::endl;
+		//		std::cout<<i<<" "<<j<<" "<<msys(i,j)<<std::endl;
 				msys(i,j)=msys(i,j)*back[i]*back[j];
 			}
 		}
@@ -477,7 +478,6 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 	vMcI.clear();
 
 
-
 	which_mode = channel_mode;
 	beam_mode = fbeam_mode;
 	
@@ -539,7 +539,6 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 		{
 			for(int j =0; j<msys.GetNrows(); j++)
 			{
-				std::cout<<i<<" "<<j<<" "<<msys(i,j)<<std::endl;
 				msys(i,j)=msys(i,j)*back[i]*back[j];
 			}
 		}
@@ -575,9 +574,9 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 	} else if(beam_mode == 1)
 	{
 		bkgbarspec->SetNuBarMode();
-		bkgspec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
-		bkgspec->load_freq_3p3(SBND);
-		bkgspec->load_freq_3p3(UBOONE);
+		bkgbarspec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+		bkgbarspec->load_freq_3p3(SBND);
+		bkgbarspec->load_freq_3p3(UBOONE);
 		
 		bkgbarspec->scale_by_pot(pot_scale_bar);
 
@@ -765,7 +764,7 @@ const struct option longopts[] =
 	{"ue4", 		required_argument,	0, 'e'},
 	{"help",		no_argument, 		0, 'h'},
 	{"um4"	,		required_argument,	0, 'u'},
-	{"inject"	,	no_argument,	0, 'I'},
+	{"inject",	required_argument,		0, 'I'},
 	{"verbose",		no_argument, 		0, 'v'},
 	{"sensitivity",		required_argument,	0, 'S'},
 	{"stat-only",		no_argument,		0, 'l'},
@@ -784,12 +783,24 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "Idalf:nuM:e:m:svp:hS:cFTABN:b", longopts, &index);
+	iarg = getopt_long(argc,argv, "I:dalf:nuM:e:m:svp:hS:cFTABN:b", longopts, &index);
 
 	switch(iarg)
 	{
 		case 'I':
+			{			
 			inject_flag = true;
+			std::string s = optarg;
+			std::string delimiter = ":";
+			//std::cout<<s.find(delimiter)<<std::endl;
+			std::string spot = s.substr(0, s.find(delimiter));	
+			std::string spotbar = s.substr(s.find(delimiter)+1);
+
+			pot_num= atof(spot.c_str());
+			pot_num_bar = atof(spotbar.c_str());
+			}
+		
+
 			break;
 		case 'F':
 			fit_flag = true;
@@ -1120,7 +1131,7 @@ if(fraction_flag ) //this i smain!!
 	 
         wrkInstance fractionInstance(which_channel, anti_mode);
 
-	exit(EXIT_FAILURE);
+//	exit(EXIT_FAILURE);
 
 	char filename[200];
 	if(num_ster == 1){
@@ -1721,13 +1732,22 @@ if(filename != "none"){
 
 if(inject_flag){
 
-	double ipot =1.0; //pow(10,pot_num);
-	double ipotbar =1.0;// pow(10,pot_num_bar);
+	double ipot =pow(10,pot_num);
+	double ipotbar = pow(10,pot_num_bar);
 
-	double Imn[3] = {1,0.0,0};
-	double Iue[3] = {0.1,0.0,0};
-	double Ium[3] = {0.1,0.0,0};
-	double Iphi[3] = {0.0,0,0.0};
+	//683831 0.870964 1 0 0.045 0.145 0 0.005 0.165 0 5.08938 0 5.08938 1 2 0 69.6192 
+	/*
+ 	double Imn[3] = {0.870964,1.0,0};
+	double Iue[3] = {0.045,0.115,0};
+	double Ium[3] = {0.05,0.125,0};
+	double Iphi[3] = {5.0,0.0,0.0};
+*/
+//.46 .15 .13 .77 .13 .14 5.56
+ 	double Imn[3] = {0.398107,1.0,0};
+	double Iue[3] = {0.13,0.14,0};
+	double Ium[3] = {0.15,0.13,0};
+	double Iphi[3] = {5.56,0.0,0.0};
+
 
 	neutrinoModel injectModel(Imn,Iue,Ium,Iphi);
 	injectModel.numsterile=num_ster;
@@ -1735,14 +1755,57 @@ if(inject_flag){
 	wrkInstance injectInstance(which_channel, anti_mode, ipot, ipotbar); // anoyingly it has alredy loaded the background model;
 	injectInstance.inject_signal(injectModel, which_channel, anti_mode, ipot, ipotbar);
 
+//	std::cout<<"Starting: Dm41^2:"<<injectModel.dm41Sq<<" Dm51^2: "<<injectModel.dm51Sq<<" Dm54^2: "<<injectModel.dm54Sq<<std::endl;
 
+	return 0;
 	int vector_modifier = 1;
 	
 	if(anti_flag){
 		vector_modifier =2;
 	}
 
+	/*
+	for(double ph=0; ph < 2*3.14145; ph+=0.05){
+	double Itest[3]={ph,0,0};
 
+	neutrinoModel testModel(Imn,Iue,Ium,Itest);
+		injectInstance.calc_chi(testModel, 0); //count and ipot are just there for records
+	}
+	return 0;
+	*/
+
+
+
+/*   ROOT::Math::GSLMinimizer min( ROOT::Math::kVectorBFGS );
+ 
+   min.SetMaxFunctionCalls(100000);
+   min.SetMaxIterations(10000);
+   min.SetTolerance(0.01);
+ 
+   ROOT::Math::Functor f(&RosenBrock,2); 
+   double step[2] = {0.01,0.01};
+   double variable[2] = { -1.,1.2};
+ 
+   min.SetFunction(f);
+ 
+   // Set the free variables to be minimized!
+   //    min.SetVariable(0,"x",variable[0], step[0]);
+   //       min.SetVariable(1,"y",variable[1], step[1]);
+   //        
+   //           min.Minimize(); 
+   //            
+   //               const double *xs = min.X();
+   //                  cout << "Minimum: f(" << xs[0] << "," << xs[1] << "): " 
+   //                          << RosenBrock(xs) << endl;
+   //                           
+   //                              return 0;
+*/
+
+
+
+
+
+	return 0;
 	//now load file with all other vectors.
 	std::string filename = "3p1_both";
 
