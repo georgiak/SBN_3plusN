@@ -9,7 +9,7 @@
 #include "Math/Minimizer.h"
 #include "Math/Factory.h"
 #include "Math/Functor.h"
-#include "Math/GSLMinimizer.h"
+//#include "Math/GSLMinimizer.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -90,6 +90,35 @@ class wrkInstance {
 	std::vector<std::vector<double >> vMcI;
 	std::vector<std::vector<double >> vMc;
 
+	ROOT::Math::Minimizer* min ;     
+
+/*   ROOT::Math::GSLMinimizer min( ROOT::Math::kVectorBFGS );
+ 
+   min.SetMaxFunctionCalls(100000);
+   min.SetMaxIterations(10000);
+   min.SetTolerance(0.01);
+ 
+   ROOT::Math::Functor f(&RosenBrock,2); 
+   double step[2] = {0.01,0.01};
+   double variable[2] = { -1.,1.2};
+ 
+   min.SetFunction(f);
+ 
+   // Set the free variables to be minimized!
+   //    min.SetVariable(0,"x",variable[0], step[0]);
+   //       min.SetVariable(1,"y",variable[1], step[1]);
+   //        
+   //           min.Minimize(); 
+   //            
+   //               const double *xs = min.X();
+   //                  cout << "Minimum: f(" << xs[0] << "," << xs[1] << "): " 
+   //                          << RosenBrock(xs) << endl;
+   //                           
+   //                              return 0;
+*/
+
+
+
 	wrkInstance(int channel_mode, int fbeam_mode , double pot_scale, double pot_scale_bar); //for pot analysis
 	wrkInstance(int channel_mode, int fbeam_mode);
 	~wrkInstance();
@@ -101,10 +130,28 @@ class wrkInstance {
 
 	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin, double potinbar);
 
+	int init_minim();
 
 
 	int clear_all();
 };
+
+int wrkInstance::init_minim(){
+	const char  *minName = "GSLMultiMin";
+	const char *algoName = "BFGS";
+	//min = new ROOT::Math::GSLMinimizer(ROOT::Math::kVectorBFGS);	
+	ROOT::Math::Minimizer * kar =  ROOT::Math::Factory::CreateMinimizer("GSLMultiMin", "BFGS2");
+/*
+	min->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+   	min->SetMaxIterations(10000);  // for GSL
+	min->SetTolerance(0.001);
+	min->SetPrintLevel(1);
+*/
+
+
+
+}
+
 
 wrkInstance::~wrkInstance(){
 
