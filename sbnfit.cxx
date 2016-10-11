@@ -56,7 +56,7 @@ class wrkInstance {
 
 	int beam_mode; // 0 is nu only 1 is nubar+nu
 	int which_mode; //app, dis or both
-
+	bool isVerbose;
 	double pot;
 	double pot_bar;
 
@@ -133,7 +133,7 @@ class wrkInstance {
 	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin, double potinbar);
 
 	int init_minim();
-	int minimize();
+	int minimize(double phi45);
 
 	int clear_all();
 };
@@ -154,7 +154,7 @@ wrkInstance::~wrkInstance(){
 wrkInstance::wrkInstance(int channel_mode, int fbeam_mode) : wrkInstance(channel_mode,fbeam_mode,1.0,1.0) {}
 
 wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, double pot_scale_bar){
-
+	isVerbose = true;
 	which_mode = channel_mode;
 	beam_mode = fbeam_mode;
 	
@@ -348,14 +348,14 @@ return 1;
 }
 
 int wrkInstance::init_minim(){
-
+	isVerbose = false;
 	min = new ROOT::Math::GSLMinimizer(ROOT::Math::kVectorBFGS);	
 
-	min->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
-   	min->SetMaxIterations(10000);  // for GSL
-	min->SetTolerance(0.001);
-	min->SetPrintLevel(1);
-
+	//min->SetMaxFunctionCalls(100); // for Minuit/Minuit2
+   	min->SetMaxIterations(1000);  // for GSL
+	min->SetTolerance(0.05);
+	min->SetPrintLevel(0);
+	min->SetPrecision(0.01);
 return 1;
 }
 
@@ -373,13 +373,19 @@ double wrkInstance::minim_calc_chi(const double * x){
 
 }
 
-int wrkInstance::minimize(){
+int wrkInstance::minimize(double inphi45){
 
-   ROOT::Math::Functor f( this, &wrkInstance::minim_calc_chi,12); 
-	double variable[12] = {0.398107,1.0,0,0.13,0.14,0,0.15,0.13,0,3.56,0.2,0.01};
-	double step[12] = {0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01};
-	std::string name[12] ={"Dm41","Dm51","Dm61","Ue4","Ue5","Ue6","Um4","Um5","Um6","phi45","phi46","phi56"};
-	bool isfixed[12]={true,true,true,false,false,true,false,false,true,true,true,true};
+
+
+
+        ROOT::Math::Functor f( this, &wrkInstance::minim_calc_chi,12); 
+	double variable[12] = {0.398107,1.0,0,(0.11),(0.12),0,(0.15),(0.13),0, inphi45,0.2,0.01};
+	double step[12] = {0.01,0.01,0.01,   0.005,0.005,0.005,   0.005,0.005,0.005,  0.01,0.01,0.01};
+	double lower[12] = {0,0,0,0,0,0,0,0,0,0,0,0}	;
+	double upper[12] = {1,1,1,(0.3),(0.3),0.3,(0.3),(0.3),0.3,2*3.14159,2*3.14159,2*3.14159};	
+	
+	std::string name[12] ={"Dm41\0","Dm51","Dm61","Ue4\0","Ue5","Ue6","Um4","Um5","Um6","phi45","phi46","phi56"};
+	int isfixed[12]={1,1,1,0,0,1,0,0,1,1,1,1};
 
    min->SetFunction(f);
 
@@ -388,18 +394,24 @@ int wrkInstance::minimize(){
 	   	min->SetFixedVariable(i,name[i],variable[i]);
 	} else {
 
-   		min->SetVariable(i,name[i],variable[i], step[i]);
+   		min->SetLimitedVariable(i,name[i],variable[i], step[i], lower[i],upper[i]);
 	}
 
    }
    min->Minimize(); 
    //            
-   const double *xs = min->X();
-   std::cout << "Minimum: f(" << xs[0] << "," << xs[1] << "): " << wrkInstance::minim_calc_chi(xs) << std::endl;
+   
+  const double *xs = min->X();
+   std::cout<<inphi45<<" Minimum: ";
+   for(int i=0; i<11; i++){
+	if(!isfixed[i]){
+		std::cout<<name[i]<<" "<<xs[i];
+	}
+	}
+	std::cout<<" : " << wrkInstance::minim_calc_chi(xs) << std::endl;
    //                           
- 
 
-
+	min->Clear();
 return 1;
 }
 
@@ -472,7 +484,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber, double pot_s
 
 
 			Current_Chi = mychi2;
-
+if(isVerbose){
 std::cout<<"#"<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel.mNu[1]<<" "<<SigSpec->workingModel.mNu[2]<<" "<<SigSpec->workingModel.Ue[0]<<" "<<SigSpec->workingModel.Ue[1]<<" "<<SigSpec->workingModel.Ue[2]<<" "<<SigSpec->workingModel.Um[0]<<" "<<SigSpec->workingModel.Um[1]<<" "<<SigSpec->workingModel.Um[2]<<" "<<SigSpec->workingModel.phi[0]<<" "<<SigSpec->workingModel.phi[1]<<" "<<SigSpec->workingModel.phi[2]<<" "<<SigSpec->pot_scaling<<" "<<which_mode<<" "<<chi2<<" "<<Current_Chi<<" "<<std::endl;
 			std::vector< double > printvec;
 			if(beam_mode==1){ printvec = pred_all_12;} else {printvec = pred6;}
@@ -482,7 +494,7 @@ std::cout<<"#"<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel
 				std::cout<<" "<<printvec[u];
 			}	
 			std::cout<<std::endl;
-
+}
 
 	delete SigBarSpec;
 	delete SigSpec;
@@ -1845,14 +1857,15 @@ if(inject_flag){
 	wrkInstance injectInstance(which_channel, anti_mode, ipot, ipotbar); // anoyingly it has alredy loaded the background model;
 	injectInstance.inject_signal(injectModel, which_channel, anti_mode, ipot, ipotbar);
 
-	std::cout<<"Starting Minimization"<<std::endl;
-	injectInstance.init_minim();
-	injectInstance.minimize();
+	for(double ip=0; ip<2*3.14159; ip+=0.1){
+		injectInstance.init_minim();
 
-
+		injectInstance.minimize(ip);
+	}
+	return 1;
 //	std::cout<<"Starting: Dm41^2:"<<injectModel.dm41Sq<<" Dm51^2: "<<injectModel.dm51Sq<<" Dm54^2: "<<injectModel.dm54Sq<<std::endl;
+	exit(EXIT_FAILURE);
 
-	return 0;
 	int vector_modifier = 1;
 	
 	if(anti_flag){
