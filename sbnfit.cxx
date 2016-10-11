@@ -6,10 +6,6 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <cstring>
-#include "Math/Minimizer.h"
-#include "Math/Factory.h"
-#include "Math/Functor.h"
-//#include "Math/GSLMinimizer.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -22,6 +18,11 @@
 #include "TMatrixT.h"
 #include "TRandom.h"
 #include "TError.h"
+
+#include "Math/Factory.h"
+#include "Math/Minimizer.h"
+#include "Math/GSLMinimizer.h"
+#include "Math/Functor.h"
 
 #include "params.h"
 #include "prob.h"
@@ -127,30 +128,15 @@ class wrkInstance {
 
 	double calc_chi(neutrinoModel signalModel, int runnumber);
 	double calc_chi(neutrinoModel signalModel, int runnumber, double pot_scale, double pot_scale_bar);
+	double minim_calc_chi(const double * xx);
 
 	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin, double potinbar);
 
 	int init_minim();
-
+	int minimize();
 
 	int clear_all();
 };
-
-int wrkInstance::init_minim(){
-	const char  *minName = "GSLMultiMin";
-	const char *algoName = "BFGS";
-	//min = new ROOT::Math::GSLMinimizer(ROOT::Math::kVectorBFGS);	
-	ROOT::Math::Minimizer * kar =  ROOT::Math::Factory::CreateMinimizer("GSLMultiMin", "BFGS2");
-/*
-	min->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
-   	min->SetMaxIterations(10000);  // for GSL
-	min->SetTolerance(0.001);
-	min->SetPrintLevel(1);
-*/
-
-
-
-}
 
 
 wrkInstance::~wrkInstance(){
@@ -163,6 +149,7 @@ wrkInstance::~wrkInstance(){
 		delete ICARUS;
 
 }
+
 
 wrkInstance::wrkInstance(int channel_mode, int fbeam_mode) : wrkInstance(channel_mode,fbeam_mode,1.0,1.0) {}
 
@@ -356,6 +343,62 @@ int wrkInstance::clear_all(){
 		predbar6.clear();
 		pred_all_12.clear();
 		Current_Chi = -9999;
+
+return 1;
+}
+
+int wrkInstance::init_minim(){
+
+	min = new ROOT::Math::GSLMinimizer(ROOT::Math::kVectorBFGS);	
+
+	min->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2
+   	min->SetMaxIterations(10000);  // for GSL
+	min->SetTolerance(0.001);
+	min->SetPrintLevel(1);
+
+return 1;
+}
+
+double wrkInstance::minim_calc_chi(const double * x){
+	double ans = 99999;
+
+	double Imn[3] = {x[0],x[1],x[2]};
+	double Iue[3] = {x[3],x[4],x[5]};
+	double Ium[3] = {x[6],x[7],x[8]};
+	double Iphi[3] = {x[9],x[10],x[11]};
+	neutrinoModel tmpModel(Imn,Iue,Ium,Iphi);
+
+	ans = this->calc_chi(tmpModel,1);
+	return ans;
+
+}
+
+int wrkInstance::minimize(){
+
+   ROOT::Math::Functor f( this, &wrkInstance::minim_calc_chi,12); 
+	double variable[12] = {0.398107,1.0,0,0.13,0.14,0,0.15,0.13,0,3.56,0.2,0.01};
+	double step[12] = {0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01};
+	std::string name[12] ={"Dm41","Dm51","Dm61","Ue4","Ue5","Ue6","Um4","Um5","Um6","phi45","phi46","phi56"};
+	bool isfixed[12]={true,true,true,false,false,true,false,false,true,true,true,true};
+
+   min->SetFunction(f);
+
+   for(int i=0;i<12;i++){
+	if(isfixed[i]){
+	   	min->SetFixedVariable(i,name[i],variable[i]);
+	} else {
+
+   		min->SetVariable(i,name[i],variable[i], step[i]);
+	}
+
+   }
+   min->Minimize(); 
+   //            
+   const double *xs = min->X();
+   std::cout << "Minimum: f(" << xs[0] << "," << xs[1] << "): " << wrkInstance::minim_calc_chi(xs) << std::endl;
+   //                           
+ 
+
 
 return 1;
 }
@@ -1801,6 +1844,11 @@ if(inject_flag){
 
 	wrkInstance injectInstance(which_channel, anti_mode, ipot, ipotbar); // anoyingly it has alredy loaded the background model;
 	injectInstance.inject_signal(injectModel, which_channel, anti_mode, ipot, ipotbar);
+
+	std::cout<<"Starting Minimization"<<std::endl;
+	injectInstance.init_minim();
+	injectInstance.minimize();
+
 
 //	std::cout<<"Starting: Dm41^2:"<<injectModel.dm41Sq<<" Dm51^2: "<<injectModel.dm51Sq<<" Dm54^2: "<<injectModel.dm54Sq<<std::endl;
 
