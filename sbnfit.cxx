@@ -376,7 +376,7 @@ double wrkInstance::minim_calc_chi(const double * x){
 double wrkInstance::minimize(double inphi45){
 
 
-
+	//
         ROOT::Math::Functor f( this, &wrkInstance::minim_calc_chi,12); 
 	TRandom *rangen    = new TRandom();
 
