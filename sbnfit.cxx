@@ -133,7 +133,7 @@ class wrkInstance {
 	double calc_chi_POT_vector(neutrinoModel newModel, std::vector<double> vecin , int runnumber, double potin, double potinbar);
 
 	int init_minim();
-	int minimize(double phi45);
+	double minimize(double phi45);
 
 	int clear_all();
 };
@@ -352,10 +352,10 @@ int wrkInstance::init_minim(){
 	min = new ROOT::Math::GSLMinimizer(ROOT::Math::kVectorBFGS);	
 
 	//min->SetMaxFunctionCalls(100); // for Minuit/Minuit2
-   	min->SetMaxIterations(1000);  // for GSL
-	min->SetTolerance(0.05);
+   	min->SetMaxIterations(200);  // for GSL
+	min->SetTolerance(0.025);
 	min->SetPrintLevel(0);
-	min->SetPrecision(0.01);
+	min->SetPrecision(0.015);
 return 1;
 }
 
@@ -363,8 +363,8 @@ double wrkInstance::minim_calc_chi(const double * x){
 	double ans = 99999;
 
 	double Imn[3] = {x[0],x[1],x[2]};
-	double Iue[3] = {x[3],x[4],x[5]};
-	double Ium[3] = {x[6],x[7],x[8]};
+	double Iue[3] = {pow(10,x[3]),pow(10,x[4]),x[5]};
+	double Ium[3] = {pow(10,x[6]),pow(10,x[7]),x[8]};
 	double Iphi[3] = {x[9],x[10],x[11]};
 	neutrinoModel tmpModel(Imn,Iue,Ium,Iphi);
 
@@ -373,16 +373,19 @@ double wrkInstance::minim_calc_chi(const double * x){
 
 }
 
-int wrkInstance::minimize(double inphi45){
-
+double wrkInstance::minimize(double inphi45){
 
 
 
         ROOT::Math::Functor f( this, &wrkInstance::minim_calc_chi,12); 
-	double variable[12] = {0.398107,1.0,0,(0.11),(0.12),0,(0.15),(0.13),0, inphi45,0.2,0.01};
-	double step[12] = {0.01,0.01,0.01,   0.005,0.005,0.005,   0.005,0.005,0.005,  0.01,0.01,0.01};
-	double lower[12] = {0,0,0,0,0,0,0,0,0,0,0,0}	;
-	double upper[12] = {1,1,1,(0.3),(0.3),0.3,(0.3),(0.3),0.3,2*3.14159,2*3.14159,2*3.14159};	
+	TRandom *rangen    = new TRandom();
+
+
+	double variable[12] = {0.398107,1.0,0,log10(rangen->Uniform(0,0.3)),log10(rangen->Uniform(0,0.3)),0,log10(rangen->Uniform(0,0.3)),log10(rangen->Uniform(0,0.3)),0, inphi45,0.0,0.0};
+	double step[12] = {0.01,0.01,0.01, 0.02,0.02,0.005, 0.02,0.02,0.005,  0.01,0.01,0.01};
+	double lower[12] = {0,0,0,-6,-6,0,-6,-6,0,0,0,0}	;
+	double myup=1;
+	double upper[12] = {1,1,1,log10(myup),log10(myup),0.3,log10(myup),log10(myup),0.3,2*3.14159,2*3.14159,2*3.14159};	
 	
 	std::string name[12] ={"Dm41\0","Dm51","Dm61","Ue4\0","Ue5","Ue6","Um4","Um5","Um6","phi45","phi46","phi56"};
 	int isfixed[12]={1,1,1,0,0,1,0,0,1,1,1,1};
@@ -405,14 +408,14 @@ int wrkInstance::minimize(double inphi45){
    std::cout<<inphi45<<" Minimum: ";
    for(int i=0; i<11; i++){
 	if(!isfixed[i]){
-		std::cout<<name[i]<<" "<<xs[i];
+		std::cout<<" "<<xs[i];
 	}
 	}
 	std::cout<<" : " << wrkInstance::minim_calc_chi(xs) << std::endl;
    //                           
 
 	min->Clear();
-return 1;
+return wrkInstance::minim_calc_chi(xs);
 }
 
 
@@ -843,6 +846,8 @@ double in_um4=0;
 double pot_num =1;
 double pot_num_bar =1;
 
+double inPhi45 = 0;
+
 bool stat_only = false;
 int dis_which = 1;
 int num_ster = 0;
@@ -879,16 +884,20 @@ const struct option longopts[] =
 	{"fraction",		required_argument,	0, 'f'},
 	{"pot",			required_argument,	0, 'p'},
 	{"app",			no_argument,		0, 'a'},
+	{"phi",			required_argument,	0, 'P'},
 	{0,			no_argument, 		0,  0},
 };
 
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "I:dalf:nuM:e:m:svp:hS:cFTABN:b", longopts, &index);
+	iarg = getopt_long(argc,argv, "I:daP:lf:nuM:e:m:svp:hS:cFTABN:b", longopts, &index);
 
 	switch(iarg)
 	{
+		case 'P':
+			inPhi45 = strtof(optarg,NULL);
+			break;
 		case 'I':
 			{			
 			inject_flag = true;
@@ -1848,8 +1857,7 @@ if(inject_flag){
  	double Imn[3] = {0.398107,1.0,0};
 	double Iue[3] = {0.13,0.14,0};
 	double Ium[3] = {0.15,0.13,0};
-	double Iphi[3] = {5.56,0.0,0.0};
-
+	double Iphi[3] = {inPhi45,0.0,0.0};
 
 	neutrinoModel injectModel(Imn,Iue,Ium,Iphi);
 	injectModel.numsterile=num_ster;
@@ -1857,7 +1865,7 @@ if(inject_flag){
 	wrkInstance injectInstance(which_channel, anti_mode, ipot, ipotbar); // anoyingly it has alredy loaded the background model;
 	injectInstance.inject_signal(injectModel, which_channel, anti_mode, ipot, ipotbar);
 
-	for(double ip=0; ip<2*3.14159; ip+=0.1){
+	for(double ip=0; ip<2*3.14159; ip+=0.15){
 		injectInstance.init_minim();
 
 		injectInstance.minimize(ip);
