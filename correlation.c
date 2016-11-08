@@ -72,6 +72,38 @@ void stats_fill(TMatrixT <double> &M, std::vector<double> diag){
  return ;
 }
 
+
+TMatrixT<double > sys_fill_direct(int dim, bool detsys){
+TMatrixT<double > temp;
+	if(dim ==   (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti  ){
+		TFile *fm= new TFile("rootfiles/covariance_matrices_690x690.root");
+		 temp = *(TMatrixT <float>* )fm->Get("TMatrixT<float>;7");
+	//	delete fm;
+		fm->Close();
+		delete fm;
+		return temp;
+	} else {
+	if(detsys){
+
+		TFile *fm= new TFile("rootfiles/covariance_matrices_345x345.root");
+		 temp = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+	//	delete fm;
+		fm->Close();
+		return temp;
+	} else {
+		TFile *fm= new TFile("rootfiles/covariance_matrices_nodetsys_345x345.root");
+		 temp = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
+	//	delete fm;
+		fm->Close();
+		return temp;
+	}	
+
+
+	}
+
+}
+
+
 void sys_fill(TMatrixT <double> & Min, bool detsys)
 {
 
@@ -82,6 +114,7 @@ void sys_fill(TMatrixT <double> & Min, bool detsys)
 		Min = *(TMatrixT <float> *)fm->Get("TMatrixT<float>;7");
 	//	delete fm;
 		fm->Close();
+		delete fm;
 	} else {
 	if(detsys){
 
@@ -96,9 +129,9 @@ void sys_fill(TMatrixT <double> & Min, bool detsys)
 		fm->Close();
 	}	
 
-return;
 
 	}
+return;
 }
 
 

@@ -1146,10 +1146,10 @@ if(inject_flag){
 */
 //.46 .15 .13 .77 .13 .14 5.56
  	double Imn[3] = {0.398107,1.0,0};
-	//double Iue[3] = {0.17,0.175,0};
-	double Iue[3] = {0.13,0.14,0};
-	//double Ium[3] = {0.19,0.18,0};
-	double Ium[3] = {0.15,0.13,0};
+	double Iue[3] = {0.22,0.215,0};
+	//double Iue[3] = {0.13,0.14,0};
+	double Ium[3] = {0.24,0.23,0};
+	//double Ium[3] = {0.15,0.13,0};
 	double Iphi[3] = {inPhi45,0.0,0.0};
 
 	neutrinoModel injectModel(Imn,Iue,Ium,Iphi);

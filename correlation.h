@@ -6,6 +6,7 @@
 #include "TMatrixT.h"
 #include <iostream>
 #include "model.h"
+TMatrixT<double> sys_fill_direct(int dim, bool detsys);
 
 void sys_fill(TMatrixT <double> & M, bool detsys);
 void fake_fill(TMatrixT <double>&  M);

@@ -32,6 +32,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 
 	bkgspec = new SBN_spectrum(nullModel);
 	bkgbarspec = new SBN_spectrum(nullModel);
+	
 	bkgbarspec->SetNuBarMode();
 
 
@@ -65,7 +66,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		 TMatrixT <double>  msys(bigMsize,bigMsize);
 
 		
-		sys_fill(msys,usedetsys);
+		 msys = sys_fill_direct(msys.GetNcols(),usedetsys);
 
 		for(int i =0; i<msys.GetNcols(); i++)
 		{
@@ -138,7 +139,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 
 		// Fill systematics from pre-computed files
 		TMatrixT <double> Msys(bigMsize,bigMsize);
-		sys_fill(Msys,usedetsys);
+		Msys = sys_fill_direct(Msys.GetNcols(),usedetsys);
 
 		/*for(int i =0; i< Msys.GetNcols(); i++){
 		for(int j =0; j< Msys.GetNcols(); j++){
@@ -192,6 +193,14 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		// There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
 		vMcI = to_vector(McI);
 	} //end anti_initialiser
+
+
+
+	delete UBOONE;
+	delete ICARUS;
+	delete SBND;
+
+
 
 }//end wrkInstance constructor;
 
@@ -556,7 +565,7 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 		 TMatrixT <double>  msys(bigMsize,bigMsize);
 
 		
-		sys_fill(msys,usedetsys);
+		msys=sys_fill_direct(msys.GetNcols(),usedetsys);
 
 		for(int i =0; i<msys.GetNcols(); i++)
 		{
@@ -624,7 +633,7 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 
 		// Fill systematics from pre-computed files
 		TMatrixT <double> Msys(bigMsize,bigMsize);
-		sys_fill(Msys,usedetsys);
+		Msys=sys_fill_direct(Msys.GetNcols(),usedetsys);
 
 		/*for(int i =0; i< Msys.GetNcols(); i++){
 		for(int j =0; j< Msys.GetNcols(); j++){
