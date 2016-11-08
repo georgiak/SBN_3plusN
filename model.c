@@ -3235,7 +3235,7 @@ int SBN_spectrum::load_freq_3p3(SBN_detector * detector)
        	else if(workingModel.numsterile ==2)
 	{
 
-//	std::cout<<round54<<" "<<sgn(workingModel.dm54Sq)<<" "<<workingModel.dm54Sq<<" 41 "<<log10(workingModel.dm41Sq)<<" 51 "<<log10(workingModel.dm51Sq)<<std::endl;
+	//std::cout<<round54<<" "<<sgn(workingModel.dm54Sq)<<" "<<workingModel.dm54Sq<<" 41 "<<log10(workingModel.dm41Sq)<<" 51 "<<log10(workingModel.dm51Sq)<<std::endl;
 	prob_3p3(fix41, detector, 41);
 	prob_3p3(fix51, detector, 51);
 	prob_3p3(round54, detector,54);
@@ -3334,6 +3334,11 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 
 	}
 
+//	if(prob_mumu <0 || prob_ee < 0 || prob_mue <0 || prob_mue_sq < 0 || prob_muebar <0 || prob_muebar_sq < 0){
+//		std::cout<<"ERROR: model.c l:3338. Probability less than 0.  mumu: "<<prob_mumu<<" ee: "<<prob_ee<<" mue "<<prob_mue<<" muesq "<<prob_mue_sq<<" mubar "<<prob_muebar<<" muebarsq "<<prob_muebar_sq<<std::endl;
+//	
+//		exit(EXIT_FAILURE);
+//	}   //wrong! these are amplitudes not probs. can easy be negative.
 
 
 
