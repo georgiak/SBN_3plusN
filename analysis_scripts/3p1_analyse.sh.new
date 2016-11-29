@@ -1,0 +1,24 @@
+#!/bin/bash
+cd ..
+
+rm fractiondata/basic_analysed_3p1.dat.new
+
+grep "#" fractiondata/3p1_app.dat.new > fractiondata/3p1_app.new.grepped
+grep "#" fractiondata/3p1_dis.dat.new > fractiondata/3p1_dis.new.grepped
+grep "#" fractiondata/3p1_both.dat.new > fractiondata/3p1_both.new.grepped
+grep "#" fractiondata/3p1_wierd.dat.new > fractiondata/3p1_wierd.new.grepped
+
+for chi in `seq -1.0 0.1 2.5 `
+do
+		TOTAL=$(wc -l < fractiondata/3p1_both.new.grepped)
+ 		echo "On Both POT"$ip
+		ANSD=$(awk -v mychi=$chi -v count=0 '{ if ($17 >= 10^mychi) count++}  END {print count}' fractiondata/3p1_dis.new.grepped)
+		ANSB=$(awk -v mychi=$chi -v count=0 '{ if ($17 >= 10^mychi) count++}  END {print count}' fractiondata/3p1_both.new.grepped)
+		ANSA=$(awk -v mychi=$chi -v count=0 '{ if ($17 >= 10^mychi) count++}  END {print count}' fractiondata/3p1_app.new.grepped)
+		ANSW=$(awk -v mychi=$chi -v count=0 '{ if ($17 >= 10^mychi) count++}  END {print count}' fractiondata/3p1_wierd.new.grepped)
+		echo 3p1 $chi $ANSD $ANSB $ANSA $TOTAL $ANSW  >> fractiondata/basic_analysed_3p1.dat.new
+
+done
+
+
+cd analysis_scripts

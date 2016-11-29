@@ -95,6 +95,8 @@ class SBN_spectrum {
 	SBN_spectrum (struct neutrinoModel nuModel);
 	SBN_spectrum ();
 
+
+	void newclear();
 	std::vector<double > get_ninevector();
 	std::vector<double > get_sixvector();
 	

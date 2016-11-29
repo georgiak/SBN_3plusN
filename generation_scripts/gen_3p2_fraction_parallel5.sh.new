@@ -1,0 +1,13 @@
+#!/bin/bash
+cd ..
+
+./sbnfit2 --fraction 1 --num 2 --both >> fractiondata/3p2_both.dat1 &
+./sbnfit2 --fraction 2 --num 2 --both >> fractiondata/3p2_both.dat2 &
+./sbnfit2 --fraction 3 --num 2 --both >> fractiondata/3p2_both.dat3 &
+./sbnfit2 --fraction 4 --num 2 --both >> fractiondata/3p2_both.dat4 &
+./sbnfit2 --fraction 5 --num 2 --both >> fractiondata/3p2_both.dat5 &
+./sbnfit2 --fraction 6 --num 2 --both >> fractiondata/3p2_both.dat6 &
+./sbnfit2 --fraction 7 --num 2 --both >> fractiondata/3p2_both.dat7 &
+./sbnfit2 --fraction 8 --num 2 --both >> fractiondata/3p2_both.dat8 &
+
+cd generation_scripts

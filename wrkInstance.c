@@ -2,12 +2,9 @@
 #include "wrkInstance.h"
 wrkInstance::~wrkInstance(){
 
-		delete bkgspec;
-		delete bkgbarspec;
+//		delete bkgspec;
+//		delete bkgbarspec;
 
-		delete UBOONE;
-		delete SBND;
-		delete ICARUS;
 
 }
 
@@ -18,6 +15,8 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 	isVerbose = true;
 	which_mode = channel_mode;
 	beam_mode = fbeam_mode;
+
+
 	
 	double chi2 = 0; //old chi to be passed in
 
@@ -26,15 +25,14 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 	workingModel= neutrinoModel();
 	workingModel.zero();
 
-	UBOONE = new SBN_detector(1);
-	SBND =  new SBN_detector(0);
-	ICARUS =  new SBN_detector(2);
+	SBN_detector * UBOONE = new SBN_detector(1);
+	SBN_detector * SBND =  new SBN_detector(0);
+	SBN_detector * ICARUS =  new SBN_detector(2);
 
-	bkgspec = new SBN_spectrum(nullModel);
-	bkgbarspec = new SBN_spectrum(nullModel);
+	SBN_spectrum * bkgspec = new SBN_spectrum(nullModel);
+	SBN_spectrum * bkgbarspec = new SBN_spectrum(nullModel);
 	
 	bkgbarspec->SetNuBarMode();
-
 
 		bkgspec->load_bkg(ICARUS);
 		bkgspec->load_bkg(SBND);
@@ -60,46 +58,58 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		/* create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
 		 * */
 
-		 TMatrixT <double> m(matrix_size,matrix_size);
-		 TMatrixT <double>  mc(matrix_size_c,matrix_size_c);
 		 TMatrixT <double>  mci(matrix_size_c, matrix_size_c);
 		 TMatrixT <double>  msys(bigMsize,bigMsize);
-
+		 TMatrixT <double>  mstat(bigMsize,bigMsize);
+		 TMatrixT <double>  mtotal(bigMsize,bigMsize);
+		 TMatrixT <double>  mctotal(contMsize,contMsize);
+		 TMatrixT <double>  mctotal2(contMsize,contMsize);
 		
-		 msys = sys_fill_direct(msys.GetNcols(),usedetsys);
+		msys = sys_fill_direct(bigMsize,usedetsys);
 
 		for(int i =0; i<msys.GetNcols(); i++)
 		{
 			for(int j =0; j<msys.GetNrows(); j++)
 			{
-		//		std::cout<<i<<" "<<j<<" "<<msys(i,j)<<std::endl;
-				msys(i,j)=msys(i,j)*back[i]*back[j];
+//				std::cout<<i<<" "<<j<<" "<<msys(i,j)<<std::endl;
+				msys(i,j) = msys(i,j)*back[i]*back[j];
 			}
 		}
 
 
-
-		TMatrixT <double> mstat(bigMsize,bigMsize);
+	
 		stats_fill(mstat, back);
 
-		TMatrixT <double > mtotal(bigMsize,bigMsize);
 
-		if(stat_only){
-			mtotal =  mstat;
-		} else {
+	//	if(stat_only){
+	//		mtotal =  mstat;
+	//	} else {
 			mtotal = msys+mstat;
-		}
-
-		TMatrixT <double> mctotal(contMsize,contMsize);
+	//	}
+		
 		contract_signal2(mtotal,mctotal);
-
+		mctotal2=mctotal;
 
 		double invdet=0; // just to hold determinant
 
 		//	bit o inverting, root tmatrix seems perfectly fast	
 		mci = mctotal.Invert(&invdet);
+		//std::cout<<"Determinant: "<<invdet<<" "<<mctotal.Determinant()<<std::endl;
 
 		vMcI = to_vector(mci);
+
+
+		TMatrixT<double > McUNITY(contMsize,contMsize);
+		McUNITY.Mult(mctotal2,mci);
+
+
+	//	for(int i =0; i<McUNITY.GetNcols(); i++)
+	//	{
+		//	for(int j =0; j<McUNITY.GetNrows(); j++)
+	//		{
+			//std::cout<<i<<" "<<i<<" "<<McUNITY(i,i)<<std::endl;
+	//		}
+	//	}
 
 	/*	*/
 	
@@ -139,23 +149,28 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 
 		// Fill systematics from pre-computed files
 		TMatrixT <double> Msys(bigMsize,bigMsize);
-		Msys = sys_fill_direct(Msys.GetNcols(),usedetsys);
+		Msys = sys_fill_direct(bigMsize,usedetsys);
 
-		/*for(int i =0; i< Msys.GetNcols(); i++){
+		for(int i =0; i< Msys.GetNcols(); i++){
 		for(int j =0; j< Msys.GetNcols(); j++){
-		std::cout<<i<<" "<<j<<" "<<Msys(i,j)<<" "<<Msys(i,j)<<std::endl;
-		}}
+		//std::cout<<i<<" "<<j<<" "<<Msys(i,j)<<" "<<Msys(i,j)<<std::endl;
+		std::cout<<Msys(i,j)<<" ";
+		}
+		std::cout<<std::endl;
+		}
 		exit(EXIT_FAILURE);
-		*/
+		
 
 		// systematics per scaled event
 		for(int i =0; i<Msys.GetNcols(); i++)
 		{
+//			std::cout<<back_all[i]<<" ";
 			for(int j =0; j<Msys.GetNrows(); j++)
 			{
 				Msys(i,j)=Msys(i,j)*back_all[i]*back_all[j];
 			}
 		}
+//		std::cout<<std::endl;
 			
 		// Fill stats from the back ground vector
 		TMatrixT <double> Mstat(bigMsize,bigMsize);
@@ -163,35 +178,59 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 
 		//And then define the total covariance matrix in all its glory
 		TMatrixT <double > Mtotal(bigMsize,bigMsize);
-		if(stat_only){
-			Mtotal =  Mstat;
-		} else {
-			Mtotal = Msys+Mstat;
+
+	//	if(stat_only){
+	//		Mtotal =  Mstat;
+	//	} else {
+		Mtotal = Mstat;//+Msys;
+	//	}
+
+		if(false){
+		for(int i =0; i<Msys.GetNcols(); i++)
+		{
+			for(int j =0; j<Msys.GetNrows(); j++)
+			{
+				if(!(Mstat(i,j)==0 && Msys(i,j)==0)){
+					std::cout<<i<<" "<<j<<"stat: "<<Mstat(i,j)<<" sys: "<<Msys(i,j)<<" Mtotal: "<<Mtotal(i,j)<<std::endl;
+				}
+			}
 		}
-		
+		}//end false
 		
 		// Now contract back the larger antimatrix
 		TMatrixT<double > Mctotal(contMsize,contMsize);
+		TMatrixT<double > Mctotal2(contMsize,contMsize);
 
-		contract_signal2_anti(Mtotal,Mctotal);
+		contract_signal_layer3(Mtotal,Mctotal);
 
-		/*for(int i =0; i< Mtotal.GetNcols(); i++){
-		for(int j =0; j< Mtotal.GetNcols(); j++){
-		std::cout<<i<<" "<<j<<" "<<Mtotal(i,j)<<" "<<Msys(i,j)<<std::endl;
-		}}
-		exit(EXIT_FAILURE);
-		*/
+			
 		vMc = to_vector(Mctotal);
-
+		Mctotal2=Mctotal;
 		// just to hold determinant
 		double invdet=0; 
 
 		// Bit o inverting, root tmatrix seems perfectly and sufficiently fast for this, even with anti_mode
 		McI = Mctotal.Invert(&invdet);
 
+	//	std::cout<<"Determinant: "<<invdet<<"  "<<Mctotal.Determinant()<<std::endl;
 
+
+		TMatrixT<double > McUNITY(contMsize,contMsize);
+		McUNITY.Mult(Mctotal2,McI);
+
+		for(int i =0; i<McUNITY.GetNcols(); i++)
+		{
+			//for(int j =0; j<McUNITY.GetNrows(); j++)
+			{
+				//std::cout<<i<<" "<<i<<" "<<McUNITY(i,i)<<std::endl;
+			}
+		}
+	
 		// There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
 		vMcI = to_vector(McI);
+
+
+
 	} //end anti_initialiser
 
 
@@ -199,7 +238,9 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 	delete UBOONE;
 	delete ICARUS;
 	delete SBND;
-
+	
+	delete bkgspec;
+	delete bkgbarspec; 
 
 
 }//end wrkInstance constructor;
@@ -306,18 +347,22 @@ return wrkInstance::minim_calc_chi(xs);
 double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber){ return calc_chi(newModel, runnumber, 1.0, 1.0);}
 
 double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber, double pot_scale, double pot_scale_bar){
-
+			
 				this->clear_all();
+	SBN_detector * UBOONE = new SBN_detector(1);
+	SBN_detector * SBND =  new SBN_detector(0);
+	SBN_detector * ICARUS =  new SBN_detector(2);
+
 
 
 				double chi2 = 0;
 				int i = runnumber;
 		
 				workingModel=newModel;	
-				SigSpec = new SBN_spectrum(workingModel);
+			SBN_spectrum *	SigSpec = new SBN_spectrum(workingModel);
 				SigSpec->which_mode = which_mode;
 				
-				SigBarSpec =new SBN_spectrum(workingModel);
+				SBN_spectrum * SigBarSpec =new SBN_spectrum(workingModel);
 				SigBarSpec->which_mode=which_mode;   //AHAHAHAHAHAHA!!!!
 				SigBarSpec->SetNuBarMode();
 
@@ -361,7 +406,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber, double pot_s
 				for(int i =0; i<whatsize; i++){
 					for(int j =0; j<whatsize; j++){
 						mychi2 += (back_all_12[i]-pred_all_12[i])*vMcI[i][j]*(back_all_12[j]-pred_all_12[j]);
-					//	std::cout<<i<<" "<<j<<" "<<vMcI[i][j]<<" "<<vMc[i][j]<<" "<<vMc[i][j]/(back_all_12[i]*back_all_12[j])<<std::endl;
+					//	std::cout<<i<<" "<<j<<" "<<vMcI[i][j]<<" "<<vMc[i][j]<<" "<<vMc[i][j]/(back_all_12[i]*back_all_12[j])<<" "<<mychi2<<std::endl;
 					}
 				}
 			
@@ -426,10 +471,16 @@ std::cout<<"#"<<i<<" "<<SigSpec->workingModel.mNu[0]<<" "<<SigSpec->workingModel
 			std::cout<<std::endl;
 }
 
+
 	delete SigBarSpec;
 	delete SigSpec;
+	delete UBOONE;
+	delete SBND;
+	delete ICARUS;
+
 
 	return Current_Chi;
+
 
 }
 
@@ -505,10 +556,14 @@ double wrkInstance::calc_chi_POT_vector(neutrinoModel newModel, std::vector<doub
 
 double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, int fbeam_mode, double pot_scale, double pot_scale_bar ){
 
+	back.clear();
+	backbar.clear();
+	back_all.clear();
+	backbar6.clear();
+	back_all_12.clear();
 	back6.clear();
 	this->clear_all();
-	vMcI.clear();
-
+	//vMcI.clear();
 
 	which_mode = channel_mode;
 	beam_mode = fbeam_mode;
@@ -519,18 +574,19 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 	nullModel.zero();
 	workingModel= neutrinoModel();
 	workingModel.zero();
-	workingModel= signalModel;
-
-	UBOONE = new SBN_detector(1);
-	SBND =  new SBN_detector(0);
-	ICARUS =  new SBN_detector(2);
+	workingModel = signalModel;
+	
+	SBN_detector * UBOONE = new SBN_detector(1);
+	SBN_detector * SBND =  new SBN_detector(0);
+	SBN_detector * ICARUS =  new SBN_detector(2);
 
 	//background is NOW my signal, dont be confused
-	bkgspec = new SBN_spectrum(signalModel);
-	bkgbarspec = new SBN_spectrum(signalModel);
+	SBN_spectrum * bkgspec = new SBN_spectrum(signalModel);
+	SBN_spectrum * bkgbarspec = new SBN_spectrum(signalModel);
 	
-	bkgspec->which_mode=which_mode;
-	bkgbarspec->which_mode=which_mode;
+	//ok this is necessary as I'm gonna oscillate
+	bkgspec->which_mode    = which_mode;
+	bkgbarspec->which_mode = which_mode;
 	bkgbarspec->SetNuBarMode();
 				
 
@@ -540,12 +596,11 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 	
 	bkgspec->scale_by_pot(pot_scale);
 
-
 	back6 = bkgspec->get_sixvector();
 	back  = bkgspec->get_vector();
 
-		bool usedetsys = true;	
-		bool stat_only = false;
+	bool usedetsys = true;	
+	bool stat_only = false;
 	
 	if (beam_mode == 0){
 	
@@ -563,24 +618,23 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 		 TMatrixT <double>  mc(matrix_size_c,matrix_size_c);
 		 TMatrixT <double>  mci(matrix_size_c, matrix_size_c);
 		 TMatrixT <double>  msys(bigMsize,bigMsize);
-
+		TMatrixT <double > mtotal(bigMsize,bigMsize);
+		TMatrixT <double> mstat(bigMsize,bigMsize);
+		TMatrixT <double> mctotal(contMsize,contMsize);
 		
-		msys=sys_fill_direct(msys.GetNcols(),usedetsys);
+		msys=sys_fill_direct(bigMsize,usedetsys);
 
 		for(int i =0; i<msys.GetNcols(); i++)
 		{
 			for(int j =0; j<msys.GetNrows(); j++)
 			{
-				msys(i,j)=msys(i,j)*back[i]*back[j];
+				msys(i,j) = msys(i,j)*back[i]*back[j];
 			}
 		}
 
 
-
-		TMatrixT <double> mstat(bigMsize,bigMsize);
 		stats_fill(mstat, back);
 
-		TMatrixT <double > mtotal(bigMsize,bigMsize);
 
 		if(stat_only){
 			mtotal =  mstat;
@@ -588,7 +642,308 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 			mtotal = msys+mstat;
 		}
 
+		contract_signal2(mtotal,mctotal);
+
+
+
+
+
+		double invdet=0; // just to hold determinant
+
+		//	bit o inverting, root tmatrix seems perfectly fast	
+		mci = mctotal.Invert(&invdet);
+
+		vMcI = to_vector(mci);
+
+
+
+
+	/*	*/
+	
+	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
+
+	} else if(beam_mode == 1)
+	{
+		bkgbarspec->load_freq_3p3(ICARUS);
+		bkgbarspec->load_freq_3p3(SBND);
+		bkgbarspec->load_freq_3p3(UBOONE);
+		bkgbarspec->SetNuBarMode();
+		
+		bkgbarspec->scale_by_pot(pot_scale_bar);
+
+		backbar6 = bkgbarspec->get_sixvector();
+		backbar  = bkgbarspec->get_vector();
+
+		back_all = back;
+		back_all.insert(back_all.end(), backbar.begin(), backbar.end() );
+
+		
+
+		back_all_12 = back6;
+		back_all_12.insert(back_all_12.end(), backbar6.begin(), backbar6.end() );
+	
+		bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti;
+		contMsize = (N_e_bins+N_m_bins)*N_dets*N_anti;
+
+		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
+		 * */
+
+		TMatrixT <double> McI(contMsize, contMsize);
+		//TMatrixT <double> McIbar(contMsize, contMsize);
+
+		// Fill systematics from pre-computed files
+		TMatrixT <double> Msys(bigMsize,bigMsize);
+		Msys = sys_fill_direct(bigMsize,usedetsys);
+
+		/*for(int i =0; i< Msys.GetNcols(); i++){
+		for(int j =0; j< Msys.GetNcols(); j++){
+		std::cout<<"Ho "<<i<<" "<<j<<" "<<" "<<Msys(i,j)<<std::endl;
+		}}
+		exit(EXIT_FAILURE);
+		*/
+
+		//std::cout<<"Msys: "<<Msys.GetNcols()<<" back_all "<<back_all.size()<<" back_all_12 "<<back_all_12.size()<<std::endl;
+		//
+		//
+		//for(int i=0; i<back_all.size();i++){
+		//	std::cout<<"Ha "<<i<<" "<<back_all[i]<<std::endl;	
+		//}
+		//exit(EXIT_FAILURE);
+
+
+//TT		TFile oFile("tmatricies.root","RECREATE");
+
+//TT		Msys.Write("Input Mat");
+
+	
+
+		// systematics per scaled event
+		for(int i =0; i<Msys.GetNcols(); i++)
+		{
+	//		std::cout<<back_all[i]<<" ";
+			for(int j =0; j<Msys.GetNrows(); j++)
+			{
+		
+			//	std::cout<<"sys "<<i<<" "<<j<<" "<<Msys(i,j)<<std::endl;
+				Msys(i,j)=Msys(i,j)*back_all[i]*back_all[j];
+			}
+		}
+	//	std::cout<<std::endl;
+			// Fill stats from the back ground vector
+		TMatrixT <double> Mstat(bigMsize,bigMsize);
+		stats_fill(Mstat, back_all);
+
+		for(int i =0; i<Mstat.GetNcols(); i++)
+		{
+	//		std::cout<<back_all[i]<<" ";
+			for(int j =0; j < Mstat.GetNrows(); j++)
+			{
+				if(Mstat(i,j)<0){
+					std::cout<<"ERROR fricking ERROR: "<<Mstat(i,j)<<" "<<back_all[i]<<" "<<back_all[j]<<std::endl;
+					exit(EXIT_FAILURE);
+				}
+			}
+		}
+
+		
+
+
+		//And then define the total covariance matrix in all its glory
+		TMatrixT <double > Mtotal(bigMsize,bigMsize);
+		if(false){
+			Mtotal =  Mstat;
+		} else {
+			Mtotal = Msys+Mstat;
+		}
+		
+//T		Mstat.Write("Stat");
+//T		Msys.Write("Sys");		
+		// Now contract back the larger antimatrix
+		TMatrixT<double > Mctotal(contMsize,contMsize);
+		TMatrixT<double > Mctotal2(contMsize,contMsize);
+
+		TMatrixT<double >  Mstatc(contMsize,contMsize);
+		TMatrixT<double >  Msysc(contMsize,contMsize);
+		contract_signal_layer3(Mstat,Mstatc);	
+		contract_signal_layer3(Msys,Msysc);
+
+//T		Mtotal.Write("Sys+Stat");
+//T		Mstatc.Write("Contracted Stat");	
+//T		Msysc.Write("Contracted Sys");	
+		contract_signal_layer3(Mtotal,Mctotal);
+		Mctotal2=Mctotal;
+		
+//T		Mctotal.Write("Contracted Sys+Stat");
+//T		oFile.Close();
+
+
+
+	
+		if(false){//some correlation testing
+		int jj=N_dets*(N_e_bins*N_e_spectra+N_m_bins*N_m_spectra);
+		TMatrixT<double> mtest(N_dets*(N_e_bins*N_e_spectra+N_m_bins*N_m_spectra), N_dets*(N_e_bins*N_e_spectra+ N_m_bins*N_m_spectra));
+		
+		mtest=Mtotal.GetSub(0,jj-1,0,jj-1);
+	
+
+		TMatrixT <double > mtestC(N_dets*(N_e_bins+N_m_bins), N_dets*(N_e_bins+ N_m_bins));
+		 contract_signal_layer2(mtest, mtestC);	
+
+
+		for(int i =0; i<mtest.GetNcols(); i++){
+		for(int j =0; j<mtest.GetNcols(); j++){
+			std::cout<<"before "<<i<<" "<<j<<" "<<mtest(i,j)<<std::endl;
+		}}
+
+		for(int i =0; i<mtestC.GetNcols(); i++){
+		for(int j =0; j<mtestC.GetNcols(); j++){
+			std::cout<<i<<" "<<j<<" "<<mtestC(i,j)<<std::endl;
+		}}
+
+		for(int i =0; i<Mctotal.GetNcols(); i++){
+		for(int j =0; j<Mctotal.GetNcols(); j++){
+			std::cout<<"the old "<<i<<" "<<j<<" "<<Mctotal(i,j)<<std::endl;
+		}}
+		exit(EXIT_FAILURE);
+		}
+	
+
+
+	
+	/*for(int i =0; i< Mtotal.GetNcols(); i++){
+		for(int j =0; j< Mtotal.GetNcols(); j++){
+		std::cout<<i<<" "<<j<<" "<<Mtotal(i,j)<<" "<<Msys(i,j)<<std::endl;
+		}}
+		exit(EXIT_FAILURE);
+		*/
+		vMc = to_vector(Mctotal);
+
+		// just to hold determinant
+		double invdet=0; 
+
+		// Bit o inverting, root tmatrix seems perfectly and sufficiently fast for this, even with anti_mode
+		McI = Mctotal.Invert(&invdet);
+
+		// There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
+		vMcI = to_vector(McI);
+
+		for(int i =0; i< Mctotal.GetNcols(); i++){
+		for(int j =0; j< Mctotal.GetNcols(); j++){
+	//		std::cout<<std::setprecision(10)<<i<<" "<<j<<" "<<" "<<Mctotal2(i,j)<<" "<<McI(i,j)<<" "<<vMcI[i][j]<<std::endl;
+		}}
+		
+//		TMatrixT<double > McUNITY(contMsize,contMsize);
+//		McUNITY.Mult(Mctotal2,McI);
+
+	//	for(int i =0; i<McUNITY.GetNcols(); i++)
+	//	{
+	//		for(int j =0; j<McUNITY.GetNrows(); j++)
+	//		{
+	//			std::cout<<i<<" "<<j<<" "<<McUNITY(i,j)<<std::endl;
+	//		}
+	//	}
+
+	} //end anti_initialiser
+		delete UBOONE;
+		delete SBND;
+		delete ICARUS;
+	
+		delete bkgspec;	
+		delete bkgbarspec;
+
+return 0;
+}//end the inject_signal;
+
+
+
+wrkInstance::wrkInstance(neutrinoModel signalModel, int channel_mode, int fbeam_mode, double pot_scale, double pot_scale_bar ){
+
+	back.clear();
+	backbar.clear();
+	back_all.clear();
+	backbar6.clear();
+	back_all_12.clear();
+	back6.clear();
+	this->clear_all();
+	//vMcI.clear();
+
+	which_mode = channel_mode;
+	beam_mode = fbeam_mode;
+	
+	double chi2 = 0; //old chi to be passed in
+
+	nullModel = neutrinoModel();
+	nullModel.zero();
+	workingModel= neutrinoModel();
+	workingModel.zero();
+	workingModel = signalModel;
+	
+	SBN_detector * UBOONE = new SBN_detector(1);
+	SBN_detector * SBND =  new SBN_detector(0);
+	SBN_detector * ICARUS =  new SBN_detector(2);
+
+	//background is NOW my signal, dont be confused
+	SBN_spectrum * bkgspec = new SBN_spectrum(signalModel);
+	SBN_spectrum * bkgbarspec = new SBN_spectrum(signalModel);
+	
+	//ok this is necessary as I'm gonna oscillate
+	bkgspec->which_mode    = which_mode;
+	bkgbarspec->which_mode = which_mode;
+	bkgbarspec->SetNuBarMode();
+				
+
+	bkgspec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+	bkgspec->load_freq_3p3(SBND);
+	bkgspec->load_freq_3p3(UBOONE);
+	
+	bkgspec->scale_by_pot(pot_scale);
+
+	back6 = bkgspec->get_sixvector();
+	back  = bkgspec->get_vector();
+
+	bool usedetsys = true;	
+	bool stat_only = false;
+	
+	if (beam_mode == 0){
+	
+
+		matrix_size =(N_e_bins + N_e_bins + N_m_bins)*N_dets;
+		matrix_size_c = (N_e_bins + N_m_bins) * N_dets;
+		
+		bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets;
+		contMsize = (N_e_bins+N_m_bins)*N_dets;
+
+		/* create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
+		 * */
+
+		 TMatrixT <double> m(matrix_size,matrix_size);
+		 TMatrixT <double>  mc(matrix_size_c,matrix_size_c);
+		 TMatrixT <double>  mci(matrix_size_c, matrix_size_c);
+		 TMatrixT <double>  msys(bigMsize,bigMsize);
+		TMatrixT <double > mtotal(bigMsize,bigMsize);
+		TMatrixT <double> mstat(bigMsize,bigMsize);
 		TMatrixT <double> mctotal(contMsize,contMsize);
+		
+		msys=sys_fill_direct(bigMsize,usedetsys);
+
+		for(int i =0; i<msys.GetNcols(); i++)
+		{
+			for(int j =0; j<msys.GetNrows(); j++)
+			{
+				msys(i,j) = msys(i,j)*back[i]*back[j];
+			}
+		}
+
+
+		stats_fill(mstat, back);
+
+
+		if(stat_only){
+			mtotal =  mstat;
+		} else {
+			mtotal = msys+mstat;
+		}
+
 		contract_signal2(mtotal,mctotal);
 
 
@@ -605,10 +960,10 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 
 	} else if(beam_mode == 1)
 	{
-		bkgbarspec->SetNuBarMode();
-		bkgbarspec->load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
+		bkgbarspec->load_freq_3p3(ICARUS);
 		bkgbarspec->load_freq_3p3(SBND);
 		bkgbarspec->load_freq_3p3(UBOONE);
+		bkgbarspec->SetNuBarMode();
 		
 		bkgbarspec->scale_by_pot(pot_scale_bar);
 
@@ -633,7 +988,7 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 
 		// Fill systematics from pre-computed files
 		TMatrixT <double> Msys(bigMsize,bigMsize);
-		Msys=sys_fill_direct(Msys.GetNcols(),usedetsys);
+		Msys = sys_fill_direct(bigMsize,usedetsys);
 
 		/*for(int i =0; i< Msys.GetNcols(); i++){
 		for(int j =0; j< Msys.GetNcols(); j++){
@@ -641,6 +996,8 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 		}}
 		exit(EXIT_FAILURE);
 		*/
+
+		//std::cout<<"Msys: "<<Msys.GetNcols()<<" back_all "<<back_all.size()<<" back_all_12 "<<back_all_12.size()<<std::endl;
 
 		// systematics per scaled event
 		for(int i =0; i<Msys.GetNcols(); i++)
@@ -650,14 +1007,18 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 				Msys(i,j)=Msys(i,j)*back_all[i]*back_all[j];
 			}
 		}
-			
+		
+
+
+
+	
 		// Fill stats from the back ground vector
 		TMatrixT <double> Mstat(bigMsize,bigMsize);
 		stats_fill(Mstat, back_all);
 
 		//And then define the total covariance matrix in all its glory
 		TMatrixT <double > Mtotal(bigMsize,bigMsize);
-		if(stat_only){
+		if(false){
 			Mtotal =  Mstat;
 		} else {
 			Mtotal = Msys+Mstat;
@@ -666,9 +1027,10 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 		
 		// Now contract back the larger antimatrix
 		TMatrixT<double > Mctotal(contMsize,contMsize);
-
-		contract_signal2_anti(Mtotal,Mctotal);
-
+		TMatrixT<double > Mctotal2(contMsize,contMsize);
+		
+		contract_signal_layer3(Mtotal,Mctotal);
+		Mctotal2=Mctotal;
 		/*for(int i =0; i< Mtotal.GetNcols(); i++){
 		for(int j =0; j< Mtotal.GetNcols(); j++){
 		std::cout<<i<<" "<<j<<" "<<Mtotal(i,j)<<" "<<Msys(i,j)<<std::endl;
@@ -683,12 +1045,34 @@ double wrkInstance::inject_signal(neutrinoModel signalModel, int channel_mode, i
 		// Bit o inverting, root tmatrix seems perfectly and sufficiently fast for this, even with anti_mode
 		McI = Mctotal.Invert(&invdet);
 
-
 		// There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
 		vMcI = to_vector(McI);
-	} //end anti_initialiser
 
-}//end the inject_signal;
+		//for(int i =0; i< Mctotal.GetNcols(); i++){
+		//for(int j =0; j< Mctotal.GetNcols(); j++){
+		//	std::cout<<std::setprecision(10)<<i<<" "<<j<<" "<<" "<<Mctotal2(i,j)<<" "<<McI(i,j)<<" "<<vMcI[i][j]<<std::endl;
+		//}}
+		
+//		TMatrixT<double > McUNITY(contMsize,contMsize);
+//		McUNITY.Mult(Mctotal2,McI);
+
+	//	for(int i =0; i<McUNITY.GetNcols(); i++)
+	//	{
+	//		for(int j =0; j<McUNITY.GetNrows(); j++)
+	//		{
+	//			std::cout<<i<<" "<<j<<" "<<McUNITY(i,j)<<std::endl;
+	//		}
+	//	}
+
+	} //end anti_initialiser
+		delete UBOONE;
+		delete SBND;
+		delete ICARUS;
+	
+		delete bkgspec;	
+		delete bkgbarspec;
+
+}//end the inject_signal setup;
 
 
 

@@ -81,7 +81,7 @@ exit(EXIT_FAILURE);
 
 
 
-gSystem->Load("libTree");
+//gSystem->Load("libTree");
 
 
 // Just a few flags to control program flow.
@@ -97,13 +97,14 @@ bool comb_flag = false;
 bool both_flag = true;
 bool dis_flag = false;
 bool app_flag = false;
+bool wierd_flag = false;
 int which_channel = BOTH_ONLY;
 
 bool unit_flag = false;
 bool fraction_flag = false;
 bool anti_flag = false;
 int anti_mode = 0;
-bool inject_flag = true;
+bool inject_flag = false;
 
 
 bool pot_flag = false;
@@ -155,6 +156,7 @@ const struct option longopts[] =
 	{"sample",		no_argument,		0, 's'},
 	{"cov",			no_argument, 		0, 'c'},
 	{"dis",			no_argument,	 	0, 'd'},
+	{"wierd",		no_argument,		0, 'w'},
 	{"both",		no_argument,		0, 'b'},
 	{"unitary",		no_argument,		0, 'n'},
 	{"num",			required_argument,	0, 'N'},
@@ -168,7 +170,7 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "I:daP:lf:nuM:e:m:svp:hS:cFTABN:b", longopts, &index);
+	iarg = getopt_long(argc,argv, "I:daP:lf:nuM:e:m:svp:hS:cFTABN:bw", longopts, &index);
 
 	switch(iarg)
 	{
@@ -243,6 +245,10 @@ while(iarg != -1)
 		case 'a':
 			app_flag = true;
 			which_channel = APP_ONLY;
+			break;
+		case 'w':
+			wierd_flag = true;
+			which_channel = WIERD_ONLY;
 			break;
 		case 'b':
 			both_flag = true;
@@ -461,13 +467,13 @@ if(unit_flag){
 
 
 
-if(fraction_flag && true) // This is just an obsolete old one for reading it in and doing noting
+if(fraction_flag && false) // This is just an obsolete old one for reading it in and doing noting
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
 	if(num_ster == 1){
-//		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
-	        sprintf(filename,"GlobalFits/ntuples/nt_31_all.root");	
+		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
+//	        sprintf(filename,"GlobalFits/ntuples/nt_31_all.root");	
 	} else if (num_ster == 2){
 
 		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
@@ -525,7 +531,7 @@ if(fraction_flag && true) // This is just an obsolete old one for reading it in 
 
 
 
-if(fraction_flag && false) //this i smain!!
+if(fraction_flag && true) //this i smain!!
 {
 
 	double norm_pot = 1.0;
@@ -768,7 +774,6 @@ if(fraction_flag&& false)
 			Mtotal = Msys+Mstat;
 		}
 		//Mtotal = Mstat;
-
 		TMatrixT<double > Mctotal(contMsize,contMsize);
 		contract_signal2(Mtotal,Mctotal);
 
@@ -898,6 +903,9 @@ if(pot_flag){
 			case BOTH_ONLY:
 				filename = "3p1_both";
 				break;
+			case WIERD_ONLY:
+				filename = "3p1_wierd";
+				break;
 		}
 
 	} else if (num_ster == 2){
@@ -911,6 +919,9 @@ if(pot_flag){
 			case BOTH_ONLY:
 				filename = "3p2_both";
 				break;
+			case WIERD_ONLY:
+				filename = "3p2_wierd";
+				break;
 		}
 	} else if(num_ster == 3){
 			switch(which_channel){
@@ -922,6 +933,9 @@ if(pot_flag){
 				break;
 			case BOTH_ONLY:
 				filename = "3p3_both";
+				break;
+			case WIERD_ONLY:
+				filename = "3p3_wierd";
 				break;
 		}
 
@@ -1127,7 +1141,7 @@ if(filename != "none"){
 
 	}
 
-
+return 0;
 }//end of POT flag
 
 
@@ -1152,13 +1166,39 @@ if(inject_flag){
 	//double Ium[3] = {0.15,0.13,0};
 	double Iphi[3] = {inPhi45,0.0,0.0};
 
+/*
+	if(false){ //This is for 1eV^2 signal injection
+		Imn[1]=0;
+		//Imn[0]=0.660693;// for app
+		Imn[0]=1.04713; //for dis
+		Iue[1]=0;
+		Ium[1]=0;
+		Iphi[1]=0;
+
+		//Ium[0]=1;  //for app
+		//Iue[0]=0.0570088;	
+
+		Iue[0]=0;
+		Ium[0]=0.160182;
+
+	}
+*/
+
+
+//	Iue[0]=0;Iue[1]=0;
+//	Ium[0]=0;Ium[1]=0;
+
 	neutrinoModel injectModel(Imn,Iue,Ium,Iphi);
 	injectModel.numsterile=num_ster;
 
 	wrkInstance injectInstance(which_channel, anti_mode, ipot, ipotbar); // anoyingly it has alredy loaded the background model;
 	injectInstance.inject_signal(injectModel, which_channel, anti_mode, ipot, ipotbar);
+//	wrkInstance injectInstance(injectModel, which_channel, anti_mode, ipot, ipotbar); // make it an init
 
-//	for(double ip=0; ip<2*3.14159; ip+=0.15){
+
+
+
+//	for(double ip=0; ip<2*3.14159; ip+=0.025){
 		injectInstance.init_minim();
 		double ip = 0.0;
 		double ip2 = 3.14159;
@@ -1170,9 +1210,19 @@ if(inject_flag){
 			neutrinoModel testModel(Imn,Iue,Ium,Iphi);
 			testModel.numsterile=num_ster;
 			testModel.phi[0]=ip;
-			double ans =injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+	
+
+			//	for(int i =0; i<180; i++){
+			//		for(int j =0; j<180; j++){
+			//			std::cout<<i<<" int "<<j<<" "<<injectInstance.vMcI[i][j]<<std::endl;
+			//		}
+			//	}
+
+
+		//	injectInstance.isVerbose = true;
+			double ans = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
 			testModel.phi[0]=ip2;
-			double ans2 =injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+			double ans2 = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
 	
 			std::cout<<ip<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
 			std::cout<<" : " << ans << std::endl;
@@ -1719,8 +1769,76 @@ if(cov_flag){
 
 
 }
-
+ 
 if(sens_flag){
+	std::cout<<"Starting 3p1 sensitivity scan"<<std::endl;
+        wrkInstance sensInstance(which_channel, anti_mode);
+
+	for(double m = -2.00; m <=2.04; m=m+0.04){
+		
+
+			for(double sins2 = log10(0.25) ; sins2 > -5; sins2 = sins2 - 0.2){
+				double t_ue = -99;
+				double t_um = -99;
+				double t_chi = 1e5;
+
+
+			for(double uei2 = log10(0.3) ; uei2 > -10; uei2 = uei2 - 0.05){
+				double uei = pow(10,uei2);
+				
+				double umi = sqrt(pow(10,sins2))/(2*uei);
+				if(umi > 0.3){continue;};
+			
+				double imn[3] = {sqrt(pow(10,m)),0,0};
+				double iue[3] = {umi,0,0};
+				double ium[3] = {uei,0,0};
+				double iph[3] = {0,0,0};
+
+				neutrinoModel signalModel(imn,iue,ium,iph);
+				signalModel.numsterile = 1;
+				sensInstance.isVerbose = false;
+	
+
+				double chi2A = sensInstance.calc_chi(signalModel, 0);
+				if(chi2A < t_chi){
+					t_chi =chi2A;
+					t_ue = umi;
+					t_um = uei;
+			//		if(which_channel==APP_ONLY){break;}	
+				}
+
+
+				 iue[0]= uei;
+				 ium[0] = umi;
+
+				neutrinoModel signalModel2(imn,iue,ium,iph);
+				signalModel2.numsterile = 1;
+				
+				chi2A = sensInstance.calc_chi(signalModel2, 0);
+				if(chi2A < t_chi){
+					t_chi =chi2A;
+					t_ue = uei;
+					t_um = umi;
+			//		if(which_channel==APP_ONLY){break;}	
+				}
+				
+	//	std::cout<<m<<" "<<sins2<<" "<<chi2A<<" "<<uei<<" "<<umi<<std::endl;		
+	}//end ue
+
+		std::cout<<m<<" "<<sins2<<" "<<t_chi<<" "<<t_ue<<" "<<t_um<<std::endl;		
+	}//end sins2
+	}//end m
+
+
+
+
+
+return 0;
+}
+
+
+// OLD sensitivities...
+if(sens_flag && false){
 
 	double norm_pot = 1.0;
 	wrkInstance signalInstance(which_channel , anti_mode);
@@ -3555,7 +3673,6 @@ if(true){
 
 return 0;
 }// end main
-
 
 
 

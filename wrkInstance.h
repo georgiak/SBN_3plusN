@@ -52,19 +52,15 @@ class wrkInstance {
 	double pot;
 	double pot_bar;
 
-	SBN_detector * ICARUS;
- 	SBN_detector * SBND;
- 	SBN_detector * UBOONE;
-
 	neutrinoModel nullModel;
 	neutrinoModel workingModel;
 
-	SBN_spectrum * bkgspec;
+/*	SBN_spectrum * bkgspec;
 	SBN_spectrum * SigSpec;
 
 	SBN_spectrum * bkgbarspec;
 	SBN_spectrum * SigBarSpec;
-
+*/
 	std::vector<double > back6 ;
 	std::vector<double > back  ;
 
@@ -116,6 +112,8 @@ class wrkInstance {
 	wrkInstance(int channel_mode, int fbeam_mode);
 	~wrkInstance();
 
+	
+	wrkInstance(neutrinoModel signalModel, int channel_mode, int fbeam_mode , double pot_scale, double pot_scale_bar);
 	double inject_signal(neutrinoModel signalModel, int channel_mode, int fbeam_mode , double pot_scale, double pot_scale_bar);
 
 	double calc_chi(neutrinoModel signalModel, int runnumber);

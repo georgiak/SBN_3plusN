@@ -9,7 +9,7 @@ rm fractiondata/pot3p3/analysed_3p3_app.dat
 CHI3=30.0973
 CHI5=52.1917
 
-for ip in `seq -3.0 0.2 0.0`
+for ip in `seq -3.0 0.2 0.6`
 do
 	TOTAL=$(wc -l < fractiondata/pot3p3/"3p3_pot_"$ip"_both.dat" )
 	echo "On Both POT"$ip
@@ -19,7 +19,7 @@ do
 
 done
 
-for ip in `seq -3.0 0.2 0.0`
+for ip in `seq -3.0 0.2 0.6`
 do
 	TOTAL=$(wc -l < fractiondata/pot3p3/"3p3_pot_"$ip"_app.dat" )
 	echo "On App POT"$ip
@@ -29,7 +29,7 @@ do
 	done
 
 
-for ip in `seq -3.0 0.2 0.0`
+for ip in `seq -3.0 0.2 0.6`
 do
 	TOTAL=$(wc -l < fractiondata/pot3p3/"3p3_pot_"$ip"_dis.dat" )
 	echo "On Dis POT"$ip

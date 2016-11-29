@@ -360,7 +360,7 @@ double neutrinoModel::oscAmp_app(int a, int b, int which_dm, int sqornot)
 		case 54:
 			if(sqornot==2)
 			{
-				ans = -4.0*fabs(Ua5*Ub5*Ua4*Ub4);
+				ans = -4.0*fabs(Ua5*Ub5*Ua4*Ub4)*cos(phi54);
 			}
 			else if(sqornot ==1)
 			{
