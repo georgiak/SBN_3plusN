@@ -1160,10 +1160,10 @@ if(inject_flag){
 */
 //.46 .15 .13 .77 .13 .14 5.56
  	double Imn[3] = {0.398107,1.0,0};
-	double Iue[3] = {0.22,0.215,0};
-	//double Iue[3] = {0.13,0.14,0};
-	double Ium[3] = {0.24,0.23,0};
-	//double Ium[3] = {0.15,0.13,0};
+	double Iue[3] = {2*0.22,2*0.215,0};
+//	double Iue[3] = {0.13,0.14,0};
+	double Ium[3] = {2*0.24,2*0.23,0};
+//	double Ium[3] = {0.15,0.13,0};
 	double Iphi[3] = {inPhi45,0.0,0.0};
 
 /*
@@ -1225,10 +1225,10 @@ if(inject_flag){
 			double ans2 = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
 	
 			std::cout<<ip<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
-			std::cout<<" : " << ans << std::endl;
+			std::cout<<" "<<inPhi45<<"  " << ans << std::endl;
 				
 			std::cout<<ip<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
-			std::cout<<" : " << ans2 << std::endl;
+			std::cout<<" "<<inPhi45<<"  " << ans2 << std::endl;
 		}
 //	}
 	return 1;

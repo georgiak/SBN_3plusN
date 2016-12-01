@@ -151,7 +151,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		TMatrixT <double> Msys(bigMsize,bigMsize);
 		Msys = sys_fill_direct(bigMsize,usedetsys);
 
-		for(int i =0; i< Msys.GetNcols(); i++){
+/*		for(int i =0; i< Msys.GetNcols(); i++){
 		for(int j =0; j< Msys.GetNcols(); j++){
 		//std::cout<<i<<" "<<j<<" "<<Msys(i,j)<<" "<<Msys(i,j)<<std::endl;
 		std::cout<<Msys(i,j)<<" ";
@@ -159,7 +159,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 		std::cout<<std::endl;
 		}
 		exit(EXIT_FAILURE);
-		
+*/		
 
 		// systematics per scaled event
 		for(int i =0; i<Msys.GetNcols(); i++)
