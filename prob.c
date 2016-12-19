@@ -14,6 +14,7 @@ neutrinoModel::neutrinoModel(){
 	difference();
 }
 
+
 /******	3+3 constructor ******/
 neutrinoModel::neutrinoModel(double * mn, double * ue, double * um, double * ph){
 	zero();
@@ -22,9 +23,11 @@ neutrinoModel::neutrinoModel(double * mn, double * ue, double * um, double * ph)
 			Um[i] = um[i];  phi[i] =ph [i];
 	}
 	difference();
-	if(mNu[2]==0){
+	if(mNu[2]==0&&mNu[1]==0&&mNu[0]!=0){
+		numsterile =1 ;
+	} else if(mNu[2]==0){
 		numsterile = 2;
-	} else {
+	} else if(mNu[1]!=0&&mNu[2]!=0&&mNu[0]!=0){
 		numsterile = 3;
 	}
 }
@@ -47,6 +50,19 @@ neutrinoModel::neutrinoModel(double  mn, double  ue4, double  um4){
 /*********************************************
 *  	Other Models
 * *******************************************/
+
+void neutrinoModel::printall(){
+	
+	std::cout<<"m4: "<<mNu[0]<<" m5: "<<mNu[1]<<" m6: "<<mNu[2]<<std::endl;
+	std::cout<<"Ue4: "<<Ue[0]<<" Ue5: "<<Ue[1]<<" Ue6: "<<Ue[2]<<std::endl;
+	std::cout<<"Uu4: "<<Um[0]<<" Uu5: "<<Um[1]<<" Uu6: "<<Um[2]<<std::endl;
+	std::cout<<"phi45: "<<phi[0]<<" phi46: "<<phi[1]<<" phi56: "<<phi[2]<<std::endl;
+	std::cout<<"NumSterile: "<<numsterile<<std::endl;		
+	std::cout<<"dm41sq: "<<dm41Sq<<" dm51sq: "<<dm51Sq<<" dm61sq: "<<dm61Sq<<std::endl;
+	std::cout<<"dm454q: "<<dm54Sq<<" dm64sq: "<<dm64Sq<<" dm65sq: "<<dm65Sq<<std::endl;
+
+
+}
 
 
 void neutrinoModel::zero(){

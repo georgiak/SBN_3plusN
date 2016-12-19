@@ -31,6 +31,8 @@ struct neutrinoModel{
 	double UUmm;
 	double UUee;
 
+ 	void printall();
+
 	void zero();
 	void difference();
 

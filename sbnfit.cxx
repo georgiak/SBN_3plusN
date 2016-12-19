@@ -107,6 +107,19 @@ int anti_mode = 0;
 bool inject_flag = false;
 
 
+double bfmn[3] = {0.398107,1.0,0};
+double bfue[3] = {0.13,0.14,0};
+double bfum[3] = {0.15,0.13,0};
+double bfphi[3] = {0.0,0.0,0.0};
+
+
+neutrinoModel inputModel(bfmn,bfue,bfum,bfphi);
+
+bool margin = false;
+
+
+int plotmode = 1;
+
 bool pot_flag = false;
 
 int mode_flag = 0;
@@ -157,11 +170,14 @@ const struct option longopts[] =
 	{"cov",			no_argument, 		0, 'c'},
 	{"dis",			no_argument,	 	0, 'd'},
 	{"wierd",		no_argument,		0, 'w'},
+	{"signal",		required_argument,	0, 'g'},
 	{"both",		no_argument,		0, 'b'},
 	{"unitary",		no_argument,		0, 'n'},
 	{"num",			required_argument,	0, 'N'},
 	{"fraction",		required_argument,	0, 'f'},
 	{"pot",			required_argument,	0, 'p'},
+	{"plotmode",		required_argument,	0, 'k'},
+	{"margin",		no_argument,		0, 'r'},
 	{"app",			no_argument,		0, 'a'},
 	{"phi",			required_argument,	0, 'P'},
 	{0,			no_argument, 		0,  0},
@@ -170,10 +186,56 @@ const struct option longopts[] =
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "I:daP:lf:nuM:e:m:svp:hS:cFTABN:bw", longopts, &index);
+	iarg = getopt_long(argc,argv, "I:daP:lf:nuM:e:m:svp:hS:crFTABN:bwk:g:", longopts, &index);
 
 	switch(iarg)
 	{
+		case 'r':
+			margin=true;
+			break;
+		case 'g':
+			{
+			
+			double tm[3] ={0,0,0};
+			double te[3] ={0,0,0};
+			double tu[3] ={0,0,0};
+			double tp[3] ={0,0,0};
+
+			std::string s = optarg;
+			std::string delimiter = ":";
+			int cnt=0;
+			size_t pos = 0;
+			std::string token;
+			while ((pos = s.find(delimiter)) != std::string::npos) {
+			    token = s.substr(0, pos);
+			    //std::cout << token << std::endl;
+			    s.erase(0, pos + delimiter.length());
+
+
+
+			    std::cout<<cnt<<" "<<token<<std::endl;
+			    if(cnt<3){
+				tm[cnt] = atof(token.c_str());	
+			    }
+ 			    if(cnt>=3&&cnt<6){
+				te[cnt-3] = atof(token.c_str());	
+			    } 
+ 			    if(cnt>=6&&cnt<9){
+				tu[cnt-6] = atof(token.c_str());	
+			    } 
+			    if(cnt>=9&&cnt<12){
+				tp[cnt-9] = atof(token.c_str());	
+			    } 
+			   
+			    cnt++;
+			}
+			//std::cout << s << std::endl;//last one remains in s
+			tp[2]=atof(s.c_str());
+					
+			inputModel=neutrinoModel(tm,te,tu,tp);
+
+			}
+			break;
 		case 'P':
 			inPhi45 = strtof(optarg,NULL);
 			break;
@@ -227,6 +289,9 @@ while(iarg != -1)
 			pot_num= atof(spot.c_str());
 			pot_num_bar = atof(spotbar.c_str());
 			}
+			break;
+		case 'k':
+			plotmode = strtof(optarg,NULL);
 			break;
 		case 'N':
 			num_ster = strtof(optarg,NULL);
@@ -299,6 +364,7 @@ while(iarg != -1)
 	}
 
 }
+
 
 
 if(verbose_flag)
@@ -1151,90 +1217,143 @@ if(inject_flag){
 	double ipot =pow(10,pot_num);
 	double ipotbar = pow(10,pot_num_bar);
 
-	//683831 0.870964 1 0 0.045 0.145 0 0.005 0.165 0 5.08938 0 5.08938 1 2 0 69.6192 
-	/*
- 	double Imn[3] = {0.870964,1.0,0};
-	double Iue[3] = {0.045,0.115,0};
-	double Ium[3] = {0.05,0.125,0};
-	double Iphi[3] = {5.0,0.0,0.0};
-*/
-//.46 .15 .13 .77 .13 .14 5.56
- 	double Imn[3] = {0.398107,1.0,0};
-	double Iue[3] = {2*0.22,2*0.215,0};
-//	double Iue[3] = {0.13,0.14,0};
-	double Ium[3] = {2*0.24,2*0.23,0};
-//	double Ium[3] = {0.15,0.13,0};
-	double Iphi[3] = {inPhi45,0.0,0.0};
-
-/*
-	if(false){ //This is for 1eV^2 signal injection
-		Imn[1]=0;
-		//Imn[0]=0.660693;// for app
-		Imn[0]=1.04713; //for dis
-		Iue[1]=0;
-		Ium[1]=0;
-		Iphi[1]=0;
-
-		//Ium[0]=1;  //for app
-		//Iue[0]=0.0570088;	
-
-		Iue[0]=0;
-		Ium[0]=0.160182;
-
-	}
-*/
+	inputModel.numsterile=num_ster;
+	inputModel.phi[0]=inPhi45;
 
 
-//	Iue[0]=0;Iue[1]=0;
-//	Ium[0]=0;Ium[1]=0;
-
-	neutrinoModel injectModel(Imn,Iue,Ium,Iphi);
-	injectModel.numsterile=num_ster;
+	neutrinoModel testModel = inputModel;
 
 	wrkInstance injectInstance(which_channel, anti_mode, ipot, ipotbar); // anoyingly it has alredy loaded the background model;
-	injectInstance.inject_signal(injectModel, which_channel, anti_mode, ipot, ipotbar);
-//	wrkInstance injectInstance(injectModel, which_channel, anti_mode, ipot, ipotbar); // make it an init
+	injectInstance.inject_signal(inputModel, which_channel, anti_mode, ipot, ipotbar);
 
 
 
 
-//	for(double ip=0; ip<2*3.14159; ip+=0.025){
+	if(plotmode == 1)
+	{
+
+
 		injectInstance.init_minim();
-		double ip = 0.0;
-		double ip2 = 3.14159;
+
+
+		for(double ip = 0; ip <= 2*3.2; ip+=0.1){
+
+			if(margin){
+				injectInstance.minimize(ip, ipot, ipotbar);
+			}else{
+				testModel.phi[0]=ip;
+				double ans1=	injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+				std::cout<<ip<<" "<<ans1<<std::endl;
+			}	
+		}// end phi45 loop
+
+
+
+	return 0; 
+	} // <-- End plotmode==1
+
+
+	if(plotmode == 2)
+	{
+
+
+		for(double um4ue4 = -6; um4ue4<0; um4ue4+=0.25){
+			for(double ip = 0; ip <= 2*3.2; ip+=0.1){
+				if(margin){
+					std::cout<<"ERROR: plotmode 2 of inject_signal cannot be run with marginalisation"<<std::endl;
+					exit(EXIT_FAILURE);
+				}else{
+					testModel.phi[0]=ip;
+					testModel.Um[0]=1;
+					testModel.Ue[0]=sqrt(pow(10,um4ue4));
+					injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+				}	
+			}// end phi45 loop
+		}// end um4ue4 loop
+
+
+
+	return 0; 
+	} // <-- End plotmode==2
+
+
+	if(plotmode ==3)
+	{
+
+
+			//683831 0.870964 1 0 0.045 0.145 0 0.005 0.165 0 5.08938 0 5.08938 1 2 0 69.6192 
+		/*
+			double Imn[3] = {0.870964,1.0,0};
+			double Iue[3] = {0.045,0.115,0};
+			double Ium[3] = {0.05,0.125,0};
+			double Iphi[3] = {5.0,0.0,0.0};
 		
-		//injectInstance.minimize(ip, ipot, ipotbar);
-		//injectInstance.minimize(ip2, ipot, ipotbar);
+		//.46 .15 .13 .77 .13 .14 5.56
+			double Imn[3] = {0.398107,1.0,0};
+		//	double Iue[3] = {0.22,0.215,0};
+			double Iue[3] = {0.13,0.14,0};
+		//	double Ium[3] = {0.24,0.23,0};
+			double Ium[3] = {0.15,0.13,0};
+			double Iphi[3] = {inPhi45,0.0,0.0};
+
 		
-		if(true){//uncomment this section to do a "fixed value " phi45 scan run
-			neutrinoModel testModel(Imn,Iue,Ium,Iphi);
-			testModel.numsterile=num_ster;
-			testModel.phi[0]=ip;
-	
+			if(false){ //This is for 1eV^2 signal injection
+				Imn[1]=0;
+				//Imn[0]=0.660693;// for app
+				Imn[0]=1.04713; //for dis
+				Iue[1]=0;
+				Ium[1]=0;
+				Iphi[1]=0;
 
-			//	for(int i =0; i<180; i++){
-			//		for(int j =0; j<180; j++){
-			//			std::cout<<i<<" int "<<j<<" "<<injectInstance.vMcI[i][j]<<std::endl;
-			//		}
-			//	}
+				//Ium[0]=1;  //for app
+				//Iue[0]=0.0570088;	
+
+				Iue[0]=0;
+				Ium[0]=0.160182;
+
+			}
+		*/
+
+		injectInstance.init_minim();
+		neutrinoModel testModel=inputModel;
+
+		//for(double iphi45=0; iphi45<2*3.2; iphi45+=0.1){
+			
+
+			inputModel.phi[0]=inPhi45;
+			injectInstance.inject_signal(inputModel, which_channel, anti_mode, ipot, ipotbar);
+
+			double i0 = 0.0;
+			double iPi = 3.14159;
+			
+			if(margin){		
+				injectInstance.minimize(i0, ipot, ipotbar);
+				injectInstance.minimize(iPi, ipot, ipotbar);
+			} else {
+				testModel.phi[0]=i0;	
+				double ans0 = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+				testModel.phi[0]=iPi;
+				double ansPi = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+		
+				std::cout<<iphi45<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
+				std::cout<<" "<<inPhi45<<"  " << ans0 << std::endl;
+					
+				std::cout<<iphi45<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
+				std::cout<<" "<<inPhi45<<"  " << ansPi << std::endl;
+			}
+		//} // end of iphi45 True loop THIS loop is too slow for when minimize is on, therfore will do it outside of sbfit.
+		return 1;
+	}// <-- End Plotmode==3	
 
 
-		//	injectInstance.isVerbose = true;
-			double ans = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
-			testModel.phi[0]=ip2;
-			double ans2 = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
-	
-			std::cout<<ip<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
-			std::cout<<" "<<inPhi45<<"  " << ans << std::endl;
-				
-			std::cout<<ip<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
-			std::cout<<" "<<inPhi45<<"  " << ans2 << std::endl;
-		}
-//	}
-	return 1;
-//	std::cout<<"Starting: Dm41^2:"<<injectModel.dm41Sq<<" Dm51^2: "<<injectModel.dm51Sq<<" Dm54^2: "<<injectModel.dm54Sq<<std::endl;
-	exit(EXIT_FAILURE);
 
+
+
+
+
+
+	// Not sure whats below here. redundant i guess
+	//
 	int vector_modifier = 1;
 	
 	if(anti_flag){
