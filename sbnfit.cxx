@@ -134,8 +134,8 @@ double in_ue4 = 0;
 double in_um4=0;
 
 
-double pot_num =1;
-double pot_num_bar =1;
+double pot_num =0;
+double pot_num_bar =0;
 
 double inPhi45 = 0;
 
@@ -211,9 +211,6 @@ while(iarg != -1)
 			    //std::cout << token << std::endl;
 			    s.erase(0, pos + delimiter.length());
 
-
-
-			    std::cout<<cnt<<" "<<token<<std::endl;
 			    if(cnt<3){
 				tm[cnt] = atof(token.c_str());	
 			    }
@@ -533,7 +530,7 @@ if(unit_flag){
 
 
 
-if(fraction_flag && false) // This is just an obsolete old one for reading it in and doing noting
+if(fraction_flag && false ) // This is just an obsolete old one for reading it in and doing noting
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
@@ -597,13 +594,13 @@ if(fraction_flag && false) // This is just an obsolete old one for reading it in
 
 
 
-if(fraction_flag && true) //this i smain!!
+if(fraction_flag) //this i smain!!
 {
 
-	double norm_pot = 1.0;
-	double norm_pot_bar =1.0;
+	double norm_pot = pow(10,pot_num);
+	double norm_pot_bar = pow(10,pot_num_bar);// 1.0;//0.0000001;
 	 
-        wrkInstance fractionInstance(which_channel, anti_mode);
+        wrkInstance fractionInstance(which_channel, anti_mode, norm_pot, norm_pot_bar);
 
 //	exit(EXIT_FAILURE);
 
@@ -701,7 +698,7 @@ if(fraction_flag && true) //this i smain!!
 				neutrinoModel signalModel(imn,iue,ium,iph);
 				signalModel.numsterile=num_ster;
 
-				fractionInstance.calc_chi(signalModel, i);
+				fractionInstance.calc_chi(signalModel, i, norm_pot, norm_pot_bar);
 			
 				//exit(EXIT_FAILURE);	
 	 }
@@ -1164,7 +1161,7 @@ if(filename != "none"){
 					for(int i =0; i<N_e_bins+N_m_bins; i++){
 						mod[i+second]=ipotbar;
 						mod[i+second+N_e_bins+N_m_bins] = ipotbar;
-						mod[i+second+2*(N_e_bins+N_m_bins)]=ipotbar;
+						mod[i+second+2*(N_e_bins+N_m_bins)] = ipotbar;
 					}
 				}
 
@@ -1255,10 +1252,10 @@ if(inject_flag){
 
 	if(plotmode == 2)
 	{
+		injectInstance.init_minim();
 
-
-		for(double um4ue4 = -6; um4ue4<0; um4ue4+=0.25){
-			for(double ip = 0; ip <= 2*3.2; ip+=0.1){
+		for(double um4ue4 = -6; um4ue4<0; um4ue4+=0.05){
+			for(double ip = 0; ip <= 2*3.2; ip+=0.05){
 				if(margin){
 					std::cout<<"ERROR: plotmode 2 of inject_signal cannot be run with marginalisation"<<std::endl;
 					exit(EXIT_FAILURE);
@@ -1266,7 +1263,10 @@ if(inject_flag){
 					testModel.phi[0]=ip;
 					testModel.Um[0]=1;
 					testModel.Ue[0]=sqrt(pow(10,um4ue4));
-					injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+					testModel.Um[1]=1;
+					testModel.Ue[1]=sqrt(pow(10,um4ue4));
+					double ans =injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+					std::cout<<ip<<" "<<um4ue4<<" "<<ans<<std::endl;
 				}	
 			}// end phi45 loop
 		}// end um4ue4 loop
@@ -1320,9 +1320,6 @@ if(inject_flag){
 		//for(double iphi45=0; iphi45<2*3.2; iphi45+=0.1){
 			
 
-			inputModel.phi[0]=inPhi45;
-			injectInstance.inject_signal(inputModel, which_channel, anti_mode, ipot, ipotbar);
-
 			double i0 = 0.0;
 			double iPi = 3.14159;
 			
@@ -1335,10 +1332,10 @@ if(inject_flag){
 				testModel.phi[0]=iPi;
 				double ansPi = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
 		
-				std::cout<<iphi45<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
+				std::cout<<i0<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
 				std::cout<<" "<<inPhi45<<"  " << ans0 << std::endl;
 					
-				std::cout<<iphi45<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
+				std::cout<<iPi<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
 				std::cout<<" "<<inPhi45<<"  " << ansPi << std::endl;
 			}
 		//} // end of iphi45 True loop THIS loop is too slow for when minimize is on, therfore will do it outside of sbfit.
@@ -1346,6 +1343,27 @@ if(inject_flag){
 	}// <-- End Plotmode==3	
 
 
+	if(plotmode == 4)
+	{
+		injectInstance.init_minim();
+
+			
+			for(double ip = 0; ip <= 2*3.2; ip+=0.2){
+				if(margin){
+					double ans =injectInstance.minimize(ip,ipot,ipotbar);
+
+					std::cout<<ip<<" "<<pow(inputModel.Ue[0]*inputModel.Um[0],2)<<" "<<pow(inputModel.Ue[1]*inputModel.Um[1],2)<<" "<<ans<<std::endl;
+				}else{
+					testModel.phi[0]=ip;
+					double ans =injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+					std::cout<<ip<<" "<<ans<<std::endl;
+				}	
+			}// end phi45 loop
+
+
+
+	return 0; 
+	} // <-- End plotmode==2
 
 
 

@@ -182,7 +182,7 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 	//	if(stat_only){
 	//		Mtotal =  Mstat;
 	//	} else {
-		Mtotal = Mstat;//+Msys;
+		Mtotal = Mstat+Msys;
 	//	}
 
 		if(false){
@@ -265,7 +265,7 @@ int wrkInstance::init_minim(){
 	min = new ROOT::Math::GSLMinimizer(ROOT::Math::kVectorBFGS2);	
 //	min = new ROOT::Math::GSLSimAnMinimizer();
 	//min->SetMaxFunctionCalls(100); // for Minuit/Minuit2
-   	min->SetMaxIterations(100);  // for GSL
+   	min->SetMaxIterations(200);  // for GSL
 	min->SetTolerance(0.001); //times 4 for normal
 	min->SetPrintLevel(0);
 	min->SetPrecision(0.0001);//times 4 for normal
@@ -295,7 +295,7 @@ double wrkInstance::minim_calc_chi(const double * x){
 
 }
 
-double wrkInstance::minimize(double inphi45, double ipot, double ipotbar){
+double wrkInstance::minimize(double inphi45, double ipot, double ipotbar ){
 
 	pot=ipot;
 	pot_bar =ipotbar;
@@ -305,7 +305,7 @@ double wrkInstance::minimize(double inphi45, double ipot, double ipotbar){
 	TRandom3 *rangen    = new TRandom3(0);
 
 
-	double variable[12] = {0.398107,1.0,0,log10(rangen->Uniform(0,0.2)),log10(rangen->Uniform(0,0.2)),0,log10(rangen->Uniform(0,0.2)),log10(rangen->Uniform(0,0.2)),0, inphi45,0.0,0.0};
+	double variable[12] = {0.758577 /*0.398107*/,1.0,0,log10(rangen->Uniform(0,0.2)),log10(rangen->Uniform(0,0.2)),0,log10(rangen->Uniform(0,0.2)),log10(rangen->Uniform(0,0.2)),0, inphi45,0.0,0.0};
 	double step[12] = {0.01,0.01,0.01, 0.005,0.005,0.005, 0.005,0.005,0.001,  0.01,0.01,0.01};
 	double lower[12] = {0,0,0,-4,-4,0,-4,-4,0,0,0,0}	;
 	double myup=0.3;
@@ -409,6 +409,7 @@ double wrkInstance::calc_chi(neutrinoModel newModel, int runnumber, double pot_s
 					//	std::cout<<i<<" "<<j<<" "<<vMcI[i][j]<<" "<<vMc[i][j]<<" "<<vMc[i][j]/(back_all_12[i]*back_all_12[j])<<" "<<mychi2<<std::endl;
 					}
 				}
+
 			
 		
 		}// end anti-mode

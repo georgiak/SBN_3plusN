@@ -81,6 +81,8 @@ TMatrixT<double > sys_fill_direct(int dim, bool detsys){
 	TMatrixT<double > temp2(dim,dim);
 	//std::cout<<"inputted dim is: "<<dim<<std::endl;
 	if(dim ==   (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti  ){
+
+		//TFile *fm= new TFile("rootfiles/covariance_matrices_690x690.root");
 		TFile *fm= new TFile("rootfiles/covariance_matrices_xcheck_690x690.root");
 		 temp = (TMatrixT <float>* )fm->Get("TMatrixT<float>;7");
 		//std::cout<<"outputted temp dim is: "<<temp.GetNcols()<<std::endl;
@@ -93,8 +95,6 @@ TMatrixT<double > sys_fill_direct(int dim, bool detsys){
 			}
 		}
 		delete temp;
-
-
 
 
 	//	delete fm;
