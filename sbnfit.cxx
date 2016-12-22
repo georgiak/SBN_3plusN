@@ -212,7 +212,8 @@ while(iarg != -1)
 			    s.erase(0, pos + delimiter.length());
 
 			    if(cnt<3){
-				tm[cnt] = atof(token.c_str());	
+				double mm=pow(10,round(log10(fabs( atof(token.c_str())))/0.04)*0.04);	
+				tm[cnt] =mm; 
 			    }
  			    if(cnt>=3&&cnt<6){
 				te[cnt-3] = atof(token.c_str());	
@@ -366,13 +367,34 @@ while(iarg != -1)
 
 if(verbose_flag)
 {
-	std::cout<<"#***************** Initial Parameters ******************"<<std::endl;
-	std::cout<<"# N_m_bins "<<N_m_bins<<std::endl;
-	std::cout<<"# N_e_bins "<<N_e_bins<<std::endl;
-	std::cout<<"# N_dets "<<N_dets<<std::endl;
-	std::cout<<"# N_e_spectra "<<N_e_spectra<<std::endl;
-	std::cout<<"# N_m_spectra "<<N_m_spectra<<std::endl;
-	std::cout<<"# N_anti "<<N_anti<<std::endl;
+	std::cout<<"#v:***************** Initial Parameters ******************"<<std::endl;
+	std::cout<<"#v: N_m_bins "<<N_m_bins<<std::endl;
+	std::cout<<"#v: N_e_bins "<<N_e_bins<<std::endl;
+	std::cout<<"#v: N_dets "<<N_dets<<std::endl;
+	std::cout<<"#v: N_e_spectra "<<N_e_spectra<<std::endl;
+	std::cout<<"#v: N_m_spectra "<<N_m_spectra<<std::endl;
+	std::cout<<"#v: N_anti "<<N_anti<<std::endl;
+	std::cout<<"#v: num sterile "<<num_ster<<std::endl;
+	if(!anti_flag){
+	std::cout<<"#v: NEUTRINO mode only "<<num_ster<<std::endl;
+	}else{
+	std::cout<<"#v: NU+NUBAR modes "<<num_ster<<std::endl;
+	}	
+	switch(which_channel){
+			case APP_ONLY:
+				std::cout<<"#v: Channel app";
+				break;
+			case DIS_ONLY:
+				std::cout<<"#v: Channel dis";
+				break;
+			case BOTH_ONLY:
+				std::cout<<"#v: Channel both";
+				break;
+			case WIERD_ONLY:
+				std::cout<<"#v: Channel wierd";
+				break;
+	}
+		
 	std::cout<<"#*******************************************************"<<std::endl;
 }
 
@@ -1224,8 +1246,12 @@ if(inject_flag){
 	injectInstance.inject_signal(inputModel, which_channel, anti_mode, ipot, ipotbar);
 
 
-
-
+	if(verbose_flag){
+		std::cout<<"#v: Inject flag, plotmode : "<<plotmode<<std::endl;
+		std::cout<<"#v: Inital POT in nu mode:"<< ipot<<" nu-bar mode: "<<ipotbar<<std::endl;
+	         inputModel.printall();
+		std::cout<<"#v: #####################################################"<<std::endl;
+	}
 	if(plotmode == 1)
 	{
 
@@ -1236,6 +1262,7 @@ if(inject_flag){
 		for(double ip = 0; ip <= 2*3.2; ip+=0.1){
 
 			if(margin){
+				injectInstance.workingModel = inputModel;
 				injectInstance.minimize(ip, ipot, ipotbar);
 			}else{
 				testModel.phi[0]=ip;

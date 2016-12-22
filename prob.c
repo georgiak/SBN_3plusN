@@ -58,9 +58,11 @@ void neutrinoModel::printall(){
 	std::cout<<"Uu4: "<<Um[0]<<" Uu5: "<<Um[1]<<" Uu6: "<<Um[2]<<std::endl;
 	std::cout<<"phi45: "<<phi[0]<<" phi46: "<<phi[1]<<" phi56: "<<phi[2]<<std::endl;
 	std::cout<<"NumSterile: "<<numsterile<<std::endl;		
+	
 	std::cout<<"dm41sq: "<<dm41Sq<<" dm51sq: "<<dm51Sq<<" dm61sq: "<<dm61Sq<<std::endl;
-	std::cout<<"dm454q: "<<dm54Sq<<" dm64sq: "<<dm64Sq<<" dm65sq: "<<dm65Sq<<std::endl;
+	std::cout<<"log10 dm41sq: "<<log10(dm41Sq)<<" log10 dm51sq: "<<log10(dm51Sq)<<" log10 dm61sq: "<<log10(dm61Sq)<<std::endl;
 
+	std::cout<<"dm454q: "<<dm54Sq<<" dm64sq: "<<dm64Sq<<" dm65sq: "<<dm65Sq<<std::endl;
 
 }
 

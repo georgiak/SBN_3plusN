@@ -214,17 +214,6 @@ wrkInstance::wrkInstance(int channel_mode, int fbeam_mode, double pot_scale, dou
 
 	//	std::cout<<"Determinant: "<<invdet<<"  "<<Mctotal.Determinant()<<std::endl;
 
-
-		TMatrixT<double > McUNITY(contMsize,contMsize);
-		McUNITY.Mult(Mctotal2,McI);
-
-		for(int i =0; i<McUNITY.GetNcols(); i++)
-		{
-			//for(int j =0; j<McUNITY.GetNrows(); j++)
-			{
-				//std::cout<<i<<" "<<i<<" "<<McUNITY(i,i)<<std::endl;
-			}
-		}
 	
 		// There is currently a bug, somehow a memory leak perhaps. converting the TMatrix to a vector of vectors fixes it for now. 
 		vMcI = to_vector(McI);
@@ -295,7 +284,7 @@ double wrkInstance::minim_calc_chi(const double * x){
 
 }
 
-double wrkInstance::minimize(double inphi45, double ipot, double ipotbar ){
+double wrkInstance::minimize(double testphi45, double ipot, double ipotbar ){
 
 	pot=ipot;
 	pot_bar =ipotbar;
@@ -305,7 +294,7 @@ double wrkInstance::minimize(double inphi45, double ipot, double ipotbar ){
 	TRandom3 *rangen    = new TRandom3(0);
 
 
-	double variable[12] = {0.758577 /*0.398107*/,1.0,0,log10(rangen->Uniform(0,0.2)),log10(rangen->Uniform(0,0.2)),0,log10(rangen->Uniform(0,0.2)),log10(rangen->Uniform(0,0.2)),0, inphi45,0.0,0.0};
+	double variable[12] = {workingModel.mNu[0]   ,workingModel.mNu[1], workingModel.mNu[2],log10(workingModel.Ue[0]),log10(workingModel.Ue[1]),0,log10(workingModel.Um[0]),log10(workingModel.Um[1]),0, testphi45,0.0,0.0};
 	double step[12] = {0.01,0.01,0.01, 0.005,0.005,0.005, 0.005,0.005,0.001,  0.01,0.01,0.01};
 	double lower[12] = {0,0,0,-4,-4,0,-4,-4,0,0,0,0}	;
 	double myup=0.3;
@@ -320,7 +309,6 @@ double wrkInstance::minimize(double inphi45, double ipot, double ipotbar ){
 	if(isfixed[i]){
 	   	min->SetFixedVariable(i,name[i],variable[i]);
 	} else {
-
    		min->SetLimitedVariable(i,name[i],variable[i], step[i], lower[i],upper[i]);
 	}
 
@@ -329,7 +317,7 @@ double wrkInstance::minimize(double inphi45, double ipot, double ipotbar ){
    //            
    
   const double *xs = min->X();
-   std::cout<<inphi45<<" Minimum: ";
+   std::cout<<testphi45<<" Minimum: ";
    for(int i=0; i<11; i++){
 	if(!isfixed[i]){
 		std::cout<<" "<<xs[i];
