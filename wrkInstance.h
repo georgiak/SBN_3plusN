@@ -124,6 +124,8 @@ class wrkInstance {
 
 	int init_minim();
 	double minimize(double phi45, double ipot, double ipotbar);
+	double minimize(neutrinoModel newModel, double ipot, double ipotbar);
+	int reset_minim();
 
 	int clear_all();
 };

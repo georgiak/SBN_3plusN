@@ -552,7 +552,7 @@ if(unit_flag){
 
 
 
-if(fraction_flag && false ) // This is just an obsolete old one for reading it in and doing noting
+if(fraction_flag && !false ) // This is just an obsolete old one for reading it in and doing noting
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
@@ -602,7 +602,11 @@ if(fraction_flag && false ) // This is just an obsolete old one for reading it i
 			mu[2]=um4;
 			mu[3]=um5;
 			mu[4]=m4;
-			mu[5]=m6;
+			mu[5]=m5;
+			 std::cout<<"temp"<<mymax<<" "<<mu[0]<<" "<<mu[1]<<" "<<mu[2]<<" "<<mu[3]<<" "<<mu[4]<<" "<<mu[5]<<std::endl;
+			 std::cout<<"dm41^2 : "<<mu[4]*mu[4]<<" dm51^2: "<<mu[5]*mu[5]<<" dm54^2: "<<mu[5]*mu[5]-mu[4]*mu[4]<<std::endl;
+		
+
 		}
 
 		//std::cout<<m4<<" "<<sins2<<std::endl;
@@ -610,13 +614,13 @@ if(fraction_flag && false ) // This is just an obsolete old one for reading it i
 		//
 					}
 			 std::cout<<"biggest"<<mymax<<" "<<mu[0]<<" "<<mu[1]<<" "<<mu[2]<<" "<<mu[3]<<" "<<mu[4]<<" "<<mu[5]<<std::endl;
+			 std::cout<<"dm41^2 : "<<mu[4]*mu[4]<<" dm51^2: "<<mu[5]*mu[5]<<std::endl;
 			 
 	return 0;	
 	}
 
 
-
-if(fraction_flag) //this i smain!!
+if(fraction_flag && !true) //this i smain!!
 {
 
 	double norm_pot = pow(10,pot_num);
@@ -1372,16 +1376,20 @@ if(inject_flag){
 
 	if(plotmode == 4)
 	{
-		injectInstance.init_minim();
+	//	injectInstance.init_minim();
 
 			
-			for(double ip = 0; ip <= 2*3.2; ip+=0.2){
+			for(double ip =0; ip <= 2*3.1501; ip+=0.15){
+				
+				testModel.phi[0]=ip;
 				if(margin){
-					double ans =injectInstance.minimize(ip,ipot,ipotbar);
+				//	injectInstance.reset_minim();
+				//	injectInstance.init_minim();
+				if(verbose_flag)	std::cout<<"justbefore: "<<ip<<" ue4: "<<inputModel.Ue[0]<<" "<<log10(inputModel.Ue[0])<<" ue5: "<<inputModel.Ue[1]<<" "<<log10(inputModel.Ue[1])<<std::endl;
+					double ans = injectInstance.minimize(testModel,ipot,ipotbar);
 
 					std::cout<<ip<<" "<<pow(inputModel.Ue[0]*inputModel.Um[0],2)<<" "<<pow(inputModel.Ue[1]*inputModel.Um[1],2)<<" "<<ans<<std::endl;
 				}else{
-					testModel.phi[0]=ip;
 					double ans =injectInstance.calc_chi(testModel,1,ipot,ipotbar);
 					std::cout<<ip<<" "<<ans<<std::endl;
 				}	
@@ -1391,7 +1399,6 @@ if(inject_flag){
 
 	return 0; 
 	} // <-- End plotmode==2
-
 
 
 
@@ -2169,6 +2176,7 @@ if(sens_flag && false)
 				AppSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
 				AppSpec.load_freq_3p3(SBND);
 				AppSpec.load_freq_3p3(UBOONE);
+
 
 					
 

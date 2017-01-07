@@ -247,14 +247,21 @@ int wrkInstance::clear_all(){
 return 1;
 }
 
+int wrkInstance::reset_minim(){
+	min->Clear();
+	//min->~Minimizer();
+return 1;
+
+}
+
+
 int wrkInstance::init_minim(){
 	isVerbose = false;
-
 //	min = new ROOT::Math::GSLMinimizer(ROOT::Math::kConjugateFR);	
 	min = new ROOT::Math::GSLMinimizer(ROOT::Math::kVectorBFGS2);	
 //	min = new ROOT::Math::GSLSimAnMinimizer();
 	//min->SetMaxFunctionCalls(100); // for Minuit/Minuit2
-   	min->SetMaxIterations(200);  // for GSL
+   	min->SetMaxIterations(250);  // for GSL
 	min->SetTolerance(0.001); //times 4 for normal
 	min->SetPrintLevel(0);
 	min->SetPrecision(0.0001);//times 4 for normal
@@ -264,11 +271,15 @@ return 1;
 double wrkInstance::minim_calc_chi(const double * x){
 	double ans = 99999;
 
-	double Imn[3] = {x[0],x[1],x[2]};
-	double Iue[3] = {pow(10,x[3]),pow(10,x[4]),x[5]};
-	double Ium[3] = {pow(10,x[6]),pow(10,x[7]),x[8]};
-	double Iphi[3] = {x[9],x[10],x[11]};
-	neutrinoModel tmpModel(Imn,Iue,Ium,Iphi);
+	double ImnB[3] = {x[0],x[1],x[2]};
+	double IueB[3] = {pow(10,x[3]),pow(10,x[4]),x[5]};
+	double IumB[3] = {pow(10,x[6]),pow(10,x[7]),x[8]};
+	double IphiB[3] = {x[9],x[10],x[11]};
+	neutrinoModel tmpModel(ImnB,IueB,IumB,IphiB);
+
+	if(which_mode == APP_ONLY){
+		IueB[1]=pow(10,x[3]);
+	}
 
 	ans = this->calc_chi(tmpModel,1, pot, pot_bar);
 
@@ -284,50 +295,88 @@ double wrkInstance::minim_calc_chi(const double * x){
 
 }
 
-double wrkInstance::minimize(double testphi45, double ipot, double ipotbar ){
+double wrkInstance::minimize(neutrinoModel newModel, double ipot, double ipotbar){
+	workingModel = newModel;
+	double ans = minimize(newModel.phi[0],ipot,ipotbar);
 
+	return ans;
+}
+
+
+double wrkInstance::minimize(double testphi45, double ipot, double ipotbar ){
+//	std::cout<<"justafter: "<<testphi45<<" ue4: "<<workingModel.Ue[0]<<" "<<log10(workingModel.Ue[0])<<" ue5: "<<workingModel.Ue[1]<<" "<<log10(workingModel.Ue[1])<<std::endl;
+	
 	pot=ipot;
 	pot_bar =ipotbar;
+	
+	ROOT::Math::Minimizer *min2 = new ROOT::Math::GSLMinimizer(ROOT::Math::kVectorBFGS2);	
+//	/min2->>SetMaxFunctionCalls(100); // for Minuit/Minuit2
+   	min2->SetMaxIterations(350);  // for GSL
+	min2->SetTolerance(0.00025); //times 4 for normal
+	min2->SetPrintLevel(0);
+	min2->SetPrecision(0.000025);//times 4 for normal
 
-	//
+	isVerbose=false;	
+
         ROOT::Math::Functor f( this, &wrkInstance::minim_calc_chi,12); 
 	TRandom3 *rangen    = new TRandom3(0);
 
 
-	double variable[12] = {workingModel.mNu[0]   ,workingModel.mNu[1], workingModel.mNu[2],log10(workingModel.Ue[0]),log10(workingModel.Ue[1]),0,log10(workingModel.Um[0]),log10(workingModel.Um[1]),0, testphi45,0.0,0.0};
-	double step[12] = {0.01,0.01,0.01, 0.005,0.005,0.005, 0.005,0.005,0.001,  0.01,0.01,0.01};
-	double lower[12] = {0,0,0,-4,-4,0,-4,-4,0,0,0,0}	;
-	double myup=0.3;
+	double variable[12] = {workingModel.mNu[0]   ,workingModel.mNu[1], workingModel.mNu[2],log10(workingModel.Ue[0]),log10(workingModel.Ue[1]),0,log10(rangen->Uniform(0,0.3)),log10(rangen->Uniform(0,0.3)),0, testphi45, 0.0, 0.0};
+	
+	
+	double step[12] = {0.01,0.01,0.01, 0.0001,0.0001,0.0001, 0.0001,0.0001,0.0001,  0.01,0.01,0.01};
+	double mylow=-6;
+	double myup=1;
+	double lower[12] = {0,0,0,mylow,mylow,0,mylow,mylow,0,0,0,0}	;
 	double upper[12] = {1,1,1,log10(myup),log10(myup),0.3,log10(myup),log10(myup),0.3,2*3.14159,2*3.14159,2*3.14159};	
 	
-	std::string name[12] ={"Dm41\0","Dm51","Dm61","Ue4\0","Ue5","Ue6","Um4","Um5","Um6","phi45","phi46","phi56"};
+	std::string name[12] ={"m4\0","m5","m6","Ue4\0","Ue5","Ue6","Um4","Um5","Um6","phi45","phi46","phi56"};
 	int isfixed[12]={1,1,1,0,0,1,0,0,1,1,1,1};
 
-   min->SetFunction(f);
+	if(which_mode == APP_ONLY){
+		//If its appearance only, and ue4um4=ue5um5, only need 1 param.
+		//pick ue4 = [3] as 1
+		isfixed[4]=1;
+		isfixed[6]=1;
+		isfixed[7]=1;
+		variable[6]=log10(workingModel.Um[0]);
+		variable[7]=log10(workingModel.Um[1]);
+	}
+
+   min2->SetFunction(f);
 
    for(int i=0;i<12;i++){
 	if(isfixed[i]){
-	   	min->SetFixedVariable(i,name[i],variable[i]);
+	//	std::cout<<"Setting Fixed Variable: "<<i<<" "<<name[i]<<" value: "<<variable[i]<<std::endl;
+	   	min2->SetFixedVariable(i,name[i],variable[i]);
 	} else {
-   		min->SetLimitedVariable(i,name[i],variable[i], step[i], lower[i],upper[i]);
+	//	std::cout<<"Setting Variable: "<<i<<" "<<name[i]<<" value: "<<variable[i]<<" lower: "<<lower[i]<<" upper: "<<upper[i]<<" step: "<<step[i]<<std::endl;
+   		min2->SetLimitedVariable(i,name[i],variable[i], step[i], lower[i],upper[i]);
 	}
 
    }
-   min->Minimize(); 
-   //            
+   min2->Minimize(); 
+   //        
    
-  const double *xs = min->X();
+  const double *xs = min2->X();
+
+  double valAns = minim_calc_chi(xs);
+
    std::cout<<testphi45<<" Minimum: ";
    for(int i=0; i<11; i++){
 	if(!isfixed[i]){
 		std::cout<<" "<<xs[i];
 	}
 	}
-	std::cout<<" : " << wrkInstance::minim_calc_chi(xs) << std::endl;
+	std::cout<<" : " << valAns << std::endl;
    //                           
 
-	min->Clear();
-return wrkInstance::minim_calc_chi(xs);
+	min2->Clear();
+//	min2->~Minimizer();
+	delete min2;
+
+return valAns;
 }
 
 
