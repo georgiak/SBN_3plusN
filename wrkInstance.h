@@ -52,6 +52,8 @@ class wrkInstance {
 	double pot;
 	double pot_bar;
 
+	double previous;
+
 	neutrinoModel nullModel;
 	neutrinoModel workingModel;
 

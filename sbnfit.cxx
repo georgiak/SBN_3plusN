@@ -1379,7 +1379,7 @@ if(inject_flag){
 	//	injectInstance.init_minim();
 
 			
-			for(double ip =0; ip <= 2*3.1501; ip+=0.15){
+			for(double ip =0; ip <= 2*3.1501; ip+=0.1){
 				
 				testModel.phi[0]=ip;
 				if(margin){
@@ -1387,7 +1387,7 @@ if(inject_flag){
 				//	injectInstance.init_minim();
 				if(verbose_flag)	std::cout<<"justbefore: "<<ip<<" ue4: "<<inputModel.Ue[0]<<" "<<log10(inputModel.Ue[0])<<" ue5: "<<inputModel.Ue[1]<<" "<<log10(inputModel.Ue[1])<<std::endl;
 					double ans = injectInstance.minimize(testModel,ipot,ipotbar);
-
+					
 					std::cout<<ip<<" "<<pow(inputModel.Ue[0]*inputModel.Um[0],2)<<" "<<pow(inputModel.Ue[1]*inputModel.Um[1],2)<<" "<<ans<<std::endl;
 				}else{
 					double ans =injectInstance.calc_chi(testModel,1,ipot,ipotbar);

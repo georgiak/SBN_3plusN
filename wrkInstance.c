@@ -265,6 +265,8 @@ int wrkInstance::init_minim(){
 	min->SetTolerance(0.001); //times 4 for normal
 	min->SetPrintLevel(0);
 	min->SetPrecision(0.0001);//times 4 for normal
+	previous = workingModel.Ue[0];
+
 return 1;
 }
 
@@ -272,14 +274,18 @@ double wrkInstance::minim_calc_chi(const double * x){
 	double ans = 99999;
 
 	double ImnB[3] = {x[0],x[1],x[2]};
-	double IueB[3] = {pow(10,x[3]),pow(10,x[4]),x[5]};
-	double IumB[3] = {pow(10,x[6]),pow(10,x[7]),x[8]};
+//	double IumB[3] = {pow(10,x[6]),pow(10,x[7]),x[8]};
+//	double IueB[3] = {pow(10,x[3]),pow(10,x[4]),x[5]};
+	double IumB[3] = {(x[6]),(x[7]),x[8]};
+	double IueB[3] = {(x[3]),(x[4]),x[5]};
 	double IphiB[3] = {x[9],x[10],x[11]};
-	neutrinoModel tmpModel(ImnB,IueB,IumB,IphiB);
 
 	if(which_mode == APP_ONLY){
-		IueB[1]=pow(10,x[3]);
+		//the app mode only uses 1 parameter. THIS is not true in general, only for plotmode 4. must fix that
+		IueB[1]=(x[3]);
 	}
+	
+	neutrinoModel tmpModel(ImnB,IueB,IumB,IphiB);
 
 	ans = this->calc_chi(tmpModel,1, pot, pot_bar);
 
@@ -302,6 +308,17 @@ double wrkInstance::minimize(neutrinoModel newModel, double ipot, double ipotbar
 	return ans;
 }
 
+/*
+double wrkInstance::minimize(neutrinoModel newModel, double ipot, double ipotbar, double mode){
+
+	previous = mode;
+	workingModel = newModel;
+	double ans = minimize(newModel.phi[0],ipot,ipotbar);
+
+
+	return ans;
+}
+*/
 
 double wrkInstance::minimize(double testphi45, double ipot, double ipotbar ){
 //	std::cout<<"justafter: "<<testphi45<<" ue4: "<<workingModel.Ue[0]<<" "<<log10(workingModel.Ue[0])<<" ue5: "<<workingModel.Ue[1]<<" "<<log10(workingModel.Ue[1])<<std::endl;
@@ -311,10 +328,10 @@ double wrkInstance::minimize(double testphi45, double ipot, double ipotbar ){
 	
 	ROOT::Math::Minimizer *min2 = new ROOT::Math::GSLMinimizer(ROOT::Math::kVectorBFGS2);	
 //	/min2->>SetMaxFunctionCalls(100); // for Minuit/Minuit2
-   	min2->SetMaxIterations(350);  // for GSL
-	min2->SetTolerance(0.00025); //times 4 for normal
+   	min2->SetMaxIterations(10000);  // for GSL
+	min2->SetTolerance(0.00025); //times 4 for normal 0.00025
 	min2->SetPrintLevel(0);
-	min2->SetPrecision(0.000025);//times 4 for normal
+	min2->SetPrecision(0.00025);//times 4 for normal 0.000025
 
 	isVerbose=false;	
 
@@ -322,14 +339,18 @@ double wrkInstance::minimize(double testphi45, double ipot, double ipotbar ){
 	TRandom3 *rangen    = new TRandom3(0);
 
 
-	double variable[12] = {workingModel.mNu[0]   ,workingModel.mNu[1], workingModel.mNu[2],log10(workingModel.Ue[0]),log10(workingModel.Ue[1]),0,log10(rangen->Uniform(0,0.3)),log10(rangen->Uniform(0,0.3)),0, testphi45, 0.0, 0.0};
+	double variable[12] = {workingModel.mNu[0] ,workingModel.mNu[1], workingModel.mNu[2],workingModel.Ue[0],workingModel.Ue[1],0,rangen->Uniform(0,0.3),rangen->Uniform(0,0.3),0, testphi45, 0.0, 0.0};
 	
-	
-	double step[12] = {0.01,0.01,0.01, 0.0001,0.0001,0.0001, 0.0001,0.0001,0.0001,  0.01,0.01,0.01};
-	double mylow=-6;
+	double ts = 0.00025;//0.000025	
+	double step[12] = {0.01,0.01,0.01, ts,ts,ts, ts,ts,ts,  0.01,0.01,0.01};
+	double mylow=1e-5;
 	double myup=1;
 	double lower[12] = {0,0,0,mylow,mylow,0,mylow,mylow,0,0,0,0}	;
-	double upper[12] = {1,1,1,log10(myup),log10(myup),0.3,log10(myup),log10(myup),0.3,2*3.14159,2*3.14159,2*3.14159};	
+	double upper[12] = {1,1,1,myup,myup,0.3,myup,myup,0.3,2*3.14159,2*3.14159,2*3.14159};	
+
+//	variable[3]=previous;
+	variable[3]=0.99;
+//	variable[3]=0;
 	
 	std::string name[12] ={"m4\0","m5","m6","Ue4\0","Ue5","Ue6","Um4","Um5","Um6","phi45","phi46","phi56"};
 	int isfixed[12]={1,1,1,0,0,1,0,0,1,1,1,1};
@@ -340,8 +361,9 @@ double wrkInstance::minimize(double testphi45, double ipot, double ipotbar ){
 		isfixed[4]=1;
 		isfixed[6]=1;
 		isfixed[7]=1;
-		variable[6]=log10(workingModel.Um[0]);
-		variable[7]=log10(workingModel.Um[1]);
+		variable[6]=workingModel.Um[0];
+		variable[7]=workingModel.Um[1];
+
 	}
 
    min2->SetFunction(f);
@@ -356,27 +378,59 @@ double wrkInstance::minimize(double testphi45, double ipot, double ipotbar ){
 	}
 
    }
-   min2->Minimize(); 
-   //        
+  min2->Minimize(); 
    
   const double *xs = min2->X();
 
   double valAns = minim_calc_chi(xs);
 
-   std::cout<<testphi45<<" Minimum: ";
-   for(int i=0; i<11; i++){
-	if(!isfixed[i]){
-		std::cout<<" "<<xs[i];
-	}
-	}
-	std::cout<<" : " << valAns << std::endl;
-   //                           
+  //Little bit where I check if 0, as in null, also works.
+   neutrinoModel tmpModel = workingModel;
+   tmpModel.Ue[0]=0;
+   tmpModel.Ue[1]=0;
+   tmpModel.Ue[2]=0; 
+   tmpModel.Um[0]=0;
+   tmpModel.Um[1]=0;
+   double nullans = this->calc_chi(tmpModel,1, pot, pot_bar);
+//   std::cout<<"CC val "<<valAns<<" null "<<nullans<<std::endl; 
 
+ 
+   if(nullans < valAns){
+	   for(int i=0; i<11; i++){
+		if(!isfixed[i]){
+			std::cout<<" "<<0;
+		}
+		}
+		std::cout<<" : " << nullans << std::endl;
+	
 	min2->Clear();
-//	min2->~Minimizer();
 	delete min2;
 
-return valAns;
+	return nullans;
+
+   }else{
+	//minimizer ok
+
+
+
+	   previous = xs[3];
+	   std::cout<<testphi45<<" Minimum: ";
+	   for(int i=0; i<11; i++){
+		if(!isfixed[i]){
+			std::cout<<" "<<xs[i];
+		}
+		}
+		std::cout<<" : " << valAns << std::endl;
+	   //                           
+
+		min2->Clear();
+	//	min2->~Minimizer();
+		delete min2;
+
+		return valAns;
+
+}
+
 }
 
 
@@ -895,6 +949,8 @@ return 0;
 
 
 wrkInstance::wrkInstance(neutrinoModel signalModel, int channel_mode, int fbeam_mode, double pot_scale, double pot_scale_bar ){
+	previous = signalModel.Ue[0];
+
 
 	back.clear();
 	backbar.clear();
