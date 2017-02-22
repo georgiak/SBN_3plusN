@@ -235,7 +235,7 @@ struct integralFuncsLSND{
         double xsec, flux, res;
 
         // Get the resolution through looking at a gaussian
-        res = (1/sqrt(2*TMath::Pi())) * sigma * exp(-pow(x[0]-x[1],2)/(2*pow(sigma,2)));
+        res = 1/(sqrt(2*TMath::Pi()) * sigma) * exp(-pow(x[0]-x[1],2)/(2*pow(sigma,2)));
         // Get the neutrino flux
 		if(xFrac < 1) flux = pow(xFrac,2) * (3-2*xFrac);
         else flux = 0;
@@ -252,7 +252,7 @@ struct integralFuncsLSND{
         double xsec, flux, res;
 
         // Get the resolution through looking at a gaussian
-        res = (1/sqrt(2*TMath::Pi())) * sigma * exp(-pow(x[0]-x[1],2)/(2*pow(sigma,2)));
+        res = 1/(sqrt(2*TMath::Pi()) * sigma) * exp(-pow(x[0]-x[1],2)/(2*pow(sigma,2)));
         // Get the neutrino flux
         if(xFrac < 1) flux = pow(xFrac,2) * (3-2*xFrac);
         else flux = 0;
@@ -282,7 +282,7 @@ struct integralFuncsLSND{
         double xsec, flux, res;
 
         // Get the resolution through looking at a gaussian
-        res = (1/sqrt(2*TMath::Pi())) * sigma * exp(-pow(x[0]-x[1],2)/(2*pow(sigma,2)));
+        res = 1/(sqrt(2*TMath::Pi()) * sigma) * exp(-pow(x[0]-x[1],2)/(2*pow(sigma,2)));
         // Get the neutrino flux
         if(xFrac < 1) flux = pow(xFrac,2) * (3-2*xFrac);
         else flux = 0;
