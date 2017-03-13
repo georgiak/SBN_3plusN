@@ -6,9 +6,6 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <cstring>
-#include "Math/Minimizer.h"
-#include "Math/Factory.h"
-#include "Math/Functor.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -22,15 +19,31 @@
 #include "TRandom.h"
 #include "TError.h"
 
+#include "Math/Factory.h"
+#include "Math/Minimizer.h"
+#include "Math/GSLMinimizer.h"
+#include "Math/Functor.h"
+
 #include "params.h"
 #include "prob.h"
 #include "model.h"
 #include "correlation.h"
-
+#include "wrkInstance.h"
 
 #define no_argument 0
 #define required_argument 1
 #define optional_argument 2
+
+
+/*************************************************************
+ *************************************************************
+ *		Define a working instance class as I'm sick
+ *		of re-nitialising and doing chi^2 every time
+ ************************************************************
+ ************************************************************/
+
+
+
 /*************************************************************
  *************************************************************
  *		BEGIN Main::sbnfit.cxx
@@ -39,7 +52,36 @@
 int main(int argc, char* argv[])
 {
 
-gSystem->Load("libTree");
+
+	/*	int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets*N_anti;
+		int contMsize = (N_e_bins+N_m_bins)*N_dets*N_anti;
+		
+		TMatrixT <double> Msys(bigMsize,bigMsize);
+		TMatrixT <double> MsysC(contMsize,contMsize);
+
+		for(int i =0; i< Msys.GetNcols(); i++){
+		for(int j =0; j< Msys.GetNcols(); j++){
+		Msys(i,j) = 1;
+		}}
+
+		contract_signal2_anti(Msys,MsysC);
+		
+	for(int i =0; i< MsysC.GetNcols(); i++){
+		for(int j =0; j< MsysC.GetNcols(); j++){
+			std::cout<<i<<" "<<j<<" "<<MsysC(i,j)<<std::endl;
+		}}
+exit(EXIT_FAILURE);
+*/
+
+
+
+
+
+
+
+
+
+//gSystem->Load("libTree");
 
 
 // Just a few flags to control program flow.
@@ -50,16 +92,39 @@ bool bkg_flag= false;
 bool sample_flag = false;
 bool cov_flag = false;
 bool sens_flag=false;
+bool comb_flag = false;
+
+bool both_flag = true;
 bool dis_flag = false;
 bool app_flag = false;
-bool comb_flag = false;
-bool both_flag = false;
+bool wierd_flag = false;
+int which_channel = BOTH_ONLY;
+
 bool unit_flag = false;
 bool fraction_flag = false;
 bool anti_flag = false;
+int anti_mode = 0;
+bool inject_flag = false;
+
+
+double bfmn[3] = {0.398107,1.0,0};
+double bfue[3] = {0.13,0.14,0};
+double bfum[3] = {0.15,0.13,0};
+double bfphi[3] = {0.0,0.0,0.0};
+
+
+neutrinoModel inputModel(bfmn,bfue,bfum,bfphi);
+
+bool margin = false;
+
+
+int plotmode = 1;
+
+bool pot_flag = false;
 
 int mode_flag = 0;
 
+int parallel_split=0;
 
 int  sens_num=1;
 double dm41 = -1.0;
@@ -67,6 +132,12 @@ double dm41 = -1.0;
 double in_dm = 0;
 double in_ue4 = 0;
 double in_um4=0;
+
+
+double pot_num =0;
+double pot_num_bar =0;
+
+double inPhi45 = 0;
 
 bool stat_only = false;
 int dis_which = 1;
@@ -89,27 +160,98 @@ const struct option longopts[] =
 	{"mass",		required_argument,	0, 'm'},
 	{"anti",		no_argument,		0, 'A'},
 	{"ue4", 		required_argument,	0, 'e'},
-	{"um4"	,		required_argument,	0, 'u'},
 	{"help",		no_argument, 		0, 'h'},
+	{"um4"	,		required_argument,	0, 'u'},
+	{"inject",	required_argument,		0, 'I'},
 	{"verbose",		no_argument, 		0, 'v'},
 	{"sensitivity",		required_argument,	0, 'S'},
 	{"stat-only",		no_argument,		0, 'l'},
 	{"sample",		no_argument,		0, 's'},
 	{"cov",			no_argument, 		0, 'c'},
-	{"dis",			required_argument, 	0, 'd'},
+	{"dis",			no_argument,	 	0, 'd'},
+	{"wierd",		no_argument,		0, 'w'},
+	{"signal",		required_argument,	0, 'g'},
+	{"both",		no_argument,		0, 'b'},
 	{"unitary",		no_argument,		0, 'n'},
+	{"num",			required_argument,	0, 'N'},
 	{"fraction",		required_argument,	0, 'f'},
+	{"pot",			required_argument,	0, 'p'},
+	{"plotmode",		required_argument,	0, 'k'},
+	{"margin",		no_argument,		0, 'r'},
 	{"app",			no_argument,		0, 'a'},
+	{"phi",			required_argument,	0, 'P'},
 	{0,			no_argument, 		0,  0},
 };
 
 
 while(iarg != -1)
 {
-	iarg = getopt_long(argc,argv, "d:alf:nuM:e:m:svhS:cFTAB", longopts, &index);
+	iarg = getopt_long(argc,argv, "I:daP:lf:nuM:e:m:svp:hS:crFTABN:bwk:g:", longopts, &index);
 
 	switch(iarg)
 	{
+		case 'r':
+			margin=true;
+			break;
+		case 'g':
+			{
+			
+			double tm[3] ={0,0,0};
+			double te[3] ={0,0,0};
+			double tu[3] ={0,0,0};
+			double tp[3] ={0,0,0};
+
+			std::string s = optarg;
+			std::string delimiter = ":";
+			int cnt=0;
+			size_t pos = 0;
+			std::string token;
+			while ((pos = s.find(delimiter)) != std::string::npos) {
+			    token = s.substr(0, pos);
+			    //std::cout << token << std::endl;
+			    s.erase(0, pos + delimiter.length());
+
+			    if(cnt<3){
+				double mm=pow(10,round(log10(fabs( atof(token.c_str())))/0.04)*0.04);	
+				tm[cnt] =mm; 
+			    }
+ 			    if(cnt>=3&&cnt<6){
+				te[cnt-3] = atof(token.c_str());	
+			    } 
+ 			    if(cnt>=6&&cnt<9){
+				tu[cnt-6] = atof(token.c_str());	
+			    } 
+			    if(cnt>=9&&cnt<12){
+				tp[cnt-9] = atof(token.c_str());	
+			    } 
+			   
+			    cnt++;
+			}
+			//std::cout << s << std::endl;//last one remains in s
+			tp[2]=atof(s.c_str());
+					
+			inputModel=neutrinoModel(tm,te,tu,tp);
+
+			}
+			break;
+		case 'P':
+			inPhi45 = strtof(optarg,NULL);
+			break;
+		case 'I':
+			{			
+			inject_flag = true;
+			std::string s = optarg;
+			std::string delimiter = ":";
+			//std::cout<<s.find(delimiter)<<std::endl;
+			std::string spot = s.substr(0, s.find(delimiter));	
+			std::string spotbar = s.substr(s.find(delimiter)+1);
+
+			pot_num= atof(spot.c_str());
+			pot_num_bar = atof(spotbar.c_str());
+			}
+		
+
+			break;
 		case 'F':
 			fit_flag = true;
 			//mS = strtof(optarg,NULL);
@@ -122,6 +264,7 @@ while(iarg != -1)
 			break;
 		case 'A':
 			anti_flag = true;
+			anti_mode = 1;
 			break;
 		case 'n':
 			unit_flag = true;
@@ -132,6 +275,25 @@ while(iarg != -1)
 		case 'v':
 			verbose_flag = true;
 			break;
+		case 'p':
+			{
+			pot_flag = true;
+			std::string s = optarg;
+			std::string delimiter = ":";
+			//std::cout<<s.find(delimiter)<<std::endl;
+			std::string spot = s.substr(0, s.find(delimiter));	
+			std::string spotbar = s.substr(s.find(delimiter)+1);
+
+			pot_num= atof(spot.c_str());
+			pot_num_bar = atof(spotbar.c_str());
+			}
+			break;
+		case 'k':
+			plotmode = strtof(optarg,NULL);
+			break;
+		case 'N':
+			num_ster = strtof(optarg,NULL);
+			break;
 		case 's':
 			sample_flag = true;
 			break;
@@ -140,17 +302,27 @@ while(iarg != -1)
 			break;
 		case 'd':
 			dis_flag = true;
-			dis_which =strtof(optarg,NULL);
+			//	dis_which =strtof(optarg,NULL); //obsolete!
+			which_channel = DIS_ONLY;
 			break;
 		case 'a':
 			app_flag = true;
+			which_channel = APP_ONLY;
+			break;
+		case 'w':
+			wierd_flag = true;
+			which_channel = WIERD_ONLY;
+			break;
+		case 'b':
+			both_flag = true;
+			which_channel = BOTH_ONLY;
 			break;
 		case 'm':
 			in_dm  = strtof(optarg,NULL);
 			break;
 		case 'f':
 			fraction_flag = true;
-			num_ster = strtof(optarg,NULL);
+			parallel_split  = strtof(optarg,NULL);
 			break;
 		case 'u':
 			in_um4  = strtof(optarg,NULL);
@@ -195,19 +367,37 @@ while(iarg != -1)
 
 if(verbose_flag)
 {
-	std::cout<<"#***************** Initial Parameters ******************"<<std::endl;
-	std::cout<<"# N_m_bins "<<N_m_bins<<std::endl;
-	std::cout<<"# N_e_bins "<<N_e_bins<<std::endl;
-	std::cout<<"# N_dets "<<N_dets<<std::endl;
-	std::cout<<"# N_e_spectra "<<N_e_spectra<<std::endl;
-	std::cout<<"# N_m_spectra "<<N_m_spectra<<std::endl;
-	std::cout<<"# N_anti "<<N_anti<<std::endl;
+	std::cout<<"#v:***************** Initial Parameters ******************"<<std::endl;
+	std::cout<<"#v: N_m_bins "<<N_m_bins<<std::endl;
+	std::cout<<"#v: N_e_bins "<<N_e_bins<<std::endl;
+	std::cout<<"#v: N_dets "<<N_dets<<std::endl;
+	std::cout<<"#v: N_e_spectra "<<N_e_spectra<<std::endl;
+	std::cout<<"#v: N_m_spectra "<<N_m_spectra<<std::endl;
+	std::cout<<"#v: N_anti "<<N_anti<<std::endl;
+	std::cout<<"#v: num sterile "<<num_ster<<std::endl;
+	if(!anti_flag){
+	std::cout<<"#v: NEUTRINO mode only "<<num_ster<<std::endl;
+	}else{
+	std::cout<<"#v: NU+NUBAR modes "<<num_ster<<std::endl;
+	}	
+	switch(which_channel){
+			case APP_ONLY:
+				std::cout<<"#v: Channel app";
+				break;
+			case DIS_ONLY:
+				std::cout<<"#v: Channel dis";
+				break;
+			case BOTH_ONLY:
+				std::cout<<"#v: Channel both";
+				break;
+			case WIERD_ONLY:
+				std::cout<<"#v: Channel wierd";
+				break;
+	}
+		
 	std::cout<<"#*******************************************************"<<std::endl;
 }
 
-
-
-if(app_flag&&dis_flag){both_flag = true; app_flag=false; dis_flag=false;}
 
 
 
@@ -362,17 +552,17 @@ if(unit_flag){
 
 
 
-if(fraction_flag)
+if(fraction_flag && !false ) // This is just an obsolete old one for reading it in and doing noting
 {
 	std::cout<<"filename"<<std::endl;
 	char filename[200];
 	if(num_ster == 1){
-//		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
-	        sprintf(filename,"GlobalFits/ntuples/nt_31_all.root");	
+		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
+//	        sprintf(filename,"GlobalFits/ntuples/nt_31_all.root");	
 	} else if (num_ster == 2){
 
-		//sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
-		sprintf(filename,"GlobalFits/ntuples/nt_32_all.root"); 
+		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
+	//	sprintf(filename,"GlobalFits/ntuples/nt_32_all.root"); 
 	} else if(num_ster == 3){
 		sprintf(filename,"GlobalFits/ntuples/nt_33_all_processed.root"); 
 
@@ -380,140 +570,9 @@ if(fraction_flag)
 
 
 	std::cout<<"read in`"<<std::endl;
-	//std::cout<<filename<<std::endl;
+	std::cout<<filename<<std::endl;
 	TFile *fm= new TFile(filename);
-//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
-	TTree *chi2_90 =(TTree*)fm->Get("chi2_99");
-	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
-	 Float_t m4 = 0;
-         chi2_90->SetBranchAddress("chi2",&chi2);
-         chi2_90->SetBranchAddress("m4",&m4);
-         chi2_90->SetBranchAddress("ue4",&ue4);
-         chi2_90->SetBranchAddress("um4",&um4);
-         chi2_90->SetBranchAddress("m5",&m5);
-         chi2_90->SetBranchAddress("ue5",&ue5);
-         chi2_90->SetBranchAddress("um5",&um5);
-         chi2_90->SetBranchAddress("m6",&m6);
-         chi2_90->SetBranchAddress("ue6",&ue6);
-         chi2_90->SetBranchAddress("um6",&um6);
-         chi2_90->SetBranchAddress("phi45",&phi45);
-         chi2_90->SetBranchAddress("phi46",&phi46);
-         chi2_90->SetBranchAddress("phi56",&phi56);
-	 int nentries = chi2_90->GetEntries();
-	 for (int i=0;i<nentries;i++) {
-	        chi2_90->GetEntry(i);
-
-		double sins2 = 4*ue4*ue4*um4*um4;
-		//std::cout<<m4<<" "<<sins2<<std::endl;
-		std::cout<<m4<<" "<<m5<<" "<<ue4<<" "<<ue5<<" "<<um4<<" "<<um5<<" "<<phi45<<" "<<chi2<<std::endl;
-
-	}
-}
-
-
-
-if(fraction_flag&& false)
-{
-	SBN_detector * ICARUS = new SBN_detector(2);
- 	SBN_detector * SBND = new SBN_detector(0);
- 	SBN_detector * UBOONE = new SBN_detector(1);
-
-	SBN_detector * ICARUS_mu = new SBN_detector(2,true);
- 	SBN_detector * SBND_mu = new SBN_detector(0,true);
- 	SBN_detector * UBOONE_mu = new SBN_detector(1,true);
-	bool usedetsys = true;
-
-	if(dis_flag && !app_flag){
-		usedetsys=false;
-	}
-
-	neutrinoModel nullModel;
-	SBN_spectrum bkgspec(nullModel);
-	
-	bkgspec.load_bkg(ICARUS);
-	bkgspec.load_bkg(SBND);
-	bkgspec.load_bkg(UBOONE);
-			
-
-	
-
-	std::vector<double > back6 = bkgspec.get_sixvector();
-	std::vector<double > back9 = bkgspec.get_ninevector();
-	std::vector<double > back  = bkgspec.get_vector();
-	TRandom *rangen    = new TRandom();
-
-		int matrix_size =(N_e_bins + N_e_bins + N_m_bins)*N_dets;
-		int matrix_size_c = (N_e_bins + N_m_bins) * N_dets;
-
-		/* Create three matricies, full 9x9 block, contracted 6x6 block, and inverted 6x6
-		 * */
-		TMatrixT <double> M(matrix_size,matrix_size);
-		TMatrixT <double> Mc(matrix_size_c,matrix_size_c);
-		TMatrixT <double> McI(matrix_size_c, matrix_size_c);
-
-
-		int bigMsize = (N_e_bins*N_e_spectra+N_m_bins*N_m_spectra)*N_dets;
-		int contMsize = (N_e_bins+N_m_bins)*N_dets;
-
-		TMatrixT <double> Msys(bigMsize,bigMsize);
-		sys_fill(Msys,usedetsys);
-
-		for(int i =0; i<Msys.GetNcols(); i++)
-		{
-			for(int j =0; j<Msys.GetNrows(); j++)
-			{
-				Msys(i,j)=Msys(i,j)*back[i]*back[j];
-			}
-		}
-
-
-
-
-		TMatrixT <double> Mstat(bigMsize,bigMsize);
-		stats_fill(Mstat, back);
-
-		TMatrixT <double > Mtotal(bigMsize,bigMsize);
-		if(stat_only){
-			Mtotal =  Mstat;
-		} else {
-			Mtotal = Msys+Mstat;
-		}
-		//Mtotal = Mstat;
-
-		TMatrixT<double > Mctotal(contMsize,contMsize);
-		contract_signal2(Mtotal,Mctotal);
-
-
-		double invdet=0; // just to hold determinant
-
-		//	bit o inverting, root tmatrix seems perfectly fast	
-		McI = Mctotal.Invert(&invdet);
-
-		std::vector<std::vector<double >> vMcI = to_vector(McI);
-
-	char filename[200];
-	if(num_ster == 1){
-	//	sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
-	        sprintf(filename,"GlobalFits/ntuples/nt_31_brute.root");	
-	} else if (num_ster == 2){
-		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
-
-	} else if(num_ster == 3){
-		sprintf(filename,"GlobalFits/ntuples/nt_33_all_processed.root"); 
-
-	}
-	char outfilename[200];
-	sprintf(outfilename,"ntuples/nt_3%d_all_processed_SBN.root",num_ster);
-
-		TFile outputFile(outfilename,"RECREATE");
-//		outputFile.cd();
-		TNtuple ntuple("SBN1_99","SBN1_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56:mychi2");
-
-
-
-	//std::cout<<filename<<std::endl;
-	TFile *fm= new TFile(filename);
-//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
+//	TTree *chi2_90 =(TTree*)fm->Get("chi2_99");
 	TTree *chi2_90 =(TTree*)fm->Get("chi2_99_pr");
 	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
 	 Float_t m4 = 0;
@@ -531,80 +590,151 @@ if(fraction_flag&& false)
          chi2_90->SetBranchAddress("phi46",&phi46);
          chi2_90->SetBranchAddress("phi56",&phi56);
 	 int nentries = chi2_90->GetEntries();
-	 for (int i=0;i<nentries;i++) {
+	double mymax = 0;
+	double mu[6] = {0,0,0,0,0,0};
+ for (int i=0;i<nentries;i++) {
 	        chi2_90->GetEntry(i);
-	
-	//	std::cout<<i<<" input_mn: "<<m4<<" "<<m5<<" "<<m6<<" input_ue "<<ue4<<" "<<ue5<<" "<<ue6<<" input_um4: "<<um4<<" "<<um5<<" "<<um6<<" input_chi: "<<chi2<<" "<<std::endl;
+	double tt = ue4*ue5*um4*um5;
+		if(tt > mymax){
+			mymax = tt;
+			mu[0]=ue4;
+			mu[1]=ue5;
+			mu[2]=um4;
+			mu[3]=um5;
+			mu[4]=m4;
+			mu[5]=m5;
+			 std::cout<<"temp"<<mymax<<" "<<mu[0]<<" "<<mu[1]<<" "<<mu[2]<<" "<<mu[3]<<" "<<mu[4]<<" "<<mu[5]<<std::endl;
+			 std::cout<<"dm41^2 : "<<mu[4]*mu[4]<<" dm51^2: "<<mu[5]*mu[5]<<" dm54^2: "<<mu[5]*mu[5]-mu[4]*mu[4]<<std::endl;
+		
 
+		}
+
+		//std::cout<<m4<<" "<<sins2<<std::endl;
+		//		//std::cout<<m4<<" "<<m5<<" "<<ue4<<" "<<ue5<<" "<<um4<<" "<<um5<<" "<<phi45<<" "<<chi2<<std::endl;
+		//
+					}
+			 std::cout<<"biggest"<<mymax<<" "<<mu[0]<<" "<<mu[1]<<" "<<mu[2]<<" "<<mu[3]<<" "<<mu[4]<<" "<<mu[5]<<std::endl;
+			 std::cout<<"dm41^2 : "<<mu[4]*mu[4]<<" dm51^2: "<<mu[5]*mu[5]<<std::endl;
+			 
+	return 0;	
+	}
+
+
+if(fraction_flag && !true) //this i smain!!
+{
+
+	double norm_pot = pow(10,pot_num);
+	double norm_pot_bar = pow(10,pot_num_bar);// 1.0;//0.0000001;
+	 
+        wrkInstance fractionInstance(which_channel, anti_mode, norm_pot, norm_pot_bar);
+
+//	exit(EXIT_FAILURE);
+
+	char filename[200];
+	if(num_ster == 1){
+		sprintf(filename,"GlobalFits/ntuples/nt_31_all_processed.root");
+	//        sprintf(filename,"GlobalFits/ntuples/nt_31_brute.root");	
+	} else if (num_ster == 2){
+		sprintf(filename,"GlobalFits/ntuples/nt_32_all_processed.root"); 
+
+	} else if(num_ster == 3){
+		sprintf(filename,"GlobalFits/ntuples/nt_33_all_processed.root"); 
+
+	}
+
+/*	char outfilename[200];
+	sprintf(outfilename,"ntuples/nt_3%d_all_processed_SBN2.root",num_ster);
+
+		TFile outputFile(outfilename,"RECREATE");
+//		outputFile.cd();
+		TNtuple ntuple("SBN1_99","SBN1_99","chi2:m4:ue4:um4:m5:ue5:um5:m6:ue6:um6:phi45:phi46:phi56:mychi2");
+*/
+
+	TFile *fm= new TFile(filename);
+	TTree *chi2_99 =(TTree*)fm->Get("chi2_99_pr");
+	 Float_t chi2, ue4, um4, m5, ue5, um5, m6, ue6, um6, phi45,phi46,phi56;
+	 Float_t m4 = 0;
+         chi2_99->SetBranchAddress("chi2",&chi2);
+         chi2_99->SetBranchAddress("m4",&m4);
+         chi2_99->SetBranchAddress("ue4",&ue4);
+         chi2_99->SetBranchAddress("um4",&um4);
+         chi2_99->SetBranchAddress("m5",&m5);
+         chi2_99->SetBranchAddress("ue5",&ue5);
+         chi2_99->SetBranchAddress("um5",&um5);
+         chi2_99->SetBranchAddress("m6",&m6);
+         chi2_99->SetBranchAddress("ue6",&ue6);
+         chi2_99->SetBranchAddress("um6",&um6);
+         chi2_99->SetBranchAddress("phi45",&phi45);
+         chi2_99->SetBranchAddress("phi46",&phi46);
+         chi2_99->SetBranchAddress("phi56",&phi56);
+	 int nentries = chi2_99->GetEntries();
+
+	 double imin=0;
+	 double imax=nentries;
+
+
+	//Rudamentary parallalisation scheme
+	 int pfrac=nentries/8;
+	 if(parallel_split!=0){
+		switch(parallel_split){
+			case 1:
+				imin=0;
+				imax=pfrac;
+				break;
+			case 2:
+				imin=pfrac;
+				imax=2*pfrac;
+				break;
+			case 3:
+				imin=2*pfrac;
+				imax=3*pfrac;
+				break;
+			case 4:
+				imin=3*pfrac;
+				imax=4*pfrac;
+				break;
+			case 5:
+				imin=4*pfrac;
+				imax=5*pfrac;
+				break;
+			case 6:
+				imin=5*pfrac;
+				imax=6*pfrac;
+				break;
+			case 7:
+				imin=6*pfrac;
+				imax=7*pfrac;
+				break;
+			case 8:
+				imin=7*pfrac;
+				imax=nentries;
+				break;
+			}
+	}
+
+
+	 for (int i=imin;i<imax;i++) {
+	        chi2_99->GetEntry(i);
+	
 				double imn[3] = {(double)m4,(double)m5,(double)m6};
 				double iue[3] = {ue4,ue5,ue6};
 				double ium[3] = {um4, um5, um6};
-				double iph[3] = {phi45,phi46, phi45};
+				double iph[3] = {phi45,phi46,phi56};
 
-				neutrinoModel appearanceModel(imn,iue,ium,iph);
-				
-				SBN_spectrum AppSpec(appearanceModel);
-				//std::cout<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<std::endl;
+				neutrinoModel signalModel(imn,iue,ium,iph);
+				signalModel.numsterile=num_ster;
 
-				AppSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
-				AppSpec.load_freq_3p3(SBND);
-				AppSpec.load_freq_3p3(UBOONE);
-
-						
-
-
-				std::vector<double > pred6 = AppSpec.get_sixvector();
-				std::vector<double > pred9 = AppSpec.get_ninevector();
-				std::vector<double > pred = AppSpec.get_vector();
-
+				fractionInstance.calc_chi(signalModel, i, norm_pot, norm_pot_bar);
 			
-
-				if(pred6.size()!=Mctotal.GetNcols()){std::cout<<"ERROR"<<std::endl;}
-
-
-	
-				double mychi2=0;
-			
-				//check for previous known bug!
-				if(false && matrix_size_c != pred6.size() && matrix_size_c != back6.size())
-				{
-					std::cout<<"#ERROR, soemthing wrong lengthwise"<<std::endl;
-					std::cout<<"#ERROR, matrix_size_c: "<<matrix_size_c<<" pred: "<<pred6.size()<<" back: "<<back6.size()<<std::endl;	
-				}
-
-				//Calculate the answer, ie chi square! will functionise
-				// should be matrix_size_c for full app+dis
-
-				int whatsize = McI.GetNcols();
-
-				double mod = 1.0;
-
-				for(int i =0; i<whatsize; i++){
-					for(int j =0; j<whatsize; j++){
-						mychi2 += mod*(back6[i]-pred6[i])*vMcI[i][j]*(back6[j]-pred6[j]);
-					}
-				}
-
-
-			std::cout<<i<<" mn: "<<AppSpec.workingModel.mNu[0]<<" "<<AppSpec.workingModel.mNu[1]<<" "<<AppSpec.workingModel.mNu[2]<<" electron: "<<ue4<<" "<<ue5<<" "<<ue6<<" muon: "<<um4<<" "<<um5<<" "<<um6<<" phi: "<<phi45<<" "<<phi46<<" "<<phi56<<" intpu_chi: "<<chi2<<" output_chi: "<<mychi2<<" "<<std::endl;
-			ntuple.Fill(chi2,m4,ue4,um4,m5,ue5,um5,m6,ue6,um6,phi45,phi46,phi56,mychi2);	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+				//exit(EXIT_FAILURE);	
 	 }
+
+
 	fm->Close();
-		outputFile.cd();
+	/*	outputFile.cd();
 		ntuple.Write();
    		outputFile.Close();
+	*/
 
 }
 
@@ -733,7 +863,6 @@ if(fraction_flag&& false)
 			Mtotal = Msys+Mstat;
 		}
 		//Mtotal = Mstat;
-
 		TMatrixT<double > Mctotal(contMsize,contMsize);
 		contract_signal2(Mtotal,Mctotal);
 
@@ -833,6 +962,744 @@ if(fraction_flag&& false)
    	//	outputFile.Close();
 
 }
+
+if(pot_flag){
+
+	double ipot = pow(10,pot_num);
+	double ipotbar = pow(10,pot_num_bar);
+
+
+	wrkInstance potInstance(which_channel, anti_mode, ipot, ipotbar);
+
+	int vector_modifier = 1;
+	
+	if(anti_flag){
+		vector_modifier =2;
+	}
+
+
+	//now load file with all other vectors.
+	std::string filename = "3p1_both";
+
+	if(num_ster == 1){
+		switch(which_channel){
+			case APP_ONLY:
+				filename = "3p1_app";
+				break;
+			case DIS_ONLY:
+				filename = "3p1_dis";
+				break;
+			case BOTH_ONLY:
+				filename = "3p1_both";
+				break;
+			case WIERD_ONLY:
+				filename = "3p1_wierd";
+				break;
+		}
+
+	} else if (num_ster == 2){
+			switch(which_channel){
+			case APP_ONLY:
+				filename = "3p2_app";
+				break;
+			case DIS_ONLY:
+				filename = "3p2_dis";
+				break;
+			case BOTH_ONLY:
+				filename = "3p2_both";
+				break;
+			case WIERD_ONLY:
+				filename = "3p2_wierd";
+				break;
+		}
+	} else if(num_ster == 3){
+			switch(which_channel){
+			case APP_ONLY:
+				filename = "3p3_app";
+				break;
+			case DIS_ONLY:
+				filename = "3p3_dis";
+				break;
+			case BOTH_ONLY:
+				filename = "3p3_both";
+				break;
+			case WIERD_ONLY:
+				filename = "3p3_wierd";
+				break;
+		}
+
+	}
+
+	std::string pre =  "fractiondata/";
+	std::string post = ".dat";
+
+	if(anti_flag){
+		pre = "fractiondata/NUBAR_MODE/";	
+		post = ".bar.dat";
+	}
+	pre.append(filename);
+	pre.append(post);
+	filename=pre;
+
+
+if(filename != "none"){
+
+	int k = 0;
+	std::string num;
+	std::string m4;
+	std::string m5;
+	std::string m6;
+
+	std::string ue4;
+	std::string ue5;
+	std::string ue6;
+
+	std::string um4;
+	std::string um5;
+	std::string um6;
+
+	std::string phi45;
+	std::string phi46;
+	std::string phi56;
+
+	std::string whicho;
+
+	std::string pot;
+	std::string oldchi;
+	std::string newchi;
+
+	std::string tempVec;	
+
+	//no longer the pred6in, sometimes pred12 all or whatever bull
+	std::vector<double > vectorin;
+
+	double mn[3];
+	double ue[3];
+	double um[3];
+	double phi[3];
+
+	double potin;
+	double oldchiin;
+	double newchiin;
+
+	int whichflagin = -1;
+
+	int count = 0;
+
+	std::ifstream myfile (filename);
+	if (!myfile.is_open())
+	{
+		std::cout<<"#ERROR: Passed POT file does not exist: "<<filename<<std::endl;
+		std::cout<<" which_channel "<<which_channel<<" numster "<<num_ster<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+		while(!myfile.eof()){
+		
+			count++;	
+			myfile >> num;
+			//std::cout<<num<<std::endl;	
+		
+			myfile >> m4;
+			myfile >> m5;
+			myfile >> m6;
+			
+			mn[0]= atof(m4.c_str());
+			mn[1]= atof(m5.c_str());
+			mn[2]= atof(m6.c_str());
+
+			myfile >>ue4;
+			myfile >>ue5;
+			myfile >>ue6;
+
+			ue[0]= atof(ue4.c_str());
+			ue[1]= atof(ue5.c_str());
+			ue[2]= atof(ue6.c_str());
+
+			myfile >>um4;
+			myfile >>um5;
+			myfile >>um6;
+
+			um[0]= atof(um4.c_str());
+			um[1]= atof(um5.c_str());
+			um[2]= atof(um6.c_str());
+		
+			myfile >> phi45;
+			myfile >> phi46;
+			myfile >> phi56;
+
+			phi[0]= atof(phi45.c_str());
+			phi[1]= atof(phi46.c_str());
+			phi[2]= atof(phi56.c_str());
+
+			myfile >>pot;
+			myfile >>whicho;
+			myfile >>oldchi;
+			myfile >>newchi;
+
+
+			potin= atof(pot.c_str());
+			oldchiin= atof(oldchi.c_str());
+			newchiin= atof(newchi.c_str());
+			whichflagin = atof(whicho.c_str());
+
+	
+			neutrinoModel sigModel(mn,ue,um,phi );
+			sigModel.numsterile=num_ster;
+
+			for(int i=0;i<(N_e_bins+N_m_bins)*N_dets*vector_modifier; i++){
+				myfile >> tempVec;
+				vectorin.push_back(atof(tempVec.c_str()));
+			}
+
+
+				if(myfile.eof()){break;}
+
+						
+				double chipot = 0;
+
+
+				//subrract off cosmo
+			//	vectorin[0] += -9;
+			//	vectorin[N_e_bins+N_m_bins] +=-11;
+			//	vectorin[(N_e_bins+N_m_bins)*2] += -10;
+
+				//second position for anti-mode, got to code this better when i have time
+				int second = (N_e_bins+N_m_bins)*N_dets;
+				
+				// subtract off cosmo of anti
+			//	if(anti_flag){
+			//		vectorin[second] += -9;
+			//		vectorin[second+N_e_bins+N_m_bins] += -11;
+			//		vectorin[second+(N_e_bins+N_m_bins)*2] += -10;
+			//	}
+
+				// now make a mod file, that increases muboone differently
+				std::vector<double> mod (N_dets*(N_e_bins+N_m_bins)*vector_modifier, 1.0);
+				for(int i =0; i<N_e_bins+N_m_bins; i++){
+					mod[i]=ipot;
+					mod[i+N_e_bins+N_m_bins]= ipot*0.5+0.5;
+					mod[i+2*(N_e_bins+N_m_bins)]=ipot;
+				}
+
+
+				if(anti_flag){
+					for(int i =0; i<N_e_bins+N_m_bins; i++){
+						mod[i+second]=ipotbar;
+						mod[i+second+N_e_bins+N_m_bins] = ipotbar;
+						mod[i+second+2*(N_e_bins+N_m_bins)] = ipotbar;
+					}
+				}
+
+
+				if(mod.size()!= vectorin.size()){ std::cout<<"WOW big problem"<<std::endl;exit(EXIT_FAILURE);}
+				// and modift the prediction
+				
+				for(int i=0; i<vectorin.size(); i++){
+					vectorin[i]=mod[i]*vectorin[i];
+		
+				}
+				//now add back cosmo
+			//	vectorin[0]+=9;
+			//	vectorin[N_e_bins+N_m_bins]+= 11;
+			//	vectorin[(N_e_bins+N_m_bins)*2]+= 10;
+				
+			//	if(anti_mode == 1){
+			//		vectorin[second] +=9;
+			//		vectorin[second+N_e_bins+N_m_bins]+=11;
+			//		vectorin[second+(N_e_bins+N_m_bins)*2]+=10;
+			//	}
+
+			potInstance.calc_chi_POT_vector(sigModel, vectorin, count, ipot, ipotbar); //count and ipot are just there for records
+
+								
+			//FAR too much data, dont output this?
+			/*
+			std::cout<<pred6in[0]*mod[0];
+			for(int u=1;u< pred6in.size(); u++){
+				std::cout<<" "<<pred6in[u]*mod[u];
+			}	
+			std::cout<<std::endl;
+			*/
+
+			vectorin.clear();
+		}//end of file	
+
+
+	myfile.close();
+
+	}
+
+return 0;
+}//end of POT flag
+
+
+
+if(inject_flag){
+
+	double ipot =pow(10,pot_num);
+	double ipotbar = pow(10,pot_num_bar);
+
+	inputModel.numsterile=num_ster;
+	inputModel.phi[0]=inPhi45;
+
+
+	neutrinoModel testModel = inputModel;
+
+	wrkInstance injectInstance(which_channel, anti_mode, ipot, ipotbar); // anoyingly it has alredy loaded the background model;
+	injectInstance.inject_signal(inputModel, which_channel, anti_mode, ipot, ipotbar);
+
+
+	if(verbose_flag){
+		std::cout<<"#v: Inject flag, plotmode : "<<plotmode<<std::endl;
+		std::cout<<"#v: Inital POT in nu mode:"<< ipot<<" nu-bar mode: "<<ipotbar<<std::endl;
+	         inputModel.printall();
+		std::cout<<"#v: #####################################################"<<std::endl;
+	}
+	if(plotmode == 1)
+	{
+
+
+		injectInstance.init_minim();
+
+
+		for(double ip = 0; ip <= 2*3.2; ip+=0.1){
+
+			if(margin){
+				injectInstance.workingModel = inputModel;
+				injectInstance.minimize(ip, ipot, ipotbar);
+			}else{
+				testModel.phi[0]=ip;
+				double ans1=	injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+				std::cout<<ip<<" "<<ans1<<std::endl;
+			}	
+		}// end phi45 loop
+
+
+
+	return 0; 
+	} // <-- End plotmode==1
+
+
+	if(plotmode == 2)
+	{
+		injectInstance.init_minim();
+
+		for(double um4ue4 = -6; um4ue4<0; um4ue4+=0.05){
+			for(double ip = 0; ip <= 2*3.2; ip+=0.05){
+				if(margin){
+					std::cout<<"ERROR: plotmode 2 of inject_signal cannot be run with marginalisation"<<std::endl;
+					exit(EXIT_FAILURE);
+				}else{
+					testModel.phi[0]=ip;
+					testModel.Um[0]=1;
+					testModel.Ue[0]=sqrt(pow(10,um4ue4));
+					testModel.Um[1]=1;
+					testModel.Ue[1]=sqrt(pow(10,um4ue4));
+					double ans =injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+					std::cout<<ip<<" "<<um4ue4<<" "<<ans<<std::endl;
+				}	
+			}// end phi45 loop
+		}// end um4ue4 loop
+
+
+
+	return 0; 
+	} // <-- End plotmode==2
+
+
+	if(plotmode ==3)
+	{
+
+
+			//683831 0.870964 1 0 0.045 0.145 0 0.005 0.165 0 5.08938 0 5.08938 1 2 0 69.6192 
+		/*
+			double Imn[3] = {0.870964,1.0,0};
+			double Iue[3] = {0.045,0.115,0};
+			double Ium[3] = {0.05,0.125,0};
+			double Iphi[3] = {5.0,0.0,0.0};
+		
+		//.46 .15 .13 .77 .13 .14 5.56
+			double Imn[3] = {0.398107,1.0,0};
+		//	double Iue[3] = {0.22,0.215,0};
+			double Iue[3] = {0.13,0.14,0};
+		//	double Ium[3] = {0.24,0.23,0};
+			double Ium[3] = {0.15,0.13,0};
+			double Iphi[3] = {inPhi45,0.0,0.0};
+
+		
+			if(false){ //This is for 1eV^2 signal injection
+				Imn[1]=0;
+				//Imn[0]=0.660693;// for app
+				Imn[0]=1.04713; //for dis
+				Iue[1]=0;
+				Ium[1]=0;
+				Iphi[1]=0;
+
+				//Ium[0]=1;  //for app
+				//Iue[0]=0.0570088;	
+
+				Iue[0]=0;
+				Ium[0]=0.160182;
+
+			}
+		*/
+
+		injectInstance.init_minim();
+		neutrinoModel testModel=inputModel;
+
+		//for(double iphi45=0; iphi45<2*3.2; iphi45+=0.1){
+			
+
+			double i0 = 0.0;
+			double iPi = 3.14159;
+			
+			if(margin){		
+				injectInstance.minimize(i0, ipot, ipotbar);
+				injectInstance.minimize(iPi, ipot, ipotbar);
+			} else {
+				testModel.phi[0]=i0;	
+				double ans0 = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+				testModel.phi[0]=iPi;
+				double ansPi = injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+		
+				std::cout<<i0<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
+				std::cout<<" "<<inPhi45<<"  " << ans0 << std::endl;
+					
+				std::cout<<iPi<<" MinimUm: "<<testModel.Ue[0]<<" "<<testModel.Ue[1]<<" "<<testModel.Um[0]<<" "<<testModel.Um[1];
+				std::cout<<" "<<inPhi45<<"  " << ansPi << std::endl;
+			}
+		//} // end of iphi45 True loop THIS loop is too slow for when minimize is on, therfore will do it outside of sbfit.
+		return 1;
+	}// <-- End Plotmode==3	
+
+
+	if(plotmode == 4)
+	{
+	//	injectInstance.init_minim();
+
+			
+			for(double ip =0; ip <= 2*3.1501; ip+=0.1){
+				
+				testModel.phi[0]=ip;
+				if(margin){
+				//	injectInstance.reset_minim();
+				//	injectInstance.init_minim();
+				if(verbose_flag)	std::cout<<"justbefore: "<<ip<<" ue4: "<<inputModel.Ue[0]<<" "<<log10(inputModel.Ue[0])<<" ue5: "<<inputModel.Ue[1]<<" "<<log10(inputModel.Ue[1])<<std::endl;
+					double ans = injectInstance.minimize(testModel,ipot,ipotbar);
+					
+					std::cout<<ip<<" "<<pow(inputModel.Ue[0]*inputModel.Um[0],2)<<" "<<pow(inputModel.Ue[1]*inputModel.Um[1],2)<<" "<<ans<<std::endl;
+				}else{
+					double ans =injectInstance.calc_chi(testModel,1,ipot,ipotbar);
+					std::cout<<ip<<" "<<ans<<std::endl;
+				}	
+			}// end phi45 loop
+
+
+
+	return 0; 
+	} // <-- End plotmode==2
+
+
+
+
+
+	// Not sure whats below here. redundant i guess
+	//
+	int vector_modifier = 1;
+	
+	if(anti_flag){
+		vector_modifier =2;
+	}
+
+	/*
+	for(double ph=0; ph < 2*3.14145; ph+=0.05){
+	double Itest[3]={ph,0,0};
+
+	neutrinoModel testModel(Imn,Iue,Ium,Itest);
+		injectInstance.calc_chi(testModel, 0); //count and ipot are just there for records
+	}
+	return 0;
+	*/
+
+
+
+/*   ROOT::Math::GSLMinimizer min( ROOT::Math::kVectorBFGS );
+ 
+   min.SetMaxFunctionCalls(100000);
+   min.SetMaxIterations(10000);
+   min.SetTolerance(0.01);
+ 
+   ROOT::Math::Functor f(&RosenBrock,2); 
+   double step[2] = {0.01,0.01};
+   double variable[2] = { -1.,1.2};
+ 
+   min.SetFunction(f);
+ 
+   // Set the free variables to be minimized!
+   //    min.SetVariable(0,"x",variable[0], step[0]);
+   //       min.SetVariable(1,"y",variable[1], step[1]);
+   //        
+   //           min.Minimize(); 
+   //            
+   //               const double *xs = min.X();
+   //                  cout << "Minimum: f(" << xs[0] << "," << xs[1] << "): " 
+   //                          << RosenBrock(xs) << endl;
+   //                           
+   //                              return 0;
+*/
+
+
+
+
+
+	return 0;
+	//now load file with all other vectors.
+	std::string filename = "3p1_both";
+
+	if(num_ster == 1){
+		switch(which_channel){
+			case APP_ONLY:
+				filename = "3p1_app";
+				break;
+			case DIS_ONLY:
+				filename = "3p1_dis";
+				break;
+			case BOTH_ONLY:
+				filename = "3p1_both";
+				break;
+		}
+
+	} else if (num_ster == 2){
+			switch(which_channel){
+			case APP_ONLY:
+				filename = "3p2_app";
+				break;
+			case DIS_ONLY:
+				filename = "3p2_dis";
+				break;
+			case BOTH_ONLY:
+				filename = "3p2_both";
+				break;
+		}
+	} else if(num_ster == 3){
+			switch(which_channel){
+			case APP_ONLY:
+				filename = "3p3_app";
+				break;
+			case DIS_ONLY:
+				filename = "3p3_dis";
+				break;
+			case BOTH_ONLY:
+				filename = "3p3_both";
+				break;
+		}
+
+	}
+
+	std::string pre =  "fractiondata/";
+	std::string post = ".dat";
+
+	if(anti_flag){
+		pre = "fractiondata/NUBAR_MODE/";	
+		post = ".bar.dat";
+	}
+	pre.append(filename);
+	pre.append(post);
+	filename=pre;
+
+
+if(filename != "none"){
+
+	int k = 0;
+	std::string num;
+	std::string m4;
+	std::string m5;
+	std::string m6;
+
+	std::string ue4;
+	std::string ue5;
+	std::string ue6;
+
+	std::string um4;
+	std::string um5;
+	std::string um6;
+
+	std::string phi45;
+	std::string phi46;
+	std::string phi56;
+
+	std::string whicho;
+
+	std::string pot;
+	std::string oldchi;
+	std::string newchi;
+
+	std::string tempVec;	
+
+	//no longer the pred6in, sometimes pred12 all or whatever bull
+	std::vector<double > vectorin;
+
+	double mn[3];
+	double ue[3];
+	double um[3];
+	double phi[3];
+
+	double potin;
+	double oldchiin;
+	double newchiin;
+
+	int whichflagin = -1;
+
+	int count = 0;
+
+	std::ifstream myfile (filename);
+	if (!myfile.is_open())
+	{
+		std::cout<<"#ERROR: Passed POT file does not exist: "<<filename<<std::endl;
+		std::cout<<" which_channel "<<which_channel<<" numster "<<num_ster<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+		while(!myfile.eof()){
+		
+			count++;	
+			myfile >> num;
+			//std::cout<<num<<std::endl;	
+		
+			myfile >> m4;
+			myfile >> m5;
+			myfile >> m6;
+			
+			mn[0]= atof(m4.c_str());
+			mn[1]= atof(m5.c_str());
+			mn[2]= atof(m6.c_str());
+
+			myfile >>ue4;
+			myfile >>ue5;
+			myfile >>ue6;
+
+			ue[0]= atof(ue4.c_str());
+			ue[1]= atof(ue5.c_str());
+			ue[2]= atof(ue6.c_str());
+
+			myfile >>um4;
+			myfile >>um5;
+			myfile >>um6;
+
+			um[0]= atof(um4.c_str());
+			um[1]= atof(um5.c_str());
+			um[2]= atof(um6.c_str());
+		
+			myfile >> phi45;
+			myfile >> phi46;
+			myfile >> phi56;
+
+			phi[0]= atof(phi45.c_str());
+			phi[1]= atof(phi46.c_str());
+			phi[2]= atof(phi56.c_str());
+
+			myfile >>pot;
+			myfile >>whicho;
+			myfile >>oldchi;
+			myfile >>newchi;
+
+
+			potin= atof(pot.c_str());
+			oldchiin= atof(oldchi.c_str());
+			newchiin= atof(newchi.c_str());
+			whichflagin = atof(whicho.c_str());
+
+	
+			neutrinoModel sigModel(mn,ue,um,phi );
+			sigModel.numsterile=num_ster;
+
+			for(int i=0;i<(N_e_bins+N_m_bins)*N_dets*vector_modifier; i++){
+				myfile >> tempVec;
+				vectorin.push_back(atof(tempVec.c_str()));
+			}
+
+
+				if(myfile.eof()){break;}
+
+						
+				double chipot = 0;
+
+
+				//subrract off cosmo
+			//	vectorin[0] += -9;
+			//	vectorin[N_e_bins+N_m_bins] +=-11;
+			//	vectorin[(N_e_bins+N_m_bins)*2] += -10;
+
+				//second position for anti-mode, got to code this better when i have time
+				int second = (N_e_bins+N_m_bins)*N_dets;
+				
+				// subtract off cosmo of anti
+			//	if(anti_flag){
+			//		vectorin[second] += -9;
+			//		vectorin[second+N_e_bins+N_m_bins] += -11;
+			//		vectorin[second+(N_e_bins+N_m_bins)*2] += -10;
+			//	}
+
+				// now make a mod file, that increases muboone differently
+				std::vector<double> mod (N_dets*(N_e_bins+N_m_bins)*vector_modifier, 1.0);
+				for(int i =0; i<N_e_bins+N_m_bins; i++){
+					mod[i]=ipot;
+					mod[i+N_e_bins+N_m_bins]= ipot*0.5+0.5;
+					mod[i+2*(N_e_bins+N_m_bins)]=ipot;
+				}
+
+
+				if(anti_flag){
+					for(int i =0; i<N_e_bins+N_m_bins; i++){
+						mod[i+second]=ipotbar;
+						mod[i+second+N_e_bins+N_m_bins] = ipotbar;
+						mod[i+second+2*(N_e_bins+N_m_bins)]=ipotbar;
+					}
+				}
+
+
+				if(mod.size()!= vectorin.size()){ std::cout<<"WOW big problem"<<std::endl;exit(EXIT_FAILURE);}
+				// and modift the prediction
+				
+				for(int i=0; i<vectorin.size(); i++){
+					vectorin[i]=mod[i]*vectorin[i];
+		
+				}
+				//now add back cosmo
+			//	vectorin[0]+=9;
+			//	vectorin[N_e_bins+N_m_bins]+= 11;
+			//	vectorin[(N_e_bins+N_m_bins)*2]+= 10;
+				
+			//	if(anti_mode == 1){
+			//		vectorin[second] +=9;
+			//		vectorin[second+N_e_bins+N_m_bins]+=11;
+			//		vectorin[second+(N_e_bins+N_m_bins)*2]+=10;
+			//	}
+
+			injectInstance.calc_chi_POT_vector(sigModel, vectorin, count, ipot, ipotbar); //count and ipot are just there for records
+
+								
+			//FAR too much data, dont output this?
+			/*
+			std::cout<<pred6in[0]*mod[0];
+			for(int u=1;u< pred6in.size(); u++){
+				std::cout<<" "<<pred6in[u]*mod[u];
+			}	
+			std::cout<<std::endl;
+			*/
+
+			vectorin.clear();
+		}//end of file	
+
+
+	myfile.close();
+
+	}
+
+
+}//end of injection flag
+
 
 
 
@@ -1057,12 +1924,12 @@ if(sample_flag)
 
 		neutrinoModel sModel(sqrt(pow(10,m)),1.0,1.0);
 		sModel.dm41Sq = pow(10,m);
-
+		
 		SBN_spectrum samplespectrum(sModel);
-
+//		samplespectrum.SetNuBarMode();
 
 		samplespectrum.oscillate_sample();
-
+		break;
 	}
 
 	
@@ -1073,8 +1940,99 @@ if(cov_flag){
 
 
 }
+ 
+if(sens_flag){
+	std::cout<<"Starting 3p1 sensitivity scan"<<std::endl;
+        wrkInstance sensInstance(which_channel, anti_mode);
 
-if(sens_flag)
+	for(double m = -2.00; m <=2.04; m=m+0.04){
+		
+
+			for(double sins2 = log10(0.25) ; sins2 > -5; sins2 = sins2 - 0.2){
+				double t_ue = -99;
+				double t_um = -99;
+				double t_chi = 1e5;
+
+
+			for(double uei2 = log10(0.3) ; uei2 > -10; uei2 = uei2 - 0.05){
+				double uei = pow(10,uei2);
+				
+				double umi = sqrt(pow(10,sins2))/(2*uei);
+				if(umi > 0.3){continue;};
+			
+				double imn[3] = {sqrt(pow(10,m)),0,0};
+				double iue[3] = {umi,0,0};
+				double ium[3] = {uei,0,0};
+				double iph[3] = {0,0,0};
+
+				neutrinoModel signalModel(imn,iue,ium,iph);
+				signalModel.numsterile = 1;
+				sensInstance.isVerbose = false;
+	
+
+				double chi2A = sensInstance.calc_chi(signalModel, 0);
+				if(chi2A < t_chi){
+					t_chi =chi2A;
+					t_ue = umi;
+					t_um = uei;
+			//		if(which_channel==APP_ONLY){break;}	
+				}
+
+
+				 iue[0]= uei;
+				 ium[0] = umi;
+
+				neutrinoModel signalModel2(imn,iue,ium,iph);
+				signalModel2.numsterile = 1;
+				
+				chi2A = sensInstance.calc_chi(signalModel2, 0);
+				if(chi2A < t_chi){
+					t_chi =chi2A;
+					t_ue = uei;
+					t_um = umi;
+			//		if(which_channel==APP_ONLY){break;}	
+				}
+				
+	//	std::cout<<m<<" "<<sins2<<" "<<chi2A<<" "<<uei<<" "<<umi<<std::endl;		
+	}//end ue
+
+		std::cout<<m<<" "<<sins2<<" "<<t_chi<<" "<<t_ue<<" "<<t_um<<std::endl;		
+	}//end sins2
+	}//end m
+
+
+
+
+
+return 0;
+}
+
+
+// OLD sensitivities...
+if(sens_flag && false){
+
+	double norm_pot = 1.0;
+	wrkInstance signalInstance(which_channel , anti_mode);
+
+
+				for(double phi45=0; phi45<2*3.14159; phi45+=0.1){
+	
+					double imn[3] = {1,10,0};
+					double iue[3] = {0.1,0.1,0};
+					double ium[3] = {0.1,0.1, 0};
+					double iph[3] ={phi45,0,1.0};
+
+					neutrinoModel signalModel(imn,iue,ium,iph);
+					signalModel.numsterile= 2;
+
+					signalInstance.calc_chi(signalModel, 0);
+
+				}
+
+}
+
+
+if(sens_flag && false)
 {
 
  	SBN_detector * ICARUS = new SBN_detector(2);
@@ -1218,6 +2176,7 @@ if(sens_flag)
 				AppSpec.load_freq_3p3(ICARUS);//0 is silly app flag (get rid of this)
 				AppSpec.load_freq_3p3(SBND);
 				AppSpec.load_freq_3p3(UBOONE);
+
 
 					
 
@@ -2535,7 +3494,7 @@ if(sens_num == 3)
 	
 		}//end m5 loop
 				//std::cout<<"#Finished m: "<<m4<<" "<<std::endl;
-		}//end m for loop
+		}//en  for loop
 
  
 		
@@ -2551,7 +3510,7 @@ if(sens_num == 3)
 	
 
 
-if(anti_flag){
+if(anti_flag && false){ //depriciated, now include in wrkInstance
 
 	if(verbose_flag) std::cout<<"#**********Begining nu+nubar mode analysis**********"<<std::endl;
 	SBN_detector * ICARUS = new SBN_detector(2);
@@ -2571,6 +3530,7 @@ if(anti_flag){
 
 
 	if(verbose_flag) std::cout<<"# Initialising nu+nubar mode backgrrounds"<<std::endl;
+	
 	SBN_spectrum bkgspec(nullModel);
 	SBN_spectrum bkgbarspec(nullModel);
 	bkgbarspec.SetNuBarMode();
@@ -2885,7 +3845,6 @@ if(true){
 
 return 0;
 }// end main
-
 
 
 

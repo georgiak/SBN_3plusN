@@ -77,6 +77,8 @@ SBN_spectrum::SBN_spectrum(struct neutrinoModel numodel){
 	nullModel.zero();
 	workingModel=numodel;	
 
+	pot_scaling = 1.0;
+
 	numode = true;
 	nubarmode = false;
 	which_mode = BOTH_ONLY;
@@ -163,8 +165,95 @@ SBN_spectrum::SBN_spectrum(struct neutrinoModel numodel){
 
 
 };
+void SBN_spectrum::newclear(){
+	sbnd_e.resize(N_e_bins);
+	uboone_e.resize(N_e_bins);
+	icarus_e.resize(N_e_bins);
+	fill (sbnd_e.begin(),sbnd_e.end(),0.0); 
+	fill (uboone_e.begin(),uboone_e.end(),0.0); 
+	fill (icarus_e.begin(),icarus_e.end(),0.0); 
+
+	sbnd_f.resize(N_e_bins);
+	uboone_f.resize(N_e_bins);
+	icarus_f.resize(N_e_bins);
+	fill (sbnd_f.begin(),sbnd_f.end(),0.0); 
+	fill (uboone_f.begin(),uboone_f.end(),0.0); 
+	fill (icarus_f.begin(),icarus_f.end(),0.0); 
+
+	sbnd_m.resize(N_m_bins);
+	uboone_m.resize(N_m_bins);
+	icarus_m.resize(N_m_bins);
+	fill (sbnd_m.begin(),sbnd_m.end(),0.0); 
+	fill (uboone_m.begin(),uboone_m.end(),0.0); 
+	fill (icarus_m.begin(),icarus_m.end(),0.0); 
+
+	sbnd_m_pion.resize(N_m_bins);
+	uboone_m_pion.resize(N_m_bins);
+	icarus_m_pion.resize(N_m_bins);
+	fill (sbnd_m_pion.begin(),sbnd_m_pion.end(),0.0); 
+	fill (uboone_m_pion.begin(),uboone_m_pion.end(),0.0); 
+	fill (icarus_m_pion.begin(),icarus_m_pion.end(),0.0); 
+
+	sbnd_f_bar.resize(N_e_bins);
+	uboone_f_bar.resize(N_e_bins);
+	icarus_f_bar.resize(N_e_bins);
+	fill (sbnd_f_bar.begin(),sbnd_f_bar.end(),0.0); 
+	fill (uboone_f_bar.begin(),uboone_f_bar.end(),0.0); 
+	fill (icarus_f_bar.begin(),icarus_f_bar.end(),0.0); 
+
+	sbnd_e_pho.resize(N_e_bins);
+	uboone_e_pho.resize(N_e_bins);
+	icarus_e_pho.resize(N_e_bins);
+	fill (sbnd_e_pho.begin(),sbnd_e_pho.end(),0.0); 
+	fill (uboone_e_pho.begin(),uboone_e_pho.end(),0.0); 
+	fill (icarus_e_pho.begin(),icarus_e_pho.end(),0.0); 
+
+	sbnd_e_mu.resize(N_e_bins);
+	uboone_e_mu.resize(N_e_bins);
+	icarus_e_mu.resize(N_e_bins);
+	fill (sbnd_e_mu.begin(),sbnd_e_mu.end(),0.0); 
+	fill (uboone_e_mu.begin(),uboone_e_mu.end(),0.0); 
+	fill (icarus_e_mu.begin(),icarus_e_mu.end(),0.0); 
+
+	sbnd_e_dirt.resize(N_e_bins);
+	uboone_e_dirt.resize(N_e_bins);
+	icarus_e_dirt.resize(N_e_bins);
+	fill (sbnd_e_dirt.begin(),sbnd_e_dirt.end(),0.0); 
+	fill (uboone_e_dirt.begin(),uboone_e_dirt.end(),0.0); 
+	fill (icarus_e_dirt.begin(),icarus_e_dirt.end(),0.0); 
+
+
+	sbnd_e_cosmo.resize(N_e_bins);
+	uboone_e_cosmo.resize(N_e_bins);
+	icarus_e_cosmo.resize(N_e_bins);
+	fill (sbnd_e_cosmo.begin(),sbnd_e_cosmo.end(),0.0); 
+	fill (uboone_e_cosmo.begin(),uboone_e_cosmo.end(),0.0); 
+	fill (icarus_e_cosmo.begin(),icarus_e_cosmo.end(),0.0); 
+
+
+	// Currenlt these are treated badly, but works
+	sbnd_e_dirt[0] = 44*4/5  ;
+	sbnd_e_dirt[1]=44*1/5;
+	uboone_e_dirt[0]= 47*4/5;
+	uboone_e_dirt[1]=47*1/5;
+	icarus_e_dirt[0]= 67*4/5;
+	icarus_e_dirt[1]=67*1/5;
+	sbnd_e_cosmo[0] = 9 ;
+	uboone_e_cosmo[0]= 11;
+	icarus_e_cosmo[0]= 10;
+	
+
+return;
+
+
+
+
+}
+
 
 SBN_spectrum::SBN_spectrum(){		//definitely obsolete
+	
+	std::cout<<"THIS SHOUDL NEVER BE CALLED"<<std::endl;
 	nullModel.zero();
 	workingModel=nullModel;
 
@@ -243,6 +332,13 @@ return;
 
 
 int SBN_spectrum::scale_by_pot(double pot){
+	
+	pot_scaling = pot;
+
+	double muboonescaling=(0.5+0.5*pot);
+	if(nubarmode){
+		muboonescaling=0.5*pot;
+	}	
 
 
 	for(int i = 0; i < N_e_bins; i++){
@@ -254,35 +350,39 @@ int SBN_spectrum::scale_by_pot(double pot){
 					sbnd_e_mu[i]= sbnd_e_mu[i]*pot;
 					sbnd_f[i]= sbnd_f[i]*pot;
 					sbnd_f_bar[i]= sbnd_f_bar[i]*pot;
+					sbnd_e_cosmo[i]=sbnd_e_cosmo[i]*pot;
 	
-					uboone_e[i]= uboone_e[i]*(0.5+pot);
-					uboone_e_pho[i]= uboone_e_pho[i]*(0.5+pot);
-					uboone_e_dirt[i]= uboone_e_dirt[i]*(0.5+pot);
-					uboone_e_mu[i]= uboone_e_mu[i]*(0.5+pot);
-					uboone_f[i]= uboone_f[i]*(0.5+pot);
-					uboone_f_bar[i]= uboone_f_bar[i]*(0.5+pot);			
-				
+					uboone_e[i]= uboone_e[i]*muboonescaling;
+					uboone_e_pho[i]= uboone_e_pho[i]*muboonescaling;
+					uboone_e_dirt[i]= uboone_e_dirt[i]*muboonescaling;
+					uboone_e_mu[i]= uboone_e_mu[i]*muboonescaling;
+					uboone_f[i]= uboone_f[i]*muboonescaling;
+					uboone_f_bar[i]= uboone_f_bar[i]*muboonescaling;			
+					uboone_e_cosmo[i]=uboone_e_cosmo[i]*muboonescaling;
+			
 					icarus_e[i]= icarus_e[i]*pot;
 					icarus_e_pho[i]= icarus_e_pho[i]*pot;
 					icarus_e_dirt[i]= icarus_e_dirt[i]*pot;
 					icarus_e_mu[i]= icarus_e_mu[i]*pot;
 					icarus_f[i]= icarus_f[i]*pot;
 					icarus_f_bar[i]= icarus_f_bar[i]*pot;
-				
+					icarus_e_cosmo[i]=icarus_e_cosmo[i]*pot;
+
 				}
 			
-				for(int i =0; i< N_m_bins; i++){
+		for(int i =0; i< N_m_bins; i++){
 
 					sbnd_m[i]= sbnd_m[i]*pot;
 					sbnd_m_pion[i]= sbnd_m_pion[i]*pot;
 
-					uboone_m[i]= uboone_m[i]*(0.5+pot);
-					uboone_m_pion[i]= uboone_m_pion[i]*(0.5+pot);
+					uboone_m[i]= uboone_m[i]*muboonescaling;
+					uboone_m_pion[i]= uboone_m_pion[i]*muboonescaling;
 
 					icarus_m[i]= icarus_m[i]*pot;
 					icarus_m_pion[i]= icarus_m_pion[i]*pot;
 
 				}
+
 
 
 return 1;
@@ -323,6 +423,49 @@ constexpr double SBN_spectrum::mu_bins[N_m_bins+1];
 constexpr double SBN_spectrum::e_bins[N_e_bins+1];
 
 std::vector<double > SBN_spectrum::get_vector(){
+		if(false){
+			for(int i=0; i< N_e_bins; i++){
+				if(sbnd_f[i]<0) std::cout<<"sbnd_f "<<i <<" "<<sbnd_f[i]<<std::endl;
+				if(sbnd_f_bar[i]<0) std::cout<<"sbnd_f_bar "<<i <<" "<<sbnd_f_bar[i]<<std::endl;
+				if(sbnd_e[i]<0) std::cout<<"sbnd_e "<<i <<" "<<sbnd_e[i]<<std::endl;
+				if(sbnd_e_mu[i]<0) std::cout<<"sbnd_e_mu "<<i <<" "<<sbnd_e_mu[i]<<std::endl;
+				if(sbnd_e_pho[i]<0) std::cout<<"sbnd_e_pho "<<i <<" "<<sbnd_e_pho[i]<<std::endl;
+				if(sbnd_e_dirt[i]<0) std::cout<<"sbnd_e_dirt "<<i <<" "<<sbnd_e_dirt[i]<<std::endl;
+				if(sbnd_e_cosmo[i]<0) std::cout<<"sbnd_e_cosmo "<<i <<" "<<sbnd_e_cosmo[i]<<std::endl;
+				
+				if(uboone_f[i]<0) std::cout<<"uboone_f "<<i <<" "<<uboone_f[i]<<std::endl;
+				if(uboone_f_bar[i]<0) std::cout<<"uboone_f_bar "<<i <<" "<<uboone_f_bar[i]<<std::endl;
+				if(uboone_e[i]<0) std::cout<<"uboone_e "<<i <<" "<<uboone_e[i]<<std::endl;
+				if(uboone_e_mu[i]<0) std::cout<<"uboone_e_mu "<<i <<" "<<uboone_e_mu[i]<<std::endl;
+				if(uboone_e_pho[i]<0) std::cout<<"uboone_e_pho "<<i <<" "<<uboone_e_pho[i]<<std::endl;
+				if(uboone_e_dirt[i]<0) std::cout<<"uboone_e_dirt "<<i <<" "<<uboone_e_dirt[i]<<std::endl;
+				if(uboone_e_cosmo[i]<0) std::cout<<"uboone_e_cosmo "<<i <<" "<<uboone_e_cosmo[i]<<std::endl;
+
+				if(icarus_f[i]<0) std::cout<<"icarus_f "<<i <<" "<<icarus_f[i]<<std::endl;
+				if(icarus_f_bar[i]<0) std::cout<<"icarus_f_bar "<<i <<" "<<icarus_f_bar[i]<<std::endl;
+				if(icarus_e[i]<0) std::cout<<"icarus_e "<<i <<" "<<icarus_e[i]<<std::endl;
+				if(icarus_e_mu[i]<0) std::cout<<"icarus_e_mu "<<i <<" "<<icarus_e_mu[i]<<std::endl;
+				if(icarus_e_pho[i]<0) std::cout<<"icarus_e_pho "<<i <<" "<<icarus_e_pho[i]<<std::endl;
+				if(icarus_e_dirt[i]<0) std::cout<<"icarus_e_dirt "<<i <<" "<<icarus_e_dirt[i]<<std::endl;
+				if(icarus_e_cosmo[i]<0) std::cout<<"icarus_e_cosmo "<<i <<" "<<icarus_e_cosmo[i]<<std::endl;
+
+
+			}
+			
+			for(int i=0; i< N_m_bins; i++){
+				if(sbnd_m[i]<0) std::cout<<"sbnd_m "<<i<<" "<<sbnd_m[i]<<std::endl;
+				if(sbnd_m_pion[i]<0) std::cout<<"sbnd_m_pion "<<i<<" "<<sbnd_m_pion[i]<<std::endl;
+
+				if(uboone_m[i]<0) std::cout<<"uboone_m "<<i<<" "<<uboone_m[i]<<std::endl;
+				if(uboone_m_pion[i]<0) std::cout<<"uboone_m_pion "<<i<<" "<<uboone_m_pion[i]<<std::endl;
+			
+				if(icarus_m[i]<0) std::cout<<"icarus_m "<<i<<" "<<icarus_m[i]<<std::endl;
+				if(icarus_m_pion[i]<0) std::cout<<"icarus_m_pion "<<i<<" "<<icarus_m_pion[i]<<std::endl;
+
+			}
+}
+
+
 			std::vector<double> ans = sbnd_f;
 			ans.insert(std::end(ans), std::begin(sbnd_f_bar), std::end(sbnd_f_bar));
 			ans.insert(std::end(ans), std::begin(sbnd_e), std::end(sbnd_e));
@@ -586,7 +729,7 @@ int SBN_spectrum::fill_dis(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];
@@ -915,7 +1058,7 @@ int SBN_spectrum::fill_app(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];
@@ -1680,8 +1823,8 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 //	double S2TH = 1.0-4*pow(workingModel.Um[0],2)*(1- pow(workingModel.Um[0],2));
 
 	TFile *fnudetector;
-	if(numode){ fnudetector= new TFile(detector->foscname);}
-	else if(nubarmode) {fnudetector= new TFile(detector->fbaroscname);}	TTree *tnudetector = (TTree*)fnudetector->Get("mainTree");
+	if(numode){ fnudetector= new TFile(detector->fname);}
+	else if(nubarmode) {fnudetector= new TFile(detector->fbarname);}	TTree *tnudetector = (TTree*)fnudetector->Get("mainTree");
 
 
 	TH1D H1nue_muon_sin("dis_muon_sin","Backgroun",N_m_bins,mu_bins);
@@ -1735,7 +1878,7 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];
@@ -1867,12 +2010,13 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 		 * CC Intrinsic Nu_mu
 		 * ****************************************************************/		
 				
-			
+	//	std::cout<<"PDGnu: "<<PDGnu<<" CC "<<CC<<" "<<NC<<" "<<El_true<<std::endl	;	
+	
 		if((PDGnu==14 || PDGnu==-14 ) && CC == 1 )//&& Nph==0 && Npi0dph==0)
 
 		{
 			El_smear = smear_energy(El_true, MUsmear, rangen);
-
+			
 		
 			Nsignal++;
 
@@ -1901,12 +2045,13 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 			double probsq = workingModel.oscProbSinSq(Enu,0.001*(osclen+(vertex_pos[2]/1000.0)));
 
 			Ncontained1++;
+	//		std::cout<<"Lmu: "<<Lmu<<" osclen: "<<osclen<<" weight: "<<weight<<" Eff_em: "<<Eff_em<<" endpos: "<<endpos[0]<<" "<<endpos[1]<<" "<<endpos[2]<<std::endl;
 			if(detector->is_fully_contained(vertex_pos, endpos)){
 					observable_L = Lmu;
-					Ncontained2++;	
+					Ncontained2++;
 					if(observable_L > 50.0)
 					{
-				
+					
 						H1nue_muon_sin.Fill(Enu_reco ,weight*Eff_em*prob);
 						H1nue_muon_sinsq.Fill(Enu_reco ,weight*Eff_em*probsq);
 					}
@@ -1918,7 +2063,6 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 				observable_L = detector->track_length_escape(vertex_pos,endpos);
 				if(observable_L > 100.0)
 				{
-					
 					H1nue_muon_sin.Fill(Enu_reco ,weight*Eff_em*prob);
 					H1nue_muon_sinsq.Fill(Enu_reco ,weight*Eff_em*probsq);
 
@@ -1971,7 +2115,7 @@ int SBN_spectrum::fill_dis_sample(SBN_detector * detector )
 	if(numode){
 		sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
 	} else if (nubarmode){
-		sprintf(namei, "bkg_data/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
+		sprintf(namei, "bkg_data/NUBAR_MODE/%s_%2.2f.root",detector->name,log10(workingModel.dm41Sq));
 	}
 
 	TFile f(namei,"UPDATE");
@@ -2091,7 +2235,7 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];
@@ -2131,6 +2275,7 @@ int SBN_spectrum::fill_app_sample(SBN_detector * detector )
 		double osclen=detector->osc_length(rangen);
 
 		if(i%1000000==0){std::cout<<"App-Det: "<<detector->identifier<<" #: "<<i<<std::endl;}
+
 
 
 		//Is there a visible vertex and how much energy is there!
@@ -2911,7 +3056,7 @@ int SBN_spectrum::fill_intrin_sample(SBN_detector * detector )
 	H1nue_reco_photon_sinsq.Write();
 	f.Close();
 
-	std::cout<<"n11: "<<n11<<" "<<n11*66.0<<" "<<n11*66.0*0.9<<std::endl;
+	//std::cout<<"n11: "<<n11<<" "<<n11*66.0<<" "<<n11*66.0*0.9<<std::endl;
 
 
 /*	
@@ -3094,6 +3239,8 @@ int SBN_spectrum::load_bkg(SBN_detector * detector)
 {
 
 	char namej[200];
+//	std::cout<<"Loading: "<<detector->name<<std::endl;
+//	std::cout<<"Loaded."<<std::endl;
 
 	if(numode){
 		sprintf(namej, "bkg_data/%s_bkg.root",detector->name);
@@ -3105,11 +3252,11 @@ int SBN_spectrum::load_bkg(SBN_detector * detector)
 
 	TH1D  h_dis_muon_sin=*((TH1D*)f.Get("dis_muon_sin")); 
 	TH1D  h_dis_ncpion_sin=*((TH1D*)f.Get("dis_ncpion_sin")); 
-	h_dis_muon_sin.Add(&h_dis_ncpion_sin); //Not Included for Now
+	//h_dis_muon_sin.Add(&h_dis_ncpion_sin); 
 
-	TH1D  h_fullosc_nue_sin=*((TH1D*)f.Get("fullosc_nue_sin")); 
-	TH1D  h_fullosc_nuebar_sin=*((TH1D*)f.Get("fullosc_nuebar_sin"));
-        h_fullosc_nuebar_sin.Add(&h_fullosc_nuebar_sin);	
+//	TH1D  h_fullosc_nue_sin=*((TH1D*)f.Get("fullosc_nue_sin")); 
+//	TH1D  h_fullosc_nuebar_sin=*((TH1D*)f.Get("fullosc_nuebar_sin"));
+  //      h_fullosc_nuebar_sin.Add(&h_fullosc_nuebar_sin);	
 
 	TH1D  h_nue_intrin_sin=*((TH1D*)f.Get("nue_intrin_sin")); 
 	TH1D  h_nue_muon_sin=*((TH1D*)f.Get("nue_muon_sin")); 
@@ -3122,15 +3269,20 @@ int SBN_spectrum::load_bkg(SBN_detector * detector)
 	switch (detector->identifier)
 		{
 			case DET_SBND:
-				sbnd_e[i]= h_nue_intrin_sin.GetBinContent(i+1)+ h_nue_muon_sin.GetBinContent(i+1)+h_nue_photon_sin.GetBinContent(i+1);
+				sbnd_e[i]= h_nue_intrin_sin.GetBinContent(i+1);
+				sbnd_e_pho[i]= h_nue_photon_sin.GetBinContent(i+1);
+				sbnd_e_mu[i]= h_nue_muon_sin.GetBinContent(i+1);
 				break;
 			case DET_UBOONE:
-			        uboone_e[i]=h_nue_intrin_sin.GetBinContent(i+1)+ h_nue_muon_sin.GetBinContent(i+1)+h_nue_photon_sin.GetBinContent(i+1);
- 
+				uboone_e[i]= h_nue_intrin_sin.GetBinContent(i+1);
+				uboone_e_pho[i]= h_nue_photon_sin.GetBinContent(i+1);
+				uboone_e_mu[i]= h_nue_muon_sin.GetBinContent(i+1);
+
 			       	break;
 			case DET_ICARUS:
-				icarus_e[i]= h_nue_intrin_sin.GetBinContent(i+1)+h_nue_muon_sin.GetBinContent(i+1)+h_nue_photon_sin.GetBinContent(i+1);
-
+				icarus_e[i]= h_nue_intrin_sin.GetBinContent(i+1);
+				icarus_e_pho[i]= h_nue_photon_sin.GetBinContent(i+1);
+				icarus_e_mu[i]= h_nue_muon_sin.GetBinContent(i+1);
 				break;
 		}
 
@@ -3142,12 +3294,15 @@ int SBN_spectrum::load_bkg(SBN_detector * detector)
 		{
 			case DET_SBND:
 				sbnd_f[i]= 0.0;//h_fullosc_nue_sin.GetBinContent(i+1);
+				sbnd_f_bar[i]= 0.0;//h_fullosc_nue_sin.GetBinContent(i+1);
 				break;
 			case DET_UBOONE:
 				uboone_f[i]= 0.0;//h_fullosc_nue_sin.GetBinContent(i+1);		
+				uboone_f_bar[i]= 0.0;//h_fullosc_nue_sin.GetBinContent(i+1);		
 				break;
 			case DET_ICARUS:
 				icarus_f[i]= 0.0;//h_fullosc_nue_sin.GetBinContent(i+1);
+				icarus_f_bar[i]= 0.0;//h_fullosc_nue_sin.GetBinContent(i+1);
 				break;
 		}
 
@@ -3161,12 +3316,15 @@ int SBN_spectrum::load_bkg(SBN_detector * detector)
 		{
 			case DET_SBND:
 				sbnd_m[i]=    h_dis_muon_sin.GetBinContent(i+1);
+				sbnd_m_pion[i]= h_dis_ncpion_sin.GetBinContent(i+1);
 				break;
 			case DET_UBOONE:
 				uboone_m[i]=  h_dis_muon_sin.GetBinContent(i+1);
+				uboone_m_pion[i]= h_dis_ncpion_sin.GetBinContent(i+1);
 				break;
 			case DET_ICARUS:
 				icarus_m[i]=  h_dis_muon_sin.GetBinContent(i+1);
+				icarus_m_pion[i]= h_dis_ncpion_sin.GetBinContent(i+1);
 				break;
 		}
 
@@ -3206,22 +3364,24 @@ int SBN_spectrum::load_freq_3p3(SBN_detector * detector)
 	double round64 = round(log10(fabs(workingModel.dm64Sq))/0.04)*0.04;
 	double round65 = round(log10(fabs(workingModel.dm65Sq))/0.04)*0.04;
 
+	//std::cout<<" 41 "<<fix41<<" 51 "<<fix51<<" 54 "<<round54<<std::endl;
+
 	if(workingModel.numsterile == 1)
 	{
 	prob_3p3(log10(workingModel.dm41Sq), detector,41);
-	prob_3p3(round54, detector,54);
-	prob_3p3(round64, detector,64);
+	//prob_3p3(round54, detector,54);
+	//prob_3p3(round64, detector,64);
 
 	}
        	else if(workingModel.numsterile ==2)
 	{
 
-//	std::cout<<round54<<" "<<sgn(workingModel.dm54Sq)<<" "<<workingModel.dm54Sq<<" 41 "<<log10(workingModel.dm41Sq)<<" 51 "<<log10(workingModel.dm51Sq)<<std::endl;
+	//std::cout<<round54<<" "<<sgn(workingModel.dm54Sq)<<" "<<workingModel.dm54Sq<<" 41 "<<log10(workingModel.dm41Sq)<<" 51 "<<log10(workingModel.dm51Sq)<<std::endl;
 	prob_3p3(fix41, detector, 41);
 	prob_3p3(fix51, detector, 51);
 	prob_3p3(round54, detector,54);
-	prob_3p3(round65, detector,65);
-	prob_3p3(round64, detector,64);
+	//prob_3p3(round65, detector,65);
+	//prob_3p3(round64, detector,64);
 
 	}	
 	else if(workingModel.numsterile ==3)
@@ -3283,12 +3443,14 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 	double prob_mue_sq = 0;
 	double prob_muebar_sq = 0;
 
+
+
 	switch (which_mode)
 	{
 
 		case APP_ONLY:
 			prob_mumu =0;//  workingModel.oscAmp(2,2,which_dm,2);
-			prob_ee =0;// workingModel.oscAmp(1,1,which_dm,2);
+			prob_ee =0;  // workingModel.oscAmp(1,1,which_dm,2);
 			prob_mue = workingModel.oscAmp(2,1,which_dm,1);
 			prob_mue_sq = workingModel.oscAmp(2,1,which_dm,2);
 			prob_muebar = workingModel.oscAmp(-2,-1,which_dm,1);	
@@ -3310,9 +3472,22 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 			prob_muebar = workingModel.oscAmp(-2,-1,which_dm,1);	
 			prob_muebar_sq = workingModel.oscAmp(-2,-1,which_dm,2);			
 			break;
+		case WIERD_ONLY:
+			prob_mumu =workingModel.oscAmp(2,2,which_dm,2);
+			prob_ee = 0.0;//workingModel.oscAmp(1,1,which_dm,2);
+			prob_mue = workingModel.oscAmp(2,1,which_dm,1);
+			prob_mue_sq = workingModel.oscAmp(2,1,which_dm,2);
+			prob_muebar = workingModel.oscAmp(-2,-1,which_dm,1);	
+			prob_muebar_sq = workingModel.oscAmp(-2,-1,which_dm,2);			
+			break;
 
 	}
 
+//	if(prob_mumu <0 || prob_ee < 0 || prob_mue <0 || prob_mue_sq < 0 || prob_muebar <0 || prob_muebar_sq < 0){
+//		std::cout<<"ERROR: model.c l:3338. Probability less than 0.  mumu: "<<prob_mumu<<" ee: "<<prob_ee<<" mue "<<prob_mue<<" muesq "<<prob_mue_sq<<" mubar "<<prob_muebar<<" muebarsq "<<prob_muebar_sq<<std::endl;
+//	
+//		exit(EXIT_FAILURE);
+//	}   //wrong! these are amplitudes not probs. can easy be negative.
 
 
 
@@ -3320,7 +3495,7 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 
 	h_dis_muon_sinsq.Scale(		prob_mumu	);
 	h_fullosc_nue_sin.Scale( 	prob_mue	);
-	h_fullosc_nue_sinsq.Scale(	prob_mue_sq ); 
+	h_fullosc_nue_sinsq.Scale(	prob_mue_sq); 
 	h_fullosc_nuebar_sin.Scale(	prob_muebar); 
 	h_fullosc_nuebar_sinsq.Scale(	prob_muebar_sq);
 	
@@ -3335,39 +3510,48 @@ double SBN_spectrum::prob_3p3(double dm, SBN_detector * detector, int which_dm){
 
 	for(int i =0; i < N_e_bins; i++)
 	{
-		double add = h_nue_intrin_sinsq.GetBinContent(i+1)+h_nue_muon_sinsq.GetBinContent(i+1); 
+		double add1 = h_nue_intrin_sinsq.GetBinContent(i+1);
+		double add2 = h_nue_muon_sinsq.GetBinContent(i+1); 
 	switch (detector->identifier)
 		{
 			case DET_SBND:
-				sbnd_e[i] += add ;
+				sbnd_e[i] += add1;
+				sbnd_e_mu[i]+=add2;
 				break;
 			case DET_UBOONE:
-			        uboone_e[i] +=add; 
+			        uboone_e[i] +=add1;
+				uboone_e_mu[i] +=add2; 
 			       	break;
 			case DET_ICARUS:
-				icarus_e[i] +=add;
+				icarus_e[i] +=add1;
+				icarus_e_mu[i] +=add2;
 
 				break;
 		}
 
 	}
-
+	//if(detector->identifier ==DET_ICARUS)	std::cout<<"Ja Starting. Should be 0 here first: "<<which_dm<<std::endl;
 	for(int i =0; i < N_e_bins; i++)
 	{
 
-		double add =h_fullosc_nue_sinsq.GetBinContent(i+1)+ h_fullosc_nue_sin.GetBinContent(i+1)+h_fullosc_nuebar_sinsq.GetBinContent(i+1)+ h_fullosc_nuebar_sin.GetBinContent(i+1);
+		double add = h_fullosc_nue_sinsq.GetBinContent(i+1)+ h_fullosc_nue_sin.GetBinContent(i+1);
+		double addbar=h_fullosc_nuebar_sinsq.GetBinContent(i+1)+ h_fullosc_nuebar_sin.GetBinContent(i+1);
 
 	switch (detector->identifier)
 		{
 			
 			case DET_SBND:
 				sbnd_f[i] +=add; 
+				sbnd_f_bar[i] +=addbar; 
 				break;
 			case DET_UBOONE:
 				uboone_f[i] += add;		
+				uboone_f_bar[i] += addbar;		
 				break;
 			case DET_ICARUS:
+				//std::cout<<"Ja "<<i<<" "<<icarus_f[i]<<" "<<add<<" "<<icarus_f[i]+add<<" "<<prob_mue<<" "<<prob_mue_sq<<" "<<prob_muebar<<" "<<prob_muebar_sq<<std::endl;
 				icarus_f[i] += add;
+				icarus_f_bar[i] += addbar;
 				break;
 		}
 
@@ -3682,7 +3866,7 @@ int SBN_spectrum::neutral_test(SBN_detector * detector )
 	double Ep[20];
 	double Epip[5];
 	double Epim[5];
-	double pdgo[12];
+	int pdgo[12];
 	double Eo[5];
 	double Eph[5];
 	double Epi0dph[10];

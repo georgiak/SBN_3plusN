@@ -305,7 +305,7 @@ SBN_detector::SBN_detector(int ident, bool ismu ){
 				f_width = 4*133;
 				f_mass = 363;
 				//proposal_modifier =0.9*mass/476*173302*MET2IMP/(6.6*28182);
-				proposal_modifier =1.1 *  0.907*mass/476*173302/(6.6*26182);
+				proposal_modifier =1.1 *0.907*mass/476*173302/(6.6*26182);
 				//proposal_modifier =  5212690.0/(6.6*887966.0*MET2IMP) ;
 				//proposal_modifier = 173302*87*MET2IMP/(6.6*28182*89);
 

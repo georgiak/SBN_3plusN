@@ -47,6 +47,10 @@
 #define APP_ONLY 0
 #define DIS_ONLY 1
 #define BOTH_ONLY 2
+#define WIERD_ONLY 3 	// This is combined, but with e_disapearance off.
+
+#define NU_MODE 0
+#define NU_NUBAR_MODE 1
 
 /**************************
  *  	Detector Parameters

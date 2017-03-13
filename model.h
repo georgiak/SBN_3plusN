@@ -44,10 +44,12 @@ class SBN_spectrum {
 
 
 	public:
-
+	double pot_scaling;
+	
 	bool numode;
 	bool nubarmode;
-	int which_mode;
+	int which_mode; //app, dis or both
+
 	std::vector<double >	uboone_e ;
 	std::vector<double > 	sbnd_e ;
 	std::vector<double >    icarus_e ;
@@ -93,6 +95,8 @@ class SBN_spectrum {
 	SBN_spectrum (struct neutrinoModel nuModel);
 	SBN_spectrum ();
 
+
+	void newclear();
 	std::vector<double > get_ninevector();
 	std::vector<double > get_sixvector();
 	

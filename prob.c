@@ -14,6 +14,7 @@ neutrinoModel::neutrinoModel(){
 	difference();
 }
 
+
 /******	3+3 constructor ******/
 neutrinoModel::neutrinoModel(double * mn, double * ue, double * um, double * ph){
 	zero();
@@ -22,9 +23,11 @@ neutrinoModel::neutrinoModel(double * mn, double * ue, double * um, double * ph)
 			Um[i] = um[i];  phi[i] =ph [i];
 	}
 	difference();
-	if(mNu[2]==0){
+	if(mNu[2]==0&&mNu[1]==0&&mNu[0]!=0){
+		numsterile =1 ;
+	} else if(mNu[2]==0){
 		numsterile = 2;
-	} else {
+	} else if(mNu[1]!=0&&mNu[2]!=0&&mNu[0]!=0){
 		numsterile = 3;
 	}
 }
@@ -47,6 +50,21 @@ neutrinoModel::neutrinoModel(double  mn, double  ue4, double  um4){
 /*********************************************
 *  	Other Models
 * *******************************************/
+
+void neutrinoModel::printall(){
+	
+	std::cout<<"m4: "<<mNu[0]<<" m5: "<<mNu[1]<<" m6: "<<mNu[2]<<std::endl;
+	std::cout<<"Ue4: "<<Ue[0]<<" Ue5: "<<Ue[1]<<" Ue6: "<<Ue[2]<<std::endl;
+	std::cout<<"Uu4: "<<Um[0]<<" Uu5: "<<Um[1]<<" Uu6: "<<Um[2]<<std::endl;
+	std::cout<<"phi45: "<<phi[0]<<" phi46: "<<phi[1]<<" phi56: "<<phi[2]<<std::endl;
+	std::cout<<"NumSterile: "<<numsterile<<std::endl;		
+	
+	std::cout<<"dm41sq: "<<dm41Sq<<" dm51sq: "<<dm51Sq<<" dm61sq: "<<dm61Sq<<std::endl;
+	std::cout<<"log10 dm41sq: "<<log10(dm41Sq)<<" log10 dm51sq: "<<log10(dm51Sq)<<" log10 dm61sq: "<<log10(dm61Sq)<<std::endl;
+
+	std::cout<<"dm454q: "<<dm54Sq<<" dm64sq: "<<dm64Sq<<" dm65sq: "<<dm65Sq<<std::endl;
+
+}
 
 
 void neutrinoModel::zero(){
@@ -135,16 +153,19 @@ double neutrinoModel::oscProb_app(int a, int b, double Ev, double L){
 	switch(a)
 	{
 		case 1:
+		case -1:
 			Ua4 = Ue[0];
 			Ua5 = Ue[1];
 			Ua6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ua4 = Um[0];
 			Ua5 = Um[1];
 			Ua6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;
@@ -152,16 +173,19 @@ double neutrinoModel::oscProb_app(int a, int b, double Ev, double L){
 	switch(b)
 	{
 		case 1:
+		case -1:
 			Ub4 = Ue[0];
 			Ub5 = Ue[1];
 			Ub6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ub4 = Um[0];
 			Ub5 = Um[1];
 			Ub6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;
@@ -264,21 +288,26 @@ double neutrinoModel::oscAmp_app(int a, int b, int which_dm, int sqornot)
 		nubarmod = -1.0;
 	}
 
+
+
 	double Ua4=0,Ua5=0,Ua6=0,Ub4=0,Ub5=0,Ub6=0;
 
 	switch(a)
 	{
 		case 1:
+		case -1:
 			Ua4 = Ue[0];
 			Ua5 = Ue[1];
 			Ua6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ua4 = Um[0];
 			Ua5 = Um[1];
 			Ua6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;
@@ -286,16 +315,19 @@ double neutrinoModel::oscAmp_app(int a, int b, int which_dm, int sqornot)
 	switch(b)
 	{
 		case 1:
+		case -1:
 			Ub4 = Ue[0];
 			Ub5 = Ue[1];
 			Ub6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ub4 = Um[0];
 			Ub5 = Um[1];
 			Ub6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;
@@ -346,7 +378,7 @@ double neutrinoModel::oscAmp_app(int a, int b, int which_dm, int sqornot)
 		case 54:
 			if(sqornot==2)
 			{
-				ans = -4.0*fabs(Ua5*Ub5*Ua4*Ub4);
+				ans = -4.0*fabs(Ua5*Ub5*Ua4*Ub4)*cos(phi54);
 			}
 			else if(sqornot ==1)
 			{
@@ -396,16 +428,19 @@ double neutrinoModel::oscAmp_dis(int a, int which_dm){
 	switch(a)
 	{
 		case 1:
+		case -1:
 			Ua4 = Ue[0];
 			Ua5 = Ue[1];
 			Ua6 = Ue[2];
 			break;
 		case 2:
+		case -2:
 			Ua4 = Um[0];
 			Ua5 = Um[1];
 			Ua6 = Um[2];
 			break;
 		case 3:
+		case -3:
 			std::cout<<"#ERROR neutrinoModel::oscProb. taus not yet implemented!"<<std::endl;
 			exit(EXIT_FAILURE);	
 			break;
