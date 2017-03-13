@@ -26,7 +26,7 @@ int globFit_plotter(){
     procOpt();
 
 	TMarker *bestfit = new TMarker();
-	TH1D *h_chi2 = new TH1D("chi2","chi2;chi2",1000,200,300);
+	TH1D *h_chi2 = new TH1D("chi2","chi2;chi2",1000,230,255);
 	TH1D *h_step = new TH1D("step","step;step",100,0,.2);
 	TH1D *h_temp = new TH1D("temp","temp;temp",100,0,2);
 	TH1D *h_m4 = new TH1D("m4","m4;eV",100,.1,10);
@@ -41,8 +41,6 @@ int globFit_plotter(){
 	TH1D *h_phi45 = new TH1D("phi45","phi45;Radians",100,0,2*TMath::Pi());
 	TH1D *h_phi46 = new TH1D("phi46","phi46;Radians",100,0,2*TMath::Pi());
 	TH1D *h_phi56 = new TH1D("phi56","phi56;Radians",100,0,2*TMath::Pi());
-
-	TH1D *phivary = new TH1D("phivary","phi;chi2",100,0,2*TMath::Pi());
 
     std::cout << "Loading ntuple files..." << std::endl;
 	std::string infile;
@@ -470,6 +468,29 @@ int globFit_plotter(){
 
 	f->Close();
 	plotf->Close();
+
+
+	// Now, let's make one bonus plot just for mark.
+	TH1D *phivary = new TH1D("phivary","chi2;phi",100,0,2*TMath::Pi());
+
+	TFile *g = new TFile("phivary.root");
+	TNtuple *myphi = (TNtuple*)(g->Get("chi2Nt"));
+	myphi->SetMarkerStyle(7);
+	myphi->SetMarkerColor(kRed+3);
+
+	TH2F *h = new TH2F("h","",100,0.,2*TMath::Pi(),1000,200,300.);
+	h->SetTitle("#chi^{2} for 3+2 Best Fit;phi45;chi2");
+	h->Draw();
+	c1->SetLogy(0);
+	c1->SetLogx(0);
+	myphi->Draw("chi2:phi45","","same");
+	c1->Print((plotOutput + "/phivary.eps").c_str());
+
+
+
+
+
+
 	return 0;
 }
 
