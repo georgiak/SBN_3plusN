@@ -3,8 +3,6 @@ Created by Davio Cianci and Georgia Karagiorgi
 Jan 25th, 2016
 
 ------------------------------------------// */
-#include "TStopwatch.h"
-
 
 TMatrixT <double> cov;      // inverted cov matrix
 TMatrixT <double> covMatrix;
@@ -16,10 +14,6 @@ std::vector <double> _prediction;
 std::vector <double> _totalError;
 TMinuit *gMinuit;
 minPack myMin;
-
-TStopwatch *watch = new TStopwatch();
-TStopwatch *mini = new TStopwatch();
-//watch->Stop(); watch->Print("m"); std::cout << "Fill cov matrix " << nBins*nBins << std::endl; watch->Start();
 
 void myMinInit(){
 	gMinuit = new TMinuit(6);
@@ -327,8 +321,6 @@ chisqStruct getChi2Gallium(neutrinoModel model, galPackage pack){
     for(int iG = 0; iG < nPoints; iG++){
         result.chi2 += pow(_fullData[iG] - _prediction[iG],2) / pow(pack.errorGal[iG],2);
     }
-
-	std::cout << result.chi2 << std::endl;
 
     return result;
 }
@@ -1251,8 +1243,6 @@ chisqStruct getChi2Xsec(neutrinoModel model, xsecPackage pack){
 
 	gMinuit->mnstat(chisq,disttomin,errdef,npari,nparx,istat);
 	result.chi2 = chisq;
-
-	std::cout << "XSEC TIMER: " << std::endl;
 
 	return result;
 }

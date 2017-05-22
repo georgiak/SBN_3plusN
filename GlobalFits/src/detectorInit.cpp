@@ -190,7 +190,7 @@ boonePlusPackage mbNuInitPlus(){
 	pack.lib_sin.resize(100, std::vector<float>(nBins));
 
 	for(int mi = 0; mi < 100; mi++){
-		std::cout << "mass numbah: " << mi << std::endl;
+		//std::cout << "mass numbah: " << mi << std::endl;
 
 		float dm2 = pow(10,((mi+1.)/100.*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
 		for(int iB = 0; iB < nBins; iB++){
@@ -357,7 +357,7 @@ boonePlusPackage mbNubarInitPlus(){
 	pack.lib_sin.resize(100, std::vector<float>(nBins));
 
 	for(int mi = 0; mi < 100; mi++){
-		std::cout << "mass numbah: " << mi << std::endl;
+		//std::cout << "mass numbah: " << mi << std::endl;
 
 		float dm2 = pow(10,((mi+1.)/100.*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
 		for(int iB = 0; iB < nBins; iB++){
@@ -832,7 +832,7 @@ booneDisPlusPackage mbNuDisInitPlus(){
 	pack.libdis_noosc.resize(nBins);
 
 	for(int mi = 0; mi < 100; mi++){
-		std::cout << "mass numbah: " << mi << std::endl;
+		//std::cout << "mass numbah: " << mi << std::endl;
 
 		float dm2 = pow(10,((mi+1.)/100.*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
 		for(int iB = 0; iB < nBins; iB++){
@@ -955,7 +955,7 @@ booneDisPlusPackage mbNubarDisInitPlus(){
 	pack.libdis_noosc.resize(nBins);
 
 	for(int mi = 0; mi < 100; mi++){
-		std::cout << "mass numbah: " << mi << std::endl;
+		//std::cout << "mass numbah: " << mi << std::endl;
 
 		float dm2 = pow(10,((mi+1.)/100.*TMath::Log10(dmmax/dmmin) + TMath::Log10(dmmin)));
 		for(int iB = 0; iB < nBins; iB++){
