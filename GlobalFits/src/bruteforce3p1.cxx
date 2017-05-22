@@ -47,7 +47,8 @@ bugeyPackage bugeyPack; choozPackage choozPack; xsecPackage xsecPack; booneDisPl
 
 bool plusmode = false;
 bool partialmode = false;
-int partialIndex;
+int partialIndex = 0;
+int massStart, massEnd;
 
 int globInit(){
 
@@ -56,6 +57,17 @@ int globInit(){
     dm2Max[0] = 100.;   dm2Max[1] = 100.;    dm2Max[2] = 100.;
     dm2Min[0] = .01;     dm2Min[1] = .01;    dm2Min[2] = .01;
 	UMax = .5;
+
+	// For partialmode--we only run a 10x100x100
+	if(partialmode){
+		massStart = partialIndex * 10;
+		massEnd = massStart + 10;
+	}
+	else{
+		massStart = 0;
+		massEnd = 100;
+	}
+	std:cout << "Doing a grid scan from mass index of " << massStart << " to " << massEnd << std::endl;
 
     // INITIALIZATIONS
 	std::cout << "Start initializations!" << std::endl;
@@ -106,6 +118,9 @@ int globChisq(int ind){
 	// create the ntuple where the results are going to go
 
 	std::string outfile = "brute.root";
+	if(partialmode){
+		outfile = Form("brute_%i.root",partialIndex);
+	}
 	std::cout << "Output File: " << outfile << std::endl;
 	TString outputFile = outfile;
 	TFile *f = new TFile(outputFile, "RECREATE");
@@ -129,10 +144,10 @@ int globChisq(int ind){
 	neutrinoModel nuModel;
 
 	int count = 0;
-    for(int mi = 0; mi < 100; mi++) for(int uei = 0; uei < 100; uei++) for(int umi = 0; umi < 100; umi++){
-	//for(int mi = 0; mi < 1; mi++) for(int uei = 0; uei < 1; uei++) for(int umi = 0; umi < 1; umi++){
+    for(int mi = massStart; mi < massEnd; mi++) for(int uei = 0; uei < 100; uei++) for(int umi = 0; umi < 100; umi++){
 
-		std::cout << "Progress: " << float(count)/(100.*100.) << "\% \r";
+		if(partialmode)	std::cout << "Progress: " << float(count)/(10.*100.) << "\% \r";
+		else std::cout << "Progress: " << float(count)/(100.*100.) << "\% \r";
         chisqTotal.zero();  chisqDetector.zero();
 
 		// Now, let's collect all the numbers...
@@ -253,7 +268,6 @@ int globChisq(int ind){
 			chi2[14] = chisqDetector.chi2;
 			if(debug) std::cout << "MBDis: " << chisqDetector.chi2 << std::endl;
         }
-
         // Fill TTree
         chi2[0] = chisqTotal.chi2;
 
@@ -564,7 +578,6 @@ int main(int argc, char* argv[])
 			case 't':
 				partialmode = true;
 				partialIndex = atoi(optarg);
-				std::cout << partialIndex << std::endl;
 				break;
 		}
 	}
