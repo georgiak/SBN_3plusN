@@ -1,22 +1,21 @@
-#include "MiniBooNE.h"
+#include "fitter.h"
 
-int main(){
+int bruteforce(std::string xml){
 
   bool debug = false;
 
-  // Declare datasets
-  MiniBooNE mb_nu(false);
-  MiniBooNE mb_nubar(true);
+  // Read our XML file
+  FitReader rdr;
+  if(rdr.Load(xml))
+    return 0;
+  Oscillator osc = rdr.GetOscillator();
 
   // Initialize datasets
   int ndf = 0;
   std::string dataLoc = "/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/data/";
-
-  ndf += mb_nu.Init(dataLoc,debug);
-  ndf += mb_nubar.Init(dataLoc,debug);
-
-  // Initialize our oscillator
-  Oscillator osc(100.f,.01f,0.f,.5f,.3f,.2f,7.f,1,0,0);
+  for(int i = 0; i < rdr.GetNDatasets(); i++){
+    ndf += rdr.GetDataset(i)->Init(dataLoc,debug);
+  }
 
   // Create output File
   std::string outfile = "brute.root";
@@ -28,37 +27,81 @@ int main(){
 		return 0;
 	}
 
-  OutTree chi2Nt("Total");
+  OutTree * chi2Nt = new OutTree("Total");
 
   // Create a nu model
   neutrinoModel nuModel;
   int count = 0;
+  int grdpts = osc.GridSize();
   float chi2;
-  for(int mi = 0; mi < 100; mi++){
-    for(int uei = 0; uei < 100; uei++){
-      for(int umi = 0; umi < 100; umi++){
-        std::cout << "Progress: " << float(count)/(100.*100.) << "\% \r";
+  for(int mi = 0; mi < grdpts; mi++){
+    for(int uei = 0; uei < grdpts; uei++){
+      for(int umi = 0; umi < grdpts; umi++){
+        std::cout << "Progress: " << float(count)/(pow(grdpts,3)/100.f) << "\% \r";
 
 		    nuModel.zero();
-		    nuModel.Ue[0] = uei/float(100)*(.5);
-		    nuModel.Um[0] = umi/float(100)*(.5);
-		    nuModel.mNu[0] = pow(10,(mi/float(100)*TMath::Log10(10./.1) + TMath::Log10(.1)));
+		    //nuModel.Ue[0] = uei/float(grdpts)*(.5);
+		    //nuModel.Um[0] = umi/float(grdpts)*(.5);
+        nuModel.mNu[0] = pow(10,(uei/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
+        nuModel.mNu[0] = pow(10,(umi/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
+		    nuModel.mNu[0] = pow(10,(mi/float(grdpts)*TMath::Log10(10./.1) + TMath::Log10(.1)));
 
         // Calculate chi2s
         chi2 = 0;
-        chi2 += mb_nu.Chi2(osc,nuModel,debug);
-        chi2 += mb_nubar.Chi2(osc,nuModel,debug);
+        for(int i = 0; i < rdr.GetNDatasets(); i++){
+          chi2 += rdr.GetDataset(i)->Chi2(osc,nuModel,debug);
+        }
 
+        chi2Nt->Fill(chi2,ndf,nuModel);
         count ++;
       }
     }
   }
 
   // Write everything to File
-  chi2Nt.Tree()->Write();
-  mb_nu.Tree()->Write();
-  mb_nubar.Tree()->Write();
+  std::cout << "Writing to file." << std::endl;
+  chi2Nt->Write();
+
+  for(int i = 0; i < rdr.GetNDatasets(); i++){
+    rdr.GetDataset(i)->Write();
+  }
+
   f->Close();
 
+  return 0;
+}
+
+int main(int argc, char* argv[]){
+
+  std::string xml = "";
+  int iarg = 0;
+  opterr=1;
+  int index;
+
+  const struct option longopts[] = {
+    {"xml", 		required_argument, 	0, 'x'},
+	  {0,			no_argument, 		0,  0},
+  };
+
+  while(iarg != -1){
+    iarg = getopt_long(argc,argv, "x:t:", longopts, &index);
+
+    switch(iarg){
+		  case 'x':
+			  xml = optarg;
+			  break;
+      case '?':
+		  case 'h':
+			  std::cout<<"I need an input, friend."<<std::endl;
+			  std::cout<<"\t-x\t--xml\t\tInput .xml file for SBNconfig"<<std::endl;
+			  return 0;
+	  }
+  }
+  if(xml == ""){
+    std::cout << "Gimme an XML input or I won't start, I swear to god." << std::endl;
+    return 0;
+  }
+
+  bruteforce(xml);
   return 0;
 }

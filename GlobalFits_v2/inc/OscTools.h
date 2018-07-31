@@ -33,16 +33,19 @@ oscContribution getOscContributionsNumuDis(neutrinoModel model);
 
 class Oscillator{
   public:
-    Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, float _USqMax, float _stepSize, float _temperature, int _nSteriles, bool _CPConserving, int seed);
+    Oscillator(){};
+    Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, float _USqMax, float _stepSize, float _temperature, int _nSteriles, int _gridpts, bool _CPConserving, int seed);
     neutrinoModel InitializeMarkovParams();
     neutrinoModel NewModel(neutrinoModel modelOld);
     bool RejectModel(neutrinoModel model);
+
+    int GridSize(){ return gridpts; };
 
   private:
     TRandom RanGen;
     float ran[13];
     float dm2Min, dm2Max, UMin, UMax, USqMax, temp, step;
-    int nSteriles;
+    int nSteriles, gridpts;
     bool CPConserving, reject1, reject2, reject3, reject4, usingUe, usingUm;
 };
 
@@ -51,8 +54,9 @@ class OutTree{
     OutTree(){};
     OutTree(std::string tag);
 
-    void Write(float _chi2, float _dof, neutrinoModel _nuModel);
-    TTree *Tree(){ return myTree; }
+    void Fill(float _chi2, float _dof, neutrinoModel _nuModel);
+    void Write(){ myTree->Write();  };
+    TTree *Tree(){ return myTree->CloneTree(); };
 
   private:
     TTree *myTree;

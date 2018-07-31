@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+
+<oscillator
+  nsteriles = "1"
+  umax = ".5"
+  usqmax = ".3"
+  cpcons = "0"
+  rndseed = "0"
+  gridpts = "100"
+  stepsize = "0"
+  temperature = "0"
+  />
+
+<dataset name="MBnu" use="1"/>
+<dataset name="MBnubar" use="1"/>

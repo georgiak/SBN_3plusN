@@ -115,9 +115,9 @@ int MiniBooNE::Init(std::string dataLoc, bool debug){
 
   // Initialize output tree
   if(!nubar)
-    chi2Nt = OutTree("MBnu");
+    chi2Nt = new OutTree("MBnu");
   else
-    chi2Nt = OutTree("MBnubar");
+    chi2Nt = new OutTree("MBnubar");
 
   if(debug){
     if(!nubar) std::cout << "MBnu initialized. Bins: " << nBins_e + nBins_mu - 1 << std::endl;
@@ -215,7 +215,7 @@ float MiniBooNE::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   }
 
   // Fill output tree
-  chi2Nt.Write(chi2,dof,model);
+  chi2Nt->Fill(chi2,dof,model);
 
   if(debug){
     if(!nubar) std::cout << "MBnu Chi2: " << chi2 << std::endl;

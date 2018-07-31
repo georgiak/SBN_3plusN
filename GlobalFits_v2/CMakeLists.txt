@@ -35,3 +35,4 @@ include_directories(${CMAKE_SOURCE_DIR}/inc/)
 
 add_subdirectory(src)
 add_subdirectory(fitters)
+add_subdirectory(tinyxml)

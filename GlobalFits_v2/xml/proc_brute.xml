@@ -1,0 +1,7 @@
+<procopts
+  tag="mbnu"
+  gridpts_dm2="50"
+  gridpts_sin22th="25"
+  />
+
+<dataset name="MBnu" loc="brute_mb.root"/>

@@ -8,6 +8,7 @@ class MiniBooNE: public dataset{
     MiniBooNE(bool _nubar){
       nubar = _nubar;
     }
+    using dataset::Init;
     int Init(std::string dataLoc, bool debug);
     float Chi2(Oscillator osc, neutrinoModel nu, bool debug);
 

@@ -3,7 +3,7 @@
 OutTree::OutTree(std::string tag){
   TString t_tag = tag;
   myTree = new TTree(t_tag,t_tag);
-  myTree->Branch("chi2",&chi2,"chi2[16]/F");
+  myTree->Branch("chi2",&chi2,"chi2/F");
 	myTree->Branch("dof",&dof);
 	myTree->Branch("m_sterile",&m_sterile,"m_sterile[3]/F");
 	myTree->Branch("um_sterile",&um_sterile,"um_sterile[3]/F");
@@ -11,19 +11,22 @@ OutTree::OutTree(std::string tag){
 	myTree->Branch("phi_sterile",&phi_sterile,"phi_sterile[3]/F");
 }
 
-void OutTree::Write(float _chi2, float _dof, neutrinoModel _nuModel){
+void OutTree::Fill(float _chi2, float _dof, neutrinoModel _nuModel){
   chi2 = _chi2; dof = _dof;
   m_sterile[0] = _nuModel.mNu[0];    m_sterile[1] = _nuModel.mNu[1];    m_sterile[2] = _nuModel.mNu[2];
   ue_sterile[0] = _nuModel.Ue[0];    ue_sterile[1] = _nuModel.Ue[1];    ue_sterile[2] = _nuModel.Ue[2];
   um_sterile[0] = _nuModel.Um[0];    um_sterile[1] = _nuModel.Um[1];    um_sterile[2] = _nuModel.Um[2];
   phi_sterile[0] = _nuModel.phi[0];  phi_sterile[1] = _nuModel.phi[1]; 	phi_sterile[2] = _nuModel.phi[2];
 
+  //std::cout << chi2 << " " << dof  << " " <<  m_sterile[0] << " " << ue_sterile[0] << " " <<  um_sterile[0] << std::endl;
+
   myTree->Fill();
 }
 
-Oscillator::Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, float _USqMax, float _stepSize, float _temperature, int _nSteriles, bool _CPConserving, int seed){
+Oscillator::Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, float _USqMax, float _stepSize, float _temperature, int _nSteriles, int _gridpts, bool _CPConserving, int seed){
   dm2Min = _dm2Min;   dm2Max = _dm2Max;
   UMin = _UMin;       UMax = _UMax;
+  gridpts = _gridpts;
   USqMax = _USqMax;
   nSteriles = _nSteriles;
   CPConserving = _CPConserving;

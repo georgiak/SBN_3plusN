@@ -5,13 +5,15 @@
 
 class dataset{
   public:
-    virtual int Init(bool debug){ return 0; };
+    virtual int Init(std::string dataLoc, bool debug){ return 0; };
     virtual float Chi2(Oscillator osc, neutrinoModel nu, bool debug){ return 0.f; };
 
-    TTree *Tree(){ return chi2Nt.Tree();  };
+    TTree* Tree(){ return chi2Nt->Tree();  };
+    void Write(){ chi2Nt->Write(); };
 
   protected:
     int dof;
-    OutTree chi2Nt;
+    OutTree * chi2Nt;
 };
+
 #endif
