@@ -18,7 +18,7 @@ class MiniBooNE: public dataset{
     const short nBins_mu = 8;
     const int nFOscEvts = 17204;
 
-    std::vector < float > Prediction, Signal, FullData;
+    std::vector < float > Background, Signal, FullData, Signal_BestFit;
     std::vector < std::vector < float > > Full_fractCovMatrix, Lib_sin, Lib_sinsq;
 
     TMatrixT <float> covMatrix, full_covMatrix, cov;
