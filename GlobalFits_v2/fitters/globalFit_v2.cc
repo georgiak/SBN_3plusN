@@ -40,10 +40,8 @@ int bruteforce(std::string xml){
         std::cout << "Progress: " << float(count)/(pow(grdpts,3)/100.f) << "\% \r";
 
 		    nuModel.zero();
-		    //nuModel.Ue[0] = uei/float(grdpts)*(.5);
-		    //nuModel.Um[0] = umi/float(grdpts)*(.5);
-        nuModel.mNu[0] = pow(10,(uei/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
-        nuModel.mNu[0] = pow(10,(umi/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
+		    nuModel.Ue[0] = uei/float(grdpts)*(.5);
+		    nuModel.Um[0] = umi/float(grdpts)*(.5);
 		    nuModel.mNu[0] = pow(10,(mi/float(grdpts)*TMath::Log10(10./.1) + TMath::Log10(.1)));
 
         // Calculate chi2s

@@ -7,7 +7,7 @@ int MiniBooNE::Init(std::string dataLoc, bool debug){
 
   Signal.resize(nBins_e);
   FullData.resize(nBins_e + nBins_mu);
-  Prediction.resize(nBins_e + nBins_mu);
+  Background.resize(nBins_e + nBins_mu);
   Full_fractCovMatrix.resize(nBins_e + nBins_e + nBins_mu, std::vector < float > (nBins_e + nBins_e + nBins_mu));
 
   float *nu_EnuQE = new float[nBins_e + 1];
@@ -18,12 +18,12 @@ int MiniBooNE::Init(std::string dataLoc, bool debug){
 
   if(!nubar){
     // If in neutrino mode:
-    str_data_nue = dataLoc + "miniboone_nuedata_lowe.txt";
-    str_data_numu = dataLoc + "miniboone_numudata.txt";
-    str_MC_nue = dataLoc + "miniboone_nuebgr_lowe.txt";
-    str_MC_numu = dataLoc + "miniboone_numu.txt";
-    str_fracterrormatrix = dataLoc + "neutrino_frac_error_matrix.txt";
-    str_fullosc = dataLoc + "miniboone_numode_fullosc_ntuple.txt";
+    str_data_nue = dataLoc + "miniboone/data_nue.txt";
+    str_data_numu = dataLoc + "miniboone/data_numu.txt";
+    str_MC_nue = dataLoc + "miniboone/MC_nue.txt";
+    str_MC_numu = dataLoc + "miniboone/MC_numu.txt";
+    str_fracterrormatrix = dataLoc + "miniboone/frac_error_matrix_contNu.txt";
+    str_fullosc = dataLoc + "miniboone/numunuefullosc_ntuple.txt";
   }
   else{
     // If in antineutrino mode:
@@ -51,13 +51,13 @@ int MiniBooNE::Init(std::string dataLoc, bool debug){
   // Get predicted nue background events per enuqe bin
   file.open(str_MC_nue);
   for(int i = 0; i < nBins_e; i++)
-    file >> Prediction[i];
+    file >> Background[i];
   file.close();
 
   // Get predicted numu ccqe events per enuqe bin
   file.open(str_MC_numu);
   for(int i = 0; i < nBins_mu; i++)
-    file >> Prediction[i + nBins_e];
+    file >> Background[i + nBins_e];
   file.close();
 
   // Get fractional cov matrix for full numu->nue oscillation events
@@ -111,6 +111,24 @@ int MiniBooNE::Init(std::string dataLoc, bool debug){
     }
   }
 
+	// Lastly, Initialize best fit signal, with which we will weigh our covariance matrix
+  neutrinoModel model_bestFit;
+  model_bestFit.zero();
+  model_bestFit.Ue[0] = 0.34;  model_bestFit.Um[0] = 0.34;    model_bestFit.mNu[0] = .19;
+ 	oscContribution oscCont_bestFit = getOscContributionsNueApp(model_bestFit, nubar, true);
+
+	Signal_BestFit.resize(nBins_e + nBins_mu);
+
+	for(int iB = 0; iB < nBins_e; iB++){
+		for(int iContribution = 0; iContribution < 6; iContribution++){
+    	if(oscCont_bestFit.dm2[iContribution] == 0) Signal_BestFit[iB] += 0;
+			else{
+      	dm2 = floor(TMath::Log10(oscCont_bestFit.dm2[iContribution]/.01)/mstep);
+        Signal_BestFit[iB] += oscCont_bestFit.aMuE[iContribution]*Lib_sinsq[dm2][iB] + oscCont_bestFit.aMuE_CPV[iContribution]*Lib_sin[dm2][iB];
+			}
+		}
+	}
+
   dof = nBins_e + nBins_mu - 1;
 
   // Initialize output tree
@@ -125,7 +143,6 @@ int MiniBooNE::Init(std::string dataLoc, bool debug){
   }
   return dof;
 }
-
 
 float MiniBooNE::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
@@ -157,26 +174,27 @@ float MiniBooNE::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   // Divide signal prediction by the number of fullosc events
   for(int iB = 0; iB < nBins_e; iB++){
   	Signal[iB] /= float(nFOscEvts);
+		Signal_BestFit[iB] /= float(nFOscEvts);
   }
 
   // Now, scale the fractional cov matrix to our signal and prediction vectors
   for(int iB = 0; iB < nBins_e + nBins_e + nBins_mu; iB++){
   	for(int jB = 0; jB < nBins_e + nBins_e + nBins_mu; jB++){
   		if(iB < nBins_e && jB < nBins_e){
-  			full_covMatrix(iB,jB) = Full_fractCovMatrix[iB][jB]*Signal[iB]*Signal[jB];
+  			full_covMatrix(iB,jB) = Full_fractCovMatrix[iB][jB]*Signal_BestFit[iB]*Signal_BestFit[jB];
   			// Add Stat error of signal prediction
   			if(iB == jB){
-  				full_covMatrix(iB,jB) += Signal[iB];
+  				full_covMatrix(iB,jB) += Signal_BestFit[iB];
   			}
   		}
   		else if(iB < nBins_e && jB >= nBins_e){
-  			full_covMatrix(iB,jB) = Full_fractCovMatrix[iB][jB]*Signal[iB]*Prediction[jB-nBins_e];
+  			full_covMatrix(iB,jB) = Full_fractCovMatrix[iB][jB]*Signal_BestFit[iB]*Background[jB-nBins_e];
   		}
   		else if(iB >= nBins_e && jB < nBins_e){
-  			full_covMatrix(iB,jB)= Full_fractCovMatrix[iB][jB]*Prediction[iB-nBins_e]*Signal[jB];
+  			full_covMatrix(iB,jB)= Full_fractCovMatrix[iB][jB]*Background[iB-nBins_e]*Signal_BestFit[jB];
   		}
   		else if(iB >= nBins_e && jB >= nBins_e){
-  			full_covMatrix(iB,jB) = Full_fractCovMatrix[iB][jB]*Prediction[iB-nBins_e]*Prediction[jB-nBins_e];
+  			full_covMatrix(iB,jB) = Full_fractCovMatrix[iB][jB]*Background[iB-nBins_e]*Background[jB-nBins_e];
   		}
   	}
   }
@@ -204,13 +222,13 @@ float MiniBooNE::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   cov = covMatrix.Invert();
 
   for(int iB = 0; iB < nBins_e; iB++){
-  	Prediction[iB] += Signal[iB];
+  	Signal[iB] += Background[iB];
   }
 
   // Finally, let's put everything together and calculate the chisq
   for(int iB = 0; iB < nBins_e + nBins_mu; iB++){
   	for(int jB = 0; jB < nBins_e + nBins_mu; jB++){
-  		chi2 += (FullData[iB]-Prediction[iB])*cov(iB,jB)*(FullData[jB]-Prediction[jB]);
+  		chi2 += (FullData[iB]-Signal[iB])*cov(iB,jB)*(FullData[jB]-Signal[jB]);
   	}
   }
 
