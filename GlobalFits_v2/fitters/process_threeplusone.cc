@@ -63,10 +63,11 @@ int ntupleProcess(std::string xml){
 	}
 
   // Create our trees (one for disappearance and one for appearance)
-  TTree * t_app = new TTree("nueapp","nueapp");
+  TTree * t_app_90 = new TTree("nueapp_90","nueapp_90");
+  TTree * t_app_99 = new TTree("nueapp_99","nueapp_99");
   TTree * t_dis = new TTree("nuedis","nuedis");
-  float chi2, sin22th, dm2;
-
+  float chi2, sin22th, dm2, chi2_min, sin22th_min, dm2_min;
+  chi2_min = 99999;
 
   // Numu disappearance
   t_dis->Branch("chi2",&chi2,"chi2/F");
@@ -83,19 +84,24 @@ int ntupleProcess(std::string xml){
 
 
   // Nue disappearance
-  t_app->Branch("chi2",&chi2,"chi2/F");
-  t_app->Branch("sin22th",&sin22th,"sin22th/F");
-  t_app->Branch("dm2",&dm2,"dm2/F");
+  t_app_90->Branch("chi2",&chi2,"chi2/F");
+  t_app_90->Branch("sin22th",&sin22th,"sin22th/F");
+  t_app_90->Branch("dm2",&dm2,"dm2/F");
+  t_app_99->Branch("chi2",&chi2,"chi2/F");
+  t_app_99->Branch("sin22th",&sin22th,"sin22th/F");
+  t_app_99->Branch("dm2",&dm2,"dm2/F");
 
   float mstep = TMath::Log10(100.f/.01f)/rdr.gridpts_dm2;
   float sin22step = TMath::Log10(1.f/float(1e-5))/rdr.gridpts_sin22th;
   std::vector < std::vector < float > > chi2grid;
   chi2grid.assign(rdr.gridpts_sin22th, std::vector < float > (rdr.gridpts_dm2, 0.));
 
+  std::cout << "BAH" <<  std::endl;
+
+
   for(int i = 0; i < v_chi2.size(); i++){
     float mysin22th = 4*pow(v_um4[i],2)*pow(v_ue4[i],2);
     int is = (int)floor(TMath::Log10(mysin22th/1e-5)/sin22step);
-    std::cout << mysin22th <<  " " << is << std::endl;
     int im = (int)floor(TMath::Log10(pow(v_mnu[i],2)/.01)/mstep);
 
     if(is < rdr.gridpts_sin22th && im < rdr.gridpts_dm2 && is > -1){
@@ -104,7 +110,17 @@ int ntupleProcess(std::string xml){
       else
         chi2grid[is][im] = TMath::Min(chi2grid[is][im],v_chi2[i]);
     }
+    else
+      continue;
+
+    if(chi2grid[is][im] < chi2_min){
+      chi2_min = chi2grid[is][im];
+      dm2_min = pow(v_mnu[i],2);
+      sin22th_min = mysin22th;
+    }
   }
+
+  std::cout << "chi2 min: " << chi2_min << " dm2 min: " << dm2_min  << " sin22th min: " << sin22th_min << std::endl;
 
   for(int i = 0; i < rdr.gridpts_sin22th; i++){
     for(int j = 0; j < rdr.gridpts_dm2; j++){
@@ -112,11 +128,16 @@ int ntupleProcess(std::string xml){
       dm2 = pow(10,(j/float(rdr.gridpts_dm2) * TMath::Log10(100./.01) + TMath::Log10(.01)));
       if(chi2grid[i][j] != 0){
         chi2 = chi2grid[i][j];
-        t_app->Fill();
+
+        if(chi2grid[i][j] <= chi2_min + 6.25)
+          t_app_90->Fill();
+        if(chi2grid[i][j] <= chi2_min + 11.34)
+          t_app_99->Fill();
       }
     }
   }
-  t_app->Write();
+  t_app_99->Write();
+  t_app_90->Write();
 
   f->Close();
 

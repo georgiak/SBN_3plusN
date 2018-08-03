@@ -37,6 +37,10 @@ Oscillator::Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, f
   RanGen.SetSeed(seed);
   step = RanGen.Rndm() * _stepSize;
 	temp = RanGen.Rndm() * _temperature;
+
+  for(int i = 0; i < dm2VecMaxDim; i++){
+      dm2Vec[i] = pow(10,TMath::Log10(dm2Min) + double(i) / (dm2VecMaxDim-1) * TMath::Log10(dm2Max/dm2Min));
+  }
 }
 
 // Since the osc probability is something that'll be played with quite a bit (ie, when we add matter effects) let's put it over here!

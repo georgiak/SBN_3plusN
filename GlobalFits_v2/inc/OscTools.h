@@ -2,6 +2,8 @@
 #define OSCTOOLS_H
 #include "globalFit.h"
 
+#define dm2VecMaxDim 601
+
 struct neutrinoModel{
     double mNu[3], Ue[3], Um[3], phi[3];
     double dm41Sq, dm51Sq, dm61Sq, dm54Sq, dm64Sq, dm65Sq;
@@ -40,6 +42,7 @@ class Oscillator{
     bool RejectModel(neutrinoModel model);
 
     int GridSize(){ return gridpts; };
+    double dm2Vec[dm2VecMaxDim];
 
   private:
     TRandom RanGen;

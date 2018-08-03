@@ -29,8 +29,8 @@
 #include "Math/Integrator.h"
 #include "Math/IntegratorMultiDim.h"
 #include "Math/Functor.h"
-//#include "Math/GSLIntegrator.h"
-//#include "Math/Interpolator.h"
+#include "Math/GSLIntegrator.h"
+#include "Math/Interpolator.h"
 #include <iostream>
 #include <ostream>
 #include <sstream>
@@ -39,8 +39,6 @@
 
 using namespace std;
 
-
-#define dm2VecMaxDim 601
 /*
 double sinFunc(double x){
     // Sine function for integration
