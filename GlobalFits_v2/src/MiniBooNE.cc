@@ -147,6 +147,8 @@ int MiniBooNE::Init(std::string dataLoc, bool debug){
 float MiniBooNE::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
   float chi2 = 0.f;
+  std::vector < float > Prediction;
+  Prediction.resize(nBins_e + nBins_mu);
 
   // Initialize contributions from the oscillation probability
   oscContribution oscCont;
@@ -221,14 +223,17 @@ float MiniBooNE::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   cov.ResizeTo(nBins_e + nBins_mu, nBins_e + nBins_mu);
   cov = covMatrix.Invert();
 
+  for(int iB = 0; iB < nBins_e + nBins_mu; iB++)
+    Prediction[iB] = Background[iB];
+
   for(int iB = 0; iB < nBins_e; iB++){
-  	Signal[iB] += Background[iB];
+  	Prediction[iB] += Signal[iB];
   }
 
   // Finally, let's put everything together and calculate the chisq
   for(int iB = 0; iB < nBins_e + nBins_mu; iB++){
   	for(int jB = 0; jB < nBins_e + nBins_mu; jB++){
-  		chi2 += (FullData[iB]-Signal[iB])*cov(iB,jB)*(FullData[jB]-Signal[jB]);
+  		chi2 += (FullData[iB]-Prediction[iB])*cov(iB,jB)*(FullData[jB]-Prediction[jB]);
   	}
   }
 

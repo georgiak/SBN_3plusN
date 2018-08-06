@@ -12,7 +12,8 @@ int bruteforce(std::string xml){
 
   // Initialize datasets
   int ndf = 0;
-  std::string dataLoc = "/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/data/";
+  //std::string dataLoc = "/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/data/";
+  std::string dataLoc = "../../data/";
   for(int i = 0; i < rdr.GetNDatasets(); i++){
     ndf += rdr.GetDataset(i)->Init(dataLoc,debug);
   }
@@ -40,8 +41,10 @@ int bruteforce(std::string xml){
         std::cout << "Progress: " << float(count)/(pow(grdpts,3)/100.f) << "\% \r";
 
 		    nuModel.zero();
-		    nuModel.Ue[0] = uei/float(grdpts)*(.5);
-		    nuModel.Um[0] = umi/float(grdpts)*(.5);
+		    //nuModel.Ue[0] = uei/float(grdpts)*(.5);
+		    //nuModel.Um[0] = umi/float(grdpts)*(.5);
+        nuModel.Ue[0] = pow(10,(uei/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
+        nuModel.Um[0] = pow(10,(umi/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
 		    nuModel.mNu[0] = pow(10,(mi/float(grdpts)*TMath::Log10(10./.1) + TMath::Log10(.1)));
 
         // Calculate chi2s
@@ -55,6 +58,25 @@ int bruteforce(std::string xml){
       }
     }
   }
+
+/*
+//  Single point
+  neutrinoModel nuModel;
+  nuModel.zero();
+  nuModel.Ue[0] = pow(.958/4.,.5);
+  nuModel.Um[0] = 1;
+  nuModel.mNu[0] = pow(.037,.5);
+
+  // Calculate chi2s
+  float chi2 = 0;
+  for(int i = 0; i < rdr.GetNDatasets(); i++){
+    chi2 += rdr.GetDataset(i)->Chi2(osc,nuModel,debug);
+  }
+  chi2Nt->Fill(chi2,ndf,nuModel);
+
+  std::cout << "CHI2: " << chi2 << std::endl;
+  return 1;
+*/
 
   // Write everything to File
   std::cout << "Writing to file." << std::endl;

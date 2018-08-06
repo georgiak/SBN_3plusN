@@ -1,5 +1,5 @@
 #include "MiniBooNE.h"
-#include "LSND_loglikelihood.h"
+//#include "LSND_loglikelihood.h"
 #include "XMLTools.h"
 
 int FitReader::Load(std::string xml){
@@ -35,7 +35,7 @@ int FitReader::Load(std::string xml){
         std::cout << "Using MiniBooNE Nubar dataset" << std::endl;
       }
       else if(dset == "LSND_loglikelihood"){
-        myDataSets.push_back(new LSND_loglikelihood);
+        //myDataSets.push_back(new LSND_loglikelihood);
         std::cout << "Using LSND (log likelihood mode)" << std::endl;
       }
       else
