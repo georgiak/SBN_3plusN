@@ -1,4 +1,4 @@
-add_library (DatasetLib MiniBooNE.cc CDHS.cc KARMEN.cc MiniBooNE_dis.cc LSND_loglikelihood.cc Gallium.cc OscTools.cc XMLTools.cc)
+add_library (DatasetLib MiniBooNE.cc OscTools.cc XMLTools.cc)
 
 include_directories ( ${CMAKE_SOURCE_DIR}/inc)
 include_directories ( ${CMAKE_SOURCE_DIR}/tinyxml)

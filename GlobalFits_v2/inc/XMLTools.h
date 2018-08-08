@@ -20,7 +20,7 @@ class FitReader{
 
 class ProcessReader{
   public:
-    ProcessReader(){};
+    ProcessReader(){  raster = false; };
 
     int Load(std::string xml);
     TTree* GetTree(int ind) { return data_trees[ind]; };
@@ -28,6 +28,7 @@ class ProcessReader{
 
     int gridpts_dm2, gridpts_sin22th;
     std::string tag;
+    bool raster;
 
   private:
     std::vector < std::string > data_names;
