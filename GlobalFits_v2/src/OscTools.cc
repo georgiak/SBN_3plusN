@@ -264,3 +264,28 @@ bool Oscillator::RejectModel(neutrinoModel model){
 
   return (reject1 || reject2 || reject3 || reject4);
 }
+
+double sinFunc(double x){
+    // Sine function for integration
+    return sin(x)/x;
+}
+double sineInt(double x){
+    // Sine function for integration reasons
+    ROOT::Math::Functor1D wf(&sinFunc);
+    ROOT::Math::Integrator ig;
+    ig.SetFunction(wf);
+
+    return ig.Integral(0.,x);
+}
+double cosFunc(double x){
+    // cosine function for integration
+    return (cos(x) - 1)/x;
+}
+double cosineInt(double x){
+    // Sine function for integration reasons
+    ROOT::Math::Functor1D wf(&cosFunc);
+    ROOT::Math::Integrator ig;
+    ig.SetFunction(wf);
+
+    return TMath::EulerGamma() + log(x) + ig.Integral(0.,x);
+}

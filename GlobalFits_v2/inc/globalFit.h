@@ -26,11 +26,11 @@
 #include "TMarker.h"
 #include "TLatex.h"
 #include "TMinuit.h"
-//#include "Math/Integrator.h"
-//#include "Math/IntegratorMultiDim.h"
-//#include "Math/Functor.h"
-//#include "Math/GSLIntegrator.h"
-//#include "Math/Interpolator.h"
+#include "Math/Integrator.h"
+#include "Math/IntegratorMultiDim.h"
+#include "Math/Functor.h"
+#include "Math/GSLIntegrator.h"
+#include "Math/Interpolator.h"
 #include <iostream>
 #include <ostream>
 #include <sstream>

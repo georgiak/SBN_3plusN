@@ -11,12 +11,14 @@ int bruteforce(std::string xml){
   Oscillator osc = rdr.GetOscillator();
 
   // Initialize datasets
+  std::cout << "Initializing " << rdr.GetNDatasets() << " datasets!" << std::endl;
   int ndf = 0;
   //std::string dataLoc = "/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/data/";
   std::string dataLoc = "../../data/";
   for(int i = 0; i < rdr.GetNDatasets(); i++){
     ndf += rdr.GetDataset(i)->Init(dataLoc,debug);
   }
+  std::cout << "Datasets Initialized!" << std::endl;
 
   // Create output File
   std::string outfile = "brute.root";
@@ -35,6 +37,7 @@ int bruteforce(std::string xml){
   int count = 0;
   int grdpts = osc.GridSize();
   float chi2;
+  std::cout << "Beginning chi2 loop" << std::endl;
   for(int mi = 0; mi < grdpts; mi++){
     for(int uei = 0; uei < grdpts; uei++){
       for(int umi = 0; umi < grdpts; umi++){

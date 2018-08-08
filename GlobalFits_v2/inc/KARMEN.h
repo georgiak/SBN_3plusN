@@ -11,10 +11,16 @@ class KARMEN: public dataset{
 
   private:
     const int nBins = 9;
+    double norm;
+    std::vector < double > dm2Vec, Bkg, Observed;
+    std::vector < std::vector < double > > sinSqDeltaGrid, sinSqDeltaGrid2;
+};
 
-    float _INTdm2, _INTnorm;          // variables for integrals
+struct integralFuncsKarmen{
+    double _dm2, _norm;
+
     double sinSqFunction(const double x);
     double sinSqFunctionCPV(const double x);
     double normFunc(const double x);
-    };
-}
+};
+#endif

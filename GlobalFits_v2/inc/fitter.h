@@ -1,5 +1,5 @@
 #include "MiniBooNE.h"
-
+#include "LSND_loglikelihood.h"
 #include "XMLTools.h"
 #include <unistd.h>
 #include <getopt.h>

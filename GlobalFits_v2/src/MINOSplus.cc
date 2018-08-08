@@ -49,17 +49,13 @@ int MINOSplus::Init(std::string dataLoc, bool debug){
   TH1D *h_cc_HornIMiscal_nd_minosPlus, *h_cc_HornIDist_nd_minosPlus,  *h_cc_HornIMiscal_fd_minosPlus, *h_cc_HornIDist_fd_minosPlus;
   TH1D *h_nc_HornIMiscal_nd_minosPlus, *h_nc_HornIDist_nd_minosPlus,  *h_nc_HornIMiscal_fd_minosPlus, *h_nc_HornIDist_fd_minosPlus;
 
-
-
-
-
-
   // Load up data
   TFile *f = new TFile((dataLoc+"minosplus_dataRelease.root").c_str(),"READ");
 
   //Extract covariance matrices
   CoVarCC_relative = (TMatrixD*)f->Get("TotalCCCovar"); assert(CoVarCC_relative);
   CoVarNC_relative = (TMatrixD*)f->Get("TotalNCCovar"); assert(CoVarNC_relative);
+
 
   //Load inputs
   //Extract RecoToTrue MC simulations for MINOS
@@ -128,7 +124,6 @@ int MINOSplus::Init(std::string dataLoc, bool debug){
   f->GetObject("dataNDCC_minosPlus", ND_dataCC_minosPlus); assert(ND_dataCC_minosPlus);
 
 
-
   //Construct MINOS/MINOS+ two detector data spectra
   TH1D* h2det_data_NC_minos = (TH1D*)GetTwoDetSpectrum(ND_dataNC_minos,FD_dataNC_minos);
   TH1D* h2det_data_CC_minos = (TH1D*)GetTwoDetSpectrum(ND_dataCC_minos,FD_dataCC_minos);
@@ -140,6 +135,7 @@ int MINOSplus::Init(std::string dataLoc, bool debug){
   dataCC->Add(h2det_data_CC_minosPlus);
   TH1D* dataNC = (TH1D*)h2det_data_NC_minos->Clone();
   dataNC->Add(h2det_data_NC_minosPlus);
+
 
   //Generate Unoscillated Spectrua
   //UnOscillated CC MC -- MINOS
@@ -202,8 +198,6 @@ int MINOSplus::Init(std::string dataLoc, bool debug){
 							FDNC_AppNue_minosPlus,
 							FDNC_AppNuTau_minosPlus,
 							735.0*kKmUnits);
-
-
 }
 
 float MINOSplus::Chi2(Oscillator osc, neutrinoModel nu, bool debug){
@@ -308,4 +302,170 @@ TH1D* CreateTotalSpectrum(params my_pars,
   hTotal->Add(vappnutau);
 
   return hTotal;
+}
+
+TH1D* CreateSpectrumComponent(params my_pars, TString OscType, TH2D* oscDummy, Double_t baseline)
+{
+  TH1D* bintemplate = oscDummy->ProjectionY();
+  bintemplate->Reset();
+
+  const double k1267 = 1.26693276;
+
+  // Loop over every true energy bin in the reco vs. true matrices, then loop over every reco energy in that bin
+  // to calculate an oscillation weight for that reco energy based on the true energy.
+  TAxis *Yaxis = oscDummy->GetYaxis();
+  TAxis *Xaxis = oscDummy->GetXaxis();
+
+  // Define Dm243 such that its actually Dm241 being altered.
+  //41 = 43 + 32 + 21
+  //43 = 41 - 32 - 21
+  Double_t dm243 = 0.0;
+
+  dm243 = my_pars.Dm241 - my_pars.Dm232 - my_pars.Dm221;
+
+  for(Int_t x = 1; x <= Xaxis->GetNbins(); x++){
+    Double_t OscWeight = 0.0;
+
+    if(baseline > 0){
+
+      // Default iterations (1 at bin center)
+      Int_t n_LoverE = 1;
+      Double_t LoverE[5];
+      LoverE[0] = Xaxis->GetBinCenter(x);
+
+      // This is averaging oscialltions in true energy bins - see Technical Note http://minos-docdb.fnal.gov/cgi-bin/RetrieveFile?docid=10203&version=2
+      const Double_t W = Xaxis->GetBinWidth(x);
+      const Double_t arg = k1267*dm243*W; // half-period of oscillation
+      Double_t sample = W/2/sqrt(3);
+
+      if(arg!=0) sample = TMath::ACos(TMath::Sin(arg)/arg)/arg*W/2;
+
+      n_LoverE = 2;
+      Double_t bc = LoverE[0]; // bin center
+      LoverE[0] = bc - sample;
+      LoverE[1] = bc + sample;
+
+      const Double_t E = 1.0;
+
+      for(int i = 0; i < n_LoverE; i++){
+
+	// each Osctype has a different probability function
+	if(OscType == "TrueNC"){
+
+	  OscWeight += FourFlavourNuMuToNuSProbability( E,
+  							my_pars.Dm232,
+							my_pars.th23,
+							my_pars.Dm221,
+							dm243,
+							my_pars.th12,
+							my_pars.th13,
+							my_pars.th14,
+							my_pars.th24,
+							my_pars.th34,
+							my_pars.deltaCP,
+							0,
+							my_pars.delta24,
+							LoverE[i]*kKmUnits);
+	}
+	if(OscType == "NuMu"){
+
+	  OscWeight += FourFlavourDisappearanceWeight( E,
+  							my_pars.Dm232,
+							my_pars.th23,
+							my_pars.Dm221,
+							dm243,
+							my_pars.th12,
+							my_pars.th13,
+							my_pars.th14,
+							my_pars.th24,
+							my_pars.th34,
+							my_pars.deltaCP,
+							0,
+							my_pars.delta24,
+							LoverE[i]*kKmUnits);
+	}
+	if(OscType == "BeamNue"){
+
+	  OscWeight += FourFlavourNuESurvivalProbability( E,
+  							my_pars.Dm232,
+							my_pars.th23,
+							my_pars.Dm221,
+							dm243,
+							my_pars.th12,
+							my_pars.th13,
+							my_pars.th14,
+							my_pars.th24,
+							my_pars.th34,
+							my_pars.deltaCP,
+							0,
+							my_pars.delta24,
+							LoverE[i]*kKmUnits);
+	}
+	if(OscType == "AppNue"){
+
+	  OscWeight += FourFlavourNuMuToNuEProbability( E,
+  							my_pars.Dm232,
+							my_pars.th23,
+							my_pars.Dm221,
+							dm243,
+							my_pars.th12,
+							my_pars.th13,
+							my_pars.th14,
+							my_pars.th24,
+							my_pars.th34,
+							my_pars.deltaCP,
+							0,
+							my_pars.delta24,
+							LoverE[i]*kKmUnits);
+	}
+	if(OscType == "AppNuTau"){
+
+	  OscWeight += FourFlavourNuMuToNuTauProbability( E,
+  							my_pars.Dm232,
+							my_pars.th23,
+							my_pars.Dm221,
+							dm243,
+							my_pars.th12,
+							my_pars.th13,
+							my_pars.th14,
+							my_pars.th24,
+							my_pars.th34,
+							my_pars.deltaCP,
+							0,
+							my_pars.delta24,
+							LoverE[i]*kKmUnits);
+	}
+      }
+      // Now average this
+      OscWeight /= n_LoverE;
+    }
+    else // if baseline < 0
+      {
+
+        if(OscType == "TrueNC")   OscWeight = 0.0;
+        if(OscType == "NuMu")     OscWeight = 1.0;
+        if(OscType == "BeamNue")  OscWeight = 1.0;
+        if(OscType == "AppNue")   OscWeight = 0.0;
+        if(OscType == "AppNuTau") OscWeight = 0.0;
+      }
+
+    // using the oscillation weight, fill a 1d histogram for each type of event with the oscillated reco energy
+    for(Int_t y = 1; y <= Yaxis->GetNbins(); y++){
+
+      Double_t sumWeights = 0;
+
+      if(OscType == "TrueNC"){
+	sumWeights += oscDummy->GetBinContent(x,y)*(1.0-OscWeight);
+      }
+      else{
+	sumWeights += oscDummy->GetBinContent(x,y)*(OscWeight);
+      }
+      Double_t currBinContents = bintemplate->GetBinContent( y );
+      bintemplate->SetBinContent( y, sumWeights + currBinContents);
+
+    }
+
+  }
+
+  return bintemplate;
 }

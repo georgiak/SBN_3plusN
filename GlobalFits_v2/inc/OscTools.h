@@ -66,5 +66,10 @@ class OutTree{
     float chi2, dof, m_sterile[3], um_sterile[3], ue_sterile[3], phi_sterile[3];
 };
 
+// Common integral functions
+double sinFunc(double x);
+double sineInt(double x);
+double cosFunc(double x);
+double cosineInt(double x);
 
 #endif
