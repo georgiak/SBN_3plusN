@@ -1,6 +1,6 @@
 #include "LSND_loglikelihood.h"
 
-int LSND_loglikelihood::Init(std::string dataLoc, bool debug){
+int LSND_loglikelihood::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   dm2Vec.resize(dm2VecMaxDim);
   sinSqDeltaGrid.resize(dm2VecMaxDim, std::vector<double>(nBins));

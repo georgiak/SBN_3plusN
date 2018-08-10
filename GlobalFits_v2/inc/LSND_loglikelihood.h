@@ -7,7 +7,7 @@ class LSND_loglikelihood: public dataset{
   public:
     LSND_loglikelihood(){};
 
-    int Init(std::string dataLoc, bool debug);
+    int Init(std::string dataLoc, Oscillator osc, bool debug);
     float Chi2(Oscillator osc, neutrinoModel nu, bool debug);
 
   private:

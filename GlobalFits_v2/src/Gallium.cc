@@ -1,6 +1,6 @@
 #include "Gallium.h"
 
-int Gallium::Init(std::string dataLoc, bool debug){
+int Gallium::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   // Gallium's nice and easy up here.
   double temp0[] = {1.,0.81,0.95,0.79};

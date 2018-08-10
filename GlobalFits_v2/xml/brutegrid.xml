@@ -11,6 +11,14 @@
   temperature = "0"
   />
 
-<dataset name="MBnu" use="1"/>
+<dataset name="MBnu" use="0"/>
 <dataset name="MBnubar" use="0"/>
 <dataset name="LSND_loglikelihood" use="0"/>
+<dataset name="Gallium" use="0"/>
+<dataset name="MBnu_dis" use="0"/>
+<dataset name="MBnubar_dis" use="0"/>
+<dataset name="KARMEN" use="0"/>
+<dataset name="CDHS" use="0"/>
+<dataset name="NOMAD" use="1"/>
+<dataset name="NuMI" use="1"/>
+<dataset name="NOMAD" use="1"/>

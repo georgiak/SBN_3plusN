@@ -28,6 +28,7 @@ class ProcessReader{
 
     int gridpts_dm2, gridpts_sin22th;
     std::string tag;
+    bool raster;
 
   private:
     std::vector < std::string > data_names;

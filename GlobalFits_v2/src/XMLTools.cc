@@ -1,8 +1,11 @@
 #include "MiniBooNE.h"
 #include "LSND_loglikelihood.h"
 #include "Gallium.h"
+#include "NOMAD.h"
 #include "CDHS.h"
+#include "CCFR.h"
 #include "MiniBooNE_dis.h"
+#include "NuMI.h"
 #include "KARMEN.h"
 #include "XMLTools.h"
 
@@ -38,9 +41,17 @@ int FitReader::Load(std::string xml){
         myDataSets.push_back(new MiniBooNE(true));
         std::cout << "Using MiniBooNE Nubar dataset" << std::endl;
       }
+      else if(dset == "NuMI"){
+        myDataSets.push_back(new NuMI);
+        std::cout << "Using MiniBooNE NuMI Dataset" << std::endl;
+      }
       else if(dset == "LSND_loglikelihood"){
         myDataSets.push_back(new LSND_loglikelihood);
         std::cout << "Using LSND (log likelihood mode)" << std::endl;
+      }
+      else if(dset == "CCFR"){
+        myDataSets.push_back(new CCFR);
+        std::cout << "Using CCFR" << std::endl;
       }
       else if(dset == "Gallium"){
         myDataSets.push_back(new Gallium);
@@ -53,6 +64,10 @@ int FitReader::Load(std::string xml){
       else if(dset == "MBnubar_dis"){
         myDataSets.push_back(new MiniBooNE_dis(true));
         std::cout << "Using MiniBooNE Nubar Disappearance dataset" << std::endl;
+      }
+      else if(dset == "NOMAD"){
+        myDataSets.push_back(new NOMAD);
+        std::cout << "Using NOMAD dataset" << std::endl;
       }
       else if(dset == "CDHS"){
         myDataSets.push_back(new CDHS);
@@ -117,11 +132,14 @@ int ProcessReader::Load(std::string xml){
   }
   else while(pData){
     dset = pData->Attribute("name");
-    dloc = pData->Attribute("loc");
-    std::cout << "Adding tree " << dset << " from " << dloc << "." << std::endl;
-    data_names.push_back(dset);
-    data_files.push_back(new TFile(dloc.c_str(),"READ"));
-    data_trees.push_back((TTree*)data_files.back()->Get(dset.c_str()));
+    if(stoi(pData->Attribute("use"))){
+      raster = stoi(pData->Attribute("raster"));
+      dloc = pData->Attribute("loc");
+      std::cout << "Adding tree " << dset << " from " << dloc << "." << std::endl;
+      data_names.push_back(dset);
+      data_files.push_back(new TFile(dloc.c_str(),"READ"));
+      data_trees.push_back((TTree*)data_files.back()->Get(dset.c_str()));
+    }
 
     pData = pData->NextSiblingElement("dataset");
   }

@@ -16,7 +16,7 @@ int bruteforce(std::string xml){
   //std::string dataLoc = "/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/data/";
   std::string dataLoc = "../../data/";
   for(int i = 0; i < rdr.GetNDatasets(); i++){
-    ndf += rdr.GetDataset(i)->Init(dataLoc,debug);
+    ndf += rdr.GetDataset(i)->Init(dataLoc,osc,debug);
   }
   std::cout << "Datasets Initialized!" << std::endl;
 

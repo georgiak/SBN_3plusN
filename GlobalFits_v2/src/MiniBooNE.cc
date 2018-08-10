@@ -1,6 +1,6 @@
 #include "MiniBooNE.h"
 
-int MiniBooNE::Init(std::string dataLoc, bool debug){
+int MiniBooNE::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   std::string str_data_nue, str_data_numu, str_MC_nue, str_MC_numu, str_fracterrormatrix, str_binboundaries, str_fullosc;
   str_binboundaries = dataLoc + "miniboone_binboundaries_lowe.txt";
@@ -61,7 +61,7 @@ int MiniBooNE::Init(std::string dataLoc, bool debug){
   file.close();
 
   // Get fractional cov matrix for full numu->nue oscillation events
-  file.open(dataLoc+"neutrino_frac_error_matrix.txt");
+  file.open(str_fracterrormatrix);
   for(int i = 0; i < nBins_e + nBins_e + nBins_mu; i++)
     for(int j = 0; j < nBins_e + nBins_e + nBins_mu; j++)
       file >> Full_fractCovMatrix[i][j];

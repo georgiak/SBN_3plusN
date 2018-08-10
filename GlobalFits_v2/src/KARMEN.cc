@@ -1,6 +1,6 @@
 #include "KARMEN.h"
 
-int KARMEN::Init(std::string dataLoc, bool debug){
+int KARMEN::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   sinSqDeltaGrid.resize(dm2VecMaxDim, std::vector<double>(nBins));
   sinSqDeltaGrid2.resize(dm2VecMaxDim, std::vector<double>(nBins));

@@ -96,9 +96,6 @@ int ntupleProcess(std::string xml){
   std::vector < std::vector < float > > chi2grid;
   chi2grid.assign(rdr.gridpts_sin22th, std::vector < float > (rdr.gridpts_dm2, 0.));
 
-  std::cout << "BAH" <<  std::endl;
-
-
   for(int i = 0; i < v_chi2.size(); i++){
     float mysin22th = 4*pow(v_um4[i],2)*pow(v_ue4[i],2);
     int is = (int)floor(TMath::Log10(mysin22th/1e-5)/sin22step);
@@ -136,6 +133,38 @@ int ntupleProcess(std::string xml){
       }
     }
   }
+
+  // If we're doing a raster scan:
+  if(rdr.raster){
+    TTree * t_app_95 = new TTree("nueapp_95","nueapp_95");
+    t_app_95->Branch("chi2",&chi2,"chi2/F");
+    t_app_95->Branch("sin22th",&sin22th,"sin22th/F");
+    t_app_95->Branch("dm2",&dm2,"dm2/F");
+
+    for(int dm = 0; dm < rdr.gridpts_dm2; dm++){
+      float chi2minRaster = 3000.;
+      int sinsStartRaster = 0;
+
+      // Find minimum point for this particular dm2
+      for(int sins = 0; sins < rdr.gridpts_sin22th; sins++){
+        if(chi2grid[sins][dm] < chi2minRaster && chi2grid[sins][dm] >= chi2_min){
+          chi2minRaster = chi2grid[sins][dm];
+          sinsStartRaster = sins;
+        }
+      }
+      for(int sins = sinsStartRaster; sins < rdr.gridpts_sin22th; sins++){
+        chi2 = chi2grid[sins][dm];
+        if(chi2 > 3.84 + chi2minRaster){
+          sin22th = pow(10,(sins/float(rdr.gridpts_sin22th) * TMath::Log10(1./1e-5) + TMath::Log10(1e-5)));
+          dm2 = pow(10,(dm/float(rdr.gridpts_dm2) * TMath::Log10(100./.01) + TMath::Log10(.01)));
+          t_app_95->Fill();
+          break;
+        }
+      }
+    }
+    t_app_95->Write();
+  }
+
   t_app_99->Write();
   t_app_90->Write();
 

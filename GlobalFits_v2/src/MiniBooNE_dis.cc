@@ -1,6 +1,6 @@
 #include "MiniBooNE_dis.h"
 
-int MiniBooNE_dis::Init(std::string dataLoc, bool debug){
+int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   std::string str_data_numu, str_fracterrormatrix, str_fullosc, str_binboundaries;
   str_binboundaries = dataLoc + "miniboone_dis/miniboone_binboundaries_disap.txt";

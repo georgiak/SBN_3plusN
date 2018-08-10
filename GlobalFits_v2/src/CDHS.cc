@@ -1,6 +1,6 @@
 #include "CDHS.h"
 
-int CDHS::Init(std::string dataLoc, bool debug){
+int CDHS::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   Dm2Vec.resize(601);
   SinSqDeltaGrid_front.resize(dm2VecMaxDim, std::vector<double>(nBins));
