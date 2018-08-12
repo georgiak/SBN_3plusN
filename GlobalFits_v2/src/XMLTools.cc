@@ -76,7 +76,7 @@ int FitReader::Load(std::string xml){
         std::cout << "Using NOMAD dataset" << std::endl;
       }
       else  if(dset == "XSec"){
-        myDataSets.push_back(new CDHS);
+        myDataSets.push_back(new XSec);
         std::cout << "Using LSND+KARMEN XSec dataset" << std::endl;
       }
       else if(dset == "CDHS"){

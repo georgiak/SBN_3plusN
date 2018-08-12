@@ -8,20 +8,20 @@ double SigmaSmallA =1.414e-2;
 bool ReactorAnomaly = false;
 TMinuit *gMinuit;
 
-double* dm2Vec;
-std::vector < std::vector < double > > Observed, SigmaRatio, Energy;
-std::vector < std::vector < std::vector < double > > > sinSqDeltaGrid;
-neutrinoModel minModel;
+double* dm2VecBugey;
+std::vector < std::vector < double > > ObservedBugey, SigmaRatioBugey, EnergyBugey;
+std::vector < std::vector < std::vector < double > > > sinSqDeltaGridBugey;
+neutrinoModel minModelBugey;
 
 
 int Bugey::Init(std::string dataLoc, Oscillator osc, bool debug){
 
-  Observed.resize(nBaselines, std::vector<double>(maxEnergyBins));
-  SigmaRatio.resize(nBaselines, std::vector<double>(maxEnergyBins));
-  Energy.resize(nBaselines, std::vector<double>(maxEnergyBins));
-  sinSqDeltaGrid.resize(dm2VecMaxDim, std::vector<std::vector<double>>(maxEnergyBins, std::vector<double>(nBaselines)));
+  ObservedBugey.resize(nBaselines, std::vector<double>(maxEnergyBins));
+  SigmaRatioBugey.resize(nBaselines, std::vector<double>(maxEnergyBins));
+  EnergyBugey.resize(nBaselines, std::vector<double>(maxEnergyBins));
+  sinSqDeltaGridBugey.resize(dm2VecMaxDim, std::vector<std::vector<double>>(maxEnergyBins, std::vector<double>(nBaselines)));
 
-  dm2Vec = osc.dm2Vec;
+  dm2VecBugey = osc.dm2Vec;
 
   double deltaE[] = {.2, .2, .5};
   double EMin = 1.; double EMax = 6.;
@@ -45,18 +45,18 @@ int Bugey::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   for(int j = 0; j < nBaselines; j++){
     for(int i = 0; i < nBins[j]; i++){
-      Energy[j][i] = EMin + (double(i) + 0.5)/(nBins[j])*(EMax - EMin);
+      EnergyBugey[j][i] = EMin + (double(i) + 0.5)/(nBins[j])*(EMax - EMin);
       if(j==0){
-        Observed[j][i] = ratio_obs1[i];
-        SigmaRatio[j][i] = sigmaRatio1[i];
+        ObservedBugey[j][i] = ratio_obs1[i];
+        SigmaRatioBugey[j][i] = sigmaRatio1[i];
       }
       if(j==1){
-        Observed[j][i] = ratio_obs2[i];
-        SigmaRatio[j][i] = sigmaRatio2[i];
+        ObservedBugey[j][i] = ratio_obs2[i];
+        SigmaRatioBugey[j][i] = sigmaRatio2[i];
       }
       if(j==2){
-        Observed[j][i] = ratio_obs3[i];
-        SigmaRatio[j][i] = sigmaRatio3[i];
+        ObservedBugey[j][i] = ratio_obs3[i];
+        SigmaRatioBugey[j][i] = sigmaRatio3[i];
       }
     }
   }
@@ -74,19 +74,19 @@ int Bugey::Init(std::string dataLoc, Oscillator osc, bool debug){
     for(int j = 0; j < nBaselines; j++){
       for(int i = 0; i < nBins[j]; i++){
 
-        double Enu = Energy[j][i] + 1.8;
-        int n = 1.27 * dm2Vec[k] * baselines[j] / (Enu * TMath::Pi());
-        double eNuNext = 1.27 * dm2Vec[k] * baselines[j] / ((n + 0.5) * TMath::Pi());
+        double Enu = EnergyBugey[j][i] + 1.8;
+        int n = 1.27 * dm2VecBugey[k] * baselines[j] / (Enu * TMath::Pi());
+        double eNuNext = 1.27 * dm2VecBugey[k] * baselines[j] / ((n + 0.5) * TMath::Pi());
 
         if(abs(Enu - eNuNext) >= 0.123 * sqrt(Enu - 1.8)){
           integralFuncs._energy = Enu;
-          integralFuncs._dm2 = dm2Vec[k];
+          integralFuncs._dm2 = dm2VecBugey[k];
           integralFuncs._jB = j;
 
-          sinSqDeltaGrid[k][i][j] = ig.Integral(EnuMin,EnuMax);// / (EnuMax-EnuMin);
+          sinSqDeltaGridBugey[k][i][j] = ig.Integral(EnuMin,EnuMax);// / (EnuMax-EnuMin);
         }
         else
-          sinSqDeltaGrid[k][i][j] = .5;
+          sinSqDeltaGridBugey[k][i][j] = .5;
       }
     }
   }
@@ -107,7 +107,7 @@ float Bugey::Chi2(Oscillator osc, neutrinoModel model, bool debug){
 
   float chi2 = 0.f;
 
-  minModel = model;
+  minModelBugey = model;
   double chisq = 0;
 
   double arglis[2];
@@ -180,18 +180,18 @@ void fcnBugey(int &npar, double *gin, double &fval, double  *xval, int iflag){
   double Ei = 1.;
   double sinSq[dm2VecMaxDim];
   ROOT::Math::Interpolator dif(dm2VecMaxDim,ROOT::Math::Interpolation::kCSPLINE);
-	oscContribution oscCon = getOscContributionsNueDis(minModel);
+	oscContribution oscCon = getOscContributionsNueDis(minModelBugey);
 
   chisq = 0.;
 
   for(int j = 0; j < 3; j++){ // loop over baselines
 	  for(int i = 0; i < nBins[j]; i++){  // loop over energy bins
   	  for(int k = 0; k < dm2VecMaxDim; k++){
-        sinSq[k] = sinSqDeltaGrid[k][i][j];
+        sinSq[k] = sinSqDeltaGridBugey[k][i][j];
       }
       // We're doing nue disappearance
 			prob = 1.;
-      dif.SetData(dm2VecMaxDim,dm2Vec,sinSq);
+      dif.SetData(dm2VecMaxDim,dm2VecBugey,sinSq);
       for(int iCon = 0; iCon < 6; iCon ++){
 			if(oscCon.dm2[iCon] != 0.){
 					prob += oscCon.aEE[iCon] * dif.Eval(oscCon.dm2[iCon]);
@@ -199,10 +199,10 @@ void fcnBugey(int &npar, double *gin, double &fval, double  *xval, int iflag){
 			}
 
       // Now, calculate the chisq
-      double num = (bigA * smallA[j] + b * (Energy[j][i] - Ei)) * prob - Observed[j][i];
+      double num = (bigA * smallA[j] + b * (EnergyBugey[j][i] - Ei)) * prob - ObservedBugey[j][i];
 			if(ReactorAnomaly)
-    			num = (bigA * smallA[j] + b * (Energy[j][i] - Ei)) * prob * normReactorAno[j] - Observed[j][i];
-			chisq += pow(num/SigmaRatio[j][i],2);
+    			num = (bigA * smallA[j] + b * (EnergyBugey[j][i] - Ei)) * prob * normReactorAno[j] - ObservedBugey[j][i];
+			chisq += pow(num/SigmaRatioBugey[j][i],2);
     	}
     	chisq += pow((smallA[j] - 1.)/SigmaSmallA,2);
   	}

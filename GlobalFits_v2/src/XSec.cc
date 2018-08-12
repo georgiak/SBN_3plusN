@@ -1,6 +1,6 @@
 #include "XSec.h"
 
-neutrinoModel minModel;
+neutrinoModel minModelXSec;
 double ESigma, Lsnd_sys, Karmen_sys, Correl_sys;
 std::vector < double > Karmen_Enu, Karmen, Karmen_error, Lsnd_Enu, Lsnd, Lsnd_error;
 
@@ -70,7 +70,7 @@ float XSec::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   float chi2 = 0.f;
 
   double chisq = 0;
-  minModel = model;
+  minModelXSec = model;
   double kkarmen, klsnd, kcorrel;
 
   double arglis[2];
@@ -137,28 +137,28 @@ double getSinSqTerm(double dm2, double E1, double E2, double l1, double l2){
 }
 double osc_int(double E1, double E2, double l1, double l2){
 
-	minModel.difference();
+	minModelXSec.difference();
 
 	double sin41sq,sin51sq,sin54sq,sin61sq,sin64sq,sin65sq;
 
-	if(minModel.dm41Sq != 0)
-		sin41sq = getSinSqTerm(minModel.dm41Sq,E1,E2,l1,l2);
+	if(minModelXSec.dm41Sq != 0)
+		sin41sq = getSinSqTerm(minModelXSec.dm41Sq,E1,E2,l1,l2);
 	else
 		sin41sq = 0;
 
-	if(minModel.dm51Sq != 0){
-		sin51sq = getSinSqTerm(minModel.dm51Sq,E1,E2,l1,l2);
-		sin54sq = getSinSqTerm(minModel.dm54Sq,E1,E2,l1,l2);
+	if(minModelXSec.dm51Sq != 0){
+		sin51sq = getSinSqTerm(minModelXSec.dm51Sq,E1,E2,l1,l2);
+		sin54sq = getSinSqTerm(minModelXSec.dm54Sq,E1,E2,l1,l2);
 	}
 	else{
 		sin51sq = 0;
 		sin54sq = 0;
 	}
 
-	if(minModel.dm61Sq != 0){
-		sin61sq = getSinSqTerm(minModel.dm61Sq,E1,E2,l1,l2);
-		sin64sq = getSinSqTerm(minModel.dm64Sq,E1,E2,l1,l2);
-		sin65sq = getSinSqTerm(minModel.dm65Sq,E1,E2,l1,l2);
+	if(minModelXSec.dm61Sq != 0){
+		sin61sq = getSinSqTerm(minModelXSec.dm61Sq,E1,E2,l1,l2);
+		sin64sq = getSinSqTerm(minModelXSec.dm64Sq,E1,E2,l1,l2);
+		sin65sq = getSinSqTerm(minModelXSec.dm65Sq,E1,E2,l1,l2);
 	}
 	else{
 		sin61sq = 0;
@@ -166,11 +166,11 @@ double osc_int(double E1, double E2, double l1, double l2){
 		sin65sq = 0;
 	}
 
-	double osc_int = 4 * ((1 - pow(minModel.Ue[0],2) - pow(minModel.Ue[1],2) - pow(minModel.Ue[2],2))
-			* (pow(minModel.Ue[0],2) * sin41sq + pow(minModel.Ue[1],2) * sin51sq + pow(minModel.Ue[2],2)*sin61sq)
-			+ pow(minModel.Ue[0],2) * pow(minModel.Ue[1],2) * sin54sq
-			+ pow(minModel.Ue[0],2) * pow(minModel.Ue[2],2) * sin64sq
-			+ pow(minModel.Ue[1],2) * pow(minModel.Ue[2],2) * sin65sq);
+	double osc_int = 4 * ((1 - pow(minModelXSec.Ue[0],2) - pow(minModelXSec.Ue[1],2) - pow(minModelXSec.Ue[2],2))
+			* (pow(minModelXSec.Ue[0],2) * sin41sq + pow(minModelXSec.Ue[1],2) * sin51sq + pow(minModelXSec.Ue[2],2)*sin61sq)
+			+ pow(minModelXSec.Ue[0],2) * pow(minModelXSec.Ue[1],2) * sin54sq
+			+ pow(minModelXSec.Ue[0],2) * pow(minModelXSec.Ue[2],2) * sin64sq
+			+ pow(minModelXSec.Ue[1],2) * pow(minModelXSec.Ue[2],2) * sin65sq);
 
 	return osc_int;
 }
