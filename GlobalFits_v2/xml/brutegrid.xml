@@ -19,6 +19,8 @@
 <dataset name="MBnubar_dis" use="0"/>
 <dataset name="KARMEN" use="0"/>
 <dataset name="CDHS" use="0"/>
-<dataset name="NOMAD" use="1"/>
-<dataset name="NuMI" use="1"/>
-<dataset name="NOMAD" use="1"/>
+<dataset name="NOMAD" use="0"/>
+<dataset name="NuMI" use="0"/>
+<dataset name="CCFR" use="0"/>
+<dataset name="Bugey" use="1"/>
+<dataset name="XSec" use="1"/>

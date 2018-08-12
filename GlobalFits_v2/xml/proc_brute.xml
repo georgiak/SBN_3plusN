@@ -1,12 +1,15 @@
 <procopts
-  tag="mbnu"
+  tag="numi"
   gridpts_dm2="100"
   gridpts_sin22th="100"
   />
 
-<dataset name="MBnu" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mb.root" raster="0" use="1"/>
+<dataset name="MBnu" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mb.root" raster="0" use="0"/>
 <dataset name="MBnubar" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mb.root" raster="0" use="0"/>
 <dataset name="LSND_loglikelihood" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_lsnd.root" raster="0" use="0"/>
 <dataset name="Gallium" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_gal.root" raster="1" use="0"/>
 <dataset name="KARMEN" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster1.root" raster="1" use="0"/>
 <dataset name="CDHS" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster1.root" raster="1" use="0"/>
+<dataset name="CCFR" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster2.root" raster="1" use="0"/>
+<dataset name="NOMAD" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster2.root" raster="1" use="0"/>
+<dataset name="NuMI" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster2.root" raster="1" use="1"/>

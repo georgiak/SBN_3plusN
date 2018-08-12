@@ -4,6 +4,8 @@
 #include "NOMAD.h"
 #include "CDHS.h"
 #include "CCFR.h"
+#include "Bugey.h"
+#include "XSec.h"
 #include "MiniBooNE_dis.h"
 #include "NuMI.h"
 #include "KARMEN.h"
@@ -57,6 +59,10 @@ int FitReader::Load(std::string xml){
         myDataSets.push_back(new Gallium);
         std::cout << "Using Gallium" << std::endl;
       }
+      else if(dset == "Bugey"){
+        myDataSets.push_back(new Bugey);
+        std::cout << "Using Bugey" << std::endl;
+      }
       else if(dset == "MBnu_dis"){
         myDataSets.push_back(new MiniBooNE_dis(false));
         std::cout << "Using MiniBooNE Nu Disappearance dataset" << std::endl;
@@ -68,6 +74,10 @@ int FitReader::Load(std::string xml){
       else if(dset == "NOMAD"){
         myDataSets.push_back(new NOMAD);
         std::cout << "Using NOMAD dataset" << std::endl;
+      }
+      else  if(dset == "XSec"){
+        myDataSets.push_back(new CDHS);
+        std::cout << "Using LSND+KARMEN XSec dataset" << std::endl;
       }
       else if(dset == "CDHS"){
         myDataSets.push_back(new CDHS);

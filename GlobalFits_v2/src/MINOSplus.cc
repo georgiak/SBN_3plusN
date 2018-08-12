@@ -2,9 +2,6 @@
 
 #include "MINOSplus.h"
 
-
-
-
 int MINOSplus::Init(std::string dataLoc, bool debug){
 
   // Near MC RecoVtrue MINOS
@@ -202,7 +199,7 @@ int MINOSplus::Init(std::string dataLoc, bool debug){
 
 float MINOSplus::Chi2(Oscillator osc, neutrinoModel nu, bool debug){
 
-
+/*
   GenerateOscillatedSpectra(my_pars);
 
   //Correct beam mismodeling with nuisance parameters
@@ -238,7 +235,9 @@ float MINOSplus::Chi2(Oscillator osc, neutrinoModel nu, bool debug){
 
 
 
+*/
 
+  return 0.0f;
 }
 
 
@@ -304,8 +303,9 @@ TH1D* CreateTotalSpectrum(params my_pars,
   return hTotal;
 }
 
-TH1D* CreateSpectrumComponent(params my_pars, TString OscType, TH2D* oscDummy, Double_t baseline)
+TH1D* CreateSpectrumComponent(neutrinoModel model, TString OscType, TH2D* oscDummy, Double_t baseline)
 {
+
   TH1D* bintemplate = oscDummy->ProjectionY();
   bintemplate->Reset();
 
@@ -321,7 +321,15 @@ TH1D* CreateSpectrumComponent(params my_pars, TString OscType, TH2D* oscDummy, D
   //43 = 41 - 32 - 21
   Double_t dm243 = 0.0;
 
-  dm243 = my_pars.Dm241 - my_pars.Dm232 - my_pars.Dm221;
+  // SM neutrino params
+  double Dm232 = 2.48524980574397732e-03,
+  double Dm221 = 0.0000754,
+  double th23 = 9.53091338545830835e-01,
+  double th12 = 0.5540758073,
+  double th13 = 0.149116,
+  double deltaCP = 0.0,
+
+  dm243 = model.dm41Sq - Dm232 - Dm221;
 
   for(Int_t x = 1; x <= Xaxis->GetNbins(); x++){
     Double_t OscWeight = 0.0;
@@ -349,11 +357,11 @@ TH1D* CreateSpectrumComponent(params my_pars, TString OscType, TH2D* oscDummy, D
 
       for(int i = 0; i < n_LoverE; i++){
 
-	// each Osctype has a different probability function
-	if(OscType == "TrueNC"){
+        // each Osctype has a different probability function
+	      if(OscType == "TrueNC"){
 
-	  OscWeight += FourFlavourNuMuToNuSProbability( E,
-  							my_pars.Dm232,
+	         OscWeight += FourFlavourNuMuToNuSProbability( E,
+  						my_pars.Dm232,
 							my_pars.th23,
 							my_pars.Dm221,
 							dm243,
@@ -366,11 +374,11 @@ TH1D* CreateSpectrumComponent(params my_pars, TString OscType, TH2D* oscDummy, D
 							0,
 							my_pars.delta24,
 							LoverE[i]*kKmUnits);
-	}
-	if(OscType == "NuMu"){
+        }
+        if(OscType == "NuMu"){
 
-	  OscWeight += FourFlavourDisappearanceWeight( E,
-  							my_pars.Dm232,
+	         OscWeight += FourFlavourDisappearanceWeight( E,
+  						my_pars.Dm232,
 							my_pars.th23,
 							my_pars.Dm221,
 							dm243,
@@ -383,11 +391,11 @@ TH1D* CreateSpectrumComponent(params my_pars, TString OscType, TH2D* oscDummy, D
 							0,
 							my_pars.delta24,
 							LoverE[i]*kKmUnits);
-	}
-	if(OscType == "BeamNue"){
+        }
+        if(OscType == "BeamNue"){
 
-	  OscWeight += FourFlavourNuESurvivalProbability( E,
-  							my_pars.Dm232,
+          OscWeight += FourFlavourNuESurvivalProbability( E,
+  						my_pars.Dm232,
 							my_pars.th23,
 							my_pars.Dm221,
 							dm243,
@@ -400,11 +408,11 @@ TH1D* CreateSpectrumComponent(params my_pars, TString OscType, TH2D* oscDummy, D
 							0,
 							my_pars.delta24,
 							LoverE[i]*kKmUnits);
-	}
-	if(OscType == "AppNue"){
+        }
+        if(OscType == "AppNue"){
 
-	  OscWeight += FourFlavourNuMuToNuEProbability( E,
-  							my_pars.Dm232,
+          OscWeight += FourFlavourNuMuToNuEProbability( E,
+  						my_pars.Dm232,
 							my_pars.th23,
 							my_pars.Dm221,
 							dm243,
@@ -417,37 +425,36 @@ TH1D* CreateSpectrumComponent(params my_pars, TString OscType, TH2D* oscDummy, D
 							0,
 							my_pars.delta24,
 							LoverE[i]*kKmUnits);
-	}
-	if(OscType == "AppNuTau"){
+        }
+        if(OscType == "AppNuTau"){
 
-	  OscWeight += FourFlavourNuMuToNuTauProbability( E,
-  							my_pars.Dm232,
-							my_pars.th23,
-							my_pars.Dm221,
+          OscWeight += FourFlavourNuMuToNuTauProbability( E,
+  						Dm232,
+							th23,
+							Dm221,
 							dm243,
-							my_pars.th12,
-							my_pars.th13,
+							th12,
+							th13,
 							my_pars.th14,
 							my_pars.th24,
 							my_pars.th34,
-							my_pars.deltaCP,
+							deltaCP,
 							0,
 							my_pars.delta24,
 							LoverE[i]*kKmUnits);
-	}
+        }
       }
       // Now average this
       OscWeight /= n_LoverE;
     }
-    else // if baseline < 0
-      {
+    else { // if baseline < 0
 
-        if(OscType == "TrueNC")   OscWeight = 0.0;
-        if(OscType == "NuMu")     OscWeight = 1.0;
-        if(OscType == "BeamNue")  OscWeight = 1.0;
-        if(OscType == "AppNue")   OscWeight = 0.0;
-        if(OscType == "AppNuTau") OscWeight = 0.0;
-      }
+      if(OscType == "TrueNC")   OscWeight = 0.0;
+      if(OscType == "NuMu")     OscWeight = 1.0;
+      if(OscType == "BeamNue")  OscWeight = 1.0;
+      if(OscType == "AppNue")   OscWeight = 0.0;
+      if(OscType == "AppNuTau") OscWeight = 0.0;
+    }
 
     // using the oscillation weight, fill a 1d histogram for each type of event with the oscillated reco energy
     for(Int_t y = 1; y <= Yaxis->GetNbins(); y++){
@@ -455,17 +462,14 @@ TH1D* CreateSpectrumComponent(params my_pars, TString OscType, TH2D* oscDummy, D
       Double_t sumWeights = 0;
 
       if(OscType == "TrueNC"){
-	sumWeights += oscDummy->GetBinContent(x,y)*(1.0-OscWeight);
+        sumWeights += oscDummy->GetBinContent(x,y)*(1.0-OscWeight);
       }
       else{
-	sumWeights += oscDummy->GetBinContent(x,y)*(OscWeight);
+	      sumWeights += oscDummy->GetBinContent(x,y)*(OscWeight);
       }
       Double_t currBinContents = bintemplate->GetBinContent( y );
       bintemplate->SetBinContent( y, sumWeights + currBinContents);
-
     }
-
   }
-
   return bintemplate;
 }

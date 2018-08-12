@@ -14,7 +14,7 @@ FIND_PACKAGE(ROOT)# COMPONENTS Core Cint RIO Net Hist Graf Graf3d Gpad Tree Rint
 if(ROOT_FOUND)
 	message("Found ROOT using CMAKE FIND_PACKAGE")
 	include(${ROOT_USE_FILE})
-  set( ROOT_LIBRARIES ${ROOT_LIBRARIES} -lMathMore )
+  set( ROOT_LIBRARIES ${ROOT_LIBRARIES} -lMathMore -lMinuit)
 ELSE()
 	message("ROOT not compiled using CMAKE, use root-config")
 	#Get our ROOT libraries and such

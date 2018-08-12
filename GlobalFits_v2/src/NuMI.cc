@@ -120,6 +120,6 @@ float NuMI::Chi2(Oscillator osc, neutrinoModel model, bool debug){
   chi2Nt->Fill(chi2,dof,model);
 
   if(debug)
-    std::cout << "LSND Chi2: " << chi2 << std::endl;
+    std::cout << "NuMI Chi2: " << chi2 << std::endl;
   return chi2;
 }
