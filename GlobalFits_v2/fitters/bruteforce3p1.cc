@@ -1,6 +1,6 @@
 #include "fitter.h"
 
-int bruteforce(std::string xml){
+int bruteforce(std::string xml, int massStart = -1){
 
   bool debug = false;
 
@@ -38,10 +38,17 @@ int bruteforce(std::string xml){
   int grdpts = osc.GridSize();
   float chi2;
   std::cout << "Beginning chi2 loop" << std::endl;
-  for(int mi = 0; mi < grdpts; mi++){
+  int mStart, mEnd;
+  if(massStart < 0){
+    mStart = 0; mEnd = grdpts;
+  }
+  else{
+    mStart = massStart; mEnd = massStart + 1;
+  }
+  for(int mi = mStart; mi < mEnd; mi++){
     for(int uei = 0; uei < grdpts; uei++){
       for(int umi = 0; umi < grdpts; umi++){
-        std::cout << "Progress: " << float(count)/(pow(grdpts,3)/100.f) << "\% \r";
+        std::cout << "Progress: " << float(count)/(pow(grdpts,2)*(mEnd-mStart)/100.f) << "\% \r";
 
 		    nuModel.zero();
 		    //nuModel.Ue[0] = uei/float(grdpts)*(.5);
@@ -100,6 +107,7 @@ int main(int argc, char* argv[]){
   int iarg = 0;
   opterr=1;
   int index;
+  int massStart = -1;
 
   const struct option longopts[] = {
     {"xml", 		required_argument, 	0, 'x'},
@@ -113,6 +121,9 @@ int main(int argc, char* argv[]){
 		  case 'x':
 			  xml = optarg;
 			  break;
+      case 't':
+        massStart = atoi(optarg);
+        break;
       case '?':
 		  case 'h':
 			  std::cout<<"I need an input, friend."<<std::endl;
@@ -125,6 +136,6 @@ int main(int argc, char* argv[]){
     return 0;
   }
 
-  bruteforce(xml);
+  bruteforce(xml,massStart);
   return 0;
 }
