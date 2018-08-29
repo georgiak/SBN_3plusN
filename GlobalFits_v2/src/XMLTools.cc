@@ -3,8 +3,12 @@
 #include "Gallium.h"
 #include "NOMAD.h"
 #include "CDHS.h"
+#include "FromChi2Surf.h"
+#include "Atm.h"
+#include "MINOS.h"
 #include "CCFR.h"
 #include "Bugey.h"
+#include "DANSS.h"
 #include "XSec.h"
 #include "MiniBooNE_dis.h"
 #include "NuMI.h"
@@ -12,6 +16,8 @@
 #include "XMLTools.h"
 
 int FitReader::Load(std::string xml){
+
+  bool UsingAtm = false;
 
   // Load XML file
   XMLDocument doc;
@@ -43,13 +49,26 @@ int FitReader::Load(std::string xml){
         myDataSets.push_back(new MiniBooNE(true));
         std::cout << "Using MiniBooNE Nubar dataset" << std::endl;
       }
+      else if(dset == "Atm"){
+        myDataSets.push_back(new Atm);
+        UsingAtm = true;
+        std::cout << "Using Atmospheric dataset" << std::endl;
+      }
       else if(dset == "NuMI"){
         myDataSets.push_back(new NuMI);
         std::cout << "Using MiniBooNE NuMI Dataset" << std::endl;
       }
+      else if(dset == "DANSS"){
+        myDataSets.push_back(new DANSS);
+        std::cout << "Using DANSS Dataset" << std::endl;
+      }
       else if(dset == "LSND_loglikelihood"){
         myDataSets.push_back(new LSND_loglikelihood);
         std::cout << "Using LSND (log likelihood mode)" << std::endl;
+      }
+      else if(dset == "MINOS"){
+        myDataSets.push_back(new MINOS);
+        std::cout << "Using MINOS (old)" << std::endl;
       }
       else if(dset == "CCFR"){
         myDataSets.push_back(new CCFR);
@@ -87,6 +106,10 @@ int FitReader::Load(std::string xml){
         myDataSets.push_back(new KARMEN);
         std::cout << "Using KARMEN dataset" << std::endl;
       }
+      else if(dset == "FromChi2Surf"){
+        myDataSets.push_back(new FromChi2Surf);
+        std::cout << "Using dset from chi2 surface" << std::endl;
+      }
       else
         std::cout << "Dataset not implemented yet!" << std::endl;
     }
@@ -114,6 +137,7 @@ int FitReader::Load(std::string xml){
     temperature = stof(pOsc->Attribute("temperature"));
 
     myOscillator = Oscillator(.01f,100.f,0.f,umax,usqmax,stepsize,temperature,nsteriles,grdpts,cpcons,rndseed);
+    myOscillator.UsingAtm = UsingAtm;
   }
 
   return 0;

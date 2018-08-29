@@ -114,6 +114,7 @@ float NuMI::Chi2(Oscillator osc, neutrinoModel model, bool debug){
   // Now actually calculate the chisq
   for(int iN = 0; iN < nBins; iN++){
     chi2 += pow((NueData[iN] - NueBgr[iN] - Signal[iN]),2) / TotalError[iN];
+    //std::cout << NueData[iN] << " " << NueBgr[iN] << " " << Signal[iN] << " " << TotalError[iN] << std::endl;
   }
 
   // Fill output tree

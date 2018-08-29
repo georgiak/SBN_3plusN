@@ -16,13 +16,13 @@ int Gallium::Init(std::string dataLoc, Oscillator osc, bool debug){
   	obsRatioGal[i] = temp0[i];
   	errorGal[i] = temp1[i];
   	crLinesE[i] = temp5[i];
-  	crLinesBr[i] = temp6[i];
-  	crLinesXSec[i] = temp7[i];
+  	crLinesBr[i] = temp6[i];     // neutrino fraction
+  	crLinesXSec[i] = temp7[i];   // neutrino capture xsec
   }
   for(int i = 0; i < 2; i++){
   	arLinesE[i] = temp2[i];
-  	arLinesBr[i] = temp3[i];
-  	arLinesXSec[i] = temp4[i];
+  	arLinesBr[i] = temp3[i];     // neutrino fraction
+  	arLinesXSec[i] = temp4[i];   // neutrino capture xsec
   }
 
 	// Here's a little experiment.

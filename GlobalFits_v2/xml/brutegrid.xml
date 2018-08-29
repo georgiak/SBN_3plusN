@@ -6,7 +6,7 @@
   usqmax = ".3"
   cpcons = "0"
   rndseed = "0"
-  gridpts = "100"
+  gridpts = "50"
   stepsize = "0"
   temperature = "0"
   />
@@ -22,5 +22,11 @@
 <dataset name="NOMAD" use="0"/>
 <dataset name="NuMI" use="0"/>
 <dataset name="CCFR" use="0"/>
-<dataset name="Bugey" use="1"/>
-<dataset name="XSec" use="1"/>
+<dataset name="Bugey" use="0"/>
+<dataset name="MINOS" use="0"/>
+<dataset name="XSec" use="0"/>
+<dataset name="Atm" use="0"/>
+
+<dataset name="FromChi2Surf" use="0"/>
+
+<dataset name="DANSS" use="1"/>

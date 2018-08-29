@@ -50,11 +50,11 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
  	file.open(str_fullosc);
 	int dummy;
     for(int iEvt = 0; iEvt < nFOsc; iEvt++){
- 		file >> dummy;
-        file >> nu_FOsc_EnuQE[iEvt];
-        file >> nu_FOsc_EnuTrue[iEvt];   // true energy of neutrino
-        file >> nu_FOsc_LnuTrue[iEvt];   // distance from production and detection points
-        file >> nu_FOsc_weight[iEvt];    // event weight
+      file >> dummy;
+      file >> nu_FOsc_EnuQE[iEvt];
+      file >> nu_FOsc_EnuTrue[iEvt];   // true energy of neutrino
+      file >> nu_FOsc_LnuTrue[iEvt];   // distance from production and detection points
+      file >> nu_FOsc_weight[iEvt];    // event weight
 	}
 	file.close();
 
@@ -75,22 +75,17 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
 		for(int iFOsc = 0; iFOsc < nFOsc; iFOsc++){   // Loop over full oscillation events
       for(int iB = 0; iB < nBins; iB++){    // Loop over energy bins to fill the prediction vector pred
 
-	       if(nu_FOsc_EnuQE[iFOsc] > nu_EnuQE[iB] && nu_FOsc_EnuQE[iFOsc] < nu_EnuQE[iB+1]){
+	      if(nu_FOsc_EnuQE[iFOsc] > nu_EnuQE[iB] && nu_FOsc_EnuQE[iFOsc] < nu_EnuQE[iB+1]){
 
 					float ETru = nu_FOsc_EnuTrue[iFOsc];
 					float LTru = nu_FOsc_LnuTrue[iFOsc];
-
 					Libdis_sinsq[mi][iB] += nu_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru/ETru),2);
-
 					if(mi == 0)
 						Libdis_noosc[iB] += nu_FOsc_weight[iFOsc];
         }
       }
     }
   }
-
-  std::cout << "T5" << std::endl;
-
 
   dof = nBins;
 

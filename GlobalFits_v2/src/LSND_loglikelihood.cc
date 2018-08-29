@@ -73,6 +73,10 @@ float LSND_loglikelihood::Chi2(Oscillator osc, neutrinoModel model, bool debug){
       }
   }
 
+  for(int i = 0; i < nBins; i++){
+    std::cout << "LSND Osc. Signal: " << Signal[i] + Bkg[i]  << " " << "Bkg: " << Bkg[i];
+  }
+
   // Now, using the signal vector, use the log-likelihood method to get the effective chisq
   double lt1, lt2, lt3, pred;
   for(int iL = 0; iL < nBins; iL++){

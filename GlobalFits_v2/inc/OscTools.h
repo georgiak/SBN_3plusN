@@ -44,8 +44,12 @@ class Oscillator{
     int GridSize(){ return gridpts; };
     double dm2Vec[dm2VecMaxDim];
 
+    TRandom3 RanGen;
+
+    bool UsingAtm;
+
   private:
-    TRandom RanGen;
+
     float ran[13];
     float dm2Min, dm2Max, UMin, UMax, USqMax, temp, step;
     int nSteriles, gridpts;

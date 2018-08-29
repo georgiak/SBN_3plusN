@@ -223,8 +223,7 @@ bool Oscillator::RejectModel(neutrinoModel model){
   reject1 = pow(model.Ue[0],2) + pow(model.Um[0],2) > USqMax || pow(model.Ue[1],2) + pow(model.Um[1],2) > USqMax || pow(model.Ue[2],2) + pow(model.Um[2],2) > USqMax || pow(model.Ue[0],2) + pow(model.Ue[1],2) + pow(model.Ue[2],2) > USqMax || pow(model.Um[0],2) + pow(model.Um[1],2) + pow(model.Um[2],2) > USqMax;
 
   // Another condition can be applied to avoid a negative under the square root for atmospheric neutrinos
-/*
-  if(ATMOSPHERICProcess == 1){
+  if(UsingAtm){
     double dmuMax = .25;
 
     double A = (1. - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2)) * (pow(model.Um[0],2) + pow(model.Um[1],2) + pow(model.Um[2],2)) +
@@ -232,7 +231,6 @@ bool Oscillator::RejectModel(neutrinoModel model){
 
     reject1 = reject1 || (1. - 4*A) < pow(1-2*dmuMax,2);
   }
-*/
 
   // More rejection conditions!
   reject2 = false;

@@ -56,6 +56,8 @@ int bruteforce(std::string xml, int massStart = -1){
         nuModel.Ue[0] = pow(10,(uei/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
         nuModel.Um[0] = pow(10,(umi/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
 		    nuModel.mNu[0] = pow(10,(mi/float(grdpts)*TMath::Log10(10./.1) + TMath::Log10(.1)));
+        if(osc.RejectModel(nuModel))
+          continue;
 
         // Calculate chi2s
         chi2 = 0;
@@ -73,9 +75,9 @@ int bruteforce(std::string xml, int massStart = -1){
 //  Single point
   neutrinoModel nuModel;
   nuModel.zero();
-  nuModel.Ue[0] = pow(.958/4.,.5);
+  nuModel.Ue[0] = sqrt(.05/4.f);
   nuModel.Um[0] = 1;
-  nuModel.mNu[0] = pow(.037,.5);
+  nuModel.mNu[0] = sqrt(1.4);
 
   // Calculate chi2s
   float chi2 = 0;

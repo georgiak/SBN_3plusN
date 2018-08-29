@@ -32,6 +32,8 @@ int ntupleProcess(std::string xml){
       v_ue4.resize(rdr.GetTree(i)->GetEntries());
     }
 
+    rdr.GetTree(i)->GetEntry(90);
+
     for(int j = 0; j < rdr.GetTree(i)->GetEntries(); j++){
       rdr.GetTree(i)->GetEntry(j);
 
@@ -46,6 +48,8 @@ int ntupleProcess(std::string xml){
           if(j == 0)  dof += _dof;
           v_chi2[j] += _chi2;
           if(v_mnu[j] != _m_sterile[0] || v_um4[j] != _um_sterile[0]  || v_ue4[j] != _ue_sterile[0]){
+            std::cout << "BOOM " << j << " of " << rdr.GetTree(i)->GetEntries() << std::endl;
+            std::cout << v_mnu[j] << " " << _m_sterile[0] << " --- " <<  v_um4[j] << " " << _um_sterile[0] << " --- " << v_ue4[j] << " " << _ue_sterile[0] << std::endl;
             std::cout << "Grids are NOT aligned and this code is not prepared to sort them out." << std::endl;
             return 0;
           }
@@ -98,8 +102,8 @@ int ntupleProcess(std::string xml){
 
   for(int i = 0; i < v_chi2.size(); i++){
     float mysin22th = 4*pow(v_um4[i],2)*pow(v_ue4[i],2);
-    int is = (int)floor(TMath::Log10(mysin22th/1e-5)/sin22step);
-    int im = (int)floor(TMath::Log10(pow(v_mnu[i],2)/.01)/mstep);
+    int is = (int)TMath::Nint(TMath::Log10(mysin22th/1e-5)/sin22step);
+    int im = (int)TMath::Nint(TMath::Log10(pow(v_mnu[i],2)/.01)/mstep);
 
     if(is < rdr.gridpts_sin22th && im < rdr.gridpts_dm2 && is > -1){
       if(chi2grid[is][im] == 0)
@@ -126,6 +130,7 @@ int ntupleProcess(std::string xml){
       if(chi2grid[i][j] != 0){
         chi2 = chi2grid[i][j];
 
+//        std::cout << "deltachi2 = " << chi2 - chi2_min << std::endl;
         if(chi2grid[i][j] <= chi2_min + 6.25)
           t_app_90->Fill();
         if(chi2grid[i][j] <= chi2_min + 11.34)

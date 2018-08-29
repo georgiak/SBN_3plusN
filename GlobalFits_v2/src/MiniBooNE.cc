@@ -3,7 +3,7 @@
 int MiniBooNE::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   std::string str_data_nue, str_data_numu, str_MC_nue, str_MC_numu, str_fracterrormatrix, str_binboundaries, str_fullosc;
-  str_binboundaries = dataLoc + "miniboone_binboundaries_lowe.txt";
+  str_binboundaries = dataLoc + "miniboone/miniboone_binboundaries_lowe.txt";
 
   Signal.resize(nBins_e);
   FullData.resize(nBins_e + nBins_mu);
@@ -27,12 +27,12 @@ int MiniBooNE::Init(std::string dataLoc, Oscillator osc, bool debug){
   }
   else{
     // If in antineutrino mode:
-    str_data_nue = dataLoc + "miniboone_nuebardata_lowe.txt";
-    str_data_numu = dataLoc + "miniboone_numubardata.txt";
-    str_MC_nue = dataLoc + "miniboone_nuebarbgr_lowe.txt";
-    str_MC_numu = dataLoc + "miniboone_numubar.txt";
-    str_fracterrormatrix = dataLoc + "miniboone_full_fractcovmatrix_nubar_lowe";
-    str_fullosc = dataLoc + "miniboone_numubarnuebarfullosc_ntuple.txt";
+    str_data_nue = dataLoc + "miniboone/miniboone_nuebardata_lowe.txt";
+    str_data_numu = dataLoc + "miniboone/miniboone_numubardata.txt";
+    str_MC_nue = dataLoc + "miniboone/miniboone_nuebarbgr_lowe.txt";
+    str_MC_numu = dataLoc + "miniboone/miniboone_numubar.txt";
+    str_fracterrormatrix = dataLoc + "miniboone/miniboone_full_fractcovmatrix_nubar_lowe.txt";
+    str_fullosc = dataLoc + "miniboone/miniboone_numubarnuebarfullosc_ntuple.txt";
   }
 
   ifstream file;
@@ -235,6 +235,10 @@ float MiniBooNE::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   	for(int jB = 0; jB < nBins_e + nBins_mu; jB++){
   		chi2 += (FullData[iB]-Prediction[iB])*cov(iB,jB)*(FullData[jB]-Prediction[jB]);
   	}
+  }
+
+  for(int i = 0; i < nBins_e; i++){
+    std::cout << "MB Osc. Signal: " << Prediction[i] << " Data: " << FullData[i] << std::endl;
   }
 
   // Fill output tree
