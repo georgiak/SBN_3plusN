@@ -36,7 +36,7 @@ oscContribution getOscContributionsNumuDis(neutrinoModel model);
 class Oscillator{
   public:
     Oscillator(){};
-    Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, float _USqMax, float _stepSize, float _temperature, int _nSteriles, int _gridpts, bool _CPConserving, int seed);
+    Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, float _USqMax, float _stepSize, float _temperature, int _nSteriles, int _gridpts, bool _CPConserving, int _nmcgen, int seed);
     neutrinoModel InitializeMarkovParams();
     neutrinoModel NewModel(neutrinoModel modelOld);
     bool RejectModel(neutrinoModel model);
@@ -47,6 +47,12 @@ class Oscillator{
     TRandom3 RanGen;
 
     bool UsingAtm;
+
+    int nMCGen;
+
+    void PrintMarkovSettings(){
+      std::cout << "Temperature: " << temp << " Stepsize: " << step << std::endl;
+    }
 
   private:
 

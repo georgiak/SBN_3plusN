@@ -14,6 +14,7 @@
 #include "TCanvas.h"
 #include "TRandom3.h"
 #include "TGraph2D.h"
+#include "TF1.h"
 #include "TMatrix.h"
 #include "TMatrixD.h"
 #include "TMatrixT.h"

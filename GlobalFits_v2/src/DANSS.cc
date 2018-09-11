@@ -67,8 +67,8 @@ float DANSS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
           probDown += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * len_down / (en+1.8)),2);
           probUp += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * len_up / (en+1.8)),2);
         }
-        Numerator[ei] += probDown / pow(L0_down,2);
-        Denominator[ei] += probUp / pow(L0_up,2);
+        Numerator[ei] += probDown / pow(12.7,2);
+        Denominator[ei] += probUp / pow(10.7,2);
       }
     }
   }

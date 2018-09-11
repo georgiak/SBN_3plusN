@@ -237,10 +237,6 @@ float MiniBooNE::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   	}
   }
 
-  for(int i = 0; i < nBins_e; i++){
-    std::cout << "MB Osc. Signal: " << Prediction[i] << " Data: " << FullData[i] << std::endl;
-  }
-
   // Fill output tree
   chi2Nt->Fill(chi2,dof,model);
 

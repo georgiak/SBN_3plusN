@@ -1,6 +1,6 @@
 #include "fitter.h"
 
-int bruteforce(std::string xml, int massStart = -1){
+int globalFit(std::string xml){
 
   bool debug = true;
 
@@ -21,7 +21,7 @@ int bruteforce(std::string xml, int massStart = -1){
   std::cout << "Datasets Initialized!" << std::endl;
 
   // Create output File
-  std::string outfile = "brute.root";
+  std::string outfile = "globFit.root";
 	std::cout << "Output File: " << outfile << std::endl;
 	TString outputFile = outfile;
 	TFile *f = new TFile(outputFile, "RECREATE");
@@ -31,64 +31,37 @@ int bruteforce(std::string xml, int massStart = -1){
 	}
 
   OutTree * chi2Nt = new OutTree("Total");
-/*
+
   // Create a nu model
-  neutrinoModel nuModel;
+  neutrinoModel nuModel, nuModelOld;
+  double chi2, chi2Log, chi2LogOld;
+
+  std::cout << "Number of MC models = " << osc.nMCGen  << std::endl;
+
+  std::cout << "Initializing Markov chain parameters..." << std::endl;
+  osc.PrintMarkovSettings();
+  chi2Log = 0;  chi2LogOld = 0;
+  nuModelOld = osc.InitializeMarkovParams();
+
+  std::cout << "Start generating neutrino mass and mixing models" << std::endl;
   int count = 0;
-  int grdpts = osc.GridSize();
-  float chi2;
-  std::cout << "Beginning chi2 loop" << std::endl;
-  int mStart, mEnd;
-  if(massStart < 0){
-    mStart = 0; mEnd = grdpts;
-  }
-  else{
-    mStart = massStart; mEnd = massStart + 1;
-  }
-  for(int mi = mStart; mi < mEnd; mi++){
-    for(int uei = 0; uei < grdpts; uei++){
-      for(int umi = 0; umi < grdpts; umi++){
-        std::cout << "Progress: " << float(count)/(pow(grdpts,2)*(mEnd-mStart)/100.f) << "\% \r";
+  for(int iMCGen = 1; iMCGen <= osc.nMCGen; iMCGen++){
+    std::cout << "Progress: " << iMCGen << " / " << osc.nMCGen << "\r";
 
-		    nuModel.zero();
-		    //nuModel.Ue[0] = uei/float(grdpts)*(.5);
-		    //nuModel.Um[0] = umi/float(grdpts)*(.5);
-        nuModel.Ue[0] = pow(10,(uei/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
-        nuModel.Um[0] = pow(10,(umi/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
-		    nuModel.mNu[0] = pow(10,(mi/float(grdpts)*TMath::Log10(10./.1) + TMath::Log10(.1)));
-        if(osc.RejectModel(nuModel))
-          continue;
+    if(count == 0)
+      nuModel = osc.InitializeMarkovParams();
+    else
+      nuModel = osc.NewModel(nuModelOld);
 
-        // Calculate chi2s
-        chi2 = 0;
-        for(int i = 0; i < rdr.GetNDatasets(); i++){
-          chi2 += rdr.GetDataset(i)->Chi2(osc,nuModel,debug);
-        }
-
-        chi2Nt->Fill(chi2,ndf,nuModel);
-        count ++;
-      }
+    // Calculate chi2s
+    chi2 = 0;
+    for(int i = 0; i < rdr.GetNDatasets(); i++){
+      chi2 += rdr.GetDataset(i)->Chi2(osc,nuModel,debug);
     }
+
+    chi2Nt->Fill(chi2,ndf,nuModel);
+    count ++;
   }
-*/
-
-//  Single point
-  neutrinoModel nuModel;
-  nuModel.zero();
-  nuModel.Ue[0] = sqrt(.04/4.f);
-  nuModel.Um[0] = 1;
-  nuModel.mNu[0] = sqrt(1.72);
-
-  // Calculate chi2s
-  float chi2 = 0;
-  for(int i = 0; i < rdr.GetNDatasets(); i++){
-    chi2 += rdr.GetDataset(i)->Chi2(osc,nuModel,debug);
-  }
-  chi2Nt->Fill(chi2,ndf,nuModel);
-
-  std::cout << "CHI2: " << chi2 << std::endl;
-  return 1;
-
 
   // Write everything to File
   std::cout << "Writing to file." << std::endl;
@@ -138,6 +111,6 @@ int main(int argc, char* argv[]){
     return 0;
   }
 
-  bruteforce(xml,massStart);
+  globalFit(xml);
   return 0;
 }

@@ -4,6 +4,7 @@
 #include "NOMAD.h"
 #include "CDHS.h"
 #include "FromChi2Surf.h"
+#include "NEOS.h"
 #include "Atm.h"
 #include "MINOS.h"
 #include "CCFR.h"
@@ -53,6 +54,10 @@ int FitReader::Load(std::string xml){
         myDataSets.push_back(new Atm);
         UsingAtm = true;
         std::cout << "Using Atmospheric dataset" << std::endl;
+      }
+      else if(dset == "NEOS"){
+        myDataSets.push_back(new NEOS);
+        std::cout << "Using NEOS dataset" << std::endl;
       }
       else if(dset == "NuMI"){
         myDataSets.push_back(new NuMI);
@@ -125,7 +130,7 @@ int FitReader::Load(std::string xml){
     return 1;
   }
   else{
-    int nsteriles, cpcons, rndseed, grdpts;
+    int nsteriles, cpcons, rndseed, grdpts, nmcgen;
     float umax, usqmax, stepsize, temperature;
     nsteriles = stoi(pOsc->Attribute("nsteriles"));
     cpcons = stoi(pOsc->Attribute("cpcons"));
@@ -135,8 +140,9 @@ int FitReader::Load(std::string xml){
     usqmax = stof(pOsc->Attribute("usqmax"));
     stepsize = stof(pOsc->Attribute("stepsize"));
     temperature = stof(pOsc->Attribute("temperature"));
+    nmcgen = stof(pOsc->Attribute("nMCGen"));
 
-    myOscillator = Oscillator(.01f,100.f,0.f,umax,usqmax,stepsize,temperature,nsteriles,grdpts,cpcons,rndseed);
+    myOscillator = Oscillator(.01f,100.f,0.f,umax,usqmax,stepsize,temperature,nsteriles,grdpts,cpcons,nmcgen,rndseed);
     myOscillator.UsingAtm = UsingAtm;
   }
 

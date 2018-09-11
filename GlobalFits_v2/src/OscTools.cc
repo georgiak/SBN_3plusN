@@ -23,12 +23,13 @@ void OutTree::Fill(float _chi2, float _dof, neutrinoModel _nuModel){
   myTree->Fill();
 }
 
-Oscillator::Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, float _USqMax, float _stepSize, float _temperature, int _nSteriles, int _gridpts, bool _CPConserving, int seed){
+Oscillator::Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, float _USqMax, float _stepSize, float _temperature, int _nSteriles, int _gridpts, bool _CPConserving, int _nmcgen, int seed){
   dm2Min = _dm2Min;   dm2Max = _dm2Max;
   UMin = _UMin;       UMax = _UMax;
   gridpts = _gridpts;
   USqMax = _USqMax;
   nSteriles = _nSteriles;
+  nMCGen = _nmcgen;
   CPConserving = _CPConserving;
 
   usingUe = true;
