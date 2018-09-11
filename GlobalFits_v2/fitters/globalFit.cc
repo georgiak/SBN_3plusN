@@ -13,8 +13,6 @@ int globalFit(std::string xml){
   // Initialize datasets
   std::cout << "Initializing " << rdr.GetNDatasets() << " datasets!" << std::endl;
   int ndf = 0;
-  //std::string dataLoc = "/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/data/";
-  std::string dataLoc = "../../data/";
   for(int i = 0; i < rdr.GetNDatasets(); i++){
     ndf += rdr.GetDataset(i)->Init(dataLoc,osc,debug);
   }
@@ -82,22 +80,23 @@ int main(int argc, char* argv[]){
   int iarg = 0;
   opterr=1;
   int index;
-  int massStart = -1;
+  std::string dataLoc = "../../data/";
 
   const struct option longopts[] = {
     {"xml", 		required_argument, 	0, 'x'},
+    {"dataloc", optional_argument,  0,  'd'},
 	  {0,			no_argument, 		0,  0},
   };
 
   while(iarg != -1){
-    iarg = getopt_long(argc,argv, "x:t:", longopts, &index);
+    iarg = getopt_long(argc,argv, "x:d:", longopts, &index);
 
     switch(iarg){
 		  case 'x':
 			  xml = optarg;
 			  break;
-      case 't':
-        massStart = atoi(optarg);
+      case 'd':
+        dataLoc = optarg;
         break;
       case '?':
 		  case 'h':
