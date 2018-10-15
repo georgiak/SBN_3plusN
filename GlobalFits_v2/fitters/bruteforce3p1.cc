@@ -2,7 +2,7 @@
 
 int bruteforce(std::string xml, int massStart = -1){
 
-  bool debug = true;
+  bool debug = false;
 
   // Read our XML file
   FitReader rdr;
@@ -31,9 +31,10 @@ int bruteforce(std::string xml, int massStart = -1){
 	}
 
   OutTree * chi2Nt = new OutTree("Total");
-/*
+
   // Create a nu model
-  neutrinoModel nuModel;
+  //neutrinoModel nuModel;
+
   int count = 0;
   int grdpts = osc.GridSize();
   float chi2;
@@ -47,17 +48,18 @@ int bruteforce(std::string xml, int massStart = -1){
   }
   for(int mi = mStart; mi < mEnd; mi++){
     for(int uei = 0; uei < grdpts; uei++){
-      for(int umi = 0; umi < grdpts; umi++){
-        std::cout << "Progress: " << float(count)/(pow(grdpts,2)*(mEnd-mStart)/100.f) << "\% \r";
+      //for(int umi = 0; umi < grdpts; umi++){
+        std::cout << "Progress: " << float(count)/(pow(grdpts,1)*(mEnd-mStart)/100.f) << "\% \r";
 
+        neutrinoModel nuModel;
 		    nuModel.zero();
 		    //nuModel.Ue[0] = uei/float(grdpts)*(.5);
+        nuModel.Ue[0] = pow(10,(uei/float(grdpts)*TMath::Log10(.5/.01) + TMath::Log10(.01)));
 		    //nuModel.Um[0] = umi/float(grdpts)*(.5);
-        nuModel.Ue[0] = pow(10,(uei/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
-        nuModel.Um[0] = pow(10,(umi/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
+        nuModel.Um[0] = 1;  //pow(10,(umi/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
 		    nuModel.mNu[0] = pow(10,(mi/float(grdpts)*TMath::Log10(10./.1) + TMath::Log10(.1)));
-        if(osc.RejectModel(nuModel))
-          continue;
+        //if(osc.RejectModel(nuModel))
+        //  continue;
 
         // Calculate chi2s
         chi2 = 0;
@@ -67,28 +69,9 @@ int bruteforce(std::string xml, int massStart = -1){
 
         chi2Nt->Fill(chi2,ndf,nuModel);
         count ++;
-      }
+      //}
     }
   }
-*/
-
-//  Single point
-  neutrinoModel nuModel;
-  nuModel.zero();
-  nuModel.Ue[0] = sqrt(.04/4.f);
-  nuModel.Um[0] = 1;
-  nuModel.mNu[0] = sqrt(1.72);
-
-  // Calculate chi2s
-  float chi2 = 0;
-  for(int i = 0; i < rdr.GetNDatasets(); i++){
-    chi2 += rdr.GetDataset(i)->Chi2(osc,nuModel,debug);
-  }
-  chi2Nt->Fill(chi2,ndf,nuModel);
-
-  std::cout << "CHI2: " << chi2 << std::endl;
-  return 1;
-
 
   // Write everything to File
   std::cout << "Writing to file." << std::endl;

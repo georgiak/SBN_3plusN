@@ -19,19 +19,20 @@ int ntupleProcess(std::string xml){
 
   std::cout << "Combining the chi2s" << std::endl;
   for(int i = 0; i < rdr.GetNTrees(); i++){
+    std::cout << "A" << std::endl;
     rdr.GetTree(i)->SetBranchAddress("chi2",&_chi2);
     rdr.GetTree(i)->SetBranchAddress("m_sterile",&_m_sterile);
     rdr.GetTree(i)->SetBranchAddress("um_sterile",&_um_sterile);
     rdr.GetTree(i)->SetBranchAddress("ue_sterile",&_ue_sterile);
     rdr.GetTree(i)->SetBranchAddress("dof",&_dof);
-
+    std::cout << "C" << std::endl;
     if(i == 0){
       v_chi2.resize(rdr.GetTree(i)->GetEntries());
       v_mnu.resize(rdr.GetTree(i)->GetEntries());
       v_um4.resize(rdr.GetTree(i)->GetEntries());
       v_ue4.resize(rdr.GetTree(i)->GetEntries());
     }
-
+    std::cout << "B" << std::endl;
     rdr.GetTree(i)->GetEntry(90);
 
     for(int j = 0; j < rdr.GetTree(i)->GetEntries(); j++){
@@ -159,7 +160,8 @@ int ntupleProcess(std::string xml){
       }
       for(int sins = sinsStartRaster; sins < rdr.gridpts_sin22th; sins++){
         chi2 = chi2grid[sins][dm];
-        if(chi2 > 3.84 + chi2minRaster){
+        //if(chi2 > 3.84 + chi2minRaster){
+        if(chi2 > 2.706 + chi2minRaster){ 
           sin22th = pow(10,(sins/float(rdr.gridpts_sin22th) * TMath::Log10(1./1e-5) + TMath::Log10(1e-5)));
           dm2 = pow(10,(dm/float(rdr.gridpts_dm2) * TMath::Log10(100./.01) + TMath::Log10(.01)));
           t_app_95->Fill();

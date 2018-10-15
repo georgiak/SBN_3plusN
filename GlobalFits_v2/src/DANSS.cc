@@ -1,5 +1,15 @@
 #include "DANSS.h"
 
+/*
+Davio Cianci Aug 26th
+
+Fit method: https://arxiv.org/pdf/1709.04294.pdf
+DANSS paper: https://arxiv.org/pdf/1804.04046.pdf
+Energy Resolution: https://arxiv.org/pdf/1412.0817.pdf
+
+*/
+
+
 int DANSS::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   Observed.resize(nBins); // observed event ratio of down/up detectors
@@ -87,7 +97,8 @@ float DANSS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
   double systerror = .02;
   for(int iB = 0; iB < nBins; iB++){
-    chi2 += pow((Observed[iB] - ProbRatio[iB]) / sqrt(pow(StatsError[iB],2) + pow(systerror*Observed[iB],2)),2);
+    chi2 += pow((Observed[iB] - ProbRatio[iB]) / sqrt(pow(StatsError[iB],2) + pow(systerror*ProbRatio[iB],2)),2);
+    //std::cout << "A: " << ProbRatio[iB] <<  std::endl;
   }
 
   // Fill output Tree
