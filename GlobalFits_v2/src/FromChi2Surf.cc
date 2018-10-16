@@ -2,6 +2,9 @@
 
 int FromChi2Surf::Init(std::string dataLoc, Oscillator osc, bool debug){
 
+  //
+  // MINOS+
+  //
   TFile * f = new TFile((dataLoc+"minosplus_dataRelease.root").c_str(),"READ");
   TH2D * surf = (TH2D*)f->Get("dm241vsth24");
 

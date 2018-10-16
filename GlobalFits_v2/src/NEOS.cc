@@ -8,6 +8,7 @@ Energy Resolution: https://arxiv.org/pdf/1609.03910.pdf
 NEOS results: https://arxiv.org/pdf/1610.05134.pdf
 Antineutrino fluxes from https://arxiv.org/pdf/1101.2663.pdf and https://arxiv.org/pdf/1106.0687.pdf
 IBD XSec from https://arxiv.org/pdf/hep-ph/9903554.pdf
+
 */
 
 
@@ -15,55 +16,27 @@ int NEOS::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   double en, len, prob, norm;
 
-  // prompt energy
-  Energy = {          1.05554, 1.15959, 1.25667, 1.35333, 1.45272, 1.55443, 1.65394, 1.75384, 1.85395,
-                      1.95669, 2.05691, 2.15668, 2.25656, 2.35337, 2.45401, 2.55558, 2.65371, 2.75365,
-                      2.85314, 2.95504, 3.05502, 3.15733, 3.25636, 3.35703, 3.45452, 3.55391, 3.65320,
-                      3.75569, 3.85493, 3.95334, 4.05519, 4.15477, 4.25459, 4.35448, 4.45603, 4.55511,
-                      4.65367, 4.75292, 4.85386, 4.95462, 5.05290, 5.15490, 5.25578, 5.35309, 5.45342,
-                      5.55353, 5.65251, 5.75149, 5.85396, 5.95279, 6.05050, 6.15142, 6.25248, 6.35596,
-                      6.45501, 6.55417, 6.65510, 6.75543, 6.85126, 6.95296 };
   // neos/dayabay data
-  Observed = {        0.97774, 1.03994, 1.03064, 0.96082, 0.95823, 0.96296, 0.96341, 0.97332, 0.98857,
-                      0.96860, 0.98643, 0.99329, 1.00274, 0.98689, 1.01509, 1.01616, 0.98262, 0.99360,
-                      0.99360, 1.00290, 1.01494, 1.03430, 1.02287, 1.00198, 1.00259, 1.00000, 0.99512,
-                      1.01890, 1.01280, 0.98598, 0.99405, 0.99619, 1.00442, 1.01402, 1.01479, 1.00473,
-                      1.03171, 1.02576, 1.01128, 1.04253, 1.01280, 1.02454, 1.00869, 1.00488, 0.97561,
-                      0.99070, 0.97820, 0.96540, 1.03887, 1.02256, 0.97866, 1.01387, 1.00244, 1.05046,
-                      1.03979, 1.03155, 1.01692, 1.03750, 0.99741, 1.05168};
+  Observed = {0.97774, 1.03994, 1.03064, 0.96082, 0.95823, 0.96296, 0.96341, 0.97332, 0.98857,
+              0.96860, 0.98643, 0.99329, 1.00274, 0.98689, 1.01509, 1.01616, 0.98262, 0.99360,
+              0.99360, 1.00290, 1.01494, 1.03430, 1.02287, 1.00198, 1.00259, 1.00000, 0.99512,
+              1.01890, 1.01280, 0.98598, 0.99405, 0.99619, 1.00442, 1.01402, 1.01479, 1.00473,
+              1.03171, 1.02576, 1.01128, 1.04253, 1.01280, 1.02454, 1.00869, 1.00488, 0.97561,
+              0.99070, 0.97820, 0.96540, 1.03887, 1.02256, 0.97866, 1.01387, 1.00244, 1.05046,
+              1.03979, 1.03155, 1.01692, 1.03750, 0.99741, 1.05168};
   // neos/dayabay statistical error
-  StatsError = {      0.0215, 0.01966, 0.01799, 0.01647, 0.01418, 0.01402, 0.01327, 0.0122, 0.01189,
-                      0.01189, 0.01144, 0.01113, 0.01113, 0.01098, 0.01098, 0.01067, 0.01098, 0.01021,
-                      0.01082, 0.01051, 0.01067, 0.01097, 0.01128, 0.01128, 0.01159, 0.01174, 0.01174,
-                      0.0122, 0.01281, 0.01295, 0.01311, 0.01326, 0.01403, 0.01433, 0.01478, 0.01463,
-                      0.01631, 0.01647, 0.01723, 0.01738, 0.01845, 0.01936, 0.01966, 0.02042, 0.02165,
-                      0.02332, 0.0247, 0.02591, 0.02775, 0.02912, 0.03125, 0.03339, 0.03445, 0.03902,
-                      0.04192, 0.04375, 0.05305, 0.06052, 0.07134, 0.08841};
+  StatsError = {0.0215, 0.01966, 0.01799, 0.01647, 0.01418, 0.01402, 0.01327, 0.0122, 0.01189,
+                0.01189, 0.01144, 0.01113, 0.01113, 0.01098, 0.01098, 0.01067, 0.01098, 0.01021,
+                0.01082, 0.01051, 0.01067, 0.01097, 0.01128, 0.01128, 0.01159, 0.01174, 0.01174,
+                0.0122, 0.01281, 0.01295, 0.01311, 0.01326, 0.01403, 0.01433, 0.01478, 0.01463,
+                0.01631, 0.01647, 0.01723, 0.01738, 0.01845, 0.01936, 0.01966, 0.02042, 0.02165,
+                0.02332, 0.0247, 0.02591, 0.02775, 0.02912, 0.03125, 0.03339, 0.03445, 0.03902,
+                0.04192, 0.04375, 0.05305, 0.06052, 0.07134, 0.08841};
 
   // Fluxes
-  // NOTE to account for high and  low energy, I incorrectly assume linearity before first point and asymptote to zero for the end
-  double fx_energy[] = {1.8, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75,
-                        5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 7.75, 8, 12};
-  double fx_u235[] = {  1.48, 1.32, 1.12, 9.15e-1, 7.7e-1, 6.51e-1, 5.53e-1,
-                        4.54e-1, 3.643e-1, 2.94e-1, 2.3e-1, 1.79e-1, 1.38e-1,
-                        1.1e-1, 8.64e-2, 6.46e-2, 5.1e-2, 3.89e-2, 2.87e-2,
-                        2.17e-2, 1.61e-2, 1.14e-2, 7.17e-3, 4.64e-3, 2.97e-3,
-                        1.62e-3,0};
-  double fx_u238[] = {  1.2724, 1.15, 9.97e-1, 8.55e-1, 7.27e-1, 6.11e-1, 5.06e-1,
-                        4.15e-1, 3.36e-1, 2.67e-1, 2.10e-1,  1.63e-1, 1.27e-1,
-                        9.69e-2,  7.33e-2, 5.52e-2, 4.14e-2, 3.10e-2, 2.30e-2,
-                        1.66e-2,  1.16e-2, 7.85e-3, 5.23e-3, 3.44e-3, 2.19e-3,
-                        1.38e-3,0};
-  double fx_pu239[] = { 1.208, 1.08, 9.2e-1, 7.19e-1, 6.2e-1, 5.15e-1, 3.98e-1,
-                        3.29e-1, 2.61e-1, 1.95e-1, 1.57e-1, 1.13e-1, 8.33e-2,
-                        6.13e-2, 4.83e-2, 3.54e-2, 2.92e-2, 1.92e-2, 1.28e-2,
-                        9.98e-3, 7.54e-3, 4.98e-3, 3.26e-3, 1.95e-3, 8.47e-4,
-                        5.87e-4,0};
-  double fx_pu241[] = {1.404, 1.26, 1.08, 8.94e-1, 7.77e-1, 6.41e-1, 5.36e-1,
-                        4.39e-1, 3.46e-1, 2.82e-1, 2.2e-1, 1.66e-1, 1.25e-1,
-                        9.74e-2, 7.74e-2, 5.58e-2, 4.11e-2, 3.05e-2, 1.98e-2,
-                        1.54e-2, 1.09e-2, 7.75e-3, 4.47e-3, 2.9e-3, 1.78e-3,
-                        1.06e-3,0};
+  // NOTE to account for high and low energy, I incorrectly assume linearity before first point and asymptote to zero at the end in order to
+  // extend the function across my desired energy range.
+  // This will only affect neutrino energies < 2MeV and > 8MeV, which only come in through smearing anyways.
   // I interpolated these in python to make things easier
   ifstream file;
   file.open(dataLoc+"neos_fluxarray.txt");
@@ -85,10 +58,10 @@ int NEOS::Init(std::string dataLoc, Oscillator osc, bool debug){
   dif1.SetData(51,xsec_en,xsec);
   for(int i = 0; i < 200; i++){
     en = .05 * i + .05/2.;
-    XSec[i] = dif1.Eval(en+.8);//* 1e-42;
+    XSec[i] = dif1.Eval(en+.8) * 1e-42;
   }
 
-  // Isotope fract (array in order u235 u238 pu239 pu241) for each detector
+  // Isotope fission fraction (array in order u235 u238 pu239 pu241) for each detector
   DB_f_iso = {{ { .564, .564, .557, .552},
                 { .076, .076, .076, .076},
                 { .303, .303, .312, .315},
@@ -100,15 +73,16 @@ int NEOS::Init(std::string dataLoc, Oscillator osc, bool debug){
   double eff_mult[] = {.9744, .9747, .9757, .9757};
   DB_eff = {eff_mu[0] * eff_mult[0], eff_mu[1] * eff_mult[1], eff_mu[2] * eff_mult[2], eff_mu[3] * eff_mult[3]};
 
-  // Length  (array for each detector in order AD1 AD2 AD3 AD8) for each reactor
+  // Length  (array for each detector in order AD1 AD2 AD3 AD8) for each reactor at Daya Bay
   DB_l_d = {{ {362.38, 371.76, 903.47, 817.16, 1353.62, 1265.32},
               {357.94, 368.41, 903.35, 816.90, 1354.23, 1265.89},
               {1332.48, 1358.15, 467.57, 489.58, 557.58, 499.2},
               {1337.43, 1362.88, 472.97, 495.35, 558.71, 501.07}}};
 
+  // Active detector mass for Daya Bay
   DB_mass = { 907.f, 916.f, 915.f,  950.f };
 
-  // Smearing matrix
+  // Smearing matrix from Daya Bay paper
   file.open(dataLoc+"DayaBay_DetectorModel_Etrue_to_Erec.txt");
   for(short i = 0; i < 240; i++){
     for(short j = 0; j < 240; j++){
@@ -118,6 +92,8 @@ int NEOS::Init(std::string dataLoc, Oscillator osc, bool debug){
   file.close();
 
   // Generate the smearing matrix for NEOS_H
+  // NOTE: this does not account for positrons escaping the detector, which would result in a flat, non-zero baseline
+  // to the left of the gaussian peak ( sorta like -^\_ ). Described in one of the papers above. I'll look into it.
   int nobs = 100000;
   double resol;
   std::string st_gaus;
@@ -137,12 +113,13 @@ int NEOS::Init(std::string dataLoc, Oscillator osc, bool debug){
     delete mygaus;
   }
 
+  // Now actually calculate event rates!
   //
   // Daya Bay 3v
   //
   std::array < std::array < double, 200 >, 4 > DB_Predicted_3n_Unsmeared, DB_Predicted_3n_Smeared;
   for(int iDet = 0; iDet < 4; iDet ++){ // Loop through detectors
-    for(int iEn = 0; iEn < 200; iEn++){
+    for(int iEn = 0; iEn < 200; iEn++){ // Loop through positron energy from 0-10MeV
       DB_Predicted_3n_Unsmeared[iDet][iEn] = 0;
 
       // Average across each bin to catch fast oscillations (particularly in low bins)
@@ -174,6 +151,7 @@ int NEOS::Init(std::string dataLoc, Oscillator osc, bool debug){
   for(int iB = 0; iB < nBins; iB++){
     DB_Predicted_3n[iB] = 0;
     for(int iDet = 0; iDet < 4; iDet++){
+      // Need to average between two because of the binning of the smearing matrix
       DB_Predicted_3n[iB] += ((DB_Predicted_3n_Smeared[iDet][20+iB*2] + DB_Predicted_3n_Smeared[iDet][20+iB*2 + 1])/2.0) * (DB_mass[iDet] / 922.f);
     }
   }
@@ -322,7 +300,7 @@ float NEOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
   //
   // NOW WE HAVE THE FINAL RATIO FINALLY! let's see how off we are.
-  // fucking wooof what a journey.
+  //
   std::array < double, nBins > Ratio;
   for(int iB = 0; iB < nBins; iB++){
     Ratio[iB] = NEOS_Ratio[iB]/DB_Ratio[iB];

@@ -11,11 +11,13 @@ class DANSS: public dataset{
     float Chi2(Oscillator osc, neutrinoModel nu, bool debug);
 
   private:
-    const int nBins = 24;
+    static const int nBins = 24;
     const double L0_down = 12.85;
     const double L0_up = 10.9;
-    std::vector < double > Observed, Energy, StatsError;
-    std::vector < std::vector < double > > EnergySmearing;
+    const int binAvg = 50;
+    const int lenAvg = 10;
+    std::array < double, nBins > Observed, StatsError;
+    std::array < std::array < double,48 >, 48 > EnergySmearing;
 };
 
 #endif

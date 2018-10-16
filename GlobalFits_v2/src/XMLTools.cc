@@ -7,6 +7,7 @@
 #include "NEOS.h"
 #include "Atm.h"
 #include "MINOS.h"
+#include "PROSPECT.h"
 #include "CCFR.h"
 #include "Bugey.h"
 #include "DANSS.h"
@@ -82,6 +83,10 @@ int FitReader::Load(std::string xml){
       else if(dset == "Gallium"){
         myDataSets.push_back(new Gallium);
         std::cout << "Using Gallium" << std::endl;
+      }
+      else if(dset == "PROSPECT"){
+        myDataSets.push_back(new PROSPECT);
+        std::cout << "Using Prospect" << std::endl;
       }
       else if(dset == "Bugey"){
         myDataSets.push_back(new Bugey);
