@@ -9,12 +9,6 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
   FullData.resize(nBins);
   Full_fractCovMatrix.resize(nBins, std::vector<float>(nBins));
 
-  float *nu_EnuQE = new float[nBins + 1];
-	float *nu_FOsc_EnuQE = new float[nFOsc];
-	float *nu_FOsc_EnuTrue = new float[nFOsc];
-	float *nu_FOsc_LnuTrue = new float[nFOsc];
-	float *nu_FOsc_weight = new float[nFOsc];
-
   if(!nubar){
     // If in neutrino mode
     nFOsc = 1267007;
@@ -29,6 +23,12 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
     str_fracterrormatrix = dataLoc + "miniboone_dis/miniboone_frac_shape_matrix_numubar_disap.txt";
     str_fullosc = dataLoc + "miniboone_dis/numubardisap_ntuple.txt";
   }
+
+  float *nu_EnuQE = new float[nBins + 1];
+	float *nu_FOsc_EnuQE = new float[nFOsc];
+	float *nu_FOsc_EnuTrue = new float[nFOsc];
+	float *nu_FOsc_LnuTrue = new float[nFOsc];
+	float *nu_FOsc_weight = new float[nFOsc];
 
 	ifstream file;
 	file.open(str_data_numu);

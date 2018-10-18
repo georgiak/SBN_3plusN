@@ -10,12 +10,6 @@ int MiniBooNE::Init(std::string dataLoc, Oscillator osc, bool debug){
   Background.resize(nBins_e + nBins_mu);
   Full_fractCovMatrix.resize(nBins_e + nBins_e + nBins_mu, std::vector < float > (nBins_e + nBins_e + nBins_mu));
 
-  float *nu_EnuQE = new float[nBins_e + 1];
-	float *nu_FOsc_EnuQE = new float[nFOscEvts];
-	float *nu_FOsc_EnuTrue = new float[nFOscEvts];
-	float *nu_FOsc_LnuTrue = new float[nFOscEvts];
-	float *nu_FOsc_weight = new float[nFOscEvts];
-
   if(!nubar){
     // If in neutrino mode:
     str_data_nue = dataLoc + "miniboone/data_nue.txt";
@@ -34,6 +28,12 @@ int MiniBooNE::Init(std::string dataLoc, Oscillator osc, bool debug){
     str_fracterrormatrix = dataLoc + "miniboone/miniboone_full_fractcovmatrix_nubar_lowe.txt";
     str_fullosc = dataLoc + "miniboone/miniboone_numubarnuebarfullosc_ntuple.txt";
   }
+
+  float *nu_EnuQE = new float[nBins_e + 1];
+	float *nu_FOsc_EnuQE = new float[nFOscEvts];
+	float *nu_FOsc_EnuTrue = new float[nFOscEvts];
+	float *nu_FOsc_LnuTrue = new float[nFOscEvts];
+	float *nu_FOsc_weight = new float[nFOscEvts];
 
   ifstream file;
   // Get measured Nue events per reconstructed electron neutrino energy bin (enuqe)

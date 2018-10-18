@@ -80,7 +80,7 @@ int main(int argc, char* argv[]){
   int iarg = 0;
   opterr=1;
   int index;
-  std::string dataLoc = "../../data/";
+  dataLoc = "../../data/";
 
   const struct option longopts[] = {
     {"xml", 		required_argument, 	0, 'x'},
