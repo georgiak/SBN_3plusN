@@ -25,6 +25,8 @@ class ProcessReader{
     int Load(std::string xml);
     TTree* GetTree(int ind) { return data_trees[ind]; };
     int GetNTrees() { return data_trees.size(); };
+    std::string GetName(int ind) { return data_names[ind];  };
+    TFile* GetFile(int ind) { return  data_files[ind];  };
 
     int gridpts_dm2, gridpts_sin22th;
     std::string tag;
