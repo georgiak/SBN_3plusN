@@ -3,6 +3,8 @@ add_executable (process_3p1 process_threeplusone.cc)
 add_executable (ntupleGridder ntupleGridder_old.cc)
 add_executable (globalFit globalFit.cc)
 add_executable (singlepoint singlepoint.cc)
+add_executable (process_global process_global.cc)
+add_executable (process_ntuple  process_ntuple.cc)
 
 include_directories (${CMAKE_SOURCE_DIR}/inc)
 include_directories (${CMAKE_SOURCE_DIR}/tinyxml)
@@ -21,3 +23,9 @@ target_link_libraries (globalFit TinyXMLLib)
 
 target_link_libraries (singlepoint DatasetLib)
 target_link_libraries (singlepoint TinyXMLLib)
+
+target_link_libraries (process_global DatasetLib)
+target_link_libraries (process_global TinyXMLLib)
+
+target_link_libraries (process_ntuple DatasetLib)
+target_link_libraries (process_ntuple TinyXMLLib)

@@ -161,7 +161,7 @@ int ntupleProcess(std::string xml){
       for(int sins = sinsStartRaster; sins < rdr.gridpts_sin22th; sins++){
         chi2 = chi2grid[sins][dm];
         //if(chi2 > 3.84 + chi2minRaster){
-        if(chi2 > 2.706 + chi2minRaster){ 
+        if(chi2 > 2.706 + chi2minRaster){
           sin22th = pow(10,(sins/float(rdr.gridpts_sin22th) * TMath::Log10(1./1e-5) + TMath::Log10(1e-5)));
           dm2 = pow(10,(dm/float(rdr.gridpts_dm2) * TMath::Log10(100./.01) + TMath::Log10(.01)));
           t_app_95->Fill();
