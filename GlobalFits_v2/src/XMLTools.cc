@@ -147,7 +147,7 @@ int FitReader::Load(std::string xml){
     temperature = stof(pOsc->Attribute("temperature"));
     nmcgen = stof(pOsc->Attribute("nMCGen"));
 
-    myOscillator = Oscillator(.01f,100.f,0.f,umax,usqmax,stepsize,temperature,nsteriles,grdpts,cpcons,nmcgen,rndseed);
+    myOscillator = Oscillator(.01f,100.f,1e-3,umax,usqmax,stepsize,temperature,nsteriles,grdpts,cpcons,nmcgen,rndseed);
     myOscillator.UsingAtm = UsingAtm;
   }
 

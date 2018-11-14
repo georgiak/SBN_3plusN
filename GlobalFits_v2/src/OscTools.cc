@@ -159,9 +159,9 @@ neutrinoModel Oscillator::InitializeMarkovParams(){
     // Initial Params for Mass and Mixing
     if(nSteriles > 0){
       for(int i = 0; i < nSteriles; i++){
-        modelOld.mNu[i] = pow(10., (TMath::Log10(dm2Min) + ran[nSteriles*i]*TMath::Log10(dm2Max/dm2Min))/2);
-        modelOld.Ue[i] = UMin + ran[3*i+1] * (UMax - UMin);
-        modelOld.Um[i] = UMin + ran[3*i+2] * (UMax - UMin);
+        modelOld.mNu[i] = pow(10., (TMath::Log10(dm2Min) + ran[3*i]*TMath::Log10(dm2Max/dm2Min))/2);
+        modelOld.Ue[i] = pow(10., TMath::Log10(UMin) + ran[3*i + 1] * TMath::Log10(UMax/UMin));
+        modelOld.Um[i] = pow(10., TMath::Log10(UMin) + ran[3*i + 2] * TMath::Log10(UMax/UMin));
       }
     }
     // Now, let's do the CP factors, phi
@@ -194,12 +194,12 @@ neutrinoModel Oscillator::NewModel(neutrinoModel modelOld){
 
     // Alright, let's step forward with these masses and mixing matrix elements!
     for(int i = 0; i < nSteriles; i++){
-      model.mNu[i] = pow(10., (TMath::Log10(modelOld.mNu[i]) + (ran[nSteriles*i] - .5)*2*step*TMath::Log10(dm2Max/dm2Min))/2);
+      model.mNu[i] = pow(10., (TMath::Log10(modelOld.mNu[i]) + (ran[3*i] - .5)*2*step*TMath::Log10(dm2Max/dm2Min))/2);
 
-      if(usingUe)     model.Ue[i] = modelOld.Ue[i] + 2*(ran[nSteriles*i+1] - 0.5)*(UMax - UMin)*step;
+      if(usingUe) model.Ue[i] = pow(10.,TMath::Log10(modelOld.Ue[i]) + (ran[3*i+1] - .5)*2*step*TMath::Log10(UMax/UMin));
       else    model.Ue[i] = 0.;
 
-      if(usingUm)     model.Um[i] = modelOld.Um[i] + 2*(ran[nSteriles*i+2] - 0.5)*(UMax - UMin)*step;
+      if(usingUm) model.Um[i] = pow(10.,TMath::Log10(modelOld.Um[i]) + (ran[3*i+2] - .5)*2*step*TMath::Log10(UMax/UMin));
       else    model.Um[i] = 0.;
     }
     if(nCPFactors > 0){
