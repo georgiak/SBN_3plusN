@@ -11,8 +11,8 @@ class MiniBooNE: public dataset{
     using dataset::Init;
     int Init(std::string dataLoc, Oscillator osc, bool debug);
     float Chi2(Oscillator osc, neutrinoModel nu, bool debug);
-
   private:
+    
     bool nubar;
     const short nBins_e = 11;
     const short nBins_mu = 8;

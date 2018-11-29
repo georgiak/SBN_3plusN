@@ -5,6 +5,7 @@
 #include "CDHS.h"
 #include "FromChi2Surf.h"
 #include "NEOS.h"
+#include "MiniBooNE_combined.h"
 #include "Atm.h"
 #include "MINOS.h"
 #include "PROSPECT.h"
@@ -75,6 +76,10 @@ int FitReader::Load(std::string xml){
       else if(dset == "MINOS"){
         myDataSets.push_back(new MINOS);
         std::cout << "Using MINOS (old)" << std::endl;
+      }
+      else if(dset == "MiniBooNE_combined"){
+        myDataSets.push_back(new MiniBooNE_combined);
+        std::cout << "Using MiniBooNE combined neutrino antineutrino" << std::endl;
       }
       else if(dset == "CCFR"){
         myDataSets.push_back(new CCFR);

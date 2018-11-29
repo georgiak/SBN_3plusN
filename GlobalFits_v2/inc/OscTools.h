@@ -48,7 +48,7 @@ class Oscillator{
 
     bool UsingAtm;
 
-    int nMCGen;
+    int nMCGen, nSteriles;
 
     void PrintMarkovSettings(){
       std::cout << "Temperature: " << temp << " Stepsize: " << step << std::endl;
@@ -58,7 +58,7 @@ class Oscillator{
 
     float ran[13];
     float dm2Min, dm2Max, UMin, UMax, USqMax, temp, step;
-    int nSteriles, gridpts;
+    int gridpts;
     bool CPConserving, reject1, reject2, reject3, reject4, usingUe, usingUm;
 };
 

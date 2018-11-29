@@ -48,15 +48,13 @@ int bruteforce(std::string xml, int massStart = -1){
   }
   for(int mi = mStart; mi < mEnd; mi++){
     for(int uei = 0; uei < grdpts; uei++){
-      //for(int umi = 0; umi < grdpts; umi++){
-        std::cout << "Progress: " << float(count)/(pow(grdpts,1)*(mEnd-mStart)/100.f) << "\% \r";
+      for(int umi = 0; umi < grdpts; umi++){
+        std::cout << "Progress: " << float(count)/(pow(grdpts,2)*(mEnd-mStart)/(100.f)) << "\% \r";
 
         neutrinoModel nuModel;
 		    nuModel.zero();
-		    //nuModel.Ue[0] = uei/float(grdpts)*(.5);
-        nuModel.Ue[0] = pow(10,(uei/float(grdpts)*TMath::Log10(.5/.01) + TMath::Log10(.01)));
-		    //nuModel.Um[0] = umi/float(grdpts)*(.5);
-        nuModel.Um[0] = 1;  //pow(10,(umi/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
+        nuModel.Ue[0] = pow(10,(uei/float(grdpts)*TMath::Log10(1/1e-3) + TMath::Log10(1e-3)));
+        nuModel.Um[0] = pow(10,(umi/float(grdpts)*TMath::Log10(1./1e-3) + TMath::Log10(1e-3)));
 		    nuModel.mNu[0] = pow(10,(mi/float(grdpts)*TMath::Log10(10./.1) + TMath::Log10(.1)));
         //if(osc.RejectModel(nuModel))
         //  continue;
@@ -69,7 +67,7 @@ int bruteforce(std::string xml, int massStart = -1){
 
         chi2Nt->Fill(chi2,ndf,nuModel);
         count ++;
-      //}
+      }
     }
   }
 

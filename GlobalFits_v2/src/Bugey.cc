@@ -99,7 +99,7 @@ int Bugey::Init(std::string dataLoc, Oscillator osc, bool debug){
   //Initialize output tree
   chi2Nt = new  OutTree("Bugey");
 
-  if(debug) std::cout << "Bugey initialized. Bins: " << nBins << std::endl;
+  if(debug) std::cout << "Bugey initialized. Bins: " << dof << std::endl;
   return dof;
 }
 

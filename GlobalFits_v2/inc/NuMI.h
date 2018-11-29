@@ -11,11 +11,13 @@ class NuMI: public dataset{
     float Chi2(Oscillator osc, neutrinoModel nu, bool debug);
 
   private:
-    const int nBins = 10;
+    static const int nBins = 10;
     const int nFOscEvts = 3323;
 
-    std::vector < int > NueData;
-    std::vector < float > Signal, TotalError, NueBgr, NueBgr_error, FOsc_fracError;
+    std::array < int, nBins > NueData;
+    std::array < float, nBins > NueBgr, NueBgr_error;
+    std::vector < float > Signal, TotalError, FOsc_fracError;
+
     std::vector < std::vector < float > >  Lib_sin, Lib_sinsq;
 };
 #endif

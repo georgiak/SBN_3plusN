@@ -15,6 +15,8 @@ IBD XSec from https://arxiv.org/pdf/hep-ph/9903554.pdf
 int NEOS::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   double en, len, prob, norm;
+  Cov.ResizeTo(60,60);
+
 
   // neos/dayabay data
   Observed = {0.97774, 1.03994, 1.03064, 0.96082, 0.95823, 0.96296, 0.96341, 0.97332, 0.98857,
@@ -24,14 +26,6 @@ int NEOS::Init(std::string dataLoc, Oscillator osc, bool debug){
               1.03171, 1.02576, 1.01128, 1.04253, 1.01280, 1.02454, 1.00869, 1.00488, 0.97561,
               0.99070, 0.97820, 0.96540, 1.03887, 1.02256, 0.97866, 1.01387, 1.00244, 1.05046,
               1.03979, 1.03155, 1.01692, 1.03750, 0.99741, 1.05168};
-  // neos/dayabay statistical error
-  StatsError = {0.0215, 0.01966, 0.01799, 0.01647, 0.01418, 0.01402, 0.01327, 0.0122, 0.01189,
-                0.01189, 0.01144, 0.01113, 0.01113, 0.01098, 0.01098, 0.01067, 0.01098, 0.01021,
-                0.01082, 0.01051, 0.01067, 0.01097, 0.01128, 0.01128, 0.01159, 0.01174, 0.01174,
-                0.0122, 0.01281, 0.01295, 0.01311, 0.01326, 0.01403, 0.01433, 0.01478, 0.01463,
-                0.01631, 0.01647, 0.01723, 0.01738, 0.01845, 0.01936, 0.01966, 0.02042, 0.02165,
-                0.02332, 0.0247, 0.02591, 0.02775, 0.02912, 0.03125, 0.03339, 0.03445, 0.03902,
-                0.04192, 0.04375, 0.05305, 0.06052, 0.07134, 0.08841};
 
   // Fluxes
   // NOTE to account for high and low energy, I incorrectly assume linearity before first point and asymptote to zero at the end in order to
@@ -190,6 +184,30 @@ int NEOS::Init(std::string dataLoc, Oscillator osc, bool debug){
     NEOS_Predicted_3n[iB] = (NEOS_Predicted_3n_Smeared[20+iB*2] + NEOS_Predicted_3n_Smeared[20+iB*2 + 1])/2.0;
   }
 
+  // load up fractional covariance Matrix
+  file.open(dataLoc+"neos_cov.txt");
+  for(short i = 0; i < 60; i++){
+    for(short j = 0; j < 60; j++){
+  	  file >> Cov[i][j];
+    }
+  }
+  file.close();
+/*
+  // Make full cov matrix
+  for(int iB = 0; iB < 60; iB++){
+    for(int jB = 0; jB < 60; jB++){
+      Cov[iB][jB] *= sqrt(StatsError[iB]) * sqrt(StatsError[jB]);
+    }
+  }
+
+  // Add stats error to cov Matrix
+  for(int iB = 0; iB < 60; iB++){
+    Cov[iB][iB] += StatsError[iB];
+  }
+  */
+
+  Cov = Cov.Invert();
+
   dof = nBins;
 
   // Iniitalize our output tree
@@ -305,21 +323,18 @@ float NEOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   for(int iB = 0; iB < nBins; iB++){
     Ratio[iB] = NEOS_Ratio[iB]/DB_Ratio[iB];
     //std::cout << "RATIO: " << Ratio[iB] << std::endl;
-
-    // Add stats error to cov Matrix
-    //Cov[iB][iB] += pow(StatsError[iB],2);
   }
 
   // Calc chi2
-/*
   for(int iB = 0; iB < nBins; iB++){
     for(int jB = 0; jB < nBins; jB++){
       chi2 += (Observed[iB] - Ratio[iB]) * Cov[iB][jB] * (Observed[jB] - Ratio[jB]);
-//      if(chi2 < 0)
-//        std:cout << "NEG: " << (Observed[iB] - Ratio[iB]) << " " <<  (Observed[jB] - Ratio[jB]) << " COV: " << Cov[iB][jB] << std::endl;
+      //if(chi2 < 0)
+        //std:cout << "NEG: " << (Observed[iB] - Ratio[iB]) << " " <<  (Observed[jB] - Ratio[jB]) << " COV: " << Cov[iB][jB] << std::endl;
     }
   }
-*/
+
+/*
   std::array<double,60> Cov_diag = {
             9.20600000e-06, 9.20600000e-06, 9.20600000e-06, 1.09069839e-05,2.31834075e-05, 2.57525221e-05,
             2.01124903e-05, 1.57774130e-05,1.57679770e-05, 1.73737888e-05, 1.90444589e-05, 1.95464853e-05,
@@ -332,10 +347,12 @@ float NEOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
             6.28987583e-06, 4.98552335e-06, 4.92512830e-06, 4.42123858e-06,3.63720401e-06, 3.41846086e-06,
             2.59899532e-06, 2.14558929e-06,1.76456045e-06, 1.35914120e-06, 1.16952604e-06, 1.40658209e-06};
 
+
+
   for(int iB = 0; iB < nBins; iB++){
     chi2 += pow(Observed[iB] - Ratio[iB],2) / (pow(StatsError[iB],2) + Cov_diag[iB]);
   }
-
+*/
   // Fill output Tree
   chi2Nt->Fill(chi2, dof, model);
 

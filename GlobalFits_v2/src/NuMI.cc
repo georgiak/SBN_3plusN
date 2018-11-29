@@ -4,29 +4,17 @@ int NuMI::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   Signal.resize(nBins);
   TotalError.resize(nBins);
-  NueData.resize(nBins);
-  NueBgr.resize(nBins);
-  NueBgr_error.resize(nBins);
   FOsc_fracError.resize(nBins);
 
-  float *EnuQE = new float[nBins+1];
   float *FOsc_EnuQE = new float[nFOscEvts];     // reconstructed neutrino energy
   float *FOsc_EnuTrue = new float[nFOscEvts];   // true energy of neutrino
   float *FOsc_LnuTrue = new float[nFOscEvts];   // distance from production and detection points
   float *FOsc_weight = new float[nFOscEvts];
 
-  float temp0[] = {200.,300.,475.,675.,900.,1100.,1300.,1500.,1700.,2000.,3000.};
-  int temp1[] = {59,142,151,146,83,68,57,39,19,16};
-  float temp2[] = {41.7574,117.537,123.673,118.025,82.0508,64.8166,41.1826,31.3267,22.0301,17.6672};
-  float temp3[] = {12.112,25.5363,27.4975,24.8745,18.1301,15.11,10.5605,9.03036,6.88422,5.70684};
-
-  for(int i = 0; i < nBins; i++){
-    EnuQE[i] = temp0[i];
-    NueData[i] = temp1[i];
-    NueBgr[i] = temp2[i];
-    NueBgr_error[i] = temp3[i];
-  }
-  EnuQE[nBins] = temp0[nBins];
+  std::array < float, nBins + 1 > EnuQE = {200.,300.,475.,675.,900.,1100.,1300.,1500.,1700.,2000.,3000.};
+  NueData =  {59,142,151,146,83,68,57,39,19,16};
+  NueBgr = {41.7574,117.537,123.673,118.025,82.0508,64.8166,41.1826,31.3267,22.0301,17.6672};
+  NueBgr_error = {12.112,25.5363,27.4975,24.8745,18.1301,15.11,10.5605,9.03036,6.88422,5.70684};
 
   ifstream file;
   // Get nFullOscEvts from another file!
@@ -65,8 +53,8 @@ int NuMI::Init(std::string dataLoc, Oscillator osc, bool debug){
           ETru = FOsc_EnuTrue[iFOsc];
           LTru = FOsc_LnuTrue[iFOsc];
 
-          Lib_sinsq[mi][iB] += FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru*.01/ETru),2);
-          Lib_sin[mi][iB] += FOsc_weight[iFOsc]*sin(1.267*2*dm2*LTru*.01/ETru);
+          Lib_sinsq[mi][iB] += FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru/ETru),2);
+          Lib_sin[mi][iB] += FOsc_weight[iFOsc]*sin(1.267*2*dm2*LTru/ETru);
         }
       }
     }

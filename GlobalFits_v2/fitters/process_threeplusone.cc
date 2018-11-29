@@ -87,8 +87,7 @@ int ntupleProcess(std::string xml){
   }
   t_dis->Write();
 
-
-  // Nue disappearance
+  // Nue appearance
   t_app_90->Branch("chi2",&chi2,"chi2/F");
   t_app_90->Branch("sin22th",&sin22th,"sin22th/F");
   t_app_90->Branch("dm2",&dm2,"dm2/F");
@@ -142,6 +141,9 @@ int ntupleProcess(std::string xml){
 
   // If we're doing a raster scan:
   if(rdr.raster){
+    std::cout << "Raster scan" << std::endl;
+
+    // Nueapp
     TTree * t_app_95 = new TTree("nueapp_95","nueapp_95");
     t_app_95->Branch("chi2",&chi2,"chi2/F");
     t_app_95->Branch("sin22th",&sin22th,"sin22th/F");

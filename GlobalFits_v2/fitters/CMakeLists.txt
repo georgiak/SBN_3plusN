@@ -1,3 +1,4 @@
+add_executable (ntuple_metrics ntuple_metrics.cc)
 add_executable (bruteforce3p1 bruteforce3p1.cc)
 add_executable (process_3p1 process_threeplusone.cc)
 add_executable (ntupleGridder ntupleGridder_old.cc)
@@ -29,3 +30,6 @@ target_link_libraries (process_global TinyXMLLib)
 
 target_link_libraries (process_ntuple DatasetLib)
 target_link_libraries (process_ntuple TinyXMLLib)
+
+target_link_libraries (ntuple_metrics DatasetLib)
+target_link_libraries (ntuple_metrics TinyXMLLib)
