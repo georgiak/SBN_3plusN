@@ -159,8 +159,10 @@ neutrinoModel Oscillator::InitializeMarkovParams(){
     // Initial Params for Mass and Mixing
     if(nSteriles > 0){
       for(int i = 0; i < nSteriles; i++){
-        modelOld.mNu[i] = pow(10., (TMath::Log10(dm2Min) + ran[3*i]*TMath::Log10(dm2Max/dm2Min))/2);
-        modelOld.Ue[i] = pow(10., TMath::Log10(UMin) + ran[3*i + 1] * TMath::Log10(UMax/UMin));
+        //modelOld.mNu[i] = pow(10., (TMath::Log10(dm2Min) + ran[3*i]*TMath::Log10(dm2Max/dm2Min))/2);
+        modelOld.mNu[i] = pow(10., (TMath::Log10(.317) + ran[3*i]*TMath::Log10(3.832/.316))/2);
+        //modelOld.Ue[i] = pow(10., TMath::Log10(UMin) + ran[3*i + 1] * TMath::Log10(UMax/UMin));
+        modelOld.Ue[i] = pow(10., TMath::Log10(.05005) + ran[3*i + 1] * TMath::Log10(.47/0.5005));
         modelOld.Um[i] = pow(10., TMath::Log10(UMin) + ran[3*i + 2] * TMath::Log10(UMax/UMin));
       }
     }

@@ -47,7 +47,7 @@ float PROSPECT::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   dm2 = pow(model.mNu[0],2);
   sin22th = 4 * pow(model.Ue[0],2) * pow(model.Um[0],2);
   std::cout << dm2  << " " << sin22th << std::endl;
-  chi2 = surf->Interpolate(sin22th,dm2);// + chi2min;
+  chi2 = surf->Interpolate(sin22th,dm2) + chi2min;
 
   // Fill output Tree
   chi2Nt->Fill(chi2, dof, model);
