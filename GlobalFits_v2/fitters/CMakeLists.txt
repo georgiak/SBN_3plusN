@@ -1,6 +1,7 @@
 add_executable (ntuple_metrics ntuple_metrics.cc)
 add_executable (bruteforce3p1 bruteforce3p1.cc)
 add_executable (process_3p1 process_threeplusone.cc)
+add_executable (process_3p3 process_3p3.cc)
 add_executable (ntupleGridder ntupleGridder_old.cc)
 add_executable (globalFit globalFit.cc)
 add_executable (singlepoint singlepoint.cc)
@@ -15,6 +16,9 @@ target_link_libraries (bruteforce3p1 TinyXMLLib)
 
 target_link_libraries (process_3p1 DatasetLib)
 target_link_libraries (process_3p1 TinyXMLLib)
+
+target_link_libraries (process_3p3 DatasetLib)
+target_link_libraries (process_3p3 TinyXMLLib)
 
 target_link_libraries (ntupleGridder DatasetLib)
 target_link_libraries (ntupleGridder TinyXMLLib)
