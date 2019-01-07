@@ -16,9 +16,11 @@ int ntupleProcess(std::string xml){
 
   // Initialize tree variables
   float _chi2, _m_sterile[3], _um_sterile[3], _ue_sterile[3], _dof;
+	float _chi2_min(99999.f), _m4_min, _m5_min, _m6_min, _ue4_min, _ue5_min, _ue6_min, _um4_min, _um5_min, _um6_min;
 
   std::cout << "Combining the chi2s" << std::endl;
   for(int i = 0; i < rdr.GetNTrees(); i++){
+		std::cout << "A" << std::endl;
     rdr.GetTree(i)->SetBranchAddress("chi2",&_chi2);
     rdr.GetTree(i)->SetBranchAddress("m_sterile",&_m_sterile);
     rdr.GetTree(i)->SetBranchAddress("um_sterile",&_um_sterile);
@@ -33,7 +35,7 @@ int ntupleProcess(std::string xml){
       v_ue4.resize(rdr.GetTree(i)->GetEntries());
     }
     rdr.GetTree(i)->GetEntry(90);
-
+		std::cout << "B" << std::endl;
     for(int j = 0; j < rdr.GetTree(i)->GetEntries(); j++){
       rdr.GetTree(i)->GetEntry(j);
 
@@ -45,6 +47,8 @@ int ntupleProcess(std::string xml){
         v_mnu6[j] = _m_sterile[2];
         v_um4[j] = _um_sterile[0];
         v_ue4[j] = _ue_sterile[0];
+				if(v_mnu5[j] < .1 || v_mnu6[j] < .1)
+					std::cout << "FUCK: " << v_mnu5[j] << " "  << v_mnu6[j] << std::endl;
       }
       else{
           if(j == 0)  dof += _dof;
@@ -56,8 +60,28 @@ int ntupleProcess(std::string xml){
             return 0;
           }
       }
+
+			if(_chi2 < _chi2_min){
+				_chi2_min = _chi2;
+				_m4_min = _m_sterile[0];
+				_m5_min = _m_sterile[1];
+				_m6_min = _m_sterile[2];
+				_ue4_min = _ue_sterile[0];
+				_ue5_min = _ue_sterile[1];
+				_ue6_min = _ue_sterile[2];
+				_um4_min = _um_sterile[0];
+				_um5_min = _um_sterile[1];
+				_um6_min = _um_sterile[2];
+			}
     }
   }
+
+	std::cout << "MINS:\n"
+		<< "chi2: " << _chi2_min << "\n"
+		<< "m4: " << _m4_min << " m5: " << _m5_min << " m6: " << _m6_min << "\n"
+		<< "ue4: " << _ue4_min << " ue5: " << _ue5_min << " ue6: " << _ue6_min << "\n"
+		<< "um4: " << _um4_min << " um5: " << _um5_min << " um6: " << _um6_min << std::endl;
+		
 
   // Create output File
   std::string outfile = rdr.tag + "_proc.root";
@@ -132,6 +156,7 @@ int ntupleProcess(std::string xml){
   }
 
   // Dm241 vs dm2 51 plot
+  chi2_min = 99999999;
   t_m45_90->Branch("chi2",&chi2,"chi2/F");
   t_m45_90->Branch("dm241",&dm241,"dm241/F");
   t_m45_90->Branch("dm251",&dm251,"dm251/F");
@@ -152,7 +177,6 @@ int ntupleProcess(std::string xml){
     }
     else
       continue;
-
     if(chi2grid[im][jm] < chi2_min){
       chi2_min = chi2grid[im][jm];
       dm241_min = pow(v_mnu4[i],2);
@@ -160,7 +184,7 @@ int ntupleProcess(std::string xml){
     }
   }
 
-  std::cout << "chi2 min: " << chi2_min << " dm241 min: " << dm241_min  << " dm251 min: " << dm251 << std::endl;
+  std::cout << "chi2 min: " << chi2_min << " dm241 min: " << dm241_min  << " dm251 min: " << dm251_min << std::endl;
 
   for(int i = 0; i < rdr.gridpts_dm2; i++){
     for(int j = 0; j < rdr.gridpts_dm2; j++){
@@ -178,12 +202,13 @@ int ntupleProcess(std::string xml){
   }
 
   // Dm241 vs dm2 61 plot
+  chi2_min = 99999999;
   t_m46_90->Branch("chi2",&chi2,"chi2/F");
   t_m46_90->Branch("dm241",&dm241,"dm241/F");
-  t_m46_90->Branch("dm261",&dm251,"dm261/F");
+  t_m46_90->Branch("dm261",&dm261,"dm261/F");
   t_m46_99->Branch("chi2",&chi2,"chi2/F");
   t_m46_99->Branch("dm241",&dm241,"dm241/F");
-  t_m46_99->Branch("dm261",&dm251,"dm261/F");
+  t_m46_99->Branch("dm261",&dm261,"dm261/F");
 
   chi2grid.assign(rdr.gridpts_dm2, std::vector < float > (rdr.gridpts_dm2, 0.));
   for(int i = 0; i < v_chi2.size(); i++){
@@ -206,13 +231,13 @@ int ntupleProcess(std::string xml){
     }
   }
 
-  std::cout << "chi2 min: " << chi2_min << " dm241 min: " << dm241_min  << " dm261 min: " << dm261 << std::endl;
+  std::cout << "chi2 min: " << chi2_min << " dm241 min: " << dm241_min  << " dm261 min: " << dm261_min << std::endl;
 
   for(int i = 0; i < rdr.gridpts_dm2; i++){
     for(int j = 0; j < rdr.gridpts_dm2; j++){
       dm241 = pow(10,(i/float(rdr.gridpts_dm2) * TMath::Log10(100./.01) + TMath::Log10(.01)));
       dm261 = pow(10,(j/float(rdr.gridpts_dm2) * TMath::Log10(100./.01) + TMath::Log10(.01)));
-      if(chi2grid[i][j] != 0){
+			if(chi2grid[i][j] != 0){
         chi2 = chi2grid[i][j];
 
         if(chi2grid[i][j] <= chi2_min + 6.25)

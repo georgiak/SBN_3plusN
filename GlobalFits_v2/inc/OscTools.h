@@ -53,11 +53,11 @@ class Oscillator{
     void PrintMarkovSettings(){
       std::cout << "Temperature: " << temp << " Stepsize: " << step << std::endl;
     }
+		float temp,ran[13];
 
   private:
 
-    float ran[13];
-    float dm2Min, dm2Max, UMin, UMax, USqMax, temp, step;
+    float dm2Min, dm2Max, UMin, UMax, USqMax, step;
     int gridpts;
     bool CPConserving, reject1, reject2, reject3, reject4, usingUe, usingUm;
 };

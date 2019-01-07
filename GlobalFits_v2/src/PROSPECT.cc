@@ -24,6 +24,7 @@ int PROSPECT::Init(std::string dataLoc, Oscillator osc, bool debug){
     file >> deltachi2;
     surf->SetPoint(i,sin22th,dm2,deltachi2);
   }
+
   file.close();
 
   dof = 80;
@@ -42,18 +43,17 @@ float PROSPECT::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
 	oscContribution oscCon = getOscContributionsNueDis(model);
 
-  double dm2, sin22th;
+	double dm2, sin22th;
   double chi2min = 57.9;
   dm2 = pow(model.mNu[0],2);
-  sin22th = 4 * pow(model.Ue[0],2) * pow(model.Um[0],2);
-  std::cout << dm2  << " " << sin22th << std::endl;
+	sin22th = 4 * pow(model.Ue[0],2) * (1 - pow(model.Ue[0],2));
   chi2 = surf->Interpolate(sin22th,dm2) + chi2min;
 
   // Fill output Tree
   chi2Nt->Fill(chi2, dof, model);
 
   if(debug)
-    std::cout << "DANSS Chi2: " << chi2 << std::endl;
+    std::cout << "PROSPECT Chi2: " << chi2 << std::endl;
 
   return chi2;
 }

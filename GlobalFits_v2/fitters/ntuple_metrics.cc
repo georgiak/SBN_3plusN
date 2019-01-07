@@ -3,7 +3,7 @@
 int ntupleProcess(std::string xml){
 
   bool debug = false;
-  int chainsize = 20000;
+  int chainsize = 30000;
 
   ProcessReader rdr;
   if(rdr.Load(xml))
@@ -28,7 +28,7 @@ int ntupleProcess(std::string xml){
 
   std::cout << "Loop once to find minima" << std::endl;
   for(int i = 0; i < rdr.GetTree(0)->GetEntries(); i++){
-    rdr.GetTree(0)->GetEntry(i);
+		rdr.GetTree(0)->GetEntry(i);
 
     // Chain local stuff
     if(i%chainsize == 0){
@@ -52,6 +52,8 @@ int ntupleProcess(std::string xml){
       um4Min = _um_sterile[0];
     }
   }
+
+	std::cout << "HEA?" << std::endl;
 
   // Now loop through again to make plots!
   // We're going to have a BUNCH of tgraphs
