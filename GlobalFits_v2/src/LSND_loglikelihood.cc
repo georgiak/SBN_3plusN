@@ -43,8 +43,8 @@ float LSND_loglikelihood::Chi2(Oscillator osc, neutrinoModel model, bool debug){
 
   float chi2 = 0.f;
 
-  oscContribution oscCont;
-  oscCont = getOscContributionsNueApp(model,true,true);
+  double sin22th = model.ProbAmp("mue");
+  double dm2 = model.Dm2();
 
   // Initialize Inerpolator
   ROOT::Math::Interpolator dif(dm2VecMaxDim);
@@ -59,18 +59,9 @@ float LSND_loglikelihood::Chi2(Oscillator osc, neutrinoModel model, bool debug){
       sinSqDeltaVec[k] = sinSqDeltaGrid[k][iL];
       sinSqDeltaVec2[k] = sinSqDeltaGrid2[k][iL];
       lsndDm2Vec[k] = dm2Vec[k];
-      }
-      for(int iContribution = 0; iContribution < 6; iContribution++){
-        // Now, add the latest contribution to the predicted signal vector
-        dif.SetData(dm2VecMaxDim,lsndDm2Vec,sinSqDeltaVec);
-        if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-        else    sinSq = dif.Eval(oscCont.dm2[iContribution]) * norm;
-        dif.SetData(dm2VecMaxDim,lsndDm2Vec,sinSqDeltaVec2);
-        if(oscCont.dm2[iContribution] == 0.)    sinSq2 = 0;
-        else    sinSq2 = dif.Eval(oscCont.dm2[iContribution]) * norm;
-
-        Signal[iL] += oscCont.aMuE[iContribution] * sinSq + oscCont.aMuE_CPV[iContribution] * sinSq2;
-      }
+    }
+    dif.SetData(dm2VecMaxDim,lsndDm2Vec,sinSqDeltaVec);
+    Signal[iL] += sin22th * dif.Eval(dm2) * norm;
   }
 
   // Now, using the signal vector, use the log-likelihood method to get the effective chisq

@@ -180,7 +180,8 @@ void fcnBugey(int &npar, double *gin, double &fval, double  *xval, int iflag){
   double Ei = 1.;
   double sinSq[dm2VecMaxDim];
   ROOT::Math::Interpolator dif(dm2VecMaxDim,ROOT::Math::Interpolation::kCSPLINE);
-	oscContribution oscCon = getOscContributionsNueDis(minModelBugey);
+	double sin22th = minModelBugey.ProbAmp("ee");
+  double dm2 = minModelBugey.Dm2();
 
   chisq = 0.;
 
@@ -190,13 +191,8 @@ void fcnBugey(int &npar, double *gin, double &fval, double  *xval, int iflag){
         sinSq[k] = sinSqDeltaGridBugey[k][i][j];
       }
       // We're doing nue disappearance
-			prob = 1.;
       dif.SetData(dm2VecMaxDim,dm2VecBugey,sinSq);
-      for(int iCon = 0; iCon < 6; iCon ++){
-			if(oscCon.dm2[iCon] != 0.){
-					prob += oscCon.aEE[iCon] * dif.Eval(oscCon.dm2[iCon]);
-				}
-			}
+			prob = 1. - sin22th * dif.Eval(dm2);
 
       // Now, calculate the chisq
       double num = (bigA * smallA[j] + b * (EnergyBugey[j][i] - Ei)) * prob - ObservedBugey[j][i];

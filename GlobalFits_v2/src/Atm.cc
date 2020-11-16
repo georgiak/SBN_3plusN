@@ -36,8 +36,16 @@ float Atm::Chi2(Oscillator osc, neutrinoModel model, bool debug){
   dif.SetData(dmuVecMaxDim,DmuVec,DChi2Vec);
 
   // First, let's find dmu such that dmu**2 - dmu + A = 0
-  double A = (1. - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2)) * (pow(model.Um[0],2) + pow(model.Um[1],2) + pow(model.Um[2],2)) + pow(model.Um[0]*model.Um[1],2) + pow(model.Um[0]*model.Um[2],2) + pow(model.Um[1]*model.Um[2],2);
-  double dmu = (1 - sqrt(1. - 4*A))/2.;
+  //double A = (1. - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2))  * (pow(model.Um[0],2) + pow(model.Um[1],2) + pow(model.Um[2],2)) + pow(model.Um[0]*model.Um[1],2) + pow(model.Um[0]*model.Um[2],2) + pow(model.Um[1]*model.Um[2],2);
+  //double dmu = (1 - sqrt(1. - 4*A)) /2.;
+
+  // Ok. According to https://arxiv.org/pdf/hep-ph/0405172.pdf, the following formula for dmu applies for 3+1 but will need to be generalized for 3+N
+  double dmu = 1 - pow(model.Umu4(),2);
+  double A = (1. - pow(model.Umu4(),2))  * (pow(model.Umu4(),2));
+  double dmutwo = (1 - sqrt(1. - 4*A)) /2.;
+
+
+  std::cout << "dmu = " << dmu << " " << dmutwo << std::endl;
 
   // For this, everything has been figured out, so we just interpolate an array of chi2's to get our result as a function of dmu
   chi2 = dif.Eval(dmu);

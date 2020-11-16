@@ -40,7 +40,8 @@ float DANSS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
   float chi2 = 0.f;
 
-	oscContribution oscCon = getOscContributionsNueDis(model);
+  double sin22th = model.ProbAmp("ee");
+  double dm2 = model.Dm2();
 
   std::array < double, 48 > Numerator, Denominator, ProbRatio, RatioSmeared;
 
@@ -58,12 +59,9 @@ float DANSS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
       for(int i = 0; i < lenAvg; i++){
         double len_down = osc.RanGen.Gaus(L0_down,4./3.);
         double len_up = osc.RanGen.Gaus(L0_up,4./3.);
-        double probDown = 1.;
-        double probUp = 1.;
-        for(int iContribution = 0; iContribution < 6; iContribution++){
-          probDown += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * len_down / (en+1.8)),2);
-          probUp += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * len_up / (en+1.8)),2);
-        }
+        double probDown = 1. - sin22th * pow(sin(1.267 * dm2 * len_down / (en+1.8)),2);
+        double probUp = 1. - sin22th * pow(sin(1.267 * dm2 * len_up / (en+1.8)),2);
+
         Numerator[ei] += probDown / pow(12.7,2);
         Denominator[ei] += probUp / pow(10.7,2);
       }

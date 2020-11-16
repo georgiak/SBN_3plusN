@@ -66,14 +66,14 @@ float MINOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   double ETrue[13];
   double LTrue = 735000.;     double LTrue_near = 1040.;
 
-  model.difference();
   double sin41Sq,sin51Sq,sin31Sq,sin53Sq,sin43Sq,sin54Sq,sin61Sq,sin63Sq,sin64Sq,sin65Sq;
   double dm2Atm = 0.00232;    double dm31Sq=dm2Atm;
   double Um3 = 0.71;
   double sin22Theta_atm_err = 0.1;
-  double dm43Sq = model.dm41Sq - dm31Sq;
-  double dm53Sq = model.dm51Sq - dm31Sq;
-  double dm63Sq = model.dm61Sq - dm31Sq;
+  // Ok. For 3+1, most of this is completely unnecessary, so I'm going to trim it.
+  double dm43Sq = model.Dm2() - dm31Sq;
+  //double dm53Sq = model.dm51Sq - dm31Sq;
+  //double dm63Sq = model.dm61Sq - dm31Sq;
 
   // Minos Nubar Right Sign =========
   Signal.assign(nBins,0.);
@@ -89,10 +89,10 @@ float MINOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
     double EnuGeV = ETrue[iM]/1000;
 
     // Check that the oscillations aren't too fast for our resolution
-    double nMax = 1.27 * model.dm41Sq * (LTrue / 1000.) / (EnuGeV * TMath::Pi());
-    double EnuNext = 1.27 * model.dm41Sq * (LTrue/1000.) / ((nMax + 0.5) * TMath::Pi());
+    double nMax = 1.27 * model.Dm2() * (LTrue / 1000.) / (EnuGeV * TMath::Pi());
+    double EnuNext = 1.27 * model.Dm2() * (LTrue/1000.) / ((nMax + 0.5) * TMath::Pi());
     if(abs(EnuGeV - EnuNext) >= binWidth){
-      sin41Sq = pow(sin(1.27 * model.dm41Sq * LTrue / ETrue[iM]),2);
+      sin41Sq = pow(sin(1.27 * model.Dm2() * LTrue / ETrue[iM]),2);
       sin43Sq = pow(sin(1.27 * dm43Sq * LTrue / ETrue[iM]),2);
     }
     else{
@@ -100,6 +100,7 @@ float MINOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
       sin43Sq = 0.5;
     }
 
+    /*
     nMax = 1.27 * model.dm51Sq * (LTrue / 1000.) / (EnuGeV * TMath::Pi());
     EnuNext = 1.27 * model.dm51Sq * (LTrue/1000.) / ((nMax + 0.5) * TMath::Pi());
     if(abs(EnuGeV - EnuNext) >= binWidth){
@@ -142,21 +143,30 @@ float MINOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
       sin61Sq = 0.5;
       sin63Sq = 0.5;
     }
+    */
 
     sin31Sq = pow(sin(1.27 * dm31Sq * LTrue / ETrue[iM]),2);
 
-    Prediction[iM] = NumubarBkg[iM] * (1 - 4 * ((1 - pow(Um3,2) - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2)) * (pow(Um3,2) * sin31Sq + pow(model.Um[0],2) * sin41Sq + pow(model.Um[1],2) * sin51Sq + pow(model.Um[2],2) * sin61Sq)
-              + pow(model.Um[0],2) * pow(Um3,2) * sin43Sq + pow(model.Um[1],2) * pow(model.Um[0],2) * sin54Sq + pow(model.Um[1],2) * pow(Um3,2) * sin53Sq
-              + pow(model.Um[2],2) * pow(model.Um[1],2) * sin65Sq + pow(model.Um[2],2) * pow(model.Um[0],2) * sin64Sq + pow(model.Um[2],2) * pow(Um3,2) * sin63Sq));
+    //Prediction[iM] = NumubarBkg[iM] * (1 - 4 * ((1 - pow(Um3,2) - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2)) * (pow(Um3,2) * sin31Sq + pow(model.Um[0],2) * sin41Sq + pow(model.Um[1],2) * sin51Sq + pow(model.Um[2],2) * sin61Sq)
+    //          + pow(model.Um[0],2) * pow(Um3,2) * sin43Sq + pow(model.Um[1],2) * pow(model.Um[0],2) * sin54Sq + pow(model.Um[1],2) * pow(Um3,2) * sin53Sq
+    //          + pow(model.Um[2],2) * pow(model.Um[1],2) * sin65Sq + pow(model.Um[2],2) * pow(model.Um[0],2) * sin64Sq + pow(model.Um[2],2) * pow(Um3,2) * sin63Sq));
+
+
+    // ugh. ok. what it's doing here is numu disappearance but with the tau term still there. ugh.
+
+    Prediction[iM] = NumubarBkg[iM] * (1 - 4 * ((1 - pow(Um3,2) - pow(model.Umu4(),2)) * (pow(Um3,2) * sin31Sq + pow(model.Umu4(),2) * sin41Sq)
+              + pow(model.Umu4(),2) * pow(Um3,2) * sin43Sq ));
+
 
     // Now, do the same horrible thing for the near detector;
-    nMax = 1.27 * model.dm41Sq * (LTrue_near / 1000.) / (EnuGeV*TMath::Pi());
-    EnuNext = 1.27 * model.dm41Sq * (LTrue_near / 1000.) / ((nMax + 0.5) * TMath::Pi());
+    nMax = 1.27 * model.Dm2() * (LTrue_near / 1000.) / (EnuGeV*TMath::Pi());
+    EnuNext = 1.27 * model.Dm2() * (LTrue_near / 1000.) / ((nMax + 0.5) * TMath::Pi());
     if(abs(EnuGeV - EnuNext) >= binWidth)
-      sin41Sq = pow(sin(1.27 * model.dm41Sq * LTrue_near / ETrue[iM]),2);
+      sin41Sq = pow(sin(1.27 * model.Dm2() * LTrue_near / ETrue[iM]),2);
     else
       sin41Sq = 0.5;
 
+    /*
     nMax = 1.27 * model.dm51Sq * (LTrue_near / 1000.) / (EnuGeV*TMath::Pi());
     EnuNext = 1.27 * model.dm51Sq * (LTrue_near / 1000.) / ((nMax + 0.5) * TMath::Pi());
     if(abs(EnuGeV - EnuNext) >= binWidth)
@@ -192,8 +202,12 @@ float MINOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
     else
       sin61Sq = 0.5;
 
-    Signal[iM] = (1 - 4* ((1 - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2)) * (pow(model.Um[0],2) * sin41Sq + pow(model.Um[1],2) * sin51Sq + pow(model.Um[2],2) * sin61Sq)
-              + pow(model.Um[1],2) * pow(model.Um[0],2) * sin54Sq + pow(model.Um[2],2) * pow(model.Um[1],2) * sin65Sq + pow(model.Um[2],2) * pow(model.Um[0],2) * sin64Sq));
+    */
+
+    // This is the standard disappearance probability for 3+1
+    //Signal[iM] = (1 - 4* ((1 - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2)) * (pow(model.Um[0],2) * sin41Sq + pow(model.Um[1],2) * sin51Sq + pow(model.Um[2],2) * sin61Sq)
+    //          + pow(model.Um[1],2) * pow(model.Um[0],2) * sin54Sq + pow(model.Um[2],2) * pow(model.Um[1],2) * sin65Sq + pow(model.Um[2],2) * pow(model.Um[0],2) * sin64Sq));
+    Signal[iM] = 1 - model.ProbAmp("mumu");
 
     Prediction[iM] /= Signal[iM];
 

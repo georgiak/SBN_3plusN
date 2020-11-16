@@ -154,25 +154,14 @@ int MiniBooNE_combined::Init(std::string dataLoc, Oscillator osc, bool debug){
   }
 
 	// Lastly, Initialize best fit signal, with which we will weigh our covariance matrix
-  neutrinoModel model_bestFit;
-  model_bestFit.zero();
-  model_bestFit.Ue[0] = 0.34;  model_bestFit.Um[0] = 0.34;    model_bestFit.mNu[0] = .19;
- 	oscContribution oscCont_bestFit_nu = getOscContributionsNueApp(model_bestFit, false, true);
-  oscContribution oscCont_bestFit_nubar = getOscContributionsNueApp(model_bestFit, true, true);
+  double BF_dm2 = 0.0436516;
+  double BF_sin22th = 0.699636;
 
-	for(int iB = 0; iB < nBins_e; iB++){
-		for(int iContribution = 0; iContribution < 6; iContribution++){
-    	if(oscCont_bestFit_nubar.dm2[iContribution] == 0) {
-        Signal_BestFit_nu[iB] += 0;
-        Signal_BestFit_nubar[iB] += 0;
-      }
-			else{
-      	dm2 = floor(TMath::Log10(oscCont_bestFit_nu.dm2[iContribution]/.01)/mstep);
-        Signal_BestFit_nu[iB] += oscCont_bestFit_nu.aMuE[iContribution]*Lib_sinsq_nu[dm2][iB] + oscCont_bestFit_nu.aMuE_CPV[iContribution]*Lib_sin_nu[dm2][iB];
-        Signal_BestFit_nubar[iB] += oscCont_bestFit_nubar.aMuE[iContribution]*Lib_sinsq_nubar[dm2][iB] + oscCont_bestFit_nubar.aMuE_CPV[iContribution]*Lib_sin_nubar[dm2][iB];
-			}
-		}
-	}
+  for(int iB = 0; iB < nBins_e; iB++){
+    dm2 = floor(TMath::Log10(BF_dm2/.01)/mstep);
+    Signal_BestFit_nu[iB] += BF_sin22th*Lib_sinsq_nu[dm2][iB];
+    Signal_BestFit_nubar[iB] += BF_sin22th*Lib_sinsq_nubar[dm2][iB];
+  }
 
   dof = 2*nBins_e + 2*nBins_mu - 1;
 
@@ -192,10 +181,7 @@ float MiniBooNE_combined::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   std::array < double, nBins_e + nBins_mu > Prediction_nu, Prediction_nubar;
   std::array < double, 2*nBins_e + 2*nBins_mu > Prediction;
 
-  // Initialize contributions from the oscillation probability
-  oscContribution oscCont_nu, oscCont_nubar;
-  oscCont_nubar = getOscContributionsNueApp(model, true, true);
-  oscCont_nu = getOscContributionsNueApp(model, false, true);
+  double sin22th = model.ProbAmp("mue");
 
   full_covMatrix.ResizeTo(2*nBins_e + 2*nBins_e + 2*nBins_mu, 2*nBins_e + 2*nBins_e + 2*nBins_mu);
   full_covMatrix.Zero();
@@ -205,20 +191,9 @@ float MiniBooNE_combined::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   float mstep = TMath::Log10(100./.01)/float(100);
   int dm2;
   for(int iB = 0; iB < nBins_e; iB++){
-    Signal_nu[iB] = 0;
-    Signal_nubar[iB] = 0;
-
-  	for(int iContribution = 0; iContribution < 6; iContribution++){
-  		if(oscCont_nu.dm2[iContribution] == 0){
-        Signal_nu[iB] += 0;
-        Signal_nubar[iB] += 0;
-      }
-  		else{
-  			dm2 = floor(TMath::Log10(oscCont_nu.dm2[iContribution]/.01)/mstep);
-  			Signal_nu[iB] += oscCont_nu.aMuE[iContribution]*Lib_sinsq_nu[dm2][iB] + oscCont_nu.aMuE_CPV[iContribution]*Lib_sin_nu[dm2][iB];
-        Signal_nubar[iB] += oscCont_nubar.aMuE[iContribution]*Lib_sinsq_nubar[dm2][iB] + oscCont_nubar.aMuE_CPV[iContribution]*Lib_sin_nubar[dm2][iB];
-  		}
-  	}
+		dm2 = floor(TMath::Log10(model.Dm2()/.01)/mstep);
+		Signal_nu[iB] = sin22th*Lib_sinsq_nu[dm2][iB];
+    Signal_nubar[iB] = sin22th*Lib_sinsq_nubar[dm2][iB];
   }
   // Divide signal prediction by the number of fullosc events
   for(int iB = 0; iB < nBins_e; iB++){

@@ -222,7 +222,8 @@ float NEOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
   float chi2 = 0.f;
 
-	oscContribution oscCon = getOscContributionsNueDis(model);
+  double sin22th = model.ProbAmp("ee");
+  double dm2 = model.Dm2();
 
   std::array < double, nBins > DB_Predicted_4n, DB_Ratio, NEOS_Predicted_4n, NEOS_Ratio;
   double prob, en, len, norm;
@@ -241,10 +242,7 @@ float NEOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
         for(int iReac = 0; iReac < 6; iReac ++){ // Loop through reactors
           for(int iIso = 0; iIso < 4; iIso ++){ // Loop through isotopes
-            prob = 1.;
-            for(int iContribution = 0; iContribution < 6; iContribution++){
-              prob += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * DB_l_d[iDet][iReac] / (en+.8)),2);
-            }
+            prob = 1. - sin22th * pow(sin(1.267 * dm2 * DB_l_d[iDet][iReac] / (en+.8)),2);
             DB_Predicted_4n_Unsmeared[iDet][iEn] += Flux_iso[iIso][iEn] * XSec[iEn] * DB_f_iso[iIso][iDet] * prob * DB_eff[iDet] / pow(DB_l_d[iDet][iReac],2);
           }
         }
@@ -291,10 +289,7 @@ float NEOS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
         len = osc.RanGen.Gaus(24.0,1.5/3.);
 
         for(int iIso = 0; iIso < 4; iIso ++){ // Loop through isotopes
-          prob = 1.;
-          for(int iContribution = 0; iContribution < 6; iContribution++){
-            prob += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * len / (en+.8)),2);
-          }
+          prob = 1. - sin22th * pow(sin(1.267 * dm2 * len / (en+.8)),2);
           NEOS_Predicted_4n_Unsmeared[iEn] += Flux_iso[iIso][iEn] * XSec[iEn] * NEOS_f_iso[iIso] * prob / pow(len,2);
         }
       }

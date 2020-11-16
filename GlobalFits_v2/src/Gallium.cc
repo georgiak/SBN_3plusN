@@ -71,7 +71,8 @@ float Gallium::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   double denominator[4] = {1674.,1675.,580.8,708.4};
   double numerator[4];
 
-	oscContribution oscCon = getOscContributionsNueDis(model);
+	double sin22th = model.ProbAmp("ee");
+  double dm2 = model.Dm2();
 
   for(int iG = 0; iG < nPoints; iG++){
     numerator[iG] = 0;
@@ -81,11 +82,7 @@ float Gallium::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 			  double maxlen = sqrt(pow(Radius[iG],2) + pow(maxht,2));
 
 				for(int iLen = 0; iLen < 2000; iLen++){
-
-					double prob = 1.;
-					for(int iContribution = 0; iContribution < 6; iContribution++){
-						prob += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * (iLen+1)/float(2000)*maxlen / crLinesE[iCr]),2);
-					}
+					double prob = 1. - sin22th * pow(sin(1.267 * dm2 * (iLen+1)/float(2000)*maxlen / crLinesE[iCr]),2);
 					numerator[iG] += volInt[iG][iLen] * (1./pow((iLen+1)/float(2000)*maxlen,2)) * prob * crLinesBr[iCr] * crLinesXSec[iCr];
 				}
 			}
@@ -96,11 +93,7 @@ float Gallium::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 				double maxlen = sqrt(pow(Radius[2],2) + pow(maxht,2));
 
         for(int iLen = 0; iLen < 2000; iLen++){
-
-					double prob = 1.;
-					for(int iContribution = 0; iContribution < 6; iContribution++){
-						prob += oscCon.aEE[iContribution] * pow(sin(1.267 * oscCon.dm2[iContribution] * (iLen+1)/float(2000)*maxlen / arLinesE[iAr]),2);
-					}
+					double prob = 1. - sin22th * pow(sin(1.267 * dm2 * (iLen+1)/float(2000)*maxlen / arLinesE[iAr]),2);
 					numerator[iG] += volInt[2][iLen] * (1./pow((iLen+1)/float(2000)*maxlen,2)) * prob * arLinesBr[iAr] * arLinesXSec[iAr];
 				}
       }

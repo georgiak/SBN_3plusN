@@ -1,22 +1,27 @@
-#include "MiniBooNE.h"
-#include "LSND_loglikelihood.h"
-#include "Gallium.h"
-#include "NOMAD.h"
-#include "CDHS.h"
-#include "FromChi2Surf.h"
-#include "NEOS.h"
 #include "MiniBooNE_combined.h"
-#include "Atm.h"
-#include "MINOS.h"
-#include "PROSPECT.h"
-#include "CCFR.h"
-#include "Bugey.h"
-#include "DANSS.h"
-#include "XSec.h"
-#include "MiniBooNE_dis.h"
+#include "LSND_loglikelihood.h"
 #include "NuMI.h"
 #include "KARMEN.h"
+#include "NOMAD.h"
+
+#include "XSec.h"
+#include "Gallium.h"
+#include "NEOS.h"
+#include "CCFR.h"
+#include "DANSS.h"
+#include "Bugey.h"
+#include "CDHS.h"
+#include "MiniBooNE_dis.h"
+
+#include "Atm.h"
+#include "MINOS.h"
+/*
+#include "FromChi2Surf.h"
+#include "PROSPECT.h"
+#include "MiniBooNE.h"
+*/
 #include "XMLTools.h"
+
 
 int FitReader::Load(std::string xml){
 
@@ -44,42 +49,29 @@ int FitReader::Load(std::string xml){
   else while(pData){
     dset = pData->Attribute("name");
     if(stoi(pData->Attribute("use"))){
-      if(dset == "MBnu"){
-        myDataSets.push_back(new MiniBooNE(false));
-        std::cout << "Using MiniBooNE Nu dataset" << std::endl;
-      }
-      else if(dset == "MBnubar"){
-        myDataSets.push_back(new MiniBooNE(true));
-        std::cout << "Using MiniBooNE Nubar dataset" << std::endl;
-      }
-      else if(dset == "Atm"){
-        myDataSets.push_back(new Atm);
-        UsingAtm = true;
-        std::cout << "Using Atmospheric dataset" << std::endl;
-      }
-      else if(dset == "NEOS"){
-        myDataSets.push_back(new NEOS);
-        std::cout << "Using NEOS dataset" << std::endl;
+      if(dset == "MiniBooNE_combined"){
+        myDataSets.push_back(new MiniBooNE_combined);
+        std::cout << "Using MiniBooNE combined neutrino antineutrino" << std::endl;
       }
       else if(dset == "NuMI"){
         myDataSets.push_back(new NuMI);
         std::cout << "Using MiniBooNE NuMI Dataset" << std::endl;
       }
-      else if(dset == "DANSS"){
-        myDataSets.push_back(new DANSS);
-        std::cout << "Using DANSS Dataset" << std::endl;
-      }
       else if(dset == "LSND_loglikelihood"){
         myDataSets.push_back(new LSND_loglikelihood);
         std::cout << "Using LSND (log likelihood mode)" << std::endl;
       }
-      else if(dset == "MINOS"){
-        myDataSets.push_back(new MINOS);
-        std::cout << "Using MINOS (old)" << std::endl;
+      else if(dset == "NOMAD"){
+        myDataSets.push_back(new NOMAD);
+        std::cout << "Using NOMAD dataset" << std::endl;
       }
-      else if(dset == "MiniBooNE_combined"){
-        myDataSets.push_back(new MiniBooNE_combined);
-        std::cout << "Using MiniBooNE combined neutrino antineutrino" << std::endl;
+      else if(dset == "KARMEN"){
+        myDataSets.push_back(new KARMEN);
+        std::cout << "Using KARMEN dataset" << std::endl;
+      }
+      else if(dset == "DANSS"){
+        myDataSets.push_back(new DANSS);
+        std::cout << "Using DANSS Dataset" << std::endl;
       }
       else if(dset == "CCFR"){
         myDataSets.push_back(new CCFR);
@@ -89,9 +81,13 @@ int FitReader::Load(std::string xml){
         myDataSets.push_back(new Gallium);
         std::cout << "Using Gallium" << std::endl;
       }
-      else if(dset == "PROSPECT"){
-        myDataSets.push_back(new PROSPECT);
-        std::cout << "Using Prospect" << std::endl;
+      else if(dset == "CDHS"){
+        myDataSets.push_back(new CDHS);
+        std::cout << "Using CDHS dataset" << std::endl;
+      }
+      else if(dset == "NEOS"){
+        myDataSets.push_back(new NEOS);
+        std::cout << "Using NEOS dataset" << std::endl;
       }
       else if(dset == "Bugey"){
         myDataSets.push_back(new Bugey);
@@ -105,26 +101,38 @@ int FitReader::Load(std::string xml){
         myDataSets.push_back(new MiniBooNE_dis(true));
         std::cout << "Using MiniBooNE Nubar Disappearance dataset" << std::endl;
       }
-      else if(dset == "NOMAD"){
-        myDataSets.push_back(new NOMAD);
-        std::cout << "Using NOMAD dataset" << std::endl;
-      }
       else  if(dset == "XSec"){
         myDataSets.push_back(new XSec);
         std::cout << "Using LSND+KARMEN XSec dataset" << std::endl;
       }
-      else if(dset == "CDHS"){
-        myDataSets.push_back(new CDHS);
-        std::cout << "Using CDHS dataset" << std::endl;
+
+      else if(dset == "MINOS"){
+        myDataSets.push_back(new MINOS);
+        std::cout << "Using MINOS (old)" << std::endl;
       }
-      else if(dset == "KARMEN"){
-        myDataSets.push_back(new KARMEN);
-        std::cout << "Using KARMEN dataset" << std::endl;
+      else if(dset == "Atm"){
+        myDataSets.push_back(new Atm);
+        UsingAtm = true;
+        std::cout << "Using Atmospheric dataset" << std::endl;
+      }
+/*
+      else if(dset == "MBnu"){
+        myDataSets.push_back(new MiniBooNE(false));
+        std::cout << "Using MiniBooNE Nu dataset" << std::endl;
+      }
+      else if(dset == "MBnubar"){
+        myDataSets.push_back(new MiniBooNE(true));
+        std::cout << "Using MiniBooNE Nubar dataset" << std::endl;
       }
       else if(dset == "FromChi2Surf"){
         myDataSets.push_back(new FromChi2Surf);
         std::cout << "Using dset from chi2 surface" << std::endl;
       }
+      else if(dset == "PROSPECT"){
+        myDataSets.push_back(new PROSPECT);
+        std::cout << "Using Prospect" << std::endl;
+      }
+      */
       else
         std::cout << "Dataset not implemented yet!" << std::endl;
     }

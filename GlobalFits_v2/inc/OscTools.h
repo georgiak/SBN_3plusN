@@ -4,7 +4,49 @@
 
 #define dm2VecMaxDim 601
 
-struct neutrinoModel{
+class neutrinoModel{
+private:
+  double mnu, theta14, theta24, theta34;
+  int Zero(){
+    mnu = 0.f;  theta14 = 0.f;  theta24 = 0.f;  theta34 = 0.f;
+  };
+
+public:
+  neutrinoModel(){
+    Zero();
+  };
+  int Init(double _mnu, double _par1, double _par2, double _par3 = 0.0){
+    mnu = _mnu; theta14 = _par1;  theta24 = _par2; theta34 = _par3;
+    return 1;
+  };
+
+  double ProbAmp(std::string interaction){
+    if(interaction == "ee"){
+      return pow(sin(2*theta14),2);
+    }
+    else if(interaction == "mumu" || interaction == "mm"){
+      return 4*pow(cos(theta14),2)*pow(sin(theta24),2)*(1-pow(cos(theta14),2)*pow(sin(theta24),2));
+    }
+    else if(interaction == "mue" || interaction == "me"){
+      return pow(sin(2*theta14),2)*pow(sin(2*theta24),2);
+    }
+    else{
+      std::cout << "BAD PROBAMP" << std::endl;
+      return -1;
+    }
+  };
+
+  std::array<double,4> OscParams(){
+    std::array<double,4> ops = { mnu, theta14, theta24, theta34};
+    return ops;
+  };
+
+  double Dm2(){ return pow(mnu,2); };
+  double Umu4(){ return cos(theta14)*sin(theta24); };
+};
+
+
+struct neutrinoModel_general{
     double mNu[3], Ue[3], Um[3], phi[3];
     double dm41Sq, dm51Sq, dm61Sq, dm54Sq, dm64Sq, dm65Sq;
     void zero(){
@@ -23,15 +65,11 @@ struct neutrinoModel{
     }
 };
 
+
+
 struct oscContribution{
     double dm2[6], aMuE[6], aMuMu[6], aMuE_CPV[6], aEE[6];
 };
-
-
-oscContribution getOscContributionsNueApp(neutrinoModel model, bool nubar, bool cpv);
-oscContribution getOscContributionsNueDis(neutrinoModel model);
-oscContribution getOscContributionsNumuDis(neutrinoModel model);
-
 
 class Oscillator{
   public:
@@ -62,18 +100,19 @@ class Oscillator{
     bool CPConserving, reject1, reject2, reject3, reject4, usingUe, usingUm;
 };
 
+
 class OutTree{
   public:
-    OutTree(){};
     OutTree(std::string tag);
 
-    void Fill(float _chi2, float _dof, neutrinoModel _nuModel);
+    void Fill(float _chi2, int _dof, neutrinoModel _nuModel);
     void Write(){ myTree->Write();  };
     TTree *Tree(){ return myTree->CloneTree(); };
 
   private:
     TTree *myTree;
-    float chi2, dof, m_sterile[3], um_sterile[3], ue_sterile[3], phi_sterile[3];
+    int dof;
+    double chi2, m41, theta14, theta24, theta34;
 };
 
 // Common integral functions

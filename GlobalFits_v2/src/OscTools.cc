@@ -3,23 +3,18 @@
 OutTree::OutTree(std::string tag){
   TString t_tag = tag;
   myTree = new TTree(t_tag,t_tag);
-  myTree->Branch("chi2",&chi2,"chi2/F");
-	myTree->Branch("dof",&dof);
-	myTree->Branch("m_sterile",&m_sterile,"m_sterile[3]/F");
-	myTree->Branch("um_sterile",&um_sterile,"um_sterile[3]/F");
-	myTree->Branch("ue_sterile",&ue_sterile,"ue_sterile[3]/F");
-	myTree->Branch("phi_sterile",&phi_sterile,"phi_sterile[3]/F");
+  myTree->Branch("chi2",&chi2,"chi2/D");
+	myTree->Branch("dof",&dof,"dof/I");
+  myTree->Branch("m41",&m41,"m41/D");
+  myTree->Branch("theta14",&theta14,"theta14/D");
+	myTree->Branch("theta24",&theta24,"theta24/D");
+  myTree->Branch("theta34",&theta34,"theta34/D");
 }
 
-void OutTree::Fill(float _chi2, float _dof, neutrinoModel _nuModel){
+void OutTree::Fill(float _chi2, int _dof, neutrinoModel _nuModel){
   chi2 = _chi2; dof = _dof;
-  m_sterile[0] = _nuModel.mNu[0];    m_sterile[1] = _nuModel.mNu[1];    m_sterile[2] = _nuModel.mNu[2];
-  ue_sterile[0] = _nuModel.Ue[0];    ue_sterile[1] = _nuModel.Ue[1];    ue_sterile[2] = _nuModel.Ue[2];
-  um_sterile[0] = _nuModel.Um[0];    um_sterile[1] = _nuModel.Um[1];    um_sterile[2] = _nuModel.Um[2];
-  phi_sterile[0] = _nuModel.phi[0];  phi_sterile[1] = _nuModel.phi[1]; 	phi_sterile[2] = _nuModel.phi[2];
-
-  //std::cout << chi2 << " " << dof  << " " <<  m_sterile[0] << " " << ue_sterile[0] << " " <<  um_sterile[0] << std::endl;
-
+  std::array<double,4> ops = _nuModel.OscParams();
+  m41 = ops[0];  theta14 = ops[1]; theta24 = ops[2]; theta34 = ops[3];
   myTree->Fill();
 }
 
@@ -44,105 +39,7 @@ Oscillator::Oscillator(float _dm2Min, float _dm2Max, float _UMin, float _UMax, f
   }
 }
 
-// Since the osc probability is something that'll be played with quite a bit (ie, when we add matter effects) let's put it over here!
-oscContribution getOscContributionsNueApp(neutrinoModel model, bool nubar, bool cpv){
-	oscContribution oscCon;
-
-	oscCon.dm2[0] = pow(model.mNu[0],2);
-	oscCon.aMuE[0] = 4.*model.Ue[0]*model.Um[0]*(model.Ue[0]*model.Um[0] + model.Ue[1]*model.Um[1]*cos(model.phi[0]) + model.Ue[2]*model.Um[2]*cos(model.phi[1]));
-	if(cpv) {
-		if(!nubar)  oscCon.aMuE_CPV[0] = 2.*model.Ue[0]*model.Um[0]*(model.Ue[1]*model.Um[1]*sin(model.phi[0]) + model.Ue[2]*model.Um[2]*sin(model.phi[1]));
-		else    oscCon.aMuE_CPV[0] = -2.*model.Ue[0]*model.Um[0]*(model.Ue[1]*model.Um[1]*sin(model.phi[0]) + model.Ue[2]*model.Um[2]*sin(model.phi[1]));
-	}
-
-	oscCon.dm2[1] = pow(model.mNu[1],2);
-	oscCon.aMuE[1] = 4.*model.Ue[1]*model.Um[1]*(model.Ue[0]*model.Um[0]*cos(model.phi[0]) + model.Ue[1]*model.Um[1] + model.Ue[2]*model.Um[2]*cos(model.phi[2]));
-	if(cpv) {
-		if(!nubar)  oscCon.aMuE_CPV[1] = 2.*model.Ue[1]*model.Um[1]*(-model.Ue[0]*model.Um[0]*sin(model.phi[0]) + model.Ue[2]*model.Um[2]*sin(model.phi[2]));
-		else    oscCon.aMuE_CPV[1] = -2.*model.Ue[1]*model.Um[1]*(-model.Ue[0]*model.Um[0]*sin(model.phi[0]) + model.Ue[2]*model.Um[2]*sin(model.phi[2]));
-	}
-
-	oscCon.dm2[2] = pow(model.mNu[2],2);
-	oscCon.aMuE[2] = 4.*model.Ue[2]*model.Um[2]*(model.Ue[0]*model.Um[0]*cos(model.phi[1]) + model.Ue[1]*model.Um[1]*cos(model.phi[2]) + model.Ue[2]*model.Um[2]);
-	if(cpv) {
-		if(!nubar)  oscCon.aMuE_CPV[2] = 2.*model.Ue[2]*model.Um[2]*(-model.Ue[0]*model.Um[0]*sin(model.phi[1]) - model.Ue[1]*model.Um[1]*sin(model.phi[2]));
-		else    oscCon.aMuE_CPV[2] = -2.*model.Ue[2]*model.Um[2]*(-model.Ue[0]*model.Um[0]*sin(model.phi[1]) - model.Ue[1]*model.Um[1]*sin(model.phi[2]));
-	}
-
-	//amueboonecpv=+2.*ue(6)*um(6)*(-ue(4)*um(4)*sin(phi(2))-ue(5)*um(5)*sin(phi(3)))
-
-	oscCon.dm2[3] = abs(pow(model.mNu[1],2) - pow(model.mNu[0],2));
-	oscCon.aMuE[3] = -4.*model.Ue[0]*model.Ue[1]*model.Um[0]*model.Um[1]*cos(model.phi[0]);
-	if(cpv) {
-		if(!nubar)  oscCon.aMuE_CPV[3] = 2.*model.Ue[0]*model.Ue[1]*model.Um[0]*model.Um[1]*sin(model.phi[0]);
-		else oscCon.aMuE_CPV[3] = -2.*model.Ue[0]*model.Ue[1]*model.Um[0]*model.Um[1]*sin(model.phi[0]);
-	}
-
-	oscCon.dm2[4] = abs(pow(model.mNu[2],2) - pow(model.mNu[0],2));
-	oscCon.aMuE[4] = -4.*model.Ue[0]*model.Ue[2]*model.Um[0]*model.Um[2]*cos(model.phi[1]);
-	if(cpv) {
-		if(!nubar)  oscCon.aMuE_CPV[4] = 2.*model.Ue[0]*model.Ue[2]*model.Um[0]*model.Um[2]*sin(model.phi[1]);
-		else    oscCon.aMuE_CPV[4] = -2.*model.Ue[0]*model.Ue[2]*model.Um[0]*model.Um[2]*sin(model.phi[1]);
-	}
-
-	oscCon.dm2[5] = abs(pow(model.mNu[2],2) - pow(model.mNu[1],2));
-	oscCon.aMuE[5] = -4.*model.Ue[1]*model.Ue[2]*model.Um[1]*model.Um[2]*cos(model.phi[2]);
-	if(cpv) {
-		if(!nubar)  oscCon.aMuE_CPV[5] = 2.*model.Ue[1]*model.Ue[2]*model.Um[1]*model.Um[2]*sin(model.phi[2]);
-		else    oscCon.aMuE_CPV[5] = -2.*model.Ue[1]*model.Ue[2]*model.Um[1]*model.Um[2]*sin(model.phi[2]);
-	}
-
-	return oscCon;
-}
-
-oscContribution getOscContributionsNueDis(neutrinoModel model){
-	oscContribution oscCon;
-
-	oscCon.dm2[0] = pow(model.mNu[0],2);
-	oscCon.aEE[0] = -4 * pow(model.Ue[0],2)*(1. - pow(model.Ue[0],2) - pow(model.Ue[1],2) - pow(model.Ue[2],2));
-
-	oscCon.dm2[1] = pow(model.mNu[1],2);
-	oscCon.aEE[1] = -4 * pow(model.Ue[1],2)*(1. - pow(model.Ue[0],2) - pow(model.Ue[1],2) - pow(model.Ue[2],2));
-
-	oscCon.dm2[2] = pow(model.mNu[2],2);
-	oscCon.aEE[2] = -4 * pow(model.Ue[2],2)*(1. - pow(model.Ue[0],2) - pow(model.Ue[1],2) - pow(model.Ue[2],2));
-
-	oscCon.dm2[3] = abs(pow(model.mNu[1],2) - pow(model.mNu[0],2));
-	oscCon.aEE[3] = -4. * pow(model.Ue[0],2) * pow(model.Ue[1],2);
-
-	oscCon.dm2[4] = abs(pow(model.mNu[2],2) - pow(model.mNu[0],2));
-	oscCon.aEE[4] = -4. * pow(model.Ue[0],2) * pow(model.Ue[2],2);
-
-	oscCon.dm2[5] = abs(pow(model.mNu[2],2) - pow(model.mNu[1],2));
-	oscCon.aEE[5] = -4. * pow(model.Ue[1],2) * pow(model.Ue[2],2);
-
-	return oscCon;
-}
-
-oscContribution getOscContributionsNumuDis(neutrinoModel model){
-	oscContribution oscCon;
-
-	oscCon.aMuMu[0] = -4. * pow(model.Um[0],2) * (1. - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2));
-	oscCon.dm2[0] = pow(model.mNu[0],2);
-
-	oscCon.aMuMu[1] = -4. * pow(model.Um[1],2) * (1. - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2));
-	oscCon.dm2[1] = pow(model.mNu[1],2);
-
-	oscCon.aMuMu[2] = -4. * pow(model.Um[2],2) * (1. - pow(model.Um[0],2) - pow(model.Um[1],2) - pow(model.Um[2],2));
-	oscCon.dm2[2] = pow(model.mNu[2],2);
-
-	oscCon.aMuMu[3] = -4. * pow(model.Um[0],2) * pow(model.Um[1],2);
-	oscCon.dm2[3] = abs(pow(model.mNu[1],2) - pow(model.mNu[0],2));
-
-	oscCon.aMuMu[4] = -4. * pow(model.Um[0],2) * pow(model.Um[2],2);
-	oscCon.dm2[4] = abs(pow(model.mNu[2],2) - pow(model.mNu[0],2));
-
-	oscCon.aMuMu[5] = -4. * pow(model.Um[2],2) * pow(model.Um[1],2);
-	oscCon.dm2[5] = abs(pow(model.mNu[2],2) - pow(model.mNu[1],2));
-
-	return oscCon;
-}
-
+/*
 // Get your models sorted out (all of this has been tested to shit. we're good.)
 neutrinoModel Oscillator::InitializeMarkovParams(){
 
@@ -265,6 +162,7 @@ bool Oscillator::RejectModel(neutrinoModel model){
 
   return (reject1 || reject2 || reject3 || reject4);
 }
+*/
 
 double sinFunc(double x){
     // Sine function for integration

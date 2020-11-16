@@ -66,8 +66,8 @@ float CDHS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
   float chi2 = 0.f;
 
-  oscContribution oscCont;
-  oscCont = getOscContributionsNumuDis(model);
+  double sin22th = model.ProbAmp("mumu");
+  double dm2 = model.Dm2();
 
   double sinSqDeltaVec[dm2VecMaxDim];
   double cdhsDm2Vec[601];
@@ -86,15 +86,8 @@ float CDHS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
     dif.SetData(601,cdhsDm2Vec,sinSqDeltaVec);
 
-    nFront[iC] = NoOscGrid[iC][0];
+    nFront[iC] = NoOscGrid[iC][0] - sin22th * dif.Eval(dm2);
 
-    for(int iContribution = 0; iContribution < 6; iContribution++){
-      if(oscCont.dm2[iContribution] == 0.)
-        sinSq = 0;
-      else
-        sinSq = dif.Eval(oscCont.dm2[iContribution]);
-      nFront[iC] += oscCont.aMuMu[iContribution] * sinSq;
-    }
     nFront[iC] *= M_front[iC];
     nFront_noOsc[iC] = M_front[iC] * NoOscGrid[iC][0];
   }
@@ -107,15 +100,7 @@ float CDHS::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
     dif.SetData(601,cdhsDm2Vec,sinSqDeltaVec);
 
-    nBack[iC] = NoOscGrid[iC][1];
-
-    for(int iContribution = 0; iContribution < 6; iContribution++){
-      if(oscCont.dm2[iContribution] == 0.)
-        sinSq = 0;
-      else
-        sinSq = dif.Eval(oscCont.dm2[iContribution]);
-      nBack[iC] += oscCont.aMuMu[iContribution] * sinSq;
-    }
+    nBack[iC] = NoOscGrid[iC][1] - sin22th * dif.Eval(dm2);
     nBack[iC] *= M_back[iC];
     nBack_noOsc[iC] = M_back[iC] * NoOscGrid[iC][1];
   }

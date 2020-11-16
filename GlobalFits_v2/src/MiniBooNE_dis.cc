@@ -20,7 +20,7 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
     // If in antineutrino mode
     nFOsc = 686529;
     str_data_numu = dataLoc + "miniboone_dis/miniboone_numubardata_disap.txt";
-    str_fracterrormatrix = dataLoc + "miniboone_dis/miniboone_frac_shape_matrix_numubar_disap.txt";
+    str_fracterrormatrix =  + "miniboone_dis/miniboone_frac_shape_matrix_numubar_disap.txt";
     str_fullosc = dataLoc + "miniboone_dis/numubardisap_ntuple.txt";
   }
 
@@ -110,8 +110,7 @@ float MiniBooNE_dis::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   Prediction.resize(nBins);
 
   // Initialize contributions from osc probability
-	oscContribution oscCont;
-  oscCont = getOscContributionsNumuDis(model);
+	double sin22th = model.ProbAmp("mumu");
 
   //Zero out Signal
   std::fill(Signal.begin(), Signal.end(), 0);
@@ -133,13 +132,8 @@ float MiniBooNE_dis::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 	float mstep = TMath::Log10(100./.01)/float(100);
 	int dm2;
 	for(int iB = 0; iB < nBins; iB++){
-		for(int iContribution = 0; iContribution < 6; iContribution++){
-			if(oscCont.dm2[iContribution] == 0)	Signal[iB] += 0;
-			else{
-				dm2 = floor(TMath::Log10(oscCont.dm2[iContribution]/.01)/mstep);
-				Signal[iB] += oscCont.aMuMu[iContribution]*Libdis_sinsq[dm2][iB];
-			}
-		}
+		dm2 = floor(TMath::Log10(model.Dm2()/.01)/mstep);
+		Signal[iB] += sin22th*Libdis_sinsq[dm2][iB];
 	}
 	// Normalize signal prediction to data
 	for(int iB = 0; iB < nBins; iB++){

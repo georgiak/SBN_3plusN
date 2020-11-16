@@ -127,8 +127,8 @@ int NOMAD::Init(std::string dataLoc, Oscillator osc, bool debug){
 float NOMAD::Chi2(Oscillator osc, neutrinoModel model, bool debug){
 
   float chi2 = 0.f;
-
-  oscContribution oscCont;
+  double sin22th = model.ProbAmp("mue");
+  double dm2 = model.Dm2();
 
   ROOT::Math::Interpolator dif(dm2VecMaxDim);
   double numerator, denominator, sinSq, sinSq2;
@@ -146,34 +146,17 @@ float NOMAD::Chi2(Oscillator osc, neutrinoModel model, bool debug){
       }
 
       // First, let's do Nue appearance
-      numerator = 0.;
-      oscCont = getOscContributionsNueApp(model, false, true);
-
-      for(int iContribution = 0; iContribution < 6; iContribution++){
-        // Now, add the latest contribution to the predicted signal vector
-
-        dif.SetData(dm2VecMaxDim,osc.dm2Vec,sinSqDeltaVec);
-        if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-        else    sinSq = dif.Eval(oscCont.dm2[iContribution]);
-        dif.SetData(dm2VecMaxDim,osc.dm2Vec,sinSqDeltaVec2);
-        if(oscCont.dm2[iContribution] == 0.)    sinSq2 = 0;
-        else    sinSq2 = dif.Eval(oscCont.dm2[iContribution]);
-
-        numerator += oscCont.aMuE[iContribution]*sinSq + oscCont.aMuE_CPV[iContribution] * sinSq2;
-      }
-  		//std::cout << "Numerator: " << numerator << std::endl;
+      dif.SetData(dm2VecMaxDim,osc.dm2Vec,sinSqDeltaVec);
+      numerator = sin22th*dif.Eval(dm2);
+   		//std::cout << "Numerator: " << numerator << std::endl;
 
       // Now, muon disappearance
       denominator = (l2 - l1) * (energyMax[ii] - energyMin[ii]);
-      oscCont = getOscContributionsNumuDis(model);
+      double sin22th = model.ProbAmp("mumu");
+      double dm2 = model.Dm2();
 
-      for(int iContribution = 0; iContribution < 6; iContribution++){
-        // Now, add the latest contribution to the predicted signal vector
-        dif.SetData(dm2VecMaxDim,osc.dm2Vec,sinSqDeltaVec);
-        if(oscCont.dm2[iContribution] == 0.)    sinSq = 0;
-        else sinSq = dif.Eval(oscCont.dm2[iContribution]);
-        denominator += oscCont.aMuMu[iContribution]*sinSq;
-      }
+      dif.SetData(dm2VecMaxDim,osc.dm2Vec,sinSqDeltaVec);
+      denominator -= sin22th*dif.Eval(dm2);
       if(denominator < 0) std::cout << "Got a problem with NOMAD. Denominator is negative!" << std::endl;
   		//std::cout << "Denominator: " << denominator << std::endl;
 
@@ -190,6 +173,7 @@ float NOMAD::Chi2(Oscillator osc, neutrinoModel model, bool debug){
   }
 
   // Fill output tree
+  //std::cout << dm2 << " " << sin22th << " chi2: " << chi2 << std::endl;
   chi2Nt->Fill(chi2,dof,model);
 
   if(debug)

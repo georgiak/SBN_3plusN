@@ -75,10 +75,7 @@ float NuMI::Chi2(Oscillator osc, neutrinoModel model, bool debug){
   float chi2 = 0.f;
   std::vector < float > Prediction;
   Prediction.resize(nBins);
-
-  // Initialize contributions from the osc probability
-  oscContribution oscCont;
-  oscCont = getOscContributionsNueApp(model, false, true);
+  double sin22th = model.ProbAmp("mue");
 
   Signal.assign(nBins,0.);
   TotalError.assign(nBins,0.);
@@ -86,14 +83,10 @@ float NuMI::Chi2(Oscillator osc, neutrinoModel model, bool debug){
   float mstep = TMath::Log10(100./.01)/float(100);
   int dm2;
   for(int iB = 0; iB < nBins; iB++){
-  	for(int iContribution = 0; iContribution < 6; iContribution++){
-  		if(oscCont.dm2[iContribution] == 0)	Signal[iB] += 0;
-  		else{
-  			dm2 = floor(TMath::Log10(oscCont.dm2[iContribution]/.01)/mstep);
-  			Signal[iB] += oscCont.aMuE[iContribution]*Lib_sinsq[dm2][iB] + oscCont.aMuE_CPV[iContribution]*Lib_sin[dm2][iB];
-  		}
-  	}
+  	dm2 = floor(TMath::Log10(model.Dm2()/.01)/mstep);
+  	Signal[iB] += sin22th*Lib_sinsq[dm2][iB];
   }
+
   // Now fill up that error
   for(int iN = 0; iN < nBins; iN++){
     TotalError[iN] = pow(NueBgr_error[iN],2) + pow(FOsc_fracError[iN]*Signal[iN],2) + Signal[iN] + NueBgr[iN];

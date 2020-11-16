@@ -137,10 +137,13 @@ double getSinSqTerm(double dm2, double E1, double E2, double l1, double l2){
 }
 double osc_int(double E1, double E2, double l1, double l2){
 
-	minModelXSec.difference();
+  double sin22th = minModelXSec.ProbAmp("ee");
+  double dm2 = minModelXSec.Dm2();
 
-	double sin41sq,sin51sq,sin54sq,sin61sq,sin64sq,sin65sq;
+  double osc_int = sin22th * getSinSqTerm(dm2,E1,E2,l1,l2);
+  return osc_int;
 
+	/*  Drastically simplify to 3+1  model
 	if(minModelXSec.dm41Sq != 0)
 		sin41sq = getSinSqTerm(minModelXSec.dm41Sq,E1,E2,l1,l2);
 	else
@@ -171,6 +174,7 @@ double osc_int(double E1, double E2, double l1, double l2){
 			+ pow(minModelXSec.Ue[0],2) * pow(minModelXSec.Ue[1],2) * sin54sq
 			+ pow(minModelXSec.Ue[0],2) * pow(minModelXSec.Ue[2],2) * sin64sq
 			+ pow(minModelXSec.Ue[1],2) * pow(minModelXSec.Ue[2],2) * sin65sq);
+  */
 
 	return osc_int;
 }
