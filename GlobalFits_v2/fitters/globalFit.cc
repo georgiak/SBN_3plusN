@@ -2,7 +2,7 @@
 
 int globalFit(std::string xml){
 
-  bool debug = true;
+  bool debug = false;
 
   // Read our XML file
   FitReader rdr;
@@ -53,12 +53,20 @@ int globalFit(std::string xml){
 
     // Calculate chi2s
     chi2 = 0;
+		float dummy;
     for(int i = 0; i < rdr.GetNDatasets(); i++){
-      chi2 += rdr.GetDataset(i)->Chi2(osc,nuModel,debug);
+      dummy =  rdr.GetDataset(i)->Chi2(osc,nuModel,debug);
+			chi2 += dummy;
     }
 
     chi2Nt->Fill(chi2,ndf,nuModel);
-    count ++;
+		chi2Log = chi2;
+		if(osc.ran[12] < TMath::Min(1., exp(-(chi2Log - chi2LogOld)/osc.temp)) || iMCGen == 1){
+            chi2LogOld = chi2Log;
+            nuModelOld = nuModel;
+		}
+		
+		count ++;
   }
 
   // Write everything to File

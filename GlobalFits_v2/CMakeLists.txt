@@ -1,15 +1,14 @@
 cmake_minimum_required (VERSION 2.6)
 project (GlobalFit)
 
+
 if (CMAKE_VERSION VERSION_LESS "3.1")
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-          set (CMAKE_CXX_FLAGS "--std=gnu++11 ${CMAKE_CXX_FLAGS}")
+          set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     endif ()
     else ()
-	    set (CMAKE_CXX_STANDARD 11)
+	    set (CMAKE_CXX_STANDARD 17)
 endif ()
-
-
 
 FIND_PACKAGE(ROOT)# COMPONENTS Core Cint RIO Net Hist Graf Graf3d Gpad Tree Rint Postscript Matrix Physics MathCore Thread)
 
@@ -30,8 +29,8 @@ FIND_PROGRAM(GSL_CONFIG gsl-config)
 EXEC_PROGRAM(${GSL_CONFIG} ARGS --cflags OUTPUT_VARIABLE GSL_CXX_FLAGS)
 EXEC_PROGRAM(${GSL_CONFIG} ARGS --libs OUTPUT_VARIABLE GSL_LIBS)
 
-set (CMAKE_CXX_FLAGS "-m64 -fsigned-char -fPIC -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm -std=c++11")
-#set (CMAKE_CXX_FLAGS "${ROOT_CXX_FLAGS} ${GSL_LIBS} ${GSL_CXX_FLAGS} ${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations ")
+#set (CMAKE_CXX_FLAGS "-m64 -fsigned-char -fPIC -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm -std=c++11")
+set (CMAKE_CXX_FLAGS "${ROOT_CXX_FLAGS} ${GSL_LIBS} ${GSL_CXX_FLAGS} ${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations ")
 
 # -noswitcherror -ta=multicore -Minfo=accel -acc
 

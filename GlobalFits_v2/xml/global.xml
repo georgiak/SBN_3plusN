@@ -7,15 +7,14 @@
   cpcons = "0"
   rndseed = "0"
   gridpts = "0"
-  stepsize = "1."
-  temperature = "7."
-  nMCGen = "3"
+  stepsize = ".1"
+  temperature = "13."
+  nMCGen = "10"
   />
 
+<dataset name="MiniBooNE_combined" use="1"/>
 <dataset name="MBnu_dis" use="1"/>
 <dataset name="MBnubar_dis" use="1"/>
-<dataset name="MBnu" use="1"/>
-<dataset name="MBnubar" use="1"/>
 <dataset name="LSND_loglikelihood" use="1"/>
 <dataset name="Gallium" use="1"/>
 <dataset name="KARMEN" use="1"/>
@@ -26,10 +25,12 @@
 <dataset name="Bugey" use="1"/>
 <dataset name="XSec" use="1"/>
 <dataset name="Atm" use="1"/>
-<dataset name="FromChi2Surf" use="1"/>
 <dataset name="DANSS" use="1"/>
+<dataset name="NEOS" use="1 "/>
+<dataset name="MINOS" use="1"/>
+<dataset name="PROSPECT" use="1"/>
 
 
-<dataset name="MINOS" use="0"/>
-
-<dataset name="NEOS" use="0"/>
+<dataset name="MBnubar" use="0"/>
+<dataset name="MBnu" use="0"/>
+<dataset name="FromChi2Surf" use="0"/>

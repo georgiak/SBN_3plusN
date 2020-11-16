@@ -56,10 +56,10 @@ neutrinoModel Oscillator::InitializeMarkovParams(){
     // Initial Params for Mass and Mixing
     if(nSteriles > 0){
       for(int i = 0; i < nSteriles; i++){
-        //modelOld.mNu[i] = pow(10., (TMath::Log10(dm2Min) + ran[3*i]*TMath::Log10(dm2Max/dm2Min))/2);
-        modelOld.mNu[i] = pow(10., (TMath::Log10(.317) + ran[3*i]*TMath::Log10(3.832/.316))/2);
-        //modelOld.Ue[i] = pow(10., TMath::Log10(UMin) + ran[3*i + 1] * TMath::Log10(UMax/UMin));
-        modelOld.Ue[i] = pow(10., TMath::Log10(.05005) + ran[3*i + 1] * TMath::Log10(.47/0.5005));
+        modelOld.mNu[i] = pow(10., (TMath::Log10(dm2Min) + ran[3*i]*TMath::Log10(dm2Max/dm2Min))/2);
+        //modelOld.mNu[i] = pow(10., (TMath::Log10(.317) + ran[3*i]*TMath::Log10(3.832/.316))/2);
+        modelOld.Ue[i] = pow(10., TMath::Log10(UMin) + ran[3*i + 1] * TMath::Log10(UMax/UMin));
+        //modelOld.Ue[i] = pow(10., TMath::Log10(.051) + ran[3*i + 1] * TMath::Log10(.57/0.051));
         modelOld.Um[i] = pow(10., TMath::Log10(UMin) + ran[3*i + 2] * TMath::Log10(UMax/UMin));
       }
     }
@@ -93,8 +93,9 @@ neutrinoModel Oscillator::NewModel(neutrinoModel modelOld){
 
     // Alright, let's step forward with these masses and mixing matrix elements!
     for(int i = 0; i < nSteriles; i++){
-      model.mNu[i] = pow(10., (TMath::Log10(modelOld.mNu[i]) + (ran[3*i] - .5)*2*step*TMath::Log10(dm2Max/dm2Min))/2);
-
+			model.mNu[i] = pow(10., (TMath::Log10(modelOld.mNu[i]) + (ran[3*i] - .5)*2*step*TMath::Log10(dm2Max/dm2Min))/2);
+      //model.mNu[i] = pow(10., (TMath::Log10(modelOld.mNu[i]) + (ran[3*i] - .5)*2*step*TMath::Log10(3.832/.316))/2);
+      //if(usingUe) model.Ue[i] = pow(10.,TMath::Log10(modelOld.Ue[i]) + (ran[3*i+1] - .5)*2*step*TMath::Log10(.57/0.051));
       if(usingUe) model.Ue[i] = pow(10.,TMath::Log10(modelOld.Ue[i]) + (ran[3*i+1] - .5)*2*step*TMath::Log10(UMax/UMin));
       else    model.Ue[i] = 0.;
 
@@ -111,6 +112,8 @@ neutrinoModel Oscillator::NewModel(neutrinoModel modelOld){
       }
     }
     reject = RejectModel(model);
+		// for prospect, make sure ue4 is within proper bounds
+		//reject = reject || model.Ue[0] < .051 || model.Ue[0] > .57;
   }while(reject);
 
   return model;

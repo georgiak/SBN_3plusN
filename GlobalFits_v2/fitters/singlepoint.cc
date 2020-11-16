@@ -24,10 +24,11 @@ int bruteforce(std::string xml, int massStart = -1){
 
   // Define point
   neutrinoModel nuModel;
-  nuModel.zero();
-  nuModel.Ue[0] = sqrt(.96/4.f);
-  nuModel.Um[0] = 1;
-  nuModel.mNu[0] = sqrt(.04);
+  nuModel.zero();	
+
+	nuModel.Ue[0] = 0.1154140; 
+  nuModel.Um[0] = 0.152012;
+  nuModel.mNu[0] = 1.29123;
 
   // Calculate chi2s
   float chi2 = 0;

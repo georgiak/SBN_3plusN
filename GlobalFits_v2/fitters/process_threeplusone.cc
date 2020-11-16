@@ -95,15 +95,17 @@ int ntupleProcess(std::string xml){
   t_app_99->Branch("sin22th",&sin22th,"sin22th/F");
   t_app_99->Branch("dm2",&dm2,"dm2/F");
 
-  float mstep = TMath::Log10(100.f/.01f)/rdr.gridpts_dm2;
-  float sin22step = TMath::Log10(1.f/float(1e-5))/rdr.gridpts_sin22th;
+ 	//float mstep = TMath::Log10(100.f/.01f)/rdr.gridpts_dm2;
+  float mstep = TMath::Log10(14.68f/.1005f)/rdr.gridpts_dm2;  
+	float sin22step = TMath::Log10(1.f/float(1e-5))/rdr.gridpts_sin22th;
   std::vector < std::vector < float > > chi2grid;
   chi2grid.assign(rdr.gridpts_sin22th, std::vector < float > (rdr.gridpts_dm2, 0.));
 
   for(int i = 0; i < v_chi2.size(); i++){
     float mysin22th = 4*pow(v_um4[i],2)*pow(v_ue4[i],2);
     int is = (int)TMath::Nint(TMath::Log10(mysin22th/1e-5)/sin22step);
-    int im = (int)TMath::Nint(TMath::Log10(pow(v_mnu[i],2)/.01)/mstep);
+    //int im = (int)TMath::Nint(TMath::Log10(pow(v_mnu[i],2)/.01)/mstep);
+    int im = (int)TMath::Nint(TMath::Log10(pow(v_mnu[i],2)/.1005f)/mstep);
 
     if(is < rdr.gridpts_sin22th && im < rdr.gridpts_dm2 && is > -1){
       if(chi2grid[is][im] == 0)
@@ -126,10 +128,11 @@ int ntupleProcess(std::string xml){
   for(int i = 0; i < rdr.gridpts_sin22th; i++){
     for(int j = 0; j < rdr.gridpts_dm2; j++){
       sin22th = pow(10,(i/float(rdr.gridpts_sin22th) * TMath::Log10(1./1e-5) + TMath::Log10(1e-5)));
-      dm2 = pow(10,(j/float(rdr.gridpts_dm2) * TMath::Log10(100./.01) + TMath::Log10(.01)));
-      if(chi2grid[i][j] != 0){
+      //dm2 = pow(10,(j/float(rdr.gridpts_dm2) * TMath::Log10(100./.01) + TMath::Log10(.01)));
+      dm2 = pow(10,(j/float(rdr.gridpts_dm2) * TMath::Log10(14.68f/.1005) + TMath::Log10(.1005)));
+			if(chi2grid[i][j] != 0){
         chi2 = chi2grid[i][j];
-
+			
 //        std::cout << "deltachi2 = " << chi2 - chi2_min << std::endl;
         if(chi2grid[i][j] <= chi2_min + 6.25)
           t_app_90->Fill();
