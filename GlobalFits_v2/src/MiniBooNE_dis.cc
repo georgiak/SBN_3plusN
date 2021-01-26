@@ -20,7 +20,7 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
     // If in antineutrino mode
     nFOsc = 686529;
     str_data_numu = dataLoc + "miniboone_dis/miniboone_numubardata_disap.txt";
-    str_fracterrormatrix =  + "miniboone_dis/miniboone_frac_shape_matrix_numubar_disap.txt";
+    str_fracterrormatrix = dataLoc + "miniboone_dis/miniboone_frac_shape_matrix_numubar_disap.txt";
     str_fullosc = dataLoc + "miniboone_dis/numubardisap_ntuple.txt";
   }
 
@@ -30,24 +30,29 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
 	float *nu_FOsc_LnuTrue = new float[nFOsc];
 	float *nu_FOsc_weight = new float[nFOsc];
 
-	ifstream file;
-	file.open(str_data_numu);
+  ifstream file;
+  file.open(str_data_numu);
+  if(!file.is_open()) std::cout << "ERROR: BAD FILE NAME: " << str_data_numu << std::endl;
 	for(short i = 0; i < nBins; i++)
 		file >> FullData[i];
 	file.close();
 
 	file.open(str_fracterrormatrix);
+  if(!file.is_open()) std::cout << "ERROR: BAD FILE NAME: " << str_fracterrormatrix << std::endl;
 	for(short i = 0; i < nBins; i++)
-		for(short j = 0; j < nBins; j++)
+		for(short j = 0; j < nBins; j++){
 			file >> Full_fractCovMatrix[i][j];
+    }
 	file.close();
 
   file.open(str_binboundaries);
+  if(!file.is_open()) std::cout << "ERROR: BAD FILE NAME: " << str_binboundaries << std::endl;
   for(short i = 0; i < nBins+1; i++)
       file >> nu_EnuQE[i];
   file.close();
 
  	file.open(str_fullosc);
+  if(!file.is_open()) std::cout << "ERROR: BAD FILE NAME: " << str_fullosc << std::endl;
 	int dummy;
     for(int iEvt = 0; iEvt < nFOsc; iEvt++){
       file >> dummy;
@@ -64,7 +69,6 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
 	Libdis_noosc.resize(nBins);
 
 	for(int mi = 0; mi < 100; mi++){
-
 		float dm2 = pow(10,((mi+1.)/100.*TMath::Log10(100./.01) + TMath::Log10(.01)));
 		for(int iB = 0; iB < nBins; iB++){
 			Libdis_sinsq[mi][iB] = 0;
@@ -79,14 +83,13 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
 
 					float ETru = nu_FOsc_EnuTrue[iFOsc];
 					float LTru = nu_FOsc_LnuTrue[iFOsc];
-					Libdis_sinsq[mi][iB] += nu_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru/ETru),2);
+					Libdis_sinsq[mi][iB] += nu_FOsc_weight[iFOsc]*pow(sin(1.267*dm2*LTru/ETru),2); // oscillated events in each bin
 					if(mi == 0)
-						Libdis_noosc[iB] += nu_FOsc_weight[iFOsc];
+						Libdis_noosc[iB] += nu_FOsc_weight[iFOsc];  // unoscillated events in each bin
         }
       }
     }
   }
-
   dof = nBins;
 
   // Initialize output tree
@@ -106,42 +109,43 @@ int MiniBooNE_dis::Init(std::string dataLoc, Oscillator osc, bool debug){
 float MiniBooNE_dis::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
   float chi2 = 0.f;
-  std::vector <  float > Prediction;
+  std::vector <  float > Prediction, PredictionNoOsc;
   Prediction.resize(nBins);
+  PredictionNoOsc.resize(nBins);
 
   // Initialize contributions from osc probability
 	double sin22th = model.ProbAmp("mumu");
 
-  //Zero out Signal
-  std::fill(Signal.begin(), Signal.end(), 0);
-
-	covMatrix.ResizeTo(nBins, nBins);
-	covMatrix.Zero();
+  covMatrix.ResizeTo(nBins, nBins);
+  covMatrix.Zero();
 
   float minEBins[nBins], maxEBins[nBins];
-  float dtIntegral = 0.;     float MCIntegral = 0.;
-  float ETru, LTru;
-  float FOsc_EnuQE, FOsc_EnuTrue, FOsc_LnuTrue, FOsc_weight;
+  float dtIntegral(0.), MCIntegral(0.), MCIntegralNoOsc(0.);
 
 	for(int iB = 0; iB < nBins; iB ++){
 		Signal[iB] = 0;
-		Prediction[iB] = Libdis_noosc[iB];
+		PredictionNoOsc[iB] = Libdis_noosc[iB];
 		dtIntegral += FullData[iB];
+    MCIntegralNoOsc += Libdis_noosc[iB];
 	}
 
 	float mstep = TMath::Log10(100./.01)/float(100);
 	int dm2;
 	for(int iB = 0; iB < nBins; iB++){
 		dm2 = floor(TMath::Log10(model.Dm2()/.01)/mstep);
-		Signal[iB] += sin22th*Libdis_sinsq[dm2][iB];
+    Prediction[iB] = PredictionNoOsc[iB] - sin22th*Libdis_sinsq[dm2][iB];
 	}
 	// Normalize signal prediction to data
 	for(int iB = 0; iB < nBins; iB++){
 		MCIntegral += (Prediction[iB] + Signal[iB]);
 	}
+
 	for(int iB = 0; iB < nBins; iB++){
-		Prediction[iB] = (Prediction[iB] + Signal[iB]) * dtIntegral/MCIntegral;
+		Prediction[iB] *= dtIntegral/MCIntegral;
+    PredictionNoOsc[iB] *= dtIntegral/MCIntegralNoOsc;
 	}
+
+  //std::cout << "Integrals: " << dtIntegral << " " << MCIntegral << std::endl;
 
 	for(int iB = 0; iB < nBins; iB++){
 		for(int jB = 0; jB < nBins; jB++){
@@ -149,6 +153,7 @@ float MiniBooNE_dis::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 			// Add statistical error of signal prediction
 			if(iB == jB){
 				covMatrix[iB][jB] += Prediction[iB];
+        //std::cout << "stat err: " << Prediction[iB] << std::endl;
 			}
 		}
 	}

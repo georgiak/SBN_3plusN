@@ -51,6 +51,8 @@ int CDHS::Init(std::string dataLoc, Oscillator osc, bool debug){
   }
   file.close();
 
+  std::cout << "UGH: " << NoOscGrid[5][0] << std::endl;
+
   dof = nBins;
 
   // Iniitialize Output tree

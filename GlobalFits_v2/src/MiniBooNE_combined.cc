@@ -5,12 +5,13 @@
 int MiniBooNE_combined::Init(std::string dataLoc, Oscillator osc, bool debug){
 
   std::string str_data_nue, str_data_numu, str_MC_nue, str_MC_numu, str_fracterrormatrix, str_binboundaries, str_fullosc_nu, str_data_nuebar, str_data_numubar, str_MC_nuebar, str_MC_numubar, str_fullosc_nubar;
+
   str_binboundaries = dataLoc + "miniboone/miniboone_binboundaries_lowe.txt";
+  str_MC_numu = dataLoc + "miniboone/MC_numu.txt";
+  str_MC_nue = dataLoc + "miniboone/MC_nue.txt";
+  str_fullosc_nu = dataLoc + "miniboone/numunuefullosc_ntuple.txt";
   str_data_nue = dataLoc + "miniboone/data_nue.txt";
   str_data_numu = dataLoc + "miniboone/data_numu.txt";
-  str_MC_nue = dataLoc + "miniboone/MC_nue.txt";
-  str_MC_numu = dataLoc + "miniboone/MC_numu.txt";
-  str_fullosc_nu = dataLoc + "miniboone/numunuefullosc_ntuple.txt";
   str_data_nuebar = dataLoc + "miniboone/miniboone_nuebardata_lowe.txt";
   str_data_numubar = dataLoc + "miniboone/miniboone_numubardata.txt";
   str_MC_nuebar = dataLoc + "miniboone/miniboone_nuebarbgr_lowe.txt";
@@ -60,10 +61,12 @@ int MiniBooNE_combined::Init(std::string dataLoc, Oscillator osc, bool debug){
     FullData[iB + nBins_e + nBins_mu] = FullData_nubar[iB];
   }
 
+  double ddummy(0.0);
   // Get predicted nue background events per enuqe bin
   file.open(str_MC_nue);
-  for(int i = 0; i < nBins_e; i++)
+  for(int i = 0; i < nBins_e; i++){
     file >> Background_nu[i];
+  }
   file.close();
 
   // Get predicted numu ccqe events per enuqe bin
@@ -154,8 +157,8 @@ int MiniBooNE_combined::Init(std::string dataLoc, Oscillator osc, bool debug){
   }
 
 	// Lastly, Initialize best fit signal, with which we will weigh our covariance matrix
-  double BF_dm2 = 0.0436516;
-  double BF_sin22th = 0.699636;
+  double BF_dm2 = 0.043;
+  double BF_sin22th = .807;
 
   for(int iB = 0; iB < nBins_e; iB++){
     dm2 = floor(TMath::Log10(BF_dm2/.01)/mstep);

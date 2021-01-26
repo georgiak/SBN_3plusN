@@ -12,6 +12,7 @@
 #include "Bugey.h"
 #include "CDHS.h"
 #include "MiniBooNE_dis.h"
+#include "IceCube_fromSurfs.h"
 
 #include "Atm.h"
 #include "MINOS.h"
@@ -105,7 +106,10 @@ int FitReader::Load(std::string xml){
         myDataSets.push_back(new XSec);
         std::cout << "Using LSND+KARMEN XSec dataset" << std::endl;
       }
-
+      else  if(dset == "IceCube_fromSurfs"){
+        myDataSets.push_back(new IceCube_fromSurfs);
+        std::cout << "Using Icecube dataset" << std::endl;
+      }
       else if(dset == "MINOS"){
         myDataSets.push_back(new MINOS);
         std::cout << "Using MINOS (old)" << std::endl;
