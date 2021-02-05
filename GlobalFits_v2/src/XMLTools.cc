@@ -110,33 +110,6 @@ int FitReader::Load(std::string xml){
         myDataSets.push_back(new IceCube_fromSurfs);
         std::cout << "Using Icecube dataset" << std::endl;
       }
-      else if(dset == "MINOS"){
-        myDataSets.push_back(new MINOS);
-        std::cout << "Using MINOS (old)" << std::endl;
-      }
-      else if(dset == "Atm"){
-        myDataSets.push_back(new Atm);
-        UsingAtm = true;
-        std::cout << "Using Atmospheric dataset" << std::endl;
-      }
-/*
-      else if(dset == "MBnu"){
-        myDataSets.push_back(new MiniBooNE(false));
-        std::cout << "Using MiniBooNE Nu dataset" << std::endl;
-      }
-      else if(dset == "MBnubar"){
-        myDataSets.push_back(new MiniBooNE(true));
-        std::cout << "Using MiniBooNE Nubar dataset" << std::endl;
-      }
-      else if(dset == "FromChi2Surf"){
-        myDataSets.push_back(new FromChi2Surf);
-        std::cout << "Using dset from chi2 surface" << std::endl;
-      }
-      else if(dset == "PROSPECT"){
-        myDataSets.push_back(new PROSPECT);
-        std::cout << "Using Prospect" << std::endl;
-      }
-      */
       else
         std::cout << "Dataset not implemented yet!" << std::endl;
     }
@@ -195,12 +168,12 @@ int ProcessReader::Load(std::string xml){
   else while(pData){
     dset = pData->Attribute("name");
     if(stoi(pData->Attribute("use"))){
-      raster = stoi(pData->Attribute("raster"));
       dloc = pData->Attribute("loc");
       std::cout << "Adding tree " << dset << " from " << dloc << "." << std::endl;
       data_names.push_back(dset);
       data_files.push_back(new TFile(dloc.c_str(),"READ"));
       data_trees.push_back((TTree*)data_files.back()->Get(dset.c_str()));
+      data_osc.push_back(stoi(pData->Attribute("osc")));
     }
 
     pData = pData->NextSiblingElement("dataset");

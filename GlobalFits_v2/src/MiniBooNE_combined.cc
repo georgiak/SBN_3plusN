@@ -157,8 +157,8 @@ int MiniBooNE_combined::Init(std::string dataLoc, Oscillator osc, bool debug){
   }
 
 	// Lastly, Initialize best fit signal, with which we will weigh our covariance matrix
-  double BF_dm2 = 0.043;
-  double BF_sin22th = .807;
+  double BF_dm2 = 0.041;
+  double BF_sin22th = 0.842601;
 
   for(int iB = 0; iB < nBins_e; iB++){
     dm2 = floor(TMath::Log10(BF_dm2/.01)/mstep);
