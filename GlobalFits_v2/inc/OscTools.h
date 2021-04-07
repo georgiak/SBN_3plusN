@@ -43,6 +43,13 @@ public:
 
   double Dm2(){ return pow(mnu,2); };
   double Umu4(){ return cos(theta14)*sin(theta24); };
+
+  void Print(){
+    std::cout << "MNU: " << mnu << std::endl;
+    std::cout << "TH14: " << theta14 << std::endl;
+    std::cout << "TH24: " << theta24 << std::endl;
+    std::cout << "TH34: " << theta34 << std::endl;
+  }
 };
 
 

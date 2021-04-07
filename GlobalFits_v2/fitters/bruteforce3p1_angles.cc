@@ -33,7 +33,7 @@ int bruteforce(std::string xml, int massStart = -1){
   OutTree * chi2Nt = new OutTree("Total");
 
   // Create a nu model
-  //neutrinoModel nuModel;
+  neutrinoModel nuModel;
 
   int count = 0;
   int grdpts = osc.GridSize();
@@ -44,36 +44,37 @@ int bruteforce(std::string xml, int massStart = -1){
     mStart = 0; mEnd = grdpts;
   }
 
-  double thetamin(1e-4), thetamax(3.14159/2);
-  //double thetamin(3e-2), thetamax(3e-1);
+  double theta_lowbound(.01), theta_hibound(3.1415926/4.);
+  //double mnu_lowbound(.11), mnu_hibound(8.91);    // ic params
+  double mnu_lowbound(.1), mnu_hibound(10.00);
 
   for(int mi = mStart; mi < mEnd; mi++){
     for(int t41i = 0; t41i < grdpts; t41i++){
       for(int t42i = 0; t42i < grdpts; t42i++){
+        if(!debug)
+          std::cout << "Progress: " << float(count)/(pow(grdpts,2)/(100.f)) << "\% \r";
 
-        std::cout << "Progress: " << float(count)/(pow(grdpts,3)/(100.f)) << "\% \r";
-
-        neutrinoModel nuModel;
-		    double mnu = pow(10,(mi/float(grdpts)*TMath::Log10(10./.1) + TMath::Log10(.1)));
-        // new min for mnu
-        double theta14 = pow(10,(t41i/float(grdpts)*TMath::Log10(thetamax/thetamin) + TMath::Log10(thetamin)));
-        double theta24 = pow(10,(t42i/float(grdpts)*TMath::Log10(thetamax/thetamin) + TMath::Log10(thetamin)));
+  	    double mnu = pow(10,(mi/float(grdpts)*TMath::Log10(mnu_hibound/mnu_lowbound) + TMath::Log10(mnu_lowbound)));
+        double theta14 = pow(10,(t41i/float(grdpts)*TMath::Log10(theta_hibound/theta_lowbound) + TMath::Log10(theta_lowbound)));
+        double theta24 = pow(10,(t42i/float(grdpts)*TMath::Log10(theta_hibound/theta_lowbound) + TMath::Log10(theta_lowbound)));
         double theta34 = 0;
+        //double sin22th = pow(10,(t42i/float(grdpts)*TMath::Log10(1.0/0.01) + TMath::Log10(0.01)));
+        //double theta24 = asin(sqrt((1.0-sqrt(1.0-sin22th))/2.0));
         nuModel.Init(mnu,theta14,theta24,theta34);
-        //nuModel.Init(1.0, 0, 0,0.0);
 
-        //if(osc.RejectModel(nuModel))
-        //  continue;
-
-        // Calculate chi2s
         chi2 = 0;
+        // Calculate chi2s
         for(int i = 0; i < rdr.GetNDatasets(); i++){
           chi2 += rdr.GetDataset(i)->Chi2(osc,nuModel,debug);
         }
 
+        if(debug){
+          //std::cout << "Total chi2 for model: " << mnu  << " " <<  theta14 << " " << theta24 << " " <<  theta34 << std::endl;
+          std::cout << chi2 << std::endl;
+        }
+
         chi2Nt->Fill(chi2,ndf,nuModel);
         count ++;
-        //return 1;
       }
     }
   }

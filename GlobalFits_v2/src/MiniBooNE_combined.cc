@@ -7,17 +7,17 @@ int MiniBooNE_combined::Init(std::string dataLoc, Oscillator osc, bool debug){
   std::string str_data_nue, str_data_numu, str_MC_nue, str_MC_numu, str_fracterrormatrix, str_binboundaries, str_fullosc_nu, str_data_nuebar, str_data_numubar, str_MC_nuebar, str_MC_numubar, str_fullosc_nubar;
 
   str_binboundaries = dataLoc + "miniboone/miniboone_binboundaries_lowe.txt";
-  str_MC_numu = dataLoc + "miniboone/MC_numu.txt";
-  str_MC_nue = dataLoc + "miniboone/MC_nue.txt";
-  str_fullosc_nu = dataLoc + "miniboone/numunuefullosc_ntuple.txt";
-  str_data_nue = dataLoc + "miniboone/data_nue.txt";
-  str_data_numu = dataLoc + "miniboone/data_numu.txt";
+  str_MC_numu = dataLoc + "miniboone/MC_numu_2020.txt";
+  str_MC_nue = dataLoc + "miniboone/MC_nue_2020.txt";
+  str_fullosc_nu = dataLoc + "miniboone/numunuefullosc_ntuple_2020.txt";
+  str_data_nue = dataLoc + "miniboone/data_nue_2020.txt";
+  str_data_numu = dataLoc + "miniboone/data_numu_2020.txt";
   str_data_nuebar = dataLoc + "miniboone/miniboone_nuebardata_lowe.txt";
   str_data_numubar = dataLoc + "miniboone/miniboone_numubardata.txt";
   str_MC_nuebar = dataLoc + "miniboone/miniboone_nuebarbgr_lowe.txt";
   str_MC_numubar = dataLoc + "miniboone/miniboone_numubar.txt";
   str_fullosc_nubar = dataLoc + "miniboone/miniboone_nubarfullosc_ntuple.txt";
-  str_fracterrormatrix = dataLoc + "miniboone/miniboone_full_fractcovmatrix_combined_lowe.txt";
+  str_fracterrormatrix = dataLoc + "miniboone/miniboone_full_fractcovmatrix_combined_lowe_2020.txt";
 
   float *nu_EnuQE = new float[nBins_e + 1];
 	float *nu_FOsc_EnuQE = new float[nFOscEvts_nu];
@@ -186,6 +186,7 @@ float MiniBooNE_combined::Chi2(Oscillator osc, neutrinoModel model,bool debug){
 
   double sin22th = model.ProbAmp("mue");
 
+
   full_covMatrix.ResizeTo(2*nBins_e + 2*nBins_e + 2*nBins_mu, 2*nBins_e + 2*nBins_e + 2*nBins_mu);
   full_covMatrix.Zero();
   covMatrix.ResizeTo(2*nBins_e + 2*nBins_mu, 2*nBins_e + 2*nBins_mu);
@@ -314,10 +315,9 @@ float MiniBooNE_combined::Chi2(Oscillator osc, neutrinoModel model,bool debug){
   for(int iB = 0; iB < 2*nBins_e + 2*nBins_mu; iB++){
   	for(int jB = 0; jB < 2*nBins_e + 2*nBins_mu; jB++){
   		chi2 += (FullData[iB]-Prediction[iB])*cov(iB,jB)*(FullData[jB]-Prediction[jB]);
-      //std::cout << FullData[iB] << " " << Prediction[iB] << " " << cov(iB,jB) << std::endl;
   	}
   }
-
+  
   // Fill output tree
   chi2Nt->Fill(chi2,dof,model);
 
