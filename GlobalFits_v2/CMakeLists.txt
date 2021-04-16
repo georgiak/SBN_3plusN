@@ -1,13 +1,14 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.20.1)
 project (GlobalFit)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 if (CMAKE_VERSION VERSION_LESS "3.1")
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
           set (CMAKE_CXX_FLAGS "--std=gnu++11 ${CMAKE_CXX_FLAGS}")
     endif ()
-    else ()
-	    set (CMAKE_CXX_STANDARD 11)
 endif ()
 
 
@@ -35,9 +36,6 @@ EXEC_PROGRAM(${GSL_CONFIG} ARGS --libs OUTPUT_VARIABLE GSL_LIBS)
 
 
 set (CMAKE_CXX_FLAGS "-m64 -fsigned-char -fPIC -L/usr/lib/x86_64-linux-gnu -lgsl -lgslcblas -lm -std=c++11")
-#set (CMAKE_CXX_FLAGS "${ROOT_CXX_FLAGS} ${GSL_LIBS} ${GSL_CXX_FLAGS} ${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations ")
-
-# -noswitcherror -ta=multicore -Minfo=accel -acc
 
 message("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
@@ -45,8 +43,5 @@ include_directories(${PROJECT_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/inc/)
 
 add_subdirectory(src)
-#add_subdirectory(src/SQuIDS)
-#add_subdirectory(src/nuSQuIDS)
-add_subdirectory(fitters)
 add_subdirectory(tinyxml)
-add_subdirectory(tools)
+add_subdirectory(fitters)

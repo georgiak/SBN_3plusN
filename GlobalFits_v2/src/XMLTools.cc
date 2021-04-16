@@ -14,9 +14,6 @@
 #include "MiniBooNE_dis.h"
 #include "IceCube_fromSurfs.h"
 
-
-#include "MicroBooNE_dis.h"
-
 #include "Atm.h"
 #include "MINOS.h"
 /*
@@ -112,10 +109,6 @@ int FitReader::Load(std::string xml){
       else  if(dset == "IceCube_fromSurfs"){
         myDataSets.push_back(new IceCube_fromSurfs);
         std::cout << "Using Icecube dataset" << std::endl;
-      }
-      else if(dset == "MicroBooNE"){
-        myDataSets.push_back(new MicroBooNE_dis);
-        std::cout << "Using MicroBooNE numu disappearance Dataset" << std::endl;
       }
       else
         std::cout << "Dataset not implemented yet!" << std::endl;
