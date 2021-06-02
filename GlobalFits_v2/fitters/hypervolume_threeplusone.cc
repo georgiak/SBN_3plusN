@@ -4,26 +4,6 @@
 #include "TH3D.h"
 #include <algorithm>
 
-double IndexToValue(double _index, double _min, double _max, int _grdpts, std::string _scale="log"){
-  if(_scale == "log"){
-    return pow(10,log10(_min) + _index * log10(_max/_min)/(_grdpts+1));
-  }
-  else{
-    std::cout << "Scale not yet supported" << std::endl;
-    return -999;
-  }
-}
-
-int ValueToIndex(double value, double _min, double _max, int _grdpts, std::string _scale="log"){
-  if(_scale == "log"){
-    return floor((_grdpts)*log10(value/_min)/log10(_max/_min));
-  }
-  else{
-    std::cout << "Scale not yet supported" << std::endl;
-    return -999;
-  }
-}
-
 int ntupleProcess(std::string xml){
 
   bool debug = false;

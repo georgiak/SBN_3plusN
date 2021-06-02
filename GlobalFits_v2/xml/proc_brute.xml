@@ -1,25 +1,26 @@
 <procopts
-  tag="danss_3p1"
+  tag="mix_3p1_june3"
   gridpts_dm2="50"
   gridpts_sin22th="50"
   />
 
+<dataset name="DANSS" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_danss.root"  use="1"/>
+<dataset name="KARMEN" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster5.root"  use="1"/>
+<dataset name="Gallium" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_gal.root"  use="0"/>
 
 
-<dataset name="MBnu" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mb.root" raster="0" use="0"/>
-<dataset name="MBnubar" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mb.root" raster="0" use="0"/>
-<dataset name="LSND_loglikelihood" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster5.root" raster="0" use="0"/>
-<dataset name="Gallium" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_gal.root" raster="1" use="0"/>
-<dataset name="MBnu_dis" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mbnudis.root" raster="1" use="0"/>
-<dataset name="MBnubar_dis" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mbnubardis.root" raster="1" use="0"/>
-<dataset name="KARMEN" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster5.root" raster="1" use="0"/>
-<dataset name="CDHS" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster4.root" raster="1" use="0"/>
-<dataset name="NOMAD" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster6.root" raster="1" use="0"/>
-<dataset name="NuMI" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster6.root" raster="1" use="0"/>
-<dataset name="CCFR" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster4.root" raster="1" use="0"/>
-<dataset name="Atm" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster3.root" raster="1" use="0"/>
-<dataset name="MINOSplus" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_minosplus.root" raster="0" use="0"/>
+
+
+<dataset name="MBnu" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mb.root"  use="0"/>
+<dataset name="MBnubar" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mb.root"  use="0"/>
+<dataset name="LSND_loglikelihood" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster5.root"  use="0"/>
+<dataset name="MBnu_dis" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mbnudis.root"  use="0"/>
+<dataset name="MBnubar_dis" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_mbnubardis.root"  use="0"/>
+<dataset name="CDHS" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster4.root"  use="0"/>
+<dataset name="NOMAD" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster6.root"  use="0"/>
+<dataset name="NuMI" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster6.root"  use="0"/>
+<dataset name="CCFR" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster4.root"  use="0"/>
+<dataset name="Atm" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_cluster3.root"  use="0"/>
+<dataset name="MINOSplus" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_minosplus.root"  use="0"/>
 <dataset name="XSec" use="0"/>
-<dataset name="Bugey" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_reactor.root" raster="0" use="0"/>
-
-<dataset name="DANSS" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_danss.root" raster="1" use="1"/>
+<dataset name="Bugey" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/ntuples/brute_reactor.root"  use="0"/>

@@ -127,5 +127,9 @@ double sinFunc(double x);
 double sineInt(double x);
 double cosFunc(double x);
 double cosineInt(double x);
+double IndexToValue(double _index, double _min, double _max, int _grdpts, std::string _scale="log");
+int ValueToIndex(double value, double _min, double _max, int _grdpts, std::string _scale="log");
+
+
 
 #endif

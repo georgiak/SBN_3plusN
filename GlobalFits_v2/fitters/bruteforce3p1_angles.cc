@@ -2,7 +2,7 @@
 
 bool debug;;
 
-int bruteforce(std::string xml, int massStart = -1){
+int bruteforce(std::string xml){
 
   // Read our XML file
   FitReader rdr;
@@ -13,8 +13,7 @@ int bruteforce(std::string xml, int massStart = -1){
   // Initialize datasets
   std::cout << "Initializing " << rdr.GetNDatasets() << " datasets!" << std::endl;
   int ndf = 0;
-  //std::string dataLoc = "/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/data/";
-  std::string dataLoc = "/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/data/";
+  std::string dataLoc = "/home/dcianci/Physics/GlobFitDocumentation/SBN_3plusN/GlobalFits_v2/";
   for(int i = 0; i < rdr.GetNDatasets(); i++){
     ndf += rdr.GetDataset(i)->Init(dataLoc,osc,debug);
   }
@@ -39,27 +38,20 @@ int bruteforce(std::string xml, int massStart = -1){
   int grdpts = osc.GridSize();
   float chi2;
   std::cout << "Beginning chi2 loop" << std::endl;
-  int mStart, mEnd;
-  if(massStart < 0){
-    mStart = 0; mEnd = grdpts;
-  }
 
   double theta_lowbound(.01), theta_hibound(3.1415926/4.);
-  //double mnu_lowbound(.11), mnu_hibound(8.91);    // ic params
   double mnu_lowbound(.1), mnu_hibound(10.00);
 
-  for(int mi = mStart; mi < mEnd; mi++){
+  for(int mi = 0; mi < grdpts; mi++){
     for(int t41i = 0; t41i < grdpts; t41i++){
       for(int t42i = 0; t42i < grdpts; t42i++){
         if(!debug)
-          std::cout << "Progress: " << float(count)/(pow(grdpts,2)/(100.f)) << "\% \r";
+          std::cout << "Progress: " << float(count)/(pow(grdpts,3)/(100.f)) << "\% \r";
 
-  	    double mnu = pow(10,(mi/float(grdpts)*TMath::Log10(mnu_hibound/mnu_lowbound) + TMath::Log10(mnu_lowbound)));
-        double theta14 = pow(10,(t41i/float(grdpts)*TMath::Log10(theta_hibound/theta_lowbound) + TMath::Log10(theta_lowbound)));
-        double theta24 = pow(10,(t42i/float(grdpts)*TMath::Log10(theta_hibound/theta_lowbound) + TMath::Log10(theta_lowbound)));
+  	    double mnu = IndexToValue(mi,mnu_lowbound,mnu_hibound,grdpts);
+        double theta14 = IndexToValue(t41i,theta_lowbound,theta_hibound,grdpts);
+        double theta24 = IndexToValue(t42i,theta_lowbound,theta_hibound,grdpts);
         double theta34 = 0;
-        //double sin22th = pow(10,(t42i/float(grdpts)*TMath::Log10(1.0/0.01) + TMath::Log10(0.01)));
-        //double theta24 = asin(sqrt((1.0-sqrt(1.0-sin22th))/2.0));
         nuModel.Init(mnu,theta14,theta24,theta34);
 
         chi2 = 0;
@@ -69,7 +61,6 @@ int bruteforce(std::string xml, int massStart = -1){
         }
 
         if(debug){
-          //std::cout << "Total chi2 for model: " << mnu  << " " <<  theta14 << " " << theta24 << " " <<  theta34 << std::endl;
           std::cout << chi2 << std::endl;
         }
 
@@ -132,6 +123,6 @@ int main(int argc, char* argv[]){
     return 0;
   }
 
-  bruteforce(xml,massStart);
+  bruteforce(xml);
   return 0;
 }
