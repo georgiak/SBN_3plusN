@@ -1,26 +1,6 @@
 #include "fitter.h"
 #include "TH3D.h"
 
-double IndexToValue(double _index, double _min, double _max, int _grdpts, std::string _scale="log"){
-  if(_scale == "log"){
-    return pow(10,log10(_min) + _index * log10(_max/_min)/(_grdpts));
-  }
-  else{
-    std::cout << "Scale not yet supported" << std::endl;
-    return -999;
-  }
-}
-
-int ValueToIndex(double value, double _min, double _max, int _grdpts, std::string _scale="log"){
-  if(_scale == "log"){
-    return floor((_grdpts)*log10(value/_min)/log10(_max/_min));
-  }
-  else{
-    std::cout << "Scale not yet supported" << std::endl;
-    return -999;
-  }
-}
-
 int ntupleProcess(std::string xml){
 
   bool debug = true;
@@ -36,7 +16,7 @@ int ntupleProcess(std::string xml){
   double t14_hibound(3.14/4.0), t14_lowbound(.01);
   double t24_hibound(3.14/4.0), t24_lowbound(.01);
   double t34_hibound(3.14/4.0), t34_lowbound(.01);
-  double sin22th_hibound(1.0), sin22th_lowbound(1e-5);
+  double sin22th_hibound(1.0), sin22th_lowbound(0.01);
 
   // Now, sum up the chi2's of everything and throw them in a vector
   int dof;
@@ -162,6 +142,7 @@ int ntupleProcess(std::string xml){
     std::cout << "New size = " << v_chi2.size();
   }
 
+  int imin;
   for(int i = 0; i < v_chi2.size(); i++){
     dm2 = pow(v_m41[i],2);
     sin22th_mue = pow(sin(2*v_theta14[i]),2)*pow(sin(2*v_theta24[i]),2);
@@ -177,6 +158,7 @@ int ntupleProcess(std::string xml){
       m41_min = v_m41[i];
       theta14_min = v_theta14[i];
       theta24_min = v_theta24[i];
+      imin = i;
     }
   }
 
@@ -185,6 +167,7 @@ int ntupleProcess(std::string xml){
   std::cout << "sin22th_mumu min: " << sin22th_mumu_min << std::endl;
   std::cout << "sin22th_ee min: " << sin22th_ee_min << std::endl;
   std::cout << "RAW MIN (m41, theta14, theta24): ( " << m41_min << ", " << theta14_min << ", " << theta24_min << " )" << std::endl;
+  std::cout << "i: " << imin << std::endl;
 
   // Create output File
   std::string outfile = rdr.tag + "_proc_v1.root";
@@ -344,7 +327,7 @@ int ntupleProcess(std::string xml){
 
   // perform raster scans
   for(int dm = 0; dm < rdr.gridpts_dm2; dm++){
-    float chi2minRaster = 3000.;
+    double chi2minRaster = 3000.;
     int sinsStartRaster = 0;
 
     // Find minimum point for this particular dm2
@@ -366,7 +349,7 @@ int ntupleProcess(std::string xml){
   }
 
   for(int dm = 0; dm < rdr.gridpts_dm2; dm++){  // numudis
-    float chi2minRaster = 3000.;
+    double chi2minRaster = 3000.;
     int sinsStartRaster = 0;
 
     // Find minimum point for this particular dm2
@@ -401,7 +384,7 @@ int ntupleProcess(std::string xml){
   }
 
   for(int dm = 0; dm < rdr.gridpts_dm2; dm++){  // nuedis
-    float chi2minRaster = 3000.;
+    double chi2minRaster = 3000.;
     int sinsStartRaster = 0;
 
     // Find minimum point for this particular dm2

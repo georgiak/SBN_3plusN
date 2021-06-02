@@ -8,7 +8,7 @@ class neutrinoModel{
 private:
   double mnu, theta14, theta24, theta34;
   int Zero(){
-    mnu = 0.f;  theta14 = 0.f;  theta24 = 0.f;  theta34 = 0.f;
+    mnu = 0.0;  theta14 = 0.0;  theta24 = 0.0;  theta34 = 0.0;
   };
 
 public:
@@ -43,6 +43,7 @@ public:
 
   double Dm2(){ return pow(mnu,2); };
   double Umu4(){ return cos(theta14)*sin(theta24); };
+  double Mnu(){ return mnu; };
 
   void Print(){
     std::cout << "MNU: " << mnu << std::endl;
@@ -72,8 +73,6 @@ struct neutrinoModel_general{
     }
 };
 
-
-
 struct oscContribution{
     double dm2[6], aMuE[6], aMuMu[6], aMuE_CPV[6], aEE[6];
 };
@@ -99,11 +98,11 @@ class Oscillator{
       std::cout << "Temperature: " << temp << " Stepsize: " << step << std::endl;
     }
 		float temp,ran[13];
+    int gridpts;
 
   private:
 
     float dm2Min, dm2Max, UMin, UMax, USqMax, step;
-    int gridpts;
     bool CPConserving, reject1, reject2, reject3, reject4, usingUe, usingUm;
 };
 
@@ -127,5 +126,7 @@ double sinFunc(double x);
 double sineInt(double x);
 double cosFunc(double x);
 double cosineInt(double x);
+double IndexToValue(double _index, double _min, double _max, int _grdpts, std::string _scale="log");
+int ValueToIndex(double value, double _min, double _max, int _grdpts, std::string _scale="log");
 
 #endif

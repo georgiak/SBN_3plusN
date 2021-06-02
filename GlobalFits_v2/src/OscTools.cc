@@ -191,3 +191,33 @@ double cosineInt(double x){
 
     return TMath::EulerGamma() + log(x) + ig.Integral(0.,x);
 }
+double IndexToValue(double _index, double _min, double _max, int _grdpts, std::string _scale){
+  if(_scale == "log"){
+    return pow(10,log10(_min) + _index * log10(_max/_min)/(_grdpts));
+  }
+  else if(_scale == "linear"){
+    return _min + _index*(_max-_min)/(_grdpts);
+  }
+  else{
+    std::cout << "Scale not yet supported" << std::endl;
+    return -999;
+  }
+}
+
+int ValueToIndex(double value, double _min, double _max, int _grdpts, std::string _scale){
+  int indi;
+  if(_scale == "log"){
+    indi = floor((_grdpts)*log10(value/_min)/log10(_max/_min));
+  }
+  else if(_scale == "linear"){
+    indi = floor((_grdpts)*(value-_min)/(_max-_min));
+  }
+  else{
+    std::cout << "Scale not yet supported" << std::endl;
+    return -999;
+  }
+  if(indi < 0 || indi > _grdpts)
+    return -1;
+  else
+    return indi;
+}
