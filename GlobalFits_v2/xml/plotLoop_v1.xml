@@ -1,0 +1,28 @@
+<procopts
+  tag="disapp_may4"
+  gridpts_dm2="190"
+  gridpts_sin22th="190"
+/>
+
+
+
+<!--
+
+<dataset name="LSND_loglikelihood" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/AllAppPlusNumuDis_finer_icparams_jan28.root" osc="1" use="1"/>
+<dataset name="MiniBooNE_combined" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/AllAppPlusNumuDis_finer_icparams_jan28.root" osc="1" use="1"/>
+<dataset name="NOMAD" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/AllAppPlusNumuDis_finer_icparams_jan28.root" osc="1" use="1"/>
+<dataset name="NuMI" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/AllAppPlusNumuDis_finer_icparams_jan28.root" osc="1" use="1"/>
+<dataset name="KARMEN" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/AllAppPlusNumuDis_finer_icparams_jan28.root" osc="1" use="1"/>
+
+-->
+<dataset name="CCFR" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/AllAppPlusNumuDis_finer_icparams_jan28.root" osc="2" use="1"/>
+<dataset name="CDHS" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/AllAppPlusNumuDis_finer_icparams_jan28.root" osc="2" use="1"/>
+<dataset name="MBnu_dis" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/AllAppPlusNumuDis_finer_icparams_jan28.root" osc="2" use="1"/>
+<dataset name="MBnubar_dis" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/AllAppPlusNumuDis_finer_icparams_jan28.root" osc="2" use="1"/>
+<dataset name="IceCube" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/IC_jan28.root" osc="2" use="0"/>
+
+<dataset name="XSec" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/NueDis_finer_icparams_Jan28.root" osc="0" use="1"/>
+<dataset name="DANSS" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/NueDis_finer_icparams_Jan28.root" osc="0" use="0"/>
+<dataset name="Gallium" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/NueDis_finer_icparams_Jan28.root" osc="0" use="1"/>
+<dataset name="NEOS" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/NueDis_finer_icparams_Jan28.root" osc="0" use="0"/>
+<dataset name="Bugey" loc="/home/dcianci/Physics/GlobalFits/SBN_3plusN/GlobalFits_v2/Oct2020/NueDis_finer_icparams_Jan28.root" osc="0" use="1"/>
