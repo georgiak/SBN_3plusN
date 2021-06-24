@@ -34,37 +34,11 @@ float IceCube_fromSurfs::Chi2(Oscillator osc, neutrinoModel model, bool debug){
 
   std::array<double,4> ops = model.OscParams();
 
-
-
-  //if(log10(ops[0]) < -.95  || log10(ops[0]) > .95  || log10(ops[1]) < -2.0 || log10(ops[1]) > -0.10491013 || log10(ops[2]) < -2.0 || log10(ops[2]) > -0.10491013){
-    //std::cout << "Osc Params out of bounds for icecube interpolation. Returning -1" <<  std::endl;
-  //  chi2 = 0;
-  //}
-  //else{
-    //std::cout << "OK. We've got something." << std::endl;
-    //std::cout << "A: " << log10(ops[0]) << " " << log10(ops[1]) << " " << log10(ops[2]) << std::endl;
-    //chi2 = std::min(vecLogICHisto[0]->Interpolate(log10(ops[0]),log10(ops[1]),log10(ops[2])),chi2);
-    //std::cout << "B: " << chi2 << std::endl;
-  bool exclusion = false;
-  double chi2;
-  if(exclusion){
-    chi2 = 999999;
-    for(int i = 0; i < 10; i++){
-      chi2 = std::min(vecLogICHisto[i]->Interpolate(log10(ops[0]),log10(ops[1]),log10(ops[2])),chi2);
-    }
+  double chi2(0.0);
+  for(int i = 0; i < 10; i++){
+    chi2 = std::max(vecLogICHisto[i]->Interpolate(log10(ops[0]),log10(ops[1]),log10(ops[2])),chi2);
   }
-  else{
-    chi2 = 0;
-    for(int i = 0; i < 10; i++){
-      chi2 = std::max(vecLogICHisto[i]->Interpolate(log10(ops[0]),log10(ops[1]),log10(ops[2])),chi2);
-    }
-  }
-    //std::cout << " YET STILL: " << chi2 << std::endl;
-  //}
-
-
-
-
+  
   // Fill output tree
   chi2Nt->Fill(chi2,dof,model);
 
