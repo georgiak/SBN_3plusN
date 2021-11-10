@@ -1,0 +1,22 @@
+This code collates efforts towards a global fit study of 3+N sterile neutrino phenomenology across several different experiments.
+
+## To get started
+[from main directory]
+mkdir build
+cd build
+cmake ..
+make -j4
+
+## Fitters
+Data from experiments may be made available upon request, though each is publicly available. Results are reproduced from documentation of each experiment and the specifics of each may be found in src/[experiment]
+To use this framework, you must build a "fitter" which will load up data from experiments (specified via an XML file), apply new sterile neutrino models, and calculate the resulting chi2.
+
+For examples, see fitters/bruteforce3p1_angles.cc (which operates a brute-force grid scan across parameters of neutrino oscillation), or fitters/globalFit.cc (which operates via Markov Chain MC in order to facilitate higher-dimensional scans with limited computing capability.
+
+## Processors
+After running many, many models over several data sets, you may want to select subsets to investigate in finer detail. This is facilitated with "processors" that will load up fitter output (specified by an XML file), and perform low-level analysis and sorting for more convenient plotting and discussion in python.
+
+The example code is fitters/plotLooper_v1.cc
+
+## Plotters
+Lastly, the "plotters" directory contains several jupiter notebooks with pre-written modules for plotting and high-level analysis. See plotters/PlotsForThesis.ipynb for examples of how to use the processed output.
